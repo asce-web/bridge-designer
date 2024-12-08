@@ -1,0 +1,103 @@
+import { Injectable } from '@angular/core';
+import { Colors } from '../classes/graphics';
+
+export type FillPattern = string | CanvasPattern; // String is the error fallback.
+
+/** Caching container of commonly used fill patterns. */
+@Injectable({providedIn: 'root'})
+export class FillPatternsService {
+  private earth: Map<CanvasRenderingContext2D, FillPattern> = new Map<CanvasRenderingContext2D, FillPattern>();
+  private concrete: Map<CanvasRenderingContext2D, FillPattern> = new Map<CanvasRenderingContext2D, FillPattern>();
+  private subgrade: Map<CanvasRenderingContext2D, FillPattern> = new Map<CanvasRenderingContext2D, FillPattern>();
+
+  public createEarth(ctx: CanvasRenderingContext2D): FillPattern {
+    var earth = this.earth.get(ctx);
+    if (!earth) {
+      earth = this.createEarthImpl(ctx);
+      this.earth.set(ctx, earth);
+    }
+    return earth;
+  }
+
+  public createConcrete(ctx: CanvasRenderingContext2D): FillPattern {
+    var concrete = this.concrete.get(ctx);
+    if (!concrete) {
+      concrete = this.createConcreteImpl(ctx);
+      this.concrete.set(ctx, concrete);
+    }
+    return concrete;
+  }
+
+  public createSubgrade(ctx: CanvasRenderingContext2D): FillPattern {
+    var subgrade = this.subgrade.get(ctx);
+    if (!subgrade) {
+      subgrade = this.createSubgradeImpl(ctx);
+      this.subgrade.set(ctx, subgrade);
+    }
+    return subgrade;
+  }
+
+  private createEarthImpl(ctx: CanvasRenderingContext2D): FillPattern {
+    const patternCtx = FillPatternsService.getPatternContext(32);
+    if (!patternCtx) {
+      return Colors.EARTH;
+    }
+    patternCtx.strokeStyle = Colors.EARTH;
+    patternCtx.beginPath();
+    var x0y1 = -32;
+    var y0x1 = 0;
+    while (x0y1 <= 32) {
+      patternCtx.moveTo(x0y1, y0x1);
+      patternCtx.lineTo(y0x1, x0y1);
+      x0y1 += 4;
+      y0x1 += 4;
+    }
+    patternCtx.stroke();
+    const pattern = ctx.createPattern(patternCtx.canvas, 'repeat');
+    return pattern || Colors.EARTH;
+  }
+
+  private createConcreteImpl(ctx: CanvasRenderingContext2D): FillPattern {
+    const patternCtx = FillPatternsService.getPatternContext(64);
+    if (!patternCtx) {
+      return Colors.CONCRETE;
+    }
+    patternCtx.fillStyle = Colors.CONCRETE;
+    patternCtx.beginPath();
+    const dotCount = patternCtx.canvas.width * patternCtx.canvas.height * 0.25;
+    for (var i = 0; i < dotCount; ++i) {
+      const x = Math.floor(Math.random() * patternCtx.canvas.width);
+      const y = Math.floor(Math.random() * patternCtx.canvas.height);
+      patternCtx.fillRect(x, y, 1, 1);
+    }
+    patternCtx.stroke();
+    const pattern = ctx.createPattern(patternCtx.canvas, 'repeat');
+    return pattern || Colors.CONCRETE;
+  }
+
+  private createSubgradeImpl(ctx: CanvasRenderingContext2D): FillPattern {
+    const patternCtx = FillPatternsService.getPatternContext(8);
+    if (!patternCtx) {
+      return Colors.CONCRETE;
+    }
+    patternCtx.fillStyle = Colors.EARTH;
+    patternCtx.beginPath();
+    patternCtx.moveTo(4, 0);
+    patternCtx.lineTo(4, 8);
+    patternCtx.stroke();
+    const pattern = ctx.createPattern(patternCtx.canvas, 'repeat');
+    return pattern || Colors.CONCRETE;
+  }
+
+  private static getPatternContext(size: number): CanvasRenderingContext2D | undefined {
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      return undefined;
+    }
+    canvas.width = canvas.height = size;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    return ctx;
+  }
+}

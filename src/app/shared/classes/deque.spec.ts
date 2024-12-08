@@ -1,0 +1,88 @@
+import { Deque } from "./deque";
+
+describe ('Deque', () => {
+  const deque = new Deque<number>();
+
+  beforeEach(() => {
+    deque.clear();
+  });
+
+  it('should have zero length when empty', () => {
+    expect(deque.length).toBe(0); 
+  });
+
+  it('should act as a stack on the right side', () => {
+    deque.pushRight(1);
+    deque.pushRight(2);
+    deque.pushRight(3);
+    expect(deque.popRight()).toBe(3);
+    expect(deque.popRight()).toBe(2);
+    expect(deque.popRight()).toBe(1);
+    expect(deque.popRight()).toBe(undefined);
+  });
+
+  it('should act as a stack on the left side', () => {
+    deque.pushLeft(1);
+    deque.pushLeft(2);
+    deque.pushLeft(3);
+    expect(deque.popLeft()).toBe(3);
+    expect(deque.popLeft()).toBe(2);
+    expect(deque.popLeft()).toBe(1);
+    expect(deque.popLeft()).toBe(undefined);
+  });
+
+  it('should act as a queue on the right side', () => {
+    deque.pushRight(1);
+    deque.pushRight(2);
+    deque.pushRight(3);
+    deque.pushRight(4);
+    expect(deque.popLeft()).toBe(1);
+    expect(deque.popLeft()).toBe(2);
+    expect(deque.popLeft()).toBe(3);
+    expect(deque.popLeft()).toBe(4);
+    expect(deque.popLeft()).toBe(undefined);
+    expect(deque.fullness).toBe(1);
+  });
+
+  it('should act as a queue on the left side', () => {
+    deque.pushLeft(1);
+    deque.pushLeft(2);
+    deque.pushLeft(3);
+    deque.pushLeft(4);
+    expect(deque.popRight()).toBe(1);
+    expect(deque.popRight()).toBe(2);
+    expect(deque.popRight()).toBe(3);
+    expect(deque.popRight()).toBe(4);
+    expect(deque.popRight()).toBe(undefined);
+    expect(deque.fullness).toBe(1);
+  });
+
+  it('should do a rotary from left to right', () => {
+    for (var i = 50; i >= 1; --i) deque.pushLeft(i);
+    for (var i = 51; i <= 100; ++i) deque.pushRight(i);
+    expect(deque.length).toBe(100);
+    expect(deque.fullness).toBe(1);
+    var expected = 1;
+    for (var i = 0; i < 300; ++i) {
+      const value = deque.popLeft();
+      expect(value).toBe(expected);
+      if (++expected > 100) expected = 1;
+      deque.pushRight(value!);
+      expect(deque.fullness).toBeGreaterThanOrEqual(0.5);
+    }
+  });
+
+  it('should do a rotary from right to left', () => {
+    for (var i = 50; i >= 1; --i) deque.pushLeft(i);
+    for (var i = 51; i <= 100; ++i) deque.pushRight(i);
+    expect(deque.length).toBe(100);
+    var expected = 100;
+    for (var i = 0; i < 300; ++i) {
+      const value = deque.popRight();
+      expect(value).toBe(expected);
+      if (--expected < 1) expected = 100;
+      deque.pushLeft(value!);
+      expect(deque.fullness).toBeGreaterThanOrEqual(0.5);
+    }
+  });
+});

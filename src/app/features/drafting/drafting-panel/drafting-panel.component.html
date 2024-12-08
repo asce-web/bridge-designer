@@ -1,0 +1,16 @@
+<div class="wrapper">
+  <canvas
+    #draftingPanel
+    class="view"
+    width="{{ width }}"
+    height="{{ height }}"
+  ></canvas>
+  <cursor-overlay
+    #cursorLayer
+    class="cursor"
+    width="{{ width }}"
+    height="{{ height }}"
+    (addJointRequest)="addJointRequestHandler($event)"
+    (addMemberRequest)="addMemberRequestHandler($event)"
+  ></cursor-overlay>
+</div>

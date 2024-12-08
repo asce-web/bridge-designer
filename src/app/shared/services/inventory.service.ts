@@ -1,0 +1,261 @@
+import { Injectable } from '@angular/core';
+import { Utility } from '../classes/utility';
+
+export class Material {
+  constructor(
+    readonly index: number,
+    readonly name: string,
+    readonly shortName: string,
+    readonly e: number,
+    readonly fy: number,
+    readonly density: number,
+    readonly cost: number[]
+  ) { }
+
+  public getCost(crossSection: CrossSection): number {
+    return this.cost[crossSection.index];
+  }
+}
+
+type SectionShortName = 'Tube' | 'Bar';
+
+export abstract class CrossSection {
+  // prettier-ignore
+  protected static readonly WIDTHS: number[] = [
+    30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,                // 0 to 10 
+    90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 190, 200, // 11 to 22 
+    220, 240, 260, 280, 300,                                   // 23 to 27 
+    320, 340, 360, 400, 500                                    // 28 to 32 
+  ];
+
+  constructor(
+    readonly index: number,
+    readonly name: string,
+    readonly shortName: SectionShortName
+  ) { }
+
+  public abstract createShapes(): Shape[];
+
+  public getNSizes(): number {
+    return CrossSection.WIDTHS.length;
+  }
+
+  public toString(): string {
+    return this.shortName;
+  }
+}
+
+class BarCrossSection extends CrossSection {
+  constructor() {
+    super(0, 'Solid Bar', 'Bar');
+  }
+
+  public override createShapes(): Shape[] {
+    return Array.from(
+      { length: CrossSection.WIDTHS.length },
+      (_, sizeIndex) => {
+        const width = CrossSection.WIDTHS[sizeIndex];
+        const area = Utility.sqr(width) * 1e-6;
+        const moment = (Utility.p4(width) / 12) * 1e-12;
+        return Shape.createSolidBar(
+          this,
+          sizeIndex,
+          `${width}x${width}`,
+          width,
+          area,
+          moment
+        );
+      }
+    );
+  }
+}
+
+class TubeCrossSection extends CrossSection {
+  constructor() {
+    super(0, 'Hollow Tube', 'Tube');
+  }
+
+  public override createShapes(): Shape[] {
+    return Array.from(
+      { length: CrossSection.WIDTHS.length },
+      (_, sizeIndex) => {
+        const width = CrossSection.WIDTHS[sizeIndex];
+        const thickness = Math.max(width / 20, 2);
+        const area =
+          (Utility.sqr(width) - Utility.sqr(width - 2 * thickness)) * 1e-6;
+        const moment =
+          ((Utility.p4(width) - Utility.p4(width - 2 * thickness)) / 12) *
+          1e-12;
+        return Shape.createHollowTube(
+          this,
+          sizeIndex,
+          `${width}x${width}x${thickness}`,
+          width,
+          area,
+          moment,
+          thickness
+        );
+      }
+    );
+  }
+}
+
+export class Shape {
+  readonly inverseRadiusOfGyration: number;
+
+  private constructor(
+    readonly section: CrossSection,
+    readonly sizeIndex: number,
+    readonly name: string,
+    readonly width: number,
+    readonly area: number,
+    readonly moment: number,
+    readonly thickness: number
+  ) {
+    this.inverseRadiusOfGyration = Math.sqrt(area / moment);
+  }
+
+  public static createSolidBar(
+    section: CrossSection,
+    sizeIndex: number,
+    name: string,
+    width: number,
+    area: number,
+    moment: number
+  ): Shape {
+    return new Shape(section, sizeIndex, name, width, area, moment, width);
+  }
+
+  public static createHollowTube(
+    section: CrossSection,
+    sizeIndex: number,
+    name: string,
+    width: number,
+    area: number,
+    moment: number,
+    thickness: number
+  ): Shape {
+    return new Shape(section, sizeIndex, name, width, area, moment, thickness);
+  }
+
+  public toString(): string {
+    return this.name + ' mm ' + this.section;
+  }
+}
+
+class Inventory {
+  static readonly CROSS_SECTIONS: CrossSection[] = [
+    new BarCrossSection(),
+    new TubeCrossSection(),
+  ];
+
+  static readonly MATERIALS: Material[] = [
+    new Material(0, 'Carbon Steel', 'CS', 200000000, 250000, 7850, [4.3, 6.3]),
+    new Material(
+      1,
+      'High-Strength Low-Alloy Steel',
+      'HSS',
+      200000000,
+      345000,
+      7850,
+      [5.6, 7.0]
+    ),
+    new Material(
+      2,
+      'Quenched & Tempered Steel',
+      'QTS',
+      200000000,
+      485000,
+      7850,
+      [6.0, 7.7]
+    ),
+  ];
+
+  static readonly SHAPES: Shape[][] = Inventory.CROSS_SECTIONS.map((cs) =>
+    cs.createShapes()
+  );
+}
+
+/** An identifier for a Material/Size/Section triple */
+export class StockId {
+  constructor(public materialIndex: number, public sectionIndex: number, public sizeIndex: number) { }
+
+  public get key() {
+    return `StockId:${this.materialIndex}-${this.sectionIndex}-${this.sizeIndex}`;
+  }
+}
+
+enum AllowedShapeChange {
+  DECREASE_SIZE,
+  INCREASE_SIZE,
+}
+
+@Injectable({ providedIn: 'root' })
+export class InventoryService {
+  static readonly COMPRESSION_RESISTANCE_FACTOR: number = 0.9;
+
+  static readonly TENSION_RESISTANCE_FACTOR: number = 0.95;
+
+  static readonly ORDERING_FEE: number = 1000.0;
+
+  static readonly CONNECTION_FEE: number = 400.0;
+
+  public get materials(): Material[] {
+    return Inventory.MATERIALS;
+  }
+
+  public get crossSections(): CrossSection[] {
+    return Inventory.CROSS_SECTIONS;
+  }
+
+  public getShapes(sectionIndex: number): Shape[] {
+    return Inventory.SHAPES[sectionIndex];
+  }
+
+  public getShapeCount(sectionIndex: number): number {
+    return Inventory.SHAPES[sectionIndex].length;
+  }
+
+  public getShape(sectionIndex: number, sizeIndex: number) {
+    return Inventory.SHAPES[sectionIndex][sizeIndex];
+  }
+
+  public getShapeWithSizeIncrement(shape: Shape, increment: number) {
+    const sectionIndex = shape.section.index;
+    const newSizeIndex = Math.min(
+      Inventory.SHAPES[sectionIndex].length - 1,
+      Math.max(0, shape.sizeIndex + increment)
+    );
+    return Inventory.SHAPES[sectionIndex][newSizeIndex];
+  }
+
+  public compressiveStrength(
+    material: Material,
+    shape: Shape,
+    length: number
+  ): number {
+    const fy = material.fy;
+    const area = shape.area;
+    const e = material.e;
+    const moment = shape.moment;
+    const lambda = (length * length * fy * area) / (9.8696044 * e * moment);
+    return lambda <= 2.25
+      ? InventoryService.COMPRESSION_RESISTANCE_FACTOR *
+      Math.pow(0.66, lambda) *
+      fy *
+      area
+      : (InventoryService.COMPRESSION_RESISTANCE_FACTOR * 0.88 * fy * area) /
+      lambda;
+  }
+
+  public getAllowedShapeSizeChanges(shape: Shape): Set<AllowedShapeChange> {
+    const result = new Set<AllowedShapeChange>();
+    if (shape.sizeIndex > 0) {
+      result.add(AllowedShapeChange.DECREASE_SIZE);
+    }
+    if (shape.sizeIndex < Inventory.SHAPES[shape.section.index].length - 1) {
+      result.add(AllowedShapeChange.INCREASE_SIZE);
+    }
+    return result;
+  }
+}

@@ -1,0 +1,53 @@
+.jqx-button {
+  padding: 1px;
+  margin: 0;
+}
+
+.jqx-toolbar {
+  border: none;
+}
+
+.button-icon {
+  margin: 0;
+  padding: 0;
+}
+
+// Grid layout
+
+.top-view {
+  display: grid;
+  grid-template-columns: 80% 20%;
+  grid-template-rows: min-content min-content auto;
+  height: 100vh;
+}
+
+.menus {
+  grid-row: 1;
+  grid-column: 1 / 3;
+}
+
+.toolbar-wrapper {
+  grid-row: 2;
+  grid-column: 1 / 3;
+  
+  width: 100%;
+  border: 1px solid;
+  border-color: rgb(197, 197, 197);
+  border-radius: 3px;
+  margin-top: -1px;
+}
+
+.drafting-panel {
+  grid-row: 3;
+  grid-column: 1;
+
+  height: 100%;
+}
+
+.member-table {
+  grid-row: 3;
+  grid-column: 2;
+  border-left: solid;
+  border-left-width: 1px;
+  border-left-color: rgb(197, 197, 197);
+}

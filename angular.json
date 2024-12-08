@@ -32,6 +32,7 @@
               }
             ],
             "styles": [
+              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -91,6 +92,7 @@
               }
             ],
             "styles": [
+              "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css",
               "src/styles.scss"
             ],
             "scripts": []
@@ -98,5 +100,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "12467653-a7c3-40d2-91eb-6565a04120fe"
   }
 }

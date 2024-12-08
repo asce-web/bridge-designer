@@ -1,0 +1,23 @@
+.wrapper {
+  // No scrollbars.
+  overflow: hidden;
+  // Setup for cursor overlay.
+  position: relative;
+  height: 100%;
+}
+
+.view {
+  // Setup for cursor overlay.
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 0;
+}
+
+.cursor {
+  // Cursor overlay.
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+}

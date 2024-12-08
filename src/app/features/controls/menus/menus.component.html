@@ -1,0 +1,90 @@
+<jqxMenu 
+  #mainMenu
+  [width]="'100%'"
+  [height]="30"
+  (onItemclick)="handleItemClick($event)">
+  <ul>
+    <li>
+      File
+      <ul style="width: 200px">
+        <li id="new"><img class="menu-icon" src="img/new.png"><a href="#">New design...</a></li>
+        <li type='separator'></li>
+        <li id="open"><img class="menu-icon" src="img/open.png"><a href="#">Open...</a></li>
+        <li id="save"><img class="menu-icon" src="img/save.png"><a href="#">Save</a></li>
+        <li id="saveAs"><img class="menu-icon" src="img/saveas.gif"><a href="#">Save as...</a></li>
+        <li type='separator'></li>
+        <li id="loadSample"><img class="menu-icon" src="img/loadsample.png"><a href="#">Open sample design...</a></li>
+        <li id="loadTemplate"><img class="menu-icon" src="img/loadtemplate.png"><a href="#">Load template...</a></li>
+        <li type='separator'></li>
+        <li id="print"><img class="menu-icon" src="img/print.png"><a href="#">Print...</a></li>
+      </ul>
+    </li>
+    <li>Edit
+      <ul>
+        <li id="selectAll"><img class="menu-icon" src="img/selectall.png"><a href="#">Select all</a></li>
+        <li id="delete"><img class="menu-icon" src="img/delete.png"><a href="#">Delete selection</a></li>
+        <li type='separator'></li>
+        <li id="undo"><img class="menu-icon" src="img/undo.png"><a href="#">Undo</a></li>
+        <li id="redo"><img class="menu-icon" src="img/redo.png"><a href="#">Redo</a></li>
+        <li type='separator'></li>
+        <li id="back"><img class="menu-icon" src="img/left.png"><a href="#">Go back</a></li>
+        <li id="forward"><img class="menu-icon" src="img/right.png"><a href="#">Go forward</a></li>
+        <li id="goToIteration"><img class="menu-icon" src="img/goto.png"><a href="#">Go to iteration...</a></li>
+      </ul>
+    </li>
+    <li>View
+      <ul style="width: 200px">
+        <li id="tools"><span class="menu-mark"></span><img class="menu-icon" src="img/tools.png"><a href="#">Tools</a></li>
+        <li id="animationControls"><span class="menu-mark"></span><img class="menu-icon" src="img/animationctls.png"><a href="#">Animation controls</a></li>
+        <li id="memberList"><span class="menu-mark"></span><img class="menu-icon" src="img/memtable.png"><a href="#">Member list</a></li>
+        <li id="rulers"><span class="menu-mark"></span><img class="menu-icon" src="img/rulers.png"><a href="#">Rulers</a></li>
+        <li id="titleBlock"><span class="menu-mark"></span><img class="menu-icon" src="img/titleblk.png"><a href="#">Title block</a></li>
+        <li id="memberNumbers"><span class="menu-mark"></span><img class="menu-icon" src="img/numbers.png"><a href="#">Member numbers</a></li>
+        <li id="guides"><span class="menu-mark"></span><img class="menu-icon" src="img/guides.png"><a href="#">Guides</a></li>
+        <li id="template"><span class="menu-mark"></span><img class="menu-icon" src="img/template.png"><a href="#">Template</a></li>
+        <li type='separator'></li>
+        <li id="coarseGrid"><span class="menu-mark">✔</span><img class="menu-icon" src="img/coarsegrid.png"><a href="#">Coarse grid</a></li>
+        <li id="mediumGrid"><span class="menu-mark"></span><img class="menu-icon" src="img/mediumgrid.png"><a href="#">Medium grid</a></li>
+        <li id="fineGrid"><span class="menu-mark"></span><img class="menu-icon" src="img/finegrid.png"><a href="#">Fine grid</a></li>
+      </ul>
+    </li>
+    <li>Tools
+      <ul>
+        <li id="joints"><span class="menu-mark">✔</span><img class="menu-icon" src="img/joint.png"><a href="#">Joints</a></li>
+        <li id="members"><span class="menu-mark"></span><img class="menu-icon" src="img/member.png"><a href="#">Members</a></li>
+        <li id="select"><span class="menu-mark"></span><img class="menu-icon" src="img/arrow.png"><a href="#">Select</a></li>
+        <li id="erase"><span #erase class="menu-mark"></span><img class="menu-icon" src="img/eraser.png"><a href="#">Erase</a></li>
+      </ul>
+    </li>
+    <li>Test
+      <ul style="width: 240px;">
+        <li id="drawingBoard"><span class="menu-mark">✔</span><img class="menu-icon" src="img/design.png"><a href="#">Drawing board</a></li>
+        <li id="loadTest"><span class="menu-mark"></span><img class="menu-icon" src="img/loadtest.png"><a href="#">Load test</a></li>
+        <li type='separator'></li>
+        <li id="animation"><span class="menu-mark"></span><img class="menu-icon" src="img/animate.png"><a href="#">Show animation</a></li>
+        <li id="legacyGraphics"><span class="menu-mark"></span><img class="menu-icon" src="img/legacygraphics.png"><a href="#">Use old style graphics</a></li>
+        <li type='separator'></li>
+        <li id="autoCorrect"><span class="menu-mark"></span><img class="menu-icon" src="img/wrench.png"><a href="#">Auto-correct errors</a></li>
+      </ul>
+    </li>
+    <li>Report
+      <ul style="width: 200px;">
+        <li id="costCalculations"><img class="menu-icon" src="img/calculator.png"><a href="#">Cost calculations</a></li>
+        <li id="loadTestResults"><img class="menu-icon" src="img/loadtestreport.png"><a href="#">Load test results</a></li>
+      </ul>
+    </li>
+    <li>Help
+      <ul style="width: 240px;">
+        <li id="howTo"><img class="menu-icon" src="img/help.png"><a href="#">How to design a bridge...</a></li>
+        <li id="designWindow"><img class="menu-icon" src="img/bridgedesignwindow.png"><a href="#">The bridge design window...</a></li>
+        <li type='separator'></li>
+        <li id="topics"><a href="#">Help topics...</a></li>
+        <li id="searchHelp"><a href="#">Search help...</a></li>
+        <li type='separator'></li>
+        <li id="tip"><img class="menu-icon" src="img/tipicon.png"><a href="#">Tip of the day...</a></li>
+        <li id="about"><img class="menu-icon" src="img/appicon.png"><a href="#">About Bridge Designer...</a></li>
+        <li id="whatsNew"><img class="menu-icon" src="img/plus.png"><a href="#">What's new?</a></li>
+      </ul>
+    </li>
+  </ul>
+</jqxMenu>

@@ -1,0 +1,35 @@
+<div [class]="{ 'selectors': true, 'vertical': vertical }">
+  <jqxDropDownList
+    #materialSelector
+    [width]="materialSelectorWidth"
+    [height]="height"
+    [source]="inventoryService.materials"
+    [displayMember]="'name'"
+    [valueMember]="'shortName'"
+    [selectedIndex]="0"
+    [autoDropDownHeight]="true"
+    (onChange)="handleMaterialSelectorOnChange($event)"
+  ></jqxDropDownList>
+  <jqxDropDownList
+    #crossSectionSelector
+    [width]="crossSectionSelectorWidth"
+    [height]="height"
+    [source]="inventoryService.crossSections"
+    [displayMember]="'name'"
+    [valueMember]="'shortName'"
+    [selectedIndex]="0"
+    [autoDropDownHeight]="true"
+    (onChange)="handleCrossSectionSelectorOnChange($event)"
+  ></jqxDropDownList>
+  <jqxDropDownList
+    #sizeSelector
+    [width]="sizeSelectorWidth"
+    [height]="height"
+    [source]="inventoryService.getShapes(0)"
+    [displayMember]="'name'"
+    [valueMember]="'name'"
+    [selectedIndex]="0"
+    [dropDownHeight]="600"
+    (onChange)="handleSizeSelectorOnChange($event)"
+  ></jqxDropDownList>
+</div>

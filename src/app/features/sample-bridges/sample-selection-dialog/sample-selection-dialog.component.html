@@ -1,0 +1,58 @@
+<jqxWindow
+  #dialog
+  [isModal]="true"
+  [autoOpen]="false"
+  [width]="650"
+  [height]="600"
+  (onOpen)="dialogOpenHandler($event)"
+>
+  <div #header class="header">Load a sample design</div>
+  <div #content class="content">
+    <div class="top-row">
+      <div class="select-label">Select a sample:</div>
+    </div>
+    <div class="left-column">
+      <jqxListBox
+        #sampleList
+        style="margin-left: 8px"
+        [width]="'500px'"
+        [source]="source"
+        [selectedIndex]="0"
+        [displayMember]="'description'"
+        (onSelect)="selectHandler($event)"
+      >
+      </jqxListBox>
+      <div class="dialog-topic">Preview:</div>
+      <canvas #preview class="preview" width="498" height="298"> </canvas>
+    </div>
+    <div class="right-column">
+      <fieldset class="design-tip">
+        <legend class="dialog-topic">Design tip:</legend>
+        <div>
+          <img class="tip-icon" src="img/tipicon.png" /> You can use the up and
+          down arrow keys to scroll through the list while previewing each truss
+          below.
+        </div>
+      </fieldset>
+      <div>
+        <jqxButton
+          #cancelButton
+          id="cancelButton"
+          (onClick)="dialog.close()"
+          style="float: right; margin-top: 40px; margin-right: 8px"
+          [width]="'110px'"
+          >Cancel</jqxButton
+        >
+      </div>
+      <div>
+        <jqxButton
+          #okButton
+          (onClick)="okClickHandler()"
+          style="float: right; margin-top: 16px; margin-right: 8px"
+          [width]="'110px'"
+          >OK</jqxButton
+        >
+      </div>
+    </div>
+  </div>
+</jqxWindow>
