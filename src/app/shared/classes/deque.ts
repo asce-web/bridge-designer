@@ -1,3 +1,15 @@
+/**
+ * Simple deque.
+ *
+ * Maintains two buffers with index structure for the deque's data like this:
+ *
+ *               left                 |                 right
+ * [left.length-1 ... left.base ... 0][0 ... right.base ... right.length-1]
+ * |========= used ===========|--- unused ---|============ used ==========|
+ *
+ * Either both buffers are fully used (base === 0), or one is empty
+ * (length === 0) and the other is at least half used.
+ */
 export class Deque<T> {
   private readonly right: Side<T> = new Side();
   private readonly left: Side<T> = new Side();
@@ -17,9 +29,13 @@ export class Deque<T> {
   public popLeft(): T | undefined {
     return this.left.pop(this.right);
   }
-  
+
   public clear(): void {
-    this.left.data.length = this.right.data.length = this.left.base = this.right.base = 0;
+    this.left.data.length =
+      this.right.data.length =
+      this.left.base =
+      this.right.base =
+        0;
   }
 
   public get length(): number {
@@ -29,6 +45,23 @@ export class Deque<T> {
   public get fullness(): number {
     const den = this.left.data.length + this.right.data.length;
     return den > 0 ? (this.left.length + this.right.length) / den : 1;
+  }
+
+  public copyTo(list: T[], limit: number = -1): T[] {
+    list.length = 0;
+    for (var i: number = this.left.data.length - 1; i >= this.left.base; --i) {
+      if (limit >= 0 && limit-- <= 0) {
+        return list;
+      }
+      list.push(this.left.data[i]);
+    }
+    for (var i: number = this.right.base; i < this.right.data.length; ++i) {
+      if (limit >= 0 && limit-- <= 0) {
+        return list;
+      }
+      list.push(this.right.data[i]);
+    }
+    return list;
   }
 }
 
@@ -41,7 +74,7 @@ class Side<T> {
 
   push(item: T, otherSide: Side<T>): void {
     if (otherSide.base > 0) {
-      otherSide.data[--this.base] = item;
+      otherSide.data[--otherSide.base] = item;
     } else {
       this.data.push(item);
     }
@@ -67,4 +100,3 @@ class Side<T> {
     return popped;
   }
 }
-

@@ -4,13 +4,13 @@ import {
   Component,
   ViewChild,
 } from '@angular/core';
-import { jqxToolBarComponent, jqxToolBarModule } from 'jqwidgets-ng/jqxtoolbar';
 import { jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
+import { jqxToolBarComponent, jqxToolBarModule } from 'jqwidgets-ng/jqxtoolbar';
 import { WidgetHelper } from '../../../shared/classes/widget-helper';
-import { UiStateService } from '../../drafting/services/ui-state.service';
-import { EventBrokerService } from '../../../shared/services/event-broker.service';
 import { InventorySelectorComponent } from '../../../shared/components/inventory-selector/inventory-selector.component';
 import { ComponentService } from '../../../shared/services/component.service';
+import { EventBrokerService } from '../../../shared/services/event-broker.service';
+import { UiStateService } from '../../drafting/services/ui-state.service';
 
 const enum Tools {
   INVENTORY_SELECTOR,
@@ -28,11 +28,7 @@ const enum Tools {
 @Component({
   selector: 'toolbar-b',
   standalone: true,
-  imports: [
-    InventorySelectorComponent,
-    jqxToolBarModule,
-    jqxDropDownListModule,
-  ],
+  imports: [jqxToolBarModule, jqxDropDownListModule],
   templateUrl: './toolbar-b.component.html',
   styleUrl: './toolbar-b.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,7 +45,7 @@ export class ToolbarBComponent implements AfterViewInit {
   constructor(
     private readonly uiStateService: UiStateService,
     private readonly eventBrokerService: EventBrokerService,
-    private readonly componentService: ComponentService,
+    private readonly componentService: ComponentService
   ) {
     this.initTools = this.initTools.bind(this);
   }
@@ -129,14 +125,30 @@ export class ToolbarBComponent implements AfterViewInit {
         break;
     }
     return { minimizable: false };
-  };
+  }
 
   ngAfterViewInit(): void {
     const tools = this.toolbar.getTools();
-    this.uiStateService.registerSelectButtons(tools, [Tools.COARSE_GRID, Tools.MEDIUM_GRID, Tools.FINE_GRID], this.eventBrokerService.selectGridDensity);
-    this.uiStateService.registerToggleButton(tools[Tools.MEMBER_TABLE], this.eventBrokerService.toggleMemberTable);
-    this.uiStateService.registerToggleButton(tools[Tools.MEMBER_NUMBERS], this.eventBrokerService.toggleMemberNumbers);
-    this.uiStateService.registerToggleButton(tools[Tools.GUIDES], this.eventBrokerService.toggleGuides);
-    this.uiStateService.registerToggleButton(tools[Tools.TEMPLATE], this.eventBrokerService.toggleTemplate);
+    this.uiStateService.registerSelectButtons(
+      tools,
+      [Tools.COARSE_GRID, Tools.MEDIUM_GRID, Tools.FINE_GRID],
+      this.eventBrokerService.gridDensitySelection
+    );
+    this.uiStateService.registerToggleButton(
+      tools[Tools.MEMBER_TABLE],
+      this.eventBrokerService.memberTableToggle
+    );
+    this.uiStateService.registerToggleButton(
+      tools[Tools.MEMBER_NUMBERS],
+      this.eventBrokerService.memberNumbersToggle
+    );
+    this.uiStateService.registerToggleButton(
+      tools[Tools.GUIDES],
+      this.eventBrokerService.guidesToggle
+    );
+    this.uiStateService.registerToggleButton(
+      tools[Tools.TEMPLATE],
+      this.eventBrokerService.templateToggle
+    );
   }
 }

@@ -5,16 +5,20 @@ import {
   Input,
   ViewChild,
 } from '@angular/core';
-import { jqxDropDownListComponent, jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
+import {
+  jqxDropDownListComponent,
+  jqxDropDownListModule,
+} from 'jqwidgets-ng/jqxdropdownlist';
+import {
+  EventBrokerService,
+  EventOrigin,
+} from '../../services/event-broker.service';
 import { InventoryService, StockId } from '../../services/inventory.service';
-import { EventBrokerService, EventOrigin } from '../../services/event-broker.service';
 
 @Component({
   selector: 'inventory-selector',
   standalone: true,
-  imports: [
-    jqxDropDownListModule,
-  ],
+  imports: [jqxDropDownListModule],
   templateUrl: './inventory-selector.component.html',
   styleUrl: './inventory-selector.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -31,8 +35,8 @@ export class InventorySelectorComponent implements AfterViewInit {
 
   constructor(
     readonly inventoryService: InventoryService,
-    private readonly eventBrokerService: EventBrokerService,
-  ) { }
+    private readonly eventBrokerService: EventBrokerService
+  ) {}
 
   get crossSectionSelectorWidth(): number {
     return this.vertical ? 206 : 106;
@@ -65,22 +69,25 @@ export class InventorySelectorComponent implements AfterViewInit {
   }
 
   private sendStockId(): void {
-    this.eventBrokerService.changeInventorySelection.next({
+    this.eventBrokerService.inventorySelectionChange.next({
       source: this.eventOrigin,
       data: new StockId(
         this.materialSelector.selectedIndex(),
         this.crossSectionSelector.selectedIndex(),
-        this.sizeSelector.selectedIndex()),
+        this.sizeSelector.selectedIndex()
+      ),
     });
   }
 
   ngAfterViewInit(): void {
     const that = this;
-    this.eventBrokerService.loadInventorySelectorRequest.subscribe(eventInfo => {
-      const stockId = eventInfo.data as StockId;
-      that.materialSelector.selectIndex(stockId.materialIndex);
-      that.crossSectionSelector.selectIndex(stockId.sectionIndex);
-      that.sizeSelector.selectIndex(stockId.sizeIndex);
-    });
+    this.eventBrokerService.loadInventorySelectorRequest.subscribe(
+      (eventInfo) => {
+        const stockId = eventInfo.data as StockId;
+        that.materialSelector.selectIndex(stockId.materialIndex);
+        that.crossSectionSelector.selectIndex(stockId.sectionIndex);
+        that.sizeSelector.selectIndex(stockId.sizeIndex);
+      }
+    );
   }
 }

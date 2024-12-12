@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Joint } from '../../../shared/classes/joint.model';
-import { HotElement } from './hot-element.service';
 import { Rectangle2D } from '../../../shared/classes/graphics';
+import { Joint } from '../../../shared/classes/joint.model';
 import { DesignJointRenderingService } from '../../../shared/services/design-joint-rendering.service';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
+import { HotElement } from './hot-element.service';
 
 @Injectable({providedIn: 'root'})
 export class MemberCursorService {
@@ -52,9 +52,8 @@ export class MemberCursorService {
     const savedStrokeStyle = ctx.strokeStyle;
     const savedLineDash = ctx.getLineDash();
 
-    // Drag rubberband.
     ctx.strokeStyle = 'blue';
-    ctx.setLineDash([4, 4, 16, 4]);
+    ctx.setLineDash([4, 4, 16, 4]); // centerline dash
     if (hotElement instanceof Joint) {
       this.cursorX = this.viewportTransform.worldToViewportX(hotElement.x);
       this.cursorY = this.viewportTransform.worldToViewportY(hotElement.y);
@@ -76,9 +75,11 @@ export class MemberCursorService {
     ctx.strokeStyle = savedStrokeStyle;
   }
 
+  private readonly cleared = Rectangle2D.createEmpty();
+
   private erase(): void {
     const pad = DesignJointRenderingService.JOINT_RADIUS_VIEWPORT;
-    const cleared = Rectangle2D.fromDiagonal(this.anchorX, this.anchorY, this.cursorX, this.cursorY).pad(pad, pad);
-    this.ctx!.clearRect(cleared.x, cleared.y, cleared.width, cleared.height);
+    this.cleared.setFromDiagonal(this.anchorX, this.anchorY, this.cursorX, this.cursorY).pad(pad, pad);
+    this.ctx?.clearRect(this.cleared.x, this.cleared.y, this.cleared.width, this.cleared.height);
   }
 }

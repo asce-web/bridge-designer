@@ -3,5 +3,6 @@
     "angular-*": {
       "externalTemplate": true
     }
-  }
+  },
+  "prettier.printWidth": 100
 }

@@ -1,20 +1,23 @@
 <jqxWindow
   #dropdown
-  [isModal]="true"
+  [isModal]="false"
   [autoOpen]="false"
   [draggable]="false"
+  [keyboardNavigation]="false"
   [resizable]="false"
-  [width]="200"
+  [width]="300"
   [height]="600"
   (onOpen)="handleDropdownOpen($event)"
+  (onClose)="handleDropdownClose($event)"
 >
   <jqxListBox
     #listBox
-    [width]="200"
+    [width]="290"
     [height]="600"
-    [source]="items"
-    (onBindinxComplete)="handleBindingComplete($event)"
-    (onChange)="handleChange($event)"
+    [autoHeight]="true"
+    [displayMember]="'description'"
+    (onSelect)="selectHandler($event)"
+    style="border-style: none;"
   >
   </jqxListBox>
 </jqxWindow>

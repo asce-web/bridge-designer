@@ -1,7 +1,7 @@
-import { Material, Shape, StockId } from "../services/inventory.service";
-import { Editable } from "./editing";
-import { Geometry } from "./graphics";
-import { Joint } from "./joint.model";
+import { Material, Shape, StockId } from '../services/inventory.service';
+import { Editable } from './editing';
+import { Geometry } from './graphics';
+import { Joint } from './joint.model';
 
 export class Member implements Editable {
   constructor(
@@ -10,7 +10,11 @@ export class Member implements Editable {
     public b: Joint,
     public material: Material,
     public shape: Shape
-  ) { }
+  ) {
+    if (a === b) {
+      throw new Error(`Single joint member: ${a.number}`);
+    }
+  }
 
   public get number(): number {
     return this.index + 1;
@@ -21,7 +25,11 @@ export class Member implements Editable {
   }
 
   public get stockId(): StockId {
-    return new StockId(this.material.index, this.shape.section.index, this.shape.sizeIndex);
+    return new StockId(
+      this.material.index,
+      this.shape.section.index,
+      this.shape.sizeIndex
+    );
   }
 
   public get slenderness(): number {
@@ -42,6 +50,10 @@ export class Member implements Editable {
 
   public hasJoints(a: Joint, b: Joint): boolean {
     return (a === this.a && b === this.b) || (b === this.a && a === this.b);
+  }
+
+  public hasJoint(joint: Joint): boolean {
+    return this.a === joint || this.b === joint;
   }
 
   swapContents(other: Member): void {

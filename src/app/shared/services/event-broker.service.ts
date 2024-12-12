@@ -6,28 +6,32 @@ export const enum EventOrigin {
   MENU,
   SAMPLE_DIALOG,
   TOOLBAR,
+  UNDO_REDO_MANAGER,
 }
 
-export type EventInfo = { source: EventOrigin, data?: any };
+export type EventInfo = { source: EventOrigin; data?: any };
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class EventBrokerService {
-  public readonly changeInventorySelection: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly loadBridgeRequest: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly loadInventorySelectorRequest: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly loadSampleRequest: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly selectDesignMode: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly selectEditMode: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly selectGridDensity: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleAnimation: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleAnimationControls: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleAutoCorrect: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleGuides: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleLegacyGraphics: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleMemberNumbers: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleMemberTable: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleRulers: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleTemplate: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleTitleBlock: Subject<EventInfo> = new Subject<EventInfo>();
-  public readonly toggleTools: Subject<EventInfo> = new Subject<EventInfo>();
+  public readonly animationControlsToggle = new Subject<EventInfo>();
+  public readonly animationToggle = new Subject<EventInfo>();
+  public readonly autoCorrectToggle = new Subject<EventInfo>();
+  public readonly designModeSelection = new Subject<EventInfo>();
+  public readonly editModeSelection = new Subject<EventInfo>();
+  public readonly gridDensitySelection = new Subject<EventInfo>();
+  public readonly guidesToggle = new Subject<EventInfo>();
+  public readonly inventorySelectionChange = new Subject<EventInfo>();
+  public readonly legacyGraphicsToggle = new Subject<EventInfo>();
+  public readonly loadBridgeRequest = new Subject<EventInfo>();
+  public readonly loadInventorySelectorRequest = new Subject<EventInfo>();
+  public readonly loadSampleRequest = new Subject<EventInfo>();
+  public readonly memberNumbersToggle = new Subject<EventInfo>();
+  public readonly memberTableToggle = new Subject<EventInfo>();
+  public readonly redoRequest = new Subject<EventInfo>();
+  public readonly rulersToggle = new Subject<EventInfo>();
+  public readonly templateToggle = new Subject<EventInfo>();
+  public readonly titleBlockToggle = new Subject<EventInfo>();
+  public readonly toolsToggle = new Subject<EventInfo>();
+  public readonly undoManagerStateChange = new Subject<EventInfo>();
+  public readonly undoRequest = new Subject<EventInfo>();
 }

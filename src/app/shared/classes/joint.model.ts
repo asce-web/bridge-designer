@@ -1,14 +1,14 @@
-import { Geometry, Point2DInterface } from "../classes/graphics";
-import { Editable } from "./editing";
+import { Geometry, Point2DInterface } from '../classes/graphics';
+import { Editable } from './editing';
 
 /** A point in the world where members join. */
 export class Joint implements Point2DInterface, Editable {
   constructor(
-    public index: number, 
-    public x: number, 
-    public y: number, 
-    public isFixed: boolean,
-  ) { }
+    public index: number,
+    public x: number,
+    public y: number,
+    public isFixed: boolean
+  ) {}
 
   public get number() {
     return this.index + 1;

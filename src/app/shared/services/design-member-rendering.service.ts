@@ -1,36 +1,54 @@
 import { Injectable } from '@angular/core';
-import { Graphics, Point2D, Point2DInterface, Rectangle2D } from '../classes/graphics';
+import {
+  Graphics,
+  Point2D,
+  Point2DInterface,
+  Rectangle2D,
+} from '../classes/graphics';
 import { Member } from '../classes/member.model';
+import { DesignJointRenderingService } from './design-joint-rendering.service';
 import { InventoryService, Shape } from './inventory.service';
 import { ViewportTransform2D } from './viewport-transform.service';
-import { DesignJointRenderingService } from './design-joint-rendering.service';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class DesignMemberRenderingService {
   // Member color arrays are indexed by material.
-  public static readonly NORMAL_COLORS: string[] = DesignMemberRenderingService.createColors(0, 0);
-  public static readonly SELECTED_COLORS: string[] = DesignMemberRenderingService.createColors(0, 0.9);
-  public static readonly HOT_COLORS: string[] = DesignMemberRenderingService.createColors(0.3, 0);
-  public static readonly HOT_SELECTED_COLORS: string[] = DesignMemberRenderingService.createColors(0.3, 0.9);
+  public static readonly NORMAL_COLORS: string[] =
+    DesignMemberRenderingService.createColors(0, 0);
+  public static readonly SELECTED_COLORS: string[] =
+    DesignMemberRenderingService.createColors(0, 0.9);
+  public static readonly HOT_COLORS: string[] =
+    DesignMemberRenderingService.createColors(0.3, 0);
+  public static readonly HOT_SELECTED_COLORS: string[] =
+    DesignMemberRenderingService.createColors(0.3, 0.9);
 
-  public static readonly INNER_COLORS: string[] = DesignMemberRenderingService.createInnerColors(0, 0);
-  public static readonly SELECTED_INNER_COLORS: string[] = DesignMemberRenderingService.createInnerColors(0, 0.9);
-  public static readonly HOT_INNER_COLORS: string[] = DesignMemberRenderingService.createInnerColors(0.3, 0);
-  public static readonly HOT_SELECTED_INNER_COLORS: string[] = DesignMemberRenderingService.createInnerColors(0.3, 0.9);
+  public static readonly INNER_COLORS: string[] =
+    DesignMemberRenderingService.createInnerColors(0, 0);
+  public static readonly SELECTED_INNER_COLORS: string[] =
+    DesignMemberRenderingService.createInnerColors(0, 0.9);
+  public static readonly HOT_INNER_COLORS: string[] =
+    DesignMemberRenderingService.createInnerColors(0.3, 0);
+  public static readonly HOT_SELECTED_INNER_COLORS: string[] =
+    DesignMemberRenderingService.createInnerColors(0.3, 0.9);
 
   public static readonly CENTER_LINE_DASH: number[] = [10, 4, 4, 4];
 
-  private readonly lineWidths: { outer: number, inner: number; }[];
+  private readonly lineWidths: { outer: number; inner: number }[];
 
   private readonly pointA: Point2D = new Point2D();
   private readonly pointB: Point2D = new Point2D();
 
-  constructor(inventoryService: InventoryService, private readonly viewportTransform: ViewportTransform2D) {
+  constructor(
+    inventoryService: InventoryService,
+    private readonly viewportTransform: ViewportTransform2D
+  ) {
     const shapeCount = inventoryService.getShapeCount(0);
     this.lineWidths = new Array(shapeCount);
     for (var i = 0; i < shapeCount; ++i) {
       // Using section 0 depends on widths being same for all. Else tables would need to be 2d.
-      const outerWidth = DesignMemberRenderingService.getShapeStrokeWidth(inventoryService.getShape(0, i));
+      const outerWidth = DesignMemberRenderingService.getShapeStrokeWidth(
+        inventoryService.getShape(0, i)
+      );
       // Make sure of some outer color for thin tubes.
       var innerWidth = 0.6 * outerWidth;
       if (outerWidth - innerWidth < 2) {
@@ -45,7 +63,10 @@ export class DesignMemberRenderingService {
   }
 
   /** Create a set of member colors indexed by material with optional intensity and blueness modifications. */
-  private static createColors(intensification: number = 0, blueification: number = 0): string[] {
+  private static createColors(
+    intensification: number = 0,
+    blueification: number = 0
+  ): string[] {
     return [
       Graphics.computeColor(128, 128, 128, intensification, blueification),
       Graphics.computeColor(64, 64, 64, intensification, blueification),
@@ -54,7 +75,10 @@ export class DesignMemberRenderingService {
   }
 
   /** Create a set of colors used for the insides of tube cross-sections, indexed by material with optional intensity and blueness modifications. */
-  private static createInnerColors(intensification: number = 0, blueification: number = 0): string[] {
+  private static createInnerColors(
+    intensification: number = 0,
+    blueification: number = 0
+  ): string[] {
     return [
       Graphics.computeColor(192, 192, 192, intensification, blueification),
       Graphics.computeColor(128, 128, 128, intensification, blueification),
@@ -65,31 +89,60 @@ export class DesignMemberRenderingService {
   public render(
     ctx: CanvasRenderingContext2D,
     member: Member,
-    isSelected: boolean = false): void {
-    const outerColor = this.outerColorsFromSelectionState(isSelected)[member.material.index];
-    const innerColor = member.shape.section.shortName === 'Tube'
-      ? this.innerColorsFromSelectionState(isSelected)[member.shape.sizeIndex]
-      : undefined;
-    this.renderInWorldCoords(ctx, member.a, member.b, member.shape.sizeIndex, outerColor, innerColor);
+    isSelected: boolean = false
+  ): void {
+    const outerColor =
+      this.outerColorsFromSelectionState(isSelected)[member.material.index];
+    const innerColor =
+      member.shape.section.shortName === 'Tube'
+        ? this.innerColorsFromSelectionState(isSelected)[member.shape.sizeIndex]
+        : undefined;
+    this.renderInWorldCoords(
+      ctx,
+      member.a,
+      member.b,
+      member.shape.sizeIndex,
+      outerColor,
+      innerColor
+    );
   }
 
   public renderHot(
-    ctx: CanvasRenderingContext2D, member: Member,
-    isSelected: boolean = false): void {
-    const outerColor = this.hotOuterColorsFromSelectionState(isSelected)[member.material.index];
-    const innerColor = member.shape.section.shortName === 'Tube'
-      ? this.hotInnerColorsFromSelectionState(isSelected)[member.shape.sizeIndex]
-      : undefined;
-    this.renderInWorldCoords(ctx, member.a, member.b, member.shape.sizeIndex, outerColor, innerColor);
+    ctx: CanvasRenderingContext2D,
+    member: Member,
+    isSelected: boolean = false
+  ): void {
+    const outerColor =
+      this.hotOuterColorsFromSelectionState(isSelected)[member.material.index];
+    const innerColor =
+      member.shape.section.shortName === 'Tube'
+        ? this.hotInnerColorsFromSelectionState(isSelected)[
+            member.shape.sizeIndex
+          ]
+        : undefined;
+    this.renderInWorldCoords(
+      ctx,
+      member.a,
+      member.b,
+      member.shape.sizeIndex,
+      outerColor,
+      innerColor
+    );
   }
 
   public clear(ctx: CanvasRenderingContext2D, member: Member): void {
     this.viewportTransform.worldToViewportPoint(this.pointA, member.a);
     this.viewportTransform.worldToViewportPoint(this.pointB, member.b);
-    const pad = 2 * Math.max(
-      DesignMemberRenderingService.getShapeStrokeWidth(member.shape), 
-      DesignJointRenderingService.JOINT_RADIUS_VIEWPORT);
-    const toClear = Rectangle2D.fromDiagonalPoints(this.pointA, this.pointB).pad(pad, pad);
+    const pad =
+      2 *
+      Math.max(
+        DesignMemberRenderingService.getShapeStrokeWidth(member.shape),
+        DesignJointRenderingService.JOINT_RADIUS_VIEWPORT
+      );
+    const toClear = Rectangle2D.fromDiagonalPoints(
+      this.pointA,
+      this.pointB
+    ).pad(pad, pad);
     ctx.clearRect(toClear.x, toClear.y, toClear.width, toClear.height);
   }
 
@@ -122,14 +175,16 @@ export class DesignMemberRenderingService {
       : DesignMemberRenderingService.HOT_INNER_COLORS;
   }
 
-  private renderInWorldCoords(ctx: CanvasRenderingContext2D,
+  private renderInWorldCoords(
+    ctx: CanvasRenderingContext2D,
     a: Point2DInterface,
     b: Point2DInterface,
     sizeIndex: number,
     color: string,
     innerColor?: string,
     markColor?: string,
-    memberNumber?: number): void {
+    memberNumber?: number
+  ): void {
     this.viewportTransform.worldToViewportPoint(this.pointA, a);
     this.viewportTransform.worldToViewportPoint(this.pointB, b);
 
@@ -141,8 +196,9 @@ export class DesignMemberRenderingService {
       color,
       innerColor,
       markColor,
-      memberNumber);
-  };
+      memberNumber
+    );
+  }
 
   private renderInViewportCoords(
     ctx: CanvasRenderingContext2D,
@@ -152,13 +208,16 @@ export class DesignMemberRenderingService {
     color: string,
     innerColor?: string,
     markColor?: string,
-    memberNumber?: number): void {
+    memberNumber?: number
+  ): void {
     const savedStrokeStyle = ctx.strokeStyle;
     const savedLineWidth = ctx.lineWidth;
+    const savedLineCap = ctx.lineCap;
 
     ctx.strokeStyle = color;
     const lineWidths = this.lineWidths[sizeIndex];
     ctx.lineWidth = lineWidths.outer;
+    ctx.lineCap = 'round';
     ctx.beginPath();
     ctx.moveTo(a.x, a.y);
     ctx.lineTo(b.x, b.y);
@@ -173,6 +232,7 @@ export class DesignMemberRenderingService {
       ctx.stroke();
     }
 
+    ctx.lineCap = savedLineCap;
     ctx.lineWidth = savedLineWidth;
     ctx.strokeStyle = savedStrokeStyle;
   }

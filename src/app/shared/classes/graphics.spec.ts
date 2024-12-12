@@ -1,4 +1,10 @@
-import { Point2D, TaggedPoint2D, Rectangle2D, Geometry, Graphics } from "./graphics";
+import {
+  Geometry,
+  Graphics,
+  Point2D,
+  Rectangle2D,
+  TaggedPoint2D,
+} from './graphics';
 
 describe('Point2D', () => {
   it('should create point with default values', () => {
@@ -52,8 +58,8 @@ describe('Rectangle2D', () => {
     expect(rect.height).toBe(0);
   });
 
-  it('should create canonical rectangle from negative dimensions', () => {
-    const rect = Rectangle2D.createCanonical(10, 10, -20, -30);
+  it('should make canonical rectangle from negative dimensions', () => {
+    const rect = new Rectangle2D(10, 10, -20, -30).makeCanonical();
     expect(rect.x).toBe(-10);
     expect(rect.y).toBe(-20);
     expect(rect.width).toBe(20);
@@ -76,7 +82,7 @@ describe('Geometry', () => {
     const a = new Point2D(0, 0);
     const b = new Point2D(0, 0);
     expect(Geometry.areColocated2D(a, b)).toBe(true);
-    
+
     const c = new Point2D(1, 1);
     expect(Geometry.areColocated2D(a, c)).toBe(false);
     expect(Geometry.areColocated2D(a, c, 2)).toBe(true);
@@ -97,11 +103,7 @@ describe('Geometry', () => {
   });
 
   it('should calculate extent of points', () => {
-    const points = [
-      new Point2D(0, 0),
-      new Point2D(10, 0),
-      new Point2D(5, 5)
-    ];
+    const points = [new Point2D(0, 0), new Point2D(10, 0), new Point2D(5, 5)];
     const extent = Geometry.getExtent2D(points);
     expect(extent.x).toBe(0);
     expect(extent.y).toBe(0);

@@ -1,6 +1,6 @@
-import { DesignConditions } from "../services/design-conditions.service";
-import { Joint } from "./joint.model";
-import { Member } from "./member.model";
+import { DesignConditions } from '../services/design-conditions.service';
+import { Joint } from './joint.model';
+import { Member } from './member.model';
 
 export class BridgeModel {
   public readonly version = 2024;
@@ -13,7 +13,9 @@ export class BridgeModel {
 
   // TODO: Change this parameter to prescribed joints (LoD!).
   constructor(public designConditions: DesignConditions) {
-    designConditions.prescribedJoints.forEach(joint => this.joints.push(joint));
+    designConditions.prescribedJoints.forEach((joint) =>
+      this.joints.push(joint)
+    );
   }
 
   public getJointByNumber(n: number): Joint {
@@ -21,7 +23,7 @@ export class BridgeModel {
   }
 
   public getMember(a: Joint, b: Joint) {
-    this.members.find(member => member)
+    this.members.find((member) => member);
   }
 
   clear() {

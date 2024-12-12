@@ -1,6 +1,6 @@
-import { Deque } from "./deque";
+import { Deque } from './deque';
 
-describe ('Deque', () => {
+describe('Deque', () => {
   const deque = new Deque<number>();
 
   beforeEach(() => {
@@ -8,7 +8,7 @@ describe ('Deque', () => {
   });
 
   it('should have zero length when empty', () => {
-    expect(deque.length).toBe(0); 
+    expect(deque.length).toBe(0);
   });
 
   it('should act as a stack on the right side', () => {
@@ -84,5 +84,41 @@ describe ('Deque', () => {
       deque.pushLeft(value!);
       expect(deque.fullness).toBeGreaterThanOrEqual(0.5);
     }
+  });
+
+  it('should return an empty copy if empty', () => {
+    const copy = deque.copyTo([]);
+    expect(copy).toHaveSize(0);
+  });
+
+  it('should return a correct left side copy', () => {
+    deque.pushLeft(1);
+    deque.pushLeft(2);
+    deque.pushLeft(3);
+    deque.popRight();
+    const copy = deque.copyTo([]);
+    expect(copy).toEqual([3, 2]);
+  });
+
+  it('should return a correct right side copy', () => {
+    deque.pushRight(1);
+    deque.pushRight(2);
+    deque.pushRight(3);
+    deque.popLeft();
+    const copy = deque.copyTo([]);
+    expect(copy).toEqual([2, 3]);
+  });
+
+  it('should return a correct complex copy', () => {
+    deque.pushLeft(3);
+    deque.pushLeft(2);
+    deque.pushLeft(1);
+    deque.popRight();
+    deque.pushRight(4);
+    deque.pushRight(5);
+    deque.pushRight(6);
+    deque.popLeft();
+    const copy = deque.copyTo([]);
+    expect(copy).toEqual([2, 4, 5, 6]);
   });
 });

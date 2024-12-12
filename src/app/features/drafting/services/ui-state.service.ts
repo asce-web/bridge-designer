@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
 import { Subject } from 'rxjs';
+import { EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
 
 /** Container for state that affects multiple UI elements. */
 @Injectable({ providedIn: 'root' })

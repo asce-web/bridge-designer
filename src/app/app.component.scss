@@ -18,7 +18,7 @@
   display: grid;
   grid-template-columns: 80% 20%;
   grid-template-rows: min-content min-content auto;
-  height: 100vh;
+  height: 98vh; // Needed to avoid scrollbar in Chrome. Why?
 }
 
 .menus {
@@ -40,7 +40,6 @@
 .drafting-panel {
   grid-row: 3;
   grid-column: 1;
-
   height: 100%;
 }
 

@@ -1,16 +1,30 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, numberAttribute, Output, ViewChild } from '@angular/core';
-import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
-import { MouseEventDelegator } from './mouse-handler';
-import { CoordinateService } from '../services/coordinate.service';
-import { Point2D } from '../../../shared/classes/graphics';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  numberAttribute,
+  Output,
+  ViewChild,
+} from '@angular/core';
+import { Point2D, Rectangle2D } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
-import { ElementSelectionService } from '../services/element-selection.service';
-import { EventBrokerService, EventInfo } from '../../../shared/services/event-broker.service';
-import { HotElementService } from '../services/hot-element.service';
-import { ReticleCursorService } from '../services/reticle-cursor.service';
-import { MemberCursorService } from '../services/member-cursor.service';
+import {
+  EventBrokerService,
+  EventInfo
+} from '../../../shared/services/event-broker.service';
 import { InventorySelectionService } from '../../../shared/services/inventory-selection.service';
+import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
+import { CoordinateService } from '../services/coordinate.service';
+import { ElementSelectionService } from '../services/element-selection.service';
+import { HotElementService } from '../services/hot-element.service';
+import { MemberCursorService } from '../services/member-cursor.service';
+import { ReticleCursorService } from '../services/reticle-cursor.service';
+import { SelectCursorService } from '../services/select-cursor.service';
+import { MouseEventDelegator } from './mouse-handler';
 
 const enum StandardCursor {
   ARROW = 'default',
@@ -34,21 +48,24 @@ export class CursorOverlayComponent implements AfterViewInit {
 
   @Output() addJointRequest = new EventEmitter<Joint>();
   @Output() addMemberRequest = new EventEmitter<Member>();
+  @Output() deleteRequest = new EventEmitter<Joint | Member>();
 
   @ViewChild('cursorLayer') cursorLayer!: ElementRef<HTMLCanvasElement>;
 
-  private readonly mouseEventDelegator: MouseEventDelegator = new MouseEventDelegator();
+  private readonly mouseEventDelegator: MouseEventDelegator =
+    new MouseEventDelegator();
 
   constructor(
-    private readonly elementSelectionService: ElementSelectionService,
-    private readonly hotElementService: HotElementService,
     private readonly coordinateService: CoordinateService,
-    private readonly viewportTransform: ViewportTransform2D,
+    private readonly elementSelectionService: ElementSelectionService,
     private readonly eventBrokerService: EventBrokerService,
-    private readonly reticleCursorService: ReticleCursorService,
-    private readonly memberCursorService: MemberCursorService,
+    private readonly hotElementService: HotElementService,
     private readonly inventorySelectionService: InventorySelectionService,
-  ) { }
+    private readonly memberCursorService: MemberCursorService,
+    private readonly reticleCursorService: ReticleCursorService,
+    private readonly selectCursorService: SelectCursorService,
+    private readonly viewportTransform: ViewportTransform2D
+  ) {}
 
   get canvas(): HTMLCanvasElement {
     return this.cursorLayer.nativeElement;
@@ -62,42 +79,56 @@ export class CursorOverlayComponent implements AfterViewInit {
     return ctx;
   }
 
-  public setSelectMode(): void {
-    this.reticleCursorService.clear(this.ctx);
-    this.setMouseCursor(StandardCursor.ARROW);
-  }
-
   public setJointsMode(): void {
     this.hotElementService.clearRenderedHotElement(this.ctx);
     this.setMouseCursor();
-    this.mouseEventDelegator.handlerSet =
-      new JointsModeMouseHandler(
-        this.ctx,
-        this.reticleCursorService,
-        this.coordinateService,
-        this.viewportTransform,
-        this.addJointRequest,
-      );
+    this.mouseEventDelegator.handlerSet = new JointsModeMouseHandler(
+      this.ctx,
+      this.reticleCursorService,
+      this.coordinateService,
+      this.viewportTransform,
+      this.addJointRequest
+    );
   }
 
   public setMembersMode(): void {
     this.reticleCursorService.clear(this.ctx);
     this.setMouseCursor('img/pencil.png', 0, 31);
-    this.mouseEventDelegator.handlerSet =
-      new MembersModeMouseHandler(
-        this.hotElementService, 
-        this.ctx, 
-        this.memberCursorService, 
-        this.inventorySelectionService, 
-        this.addMemberRequest);
+    this.mouseEventDelegator.handlerSet = new MembersModeMouseHandler(
+      this.ctx,
+      this.hotElementService,
+      this.memberCursorService,
+      this.inventorySelectionService,
+      this.addMemberRequest
+    );
+  }
+
+  public setSelectMode(): void {
+    this.reticleCursorService.clear(this.ctx);
+    this.setMouseCursor(StandardCursor.ARROW);
+    this.mouseEventDelegator.handlerSet = new SelectModeMouseHandler(
+      this.ctx,
+      this.selectCursorService,
+      this.viewportTransform,
+      this.elementSelectionService
+    );
   }
 
   public setEraseMode(): void {
     this.reticleCursorService.clear(this.ctx);
     this.setMouseCursor('img/pencilud.png', 2, 29);
+    this.mouseEventDelegator.handlerSet = new EraseModeMouseHandler(
+      this.ctx,
+      this.hotElementService,
+      this.deleteRequest
+    );
   }
 
-  setMouseCursor(cursor?: string | StandardCursor, orgX: number = 0, orgY: number = 0): void {
+  setMouseCursor(
+    cursor?: string | StandardCursor,
+    orgX: number = 0,
+    orgY: number = 0
+  ): void {
     if (cursor === undefined) {
       this.ctx.canvas.style.cursor = 'none';
       return;
@@ -109,18 +140,28 @@ export class CursorOverlayComponent implements AfterViewInit {
 
   private setCursorModeByControlSelectedIndex(i: number) {
     switch (i) {
-      case 0: this.setJointsMode(); break;
-      case 1: this.setMembersMode(); break;
-      case 2: this.setSelectMode(); break;
-      case 3: this.setEraseMode(); break;
+      case 0:
+        this.setJointsMode();
+        break;
+      case 1:
+        this.setMembersMode();
+        break;
+      case 2:
+        this.setSelectMode();
+        break;
+      case 3:
+        this.setEraseMode();
+        break;
     }
   }
 
   ngAfterViewInit(): void {
     this.mouseEventDelegator.register(this.canvas);
     this.setJointsMode();
-    this.eventBrokerService.selectEditMode.subscribe((eventInfo: EventInfo) =>
-      this.setCursorModeByControlSelectedIndex(eventInfo.data as number));
+    this.eventBrokerService.editModeSelection.subscribe(
+      (eventInfo: EventInfo) =>
+        this.setCursorModeByControlSelectedIndex(eventInfo.data as number)
+    );
   }
 }
 
@@ -135,18 +176,30 @@ class JointsModeMouseHandler {
     private readonly reticleCursorService: ReticleCursorService,
     private readonly coordinateService: CoordinateService,
     private readonly viewportTransform: ViewportTransform2D,
-    private readonly addJointRequest: EventEmitter<Joint>,
-  ) { }
+    private readonly addJointRequest: EventEmitter<Joint>
+  ) {}
 
   /** Update other location fields from the viewport location. */
   private snapFromViewport(): void {
-    this.viewportTransform.viewportToWorldPoint(this.locationWorld, this.locationViewport);
-    this.coordinateService.shiftToNearestValidWorldPoint(this.locationWorld, this.locationGrid, this.locationWorld);
-    this.viewportTransform.worldToViewportPoint(this.locationViewport, this.locationWorld);
+    this.viewportTransform.viewportToWorldPoint(
+      this.locationWorld,
+      this.locationViewport
+    );
+    this.coordinateService.shiftToNearestValidWorldPoint(
+      this.locationWorld,
+      this.locationGrid,
+      this.locationWorld
+    );
+    this.viewportTransform.worldToViewportPoint(
+      this.locationViewport,
+      this.locationWorld
+    );
   }
 
   private showReticle(): void {
-    this.reticleCursorService.locate(this.locationViewport.x, this.locationViewport.y).show(this.ctx);
+    this.reticleCursorService
+      .locate(this.locationViewport.x, this.locationViewport.y)
+      .show(this.ctx);
   }
 
   private clearReticle(): void {
@@ -170,42 +223,58 @@ class JointsModeMouseHandler {
     this.showReticle();
   }
 
-  handleMouseUp(event: MouseEvent): void {
+  handleMouseDown(event: MouseEvent): void {
     if (event.button !== 0) {
       return;
     }
-    const x = this.viewportTransform.viewportToworldX(this.reticleCursorService.x);
-    const y = this.viewportTransform.viewportToworldY(this.reticleCursorService.y);
     // Adding the joint sets the index correctly.
-    this.addJointRequest.emit(new Joint(-1, x, y, false));
+    this.addJointRequest.emit(
+      new Joint(-1, this.locationWorld.x, this.locationWorld.y, false)
+    );
   }
 }
 
 class MembersModeMouseHandler {
   constructor(
-    private readonly hotElementService: HotElementService,
     private readonly ctx: CanvasRenderingContext2D,
+    private readonly hotElementService: HotElementService,
     private readonly memberCursorService: MemberCursorService,
     private readonly inventorySelectionService: InventorySelectionService,
-    private readonly addMemberRequest: EventEmitter<Member>,
-  ) { }
+    private readonly addMemberRequest: EventEmitter<Member>
+  ) {}
 
   handleMouseDown(event: MouseEvent): void {
-    if (event.buttons === (1 << 0)) {  // Left button down alone to start.
+    if (event.buttons === 1 << 0) {
+      // Left button down alone to start.
       const hotElement = this.hotElementService.hotElement;
       if (hotElement instanceof Joint) {
-        this.memberCursorService.start(this.ctx, event.offsetX, event.offsetY, hotElement);
+        this.memberCursorService.start(
+          this.ctx,
+          event.offsetX,
+          event.offsetY,
+          hotElement
+        );
       }
     }
   }
 
   handleMouseMove(event: MouseEvent): void {
-    this.hotElementService.updateRenderedHotElementForViewportPoint(this.ctx, event.offsetX, event.offsetY, [Joint]);
-    this.memberCursorService.update(event.offsetX, event.offsetY, this.hotElementService.hotElement);
+    this.hotElementService.updateRenderedHotElementForViewportPoint(
+      this.ctx,
+      event.offsetX,
+      event.offsetY,
+      [Joint]
+    );
+    this.memberCursorService.update(
+      event.offsetX,
+      event.offsetY,
+      this.hotElementService.hotElement
+    );
   }
 
   handleMouseUp(event: MouseEvent): void {
-    if (event.button !== 0) {  // Left up to end.
+    if (event.button !== 0) {
+      // Left up to end.
       return;
     }
     const anchor = this.memberCursorService.end();
@@ -213,6 +282,68 @@ class MembersModeMouseHandler {
     if (!anchor || anchor === hotElement || !(hotElement instanceof Joint)) {
       return;
     }
-    this.addMemberRequest.emit(new Member(-1, anchor, hotElement, this.inventorySelectionService.material, this.inventorySelectionService.shape));
+    this.addMemberRequest.emit(
+      new Member(
+        -1,
+        anchor,
+        hotElement,
+        this.inventorySelectionService.material,
+        this.inventorySelectionService.shape
+      )
+    );
+  }
+}
+
+class SelectModeMouseHandler {
+  constructor(
+    private readonly ctx: CanvasRenderingContext2D,
+    private readonly selectCursorService: SelectCursorService,
+    private readonly viewportTransform: ViewportTransform2D,
+    private readonly elementSelectionService: ElementSelectionService
+  ) {}
+
+  handleMouseDown(event: MouseEvent): void {
+    if (event.buttons === 1 << 0) {
+      // Left button down alone to start.
+      this.selectCursorService.start(this.ctx, event.offsetX, event.offsetY);
+    }
+  }
+
+  handleMouseMove(event: MouseEvent): void {
+    this.selectCursorService.update(event.offsetX, event.offsetY);
+  }
+
+  private readonly cursor: Rectangle2D = Rectangle2D.createEmpty();
+
+  handleMouseUp(event: MouseEvent): void {
+    if (event.button !== 0) {
+      // Left up to end.
+      return;
+    }
+    this.selectCursorService.end(event.offsetX, event.offsetY, this.cursor);
+  }
+}
+
+class EraseModeMouseHandler {
+  constructor(
+    private readonly ctx: CanvasRenderingContext2D,
+    private readonly hotElementService: HotElementService,
+    private readonly deleteRequest: EventEmitter<Joint | Member>
+  ) {}
+
+  handleMouseDown(_event: MouseEvent): void {
+    const hotElement = this.hotElementService.hotElement;
+    this.hotElementService.clearRenderedHotElement(this.ctx);
+    if (hotElement) {
+      this.deleteRequest.emit(hotElement);
+    }
+  }
+
+  handleMouseMove(event: MouseEvent): void {
+    this.hotElementService.updateRenderedHotElementForViewportPoint(
+      this.ctx,
+      event.offsetX,
+      event.offsetY
+    );
   }
 }

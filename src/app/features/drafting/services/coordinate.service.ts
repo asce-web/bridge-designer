@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { Geometry, Point2D, Point2DInterface } from '../../../shared/classes/graphics';
 import { DesignBridgeService } from '../../../shared/services/design-bridge.service';
 import { DesignGrid, DesignGridService } from '../../../shared/services/design-grid.service';
-import { Geometry, Point2D, Point2DInterface } from '../../../shared/classes/graphics';
 
 @Injectable({providedIn: 'root'})
 export class CoordinateService {
@@ -39,7 +39,6 @@ export class CoordinateService {
 
     var tryDx: number = dx;
     var tryDy: number = dy;
-    const bridge = this.bridgeService.bridge;
     const snapMultiple = this.gridService.grid.snapMultiple;
     const nSearchSteps = Math.trunc(CoordinateService.SEARCH_RADIUS_METERS / snapMultiple);
     const dstGrid = new Point2D();

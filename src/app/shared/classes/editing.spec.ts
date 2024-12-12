@@ -1,7 +1,7 @@
-import { Editable, EditableUtility } from "./editing";
+import { Editable, EditableUtility } from './editing';
 
 class TestEditable implements Editable {
-  constructor(public index: number, public value: string) { }
+  constructor(public index: number, public value: string) {}
 
   swapContents(other: TestEditable): void {
     [this.index, other.index] = [other.index, this.index];
@@ -17,13 +17,15 @@ describe('EditableUtility', () => {
         new TestEditable(1, 'b'),
       ];
       const source: TestEditable[] = [];
+      const selected = new Set<number>([1]);
 
-      EditableUtility.merge(target, source);
+      EditableUtility.merge(target, source, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'a'),
         new TestEditable(1, 'b'),
       ]);
+      expect(selected).toEqual(new Set<number>([1]));
     });
 
     it('should merge source list into empty target', () => {
@@ -32,13 +34,15 @@ describe('EditableUtility', () => {
         new TestEditable(0, 'x'),
         new TestEditable(1, 'y'),
       ];
+      const selected = new Set<number>([]);
 
-      EditableUtility.merge(target, source);
+      EditableUtility.merge(target, source, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'x'),
         new TestEditable(1, 'y'),
       ]);
+      expect(selected).toEqual(new Set<number>([]));
     });
 
     it('should merge source list into middle of target', () => {
@@ -51,8 +55,9 @@ describe('EditableUtility', () => {
         new TestEditable(1, 'x'),
         new TestEditable(2, 'y'),
       ];
+      const selected = new Set<number>([0, 2]);
 
-      EditableUtility.merge(target, source);
+      EditableUtility.merge(target, source, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'a'),
@@ -61,6 +66,7 @@ describe('EditableUtility', () => {
         new TestEditable(3, 'b'),
         new TestEditable(4, 'c'),
       ]);
+      expect(selected).toEqual(new Set<number>([0, 4]));
     });
 
     it('should merge source list at the end of target', () => {
@@ -72,8 +78,9 @@ describe('EditableUtility', () => {
         new TestEditable(2, 'x'),
         new TestEditable(3, 'y'),
       ];
+      const selected = new Set<number>([1]);
 
-      EditableUtility.merge(target, source);
+      EditableUtility.merge(target, source, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'a'),
@@ -81,6 +88,7 @@ describe('EditableUtility', () => {
         new TestEditable(2, 'x'),
         new TestEditable(3, 'y'),
       ]);
+      expect(selected).toEqual(new Set<number>([1]));
     });
 
     it('should merge a source interwoven throughout target', () => {
@@ -93,8 +101,9 @@ describe('EditableUtility', () => {
         new TestEditable(2, 'y'),
         new TestEditable(4, 'z'),
       ];
+      const selected = new Set<number>([0, 1]);
 
-      EditableUtility.merge(target, source);
+      EditableUtility.merge(target, source, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'x'),
@@ -103,6 +112,7 @@ describe('EditableUtility', () => {
         new TestEditable(3, 'b'),
         new TestEditable(4, 'z'),
       ]);
+      expect(selected).toEqual(new Set<number>([1, 3]));
     });
   });
 
@@ -113,13 +123,15 @@ describe('EditableUtility', () => {
         new TestEditable(1, 'b'),
       ];
       const subsequence: TestEditable[] = [];
+      const selected = new Set<number>([1]);
 
-      EditableUtility.remove(target, subsequence);
+      EditableUtility.remove(target, subsequence, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'a'),
         new TestEditable(1, 'b'),
       ]);
+      expect(selected).toEqual(new Set<number>([1]));
     });
 
     it('should remove items from beginning of target', () => {
@@ -132,12 +144,12 @@ describe('EditableUtility', () => {
         new TestEditable(0, 'a'),
         new TestEditable(1, 'b'),
       ];
+      const selected = new Set<number>([0, 1, 2]);
 
-      EditableUtility.remove(target, subsequence);
+      EditableUtility.remove(target, subsequence, selected);
 
-      expect(target).toEqual([
-        new TestEditable(0, 'c'),
-      ]);
+      expect(target).toEqual([new TestEditable(0, 'c')]);
+      expect(selected).toEqual(new Set<number>([0]));
     });
 
     it('should remove items from middle of target', () => {
@@ -151,13 +163,15 @@ describe('EditableUtility', () => {
         new TestEditable(1, 'b'),
         new TestEditable(2, 'c'),
       ];
+      const selected = new Set<number>([3]);
 
-      EditableUtility.remove(target, subsequence);
+      EditableUtility.remove(target, subsequence, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'a'),
         new TestEditable(1, 'd'),
       ]);
+      expect(selected).toEqual(new Set<number>([1]));
     });
 
     it('should remove items from end of target', () => {
@@ -170,12 +184,12 @@ describe('EditableUtility', () => {
         new TestEditable(1, 'b'),
         new TestEditable(2, 'c'),
       ];
+      const selected = new Set<number>([0, 1, 2]);
 
-      EditableUtility.remove(target, subsequence);
+      EditableUtility.remove(target, subsequence, selected);
 
-      expect(target).toEqual([
-        new TestEditable(0, 'a'),
-      ]);
+      expect(target).toEqual([new TestEditable(0, 'a')]);
+      expect(selected).toEqual(new Set<number>([0]));
     });
 
     it('should remove items interwoven throughout the target', () => {
@@ -191,13 +205,15 @@ describe('EditableUtility', () => {
         new TestEditable(2, 'c'),
         new TestEditable(4, 'e'),
       ];
+      const selected = new Set<number>([0, 1, 4]);
 
-      EditableUtility.remove(target, subsequence);
+      EditableUtility.remove(target, subsequence, selected);
 
       expect(target).toEqual([
         new TestEditable(0, 'b'),
         new TestEditable(1, 'd'),
       ]);
+      expect(selected).toEqual(new Set<number>([0]));
     });
   });
 

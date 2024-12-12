@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { BridgeModel } from '../classes/bridge.model';
-import { DesignConditions, DesignConditionsService } from './design-conditions.service';
-import { SiteModel } from '../classes/site-model';
-import { Point2DInterface, Rectangle2D, Geometry } from '../classes/graphics';
+import { Geometry, Point2DInterface, Rectangle2D } from '../classes/graphics';
 import { Joint } from '../classes/joint.model';
 import { Member } from '../classes/member.model';
+import { SiteModel } from '../classes/site-model';
+import {
+  DesignConditions,
+  DesignConditionsService,
+} from './design-conditions.service';
 import { StockId } from './inventory.service';
 
 /** Injectable, mutable container for a bridge model and related site information. */
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class DesignBridgeService {
-  public bridge: BridgeModel = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS);
+  public bridge: BridgeModel = new BridgeModel(
+    DesignConditionsService.PLACEHOLDER_CONDITIONS
+  );
   private _siteInfo: SiteModel = new SiteModel(this.bridge.designConditions);
 
   public get designConditions(): DesignConditions {
@@ -26,7 +31,7 @@ export class DesignBridgeService {
   }
 
   /** Gets the joint at given world point. */
-  findJointAt(p: Point2DInterface): Joint | undefined {
+  public findJointAt(p: Point2DInterface): Joint | undefined {
     for (const joint of this.bridge.joints) {
       if (joint.isAt(p)) {
         return joint;
@@ -35,13 +40,17 @@ export class DesignBridgeService {
     return undefined;
   }
 
+  public findMembersWithJoint(joint: Joint): Member[] {
+    return this.bridge.members.filter((member) => member);
+  }
+
   /** Returns the geometric extent of the bridge. */
   get extent(): Rectangle2D {
     return Geometry.getExtent2D(this.bridge.joints);
   }
 
   /** Gets the stock used for the most members in the bridge. */
-  getMostCommonStockId(): StockId | undefined {
+  public getMostCommonStockId(): StockId | undefined {
     const countsByStock = new Map<string, [StockId, number]>();
     var mostCommonCount: number = -1;
     var mostCommonStockId: StockId | undefined = undefined;
@@ -64,8 +73,30 @@ export class DesignBridgeService {
     return mostCommonStockId;
   }
 
+  /** Return joints in index order that need deletion along with a set of members. */
+  public getJointsForMembersDeletion(
+    deletedMemberIndices: Set<number>
+  ): Joint[] {
+    const deletedJointIndices = new Set<number>(
+      this.bridge.joints
+        .filter((joint) => !joint.isFixed)
+        .map((joint) => joint.index)
+    );
+    this.bridge.members.forEach((member) => {
+      if (deletedMemberIndices.has(member.index)) {
+        return; // Break forEach for deleted members.
+      }
+      // The member remains after delection. Can't delete its joints.
+      deletedJointIndices.delete(member.a.index);
+      deletedJointIndices.delete(member.b.index);
+    });
+    return Array.from(deletedJointIndices)
+      .sort()
+      .map((i) => this.bridge.joints[i]);
+  }
+
   /** Returns an array of arrays of selected members, Each inner array contains those having the same stock. Sorting is on ascending member number: inner then first element of outer. */
-  partitionSelectedMembersByStock(selection: Set<number>): Member[][] {
+  public partitionSelectedMembersByStock(selection: Set<number>): Member[][] {
     const membersByStockId = new Map<string, Member[]>();
     for (let memberIndex of selection) {
       const member = this.bridge.members[memberIndex];
@@ -86,8 +117,7 @@ export class DesignBridgeService {
     return result;
   }
 
-  // TODO: Move to DesignBridgeService.
-  isPassingSlendernessCheck(): boolean {
+  public isPassingSlendernessCheck(): boolean {
     const allowableSlenderness = this.designConditions.allowableSlenderness;
     for (let member of this.bridge.members) {
       if (member.slenderness > allowableSlenderness) {

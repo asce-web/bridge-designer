@@ -1,29 +1,34 @@
 import { Injectable } from '@angular/core';
-import { DesignMemberRenderingService } from './design-member-rendering.service';
-import { DesignJointRenderingService } from './design-joint-rendering.service';
-import { DesignBridgeService } from './design-bridge.service';
 import { ElementSelectionService } from '../../features/drafting/services/element-selection.service';
+import { DesignBridgeService } from './design-bridge.service';
+import { DesignJointRenderingService } from './design-joint-rendering.service';
+import { DesignMemberRenderingService } from './design-member-rendering.service';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class DesignBridgeRenderingService {
   constructor(
     private readonly bridgeService: DesignBridgeService,
     private readonly jointRenderingService: DesignJointRenderingService,
     private readonly memberRenderingService: DesignMemberRenderingService,
-    private readonly elementSelectionService: ElementSelectionService,
-  ) { }
+    private readonly elementSelectionService: ElementSelectionService
+  ) {}
 
   /** Render the design bridge using its current selection. */
   public renderDesignBridge(ctx: CanvasRenderingContext2D) {
     const bridge = this.bridgeService.bridge;
-    bridge.members.forEach(member =>
+    bridge.members.forEach((member) =>
       this.memberRenderingService.render(
         ctx,
         member,
-        this.elementSelectionService.isMemberSelected(member)));
-    bridge.joints.forEach(joint => this.jointRenderingService.render(
-      ctx,
-      joint,
-      this.elementSelectionService.isJointSelected(joint)));
+        this.elementSelectionService.isMemberSelected(member)
+      )
+    );
+    bridge.joints.forEach((joint) =>
+      this.jointRenderingService.render(
+        ctx,
+        joint,
+        this.elementSelectionService.isJointSelected(joint)
+      )
+    );
   }
 }

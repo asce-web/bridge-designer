@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { CrossSection, InventoryService, Material, Shape, StockId } from './inventory.service';
 import { EventBrokerService, EventInfo, EventOrigin } from './event-broker.service';
+import { CrossSection, InventoryService, Material, Shape, StockId } from './inventory.service';
 
 @Injectable({ providedIn: 'root' })
 export class InventorySelectionService {
@@ -21,7 +21,7 @@ export class InventorySelectionService {
         that._shape = inventoryService.getShape(stockId.sectionIndex, stockId.sizeIndex);
       };
     }
-    eventBrokerService.changeInventorySelection.subscribe(updateState);
+    eventBrokerService.inventorySelectionChange.subscribe(updateState);
     eventBrokerService.loadInventorySelectorRequest.subscribe(updateState);
   }
 

@@ -9,10 +9,10 @@ import {
 /** Dynamic loader of components with specified host element. */
 @Injectable({ providedIn: 'root' })
 export class ComponentService {
-  constructor(private readonly applicationRef: ApplicationRef) { }
+  constructor(private readonly applicationRef: ApplicationRef) {}
 
   /**
-   * Loads the given component at the given host. Call `setInput(...)` 
+   * Loads the given component at the given host. Call `setInput(...)`
    * on the returned reference as needed.
    */
   public load<T>(component: Type<T>, host: Element): ComponentRef<T> {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Point2D, Point2DInterface, Rectangle2D } from '../classes/graphics';
+import { Point2DInterface, Rectangle2D } from '../classes/graphics';
 
 export const enum Justification {
   LEFT = -1,
@@ -10,54 +10,62 @@ export const enum Justification {
 }
 
 /** Stateful viewport transform. Create instances as needed per component with InjectionToken. */
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class ViewportTransform2D {
-    private _xWindow = 0;
-    private _yWindow = 0;
-    private _widthWindow = 1;
-    private _heightWindow = 1;
-    private _vpTx = 0.5;
-    private _vpTy = 0.5;
-    private _vpX = 0.5;
-    private _vpY = 0.5;
-    private _xViewport = 0;
-    private _yViewport = 0;
-    private _zWindow = 0;
-    private _widthViewport = 1;
-    private _heightViewport = 1;
-    private _xMargin = 0;
-    private _yMargin = 0;
-    private _xScaleFactor = 1;
-    private _yScaleFactor = 1;
-    private _zScale = 1;
-    private _nWindowUpdates = 0;
-    private _nViewportUpdates = 0;
-    private _hAlign = Justification.CENTER;
-    private _vAlign = Justification.CENTER;
+  private _xWindow = 0;
+  private _yWindow = 0;
+  private _widthWindow = 1;
+  private _heightWindow = 1;
+  private _vpTx = 0.5;
+  private _vpTy = 0.5;
+  private _vpX = 0.5;
+  private _vpY = 0.5;
+  private _xViewport = 0;
+  private _yViewport = 0;
+  private _zWindow = 0;
+  private _widthViewport = 1;
+  private _heightViewport = 1;
+  private _xMargin = 0;
+  private _yMargin = 0;
+  private _xScaleFactor = 1;
+  private _yScaleFactor = 1;
+  private _zScale = 1;
+  private _nWindowUpdates = 0;
+  private _nViewportUpdates = 0;
+  private _hAlign = Justification.CENTER;
+  private _vAlign = Justification.CENTER;
 
   public get absWidthViewport(): number {
-    return ViewportTransform2D.absRound(this._widthViewport);
+    return Math.abs(this._widthViewport);
   }
 
   public get absHeightViewport(): number {
-    return ViewportTransform2D.absRound(Math.round(this._heightViewport));
+    return Math.abs(this._heightViewport);
   }
 
   public get usedWidthViewport(): number {
-    return ViewportTransform2D.absRound(this._widthViewport - this._xMargin);
+    return Math.abs(this._widthViewport - this._xMargin);
   }
 
   public get usedHeightViewport(): number {
-    return ViewportTransform2D.absRound(this._heightViewport - this._yMargin);
+    return Math.abs(this._heightViewport - this._yMargin);
   }
 
-  public setAlignment(horizontal: Justification, vertical: Justification): void {
+  public setAlignment(
+    horizontal: Justification,
+    vertical: Justification
+  ): void {
     this._hAlign = horizontal;
     this._vAlign = vertical;
     this.setScaleFactor();
   }
 
-  public setViewport(x: number, y: number, width: number, height: number): void {
+  public setViewport(
+    x: number,
+    y: number,
+    width: number,
+    height: number
+  ): void {
     this._xViewport = x;
     this._yViewport = y;
     this._widthViewport = width;
@@ -74,31 +82,48 @@ export class ViewportTransform2D {
   }
 
   public worldToViewportX(x: number): number {
-    return this._xMargin + this._xViewport + (x - this._xWindow) * this._xScaleFactor;
+    return (
+      this._xMargin + this._xViewport + (x - this._xWindow) * this._xScaleFactor
+    );
   }
 
   public worldToViewportY(y: number): number {
-    return this._yMargin + this._yViewport + (y - this._yWindow) * this._yScaleFactor;
+    return (
+      this._yMargin + this._yViewport + (y - this._yWindow) * this._yScaleFactor
+    );
   }
 
-  public worldToViewportPoint(dst: Point2DInterface, src: Point2DInterface): void {
+  public worldToViewportPoint(
+    dst: Point2DInterface,
+    src: Point2DInterface
+  ): void {
     dst.x = this.worldToViewportX(src.x);
     dst.y = this.worldToViewportY(src.y);
   }
 
   public worldToViewportDistance(d: number): number {
-    return ViewportTransform2D.copySign(Math.round(d * Math.abs(this._xScaleFactor)), d);
+    return ViewportTransform2D.copySign(
+      Math.round(d * Math.abs(this._xScaleFactor)),
+      d
+    );
   }
 
   public viewportToworldX(x: number): number {
-    return this._xWindow + (x - this._xMargin - this._xViewport) / this._xScaleFactor;
+    return (
+      this._xWindow + (x - this._xMargin - this._xViewport) / this._xScaleFactor
+    );
   }
 
   public viewportToworldY(y: number): number {
-    return this._yWindow + (y - this._yMargin - this._yViewport) / this._yScaleFactor;
+    return (
+      this._yWindow + (y - this._yMargin - this._yViewport) / this._yScaleFactor
+    );
   }
 
-  public viewportToWorldPoint(dst: Point2DInterface, src: Point2DInterface): void {
+  public viewportToWorldPoint(
+    dst: Point2DInterface,
+    src: Point2DInterface
+  ): void {
     dst.x = this.viewportToworldX(src.x);
     dst.y = this.viewportToworldY(src.y);
   }
@@ -107,7 +132,21 @@ export class ViewportTransform2D {
     return ViewportTransform2D.copySign(d / this._xScaleFactor, d);
   }
 
-  /** Set vanishing point as a fraction/parameter of x and y viewport. Also the window z-coordinate, which governs scale. */
+  public viewportToWorldRectangle2D(
+    dst: Rectangle2D,
+    src: Rectangle2D
+  ): Rectangle2D {
+    dst.x = this.viewportToworldX(src.x);
+    dst.y = this.viewportToworldY(src.y);
+    dst.width = this.viewportToWorldDistance(src.width);
+    dst.height = this.viewportToWorldDistance(src.height);
+    return dst;
+  }
+
+  /** 
+   * Set vanishing point as a fraction/parameter of x and y viewport. 
+   * Also the window z-coordinate, which governs scale.
+   */
   public setVanishingPoint(vpTx: number, vpTy: number, zWindow: number) {
     this._vpTx = vpTx;
     this._vpTy = vpTy;
@@ -125,48 +164,43 @@ export class ViewportTransform2D {
     }
     const sfX = this._widthViewport / this._widthWindow;
     const sfY = this._heightViewport / this._heightWindow;
+    this._xMargin = this._yMargin = 0;
     if (Math.abs(sfX) < Math.abs(sfY)) {
-      this._xMargin = 0;
       this._xScaleFactor = sfX;
       this._yScaleFactor = ViewportTransform2D.copySign(sfX, sfY);
-      const margin = this._heightViewport - this._heightWindow * this._yScaleFactor;
+      const margin =
+        this._heightViewport - this._heightWindow * this._yScaleFactor;
       switch (this._vAlign) {
-        case Justification.BOTTOM:
-          this._yMargin = 0;
-          break;
         case Justification.TOP:
-          this._yMargin = margin;
+          this._yMargin = Math.round(margin);
           break;
         case Justification.CENTER:
-          this._yMargin = 0.5 * margin;
+          this._yMargin = Math.round(0.5 * margin);
           break;
       }
     } else {
-      this._yMargin = 0;
       this._yScaleFactor = sfY;
       this._xScaleFactor = ViewportTransform2D.copySign(sfY, sfX);
-      const margin = this._widthViewport - this._widthWindow * this._xScaleFactor;
+      const margin =
+        this._widthViewport - this._widthWindow * this._xScaleFactor;
       switch (this._hAlign) {
-        case Justification.LEFT:
-          this._xMargin = 0;
-          break;
         case Justification.RIGHT:
-          this._xMargin = margin;
+          this._xMargin = Math.round(margin);
           break;
         case Justification.CENTER:
-          this._xMargin = 0.5 * margin;
+          this._xMargin = Math.round(0.5 * margin);
           break;
       }
     }
-    this._vpX = this.worldToViewportX(this._xWindow + this._vpTx * this._widthWindow);
-    this._vpY = this.worldToViewportY(this._yWindow + this._vpTy * this._heightWindow);
-  }
-
-  private static absRound(x: number): number {
-    return Math.abs(Math.round(x));
+    this._vpX = this.worldToViewportX(
+      this._xWindow + this._vpTx * this._widthWindow
+    );
+    this._vpY = this.worldToViewportY(
+      this._yWindow + this._vpTy * this._heightWindow
+    );
   }
 
   private static copySign(x: number, signSource: number): number {
-    return (x < 0 && signSource < 0) || (x >= 0 && signSource >= 0) ? x : -x;;
+    return (x < 0 && signSource < 0) || (x >= 0 && signSource >= 0) ? x : -x;
   }
 }

@@ -2,7 +2,6 @@ import {
   Component,
   ViewEncapsulation,
 } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
 import { jqxMenuModule } from 'jqwidgets-ng/jqxmenu';
 import { jqxRibbonModule } from 'jqwidgets-ng/jqxribbon';
@@ -24,7 +23,6 @@ import { SampleSelectionDialogComponent } from './features/sample-bridges/sample
   imports: [
     DraftingPanelComponent,
     MenusComponent,
-    RouterOutlet,
     SampleSelectionDialogComponent,
     ToolbarAComponent,
     ToolbarBComponent,
