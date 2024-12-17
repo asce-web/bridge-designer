@@ -19,6 +19,7 @@ import { MembersModeService } from './members-mode.service';
 import { JointsModeService } from './joints-mode.service';
 import { SelectModeService } from './select-mode.service';
 import { EraseModeService } from './erase-mode.service';
+import { Point2D } from '../../../shared/classes/graphics';
 
 const enum StandardCursor {
   ARROW = 'default',
@@ -43,6 +44,7 @@ export class CursorOverlayComponent implements AfterViewInit {
   @Output() addJointRequest = new EventEmitter<Joint>();
   @Output() addMemberRequest = new EventEmitter<Member>();
   @Output() deleteRequest = new EventEmitter<Joint | Member>();
+  @Output() moveJointRequest = new EventEmitter<{ joint: Joint; newLocation: Point2D }>();
 
   @ViewChild('cursorLayer') cursorLayer!: ElementRef<HTMLCanvasElement>;
 
@@ -85,7 +87,7 @@ export class CursorOverlayComponent implements AfterViewInit {
   public setSelectMode(): void {
     this.jointCursorService.clear(this.ctx);
     this.setMouseCursor(StandardCursor.ARROW);
-    this.inputEventDelegator.handlerSet = this.selectModeService.initialize(this.ctx);
+    this.inputEventDelegator.handlerSet = this.selectModeService.initialize(this.ctx, this.moveJointRequest);
   }
 
   public setEraseMode(): void {

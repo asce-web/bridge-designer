@@ -29,6 +29,7 @@ export class CoordinateService {
    * @param src original point
    * @param dx x-component of search direction
    * @param dy y-component of source direction
+   * @returns whether a nearby point was found
    */
   getNearbyPointOnGrid(
     dst: Point2DInterface,
@@ -36,7 +37,7 @@ export class CoordinateService {
     dx: number,
     dy: number,
     grid: DesignGrid = this.gridService.grid,
-  ): void {
+  ): boolean {
     var tryDx: number = dx;
     var tryDy: number = dy;
     const snapMultiple = this.gridService.grid.snapMultiple;
@@ -48,13 +49,14 @@ export class CoordinateService {
       this.shiftToNearestValidWorldPoint(dst, dstGrid, dst, grid);
       // If the new point is not the same as the starting point and there is no joint there, we're done.
       if (!Geometry.areColocated2D(dst, src) && !this.bridgeService.findJointAt(dst)) {
-        return;
+        return true;
       }
       tryDx += dx;
       tryDy += dy;
     }
     dst.x = src.x;
     dst.y = src.y;
+    return false;
   }
 
   /**

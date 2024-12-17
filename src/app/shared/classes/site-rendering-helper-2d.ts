@@ -195,6 +195,9 @@ export class SiteRenderingHelper2D {
     wearSurfaceRenderer: WearSurfaceRenderer,
     viewportTransform: ViewportTransform2D
   ): void {
+    const savedStrokeStyle = ctx.strokeStyle;
+    const savedFillStyle = ctx.fillStyle;
+
     ctx.beginPath();
     for (const p of SiteConstants.STANDARD_ABUTMENT_POINTS) {
       const xMirrored = mirror ? -p.x : p.x;
@@ -215,6 +218,9 @@ export class SiteRenderingHelper2D {
       wearSurfaceRenderer,
       viewportTransform
     );
+
+    ctx.fillStyle = savedFillStyle;
+    ctx.strokeStyle = savedStrokeStyle;
   }
 
   public static renderArchAbutmentImpl(
@@ -227,6 +233,9 @@ export class SiteRenderingHelper2D {
     wearSurfaceRenderer: WearSurfaceRenderer,
     viewportTransform: ViewportTransform2D
   ): void {
+    const savedStrokeStyle = ctx.strokeStyle;
+    const savedFillStyle = ctx.fillStyle;
+
     ctx.beginPath();
     for (const p of SiteConstants.ARCH_ABUTMENT_POINTS) {
       const xMirrored = mirror ? -p.x : p.x;
@@ -249,13 +258,16 @@ export class SiteRenderingHelper2D {
       wearSurfaceRenderer,
       viewportTransform
     );
-  }
+
+    ctx.fillStyle = savedFillStyle;
+    ctx.strokeStyle = savedStrokeStyle;
+}
 
   private static renderAbutmentWearSurfaceImpl(
     ctx: CanvasRenderingContext2D,
     location: Point2D,
     mirror: boolean,
-    wearSurfaceRenderer: WearSurfaceRenderer,
+    renderWearSurface: WearSurfaceRenderer,
     viewportTransform: ViewportTransform2D
   ): void {
     const x0Mirrored = mirror
@@ -271,9 +283,9 @@ export class SiteRenderingHelper2D {
     );
     // Call the concrete renderer.
     if (x0 < x1) {
-      wearSurfaceRenderer(ctx, x0, x1, y);
+      renderWearSurface(ctx, x0, x1, y);
     } else {
-      wearSurfaceRenderer(ctx, x1, x0, y);
+      renderWearSurface(ctx, x1, x0, y);
     }
   }
 
@@ -285,6 +297,9 @@ export class SiteRenderingHelper2D {
     pierHeight: number,
     viewportTransform: ViewportTransform2D
   ): void {
+    const savedStrokeStyle = ctx.strokeStyle;
+    const savedFillStyle = ctx.fillStyle;
+
     ctx.beginPath();
     for (const p of SiteConstants.PIER_POINTS) {
       const yHeightAdjusted =
@@ -299,5 +314,8 @@ export class SiteRenderingHelper2D {
     ctx.fill();
     ctx.strokeStyle = strokeStyle;
     ctx.stroke();
+
+    ctx.fillStyle = savedFillStyle;
+    ctx.strokeStyle = savedStrokeStyle;
   }
 }

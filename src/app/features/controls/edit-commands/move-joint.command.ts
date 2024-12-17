@@ -11,12 +11,12 @@ export class MoveJointCommand extends EditCommand {
 
   constructor(
     private readonly joint: Joint,
-    toLocation: Point2DInterface,
+    newLocation: Point2DInterface,
     private readonly bridge: BridgeModel,
     private readonly selectedElements: SelectedElements,
   ) {
-    super(`Move joint to (${joint.x}, ${joint.y})`);
-    this.toJoint = new Joint(joint.index, toLocation.x, toLocation.y, false);
+    super(`Move joint to (${newLocation.x}, ${newLocation.y})`);
+    this.toJoint = new Joint(joint.index, newLocation.x, newLocation.y, false);
     this.memberSplitter= new MemberSplitter(
       this.joint,
       this.bridge.members,
@@ -31,5 +31,6 @@ export class MoveJointCommand extends EditCommand {
 
   public override undo(): void {
     this.memberSplitter.undo();
+    this.bridge.joints[this.toJoint.index].swapContents(this.toJoint);
   }
 }

@@ -64,6 +64,7 @@ export class ToolbarAComponent implements AfterViewInit {
     switch (index) {
       case Tools.NEW:
         WidgetHelper.initToolbarImgButton('Make new bridge', 'img/new.png', tool);
+        WidgetHelper.sendEventOnClick(this.eventBrokerService.newDesignRequest, tool);
         break;
       case Tools.OPEN:
         WidgetHelper.initToolbarImgButton('Open an existing bridge', 'img/open.png', tool);

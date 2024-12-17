@@ -18,6 +18,7 @@ export class EventBrokerService {
   public readonly autoCorrectToggle = new Subject<EventInfo>();
   public readonly deleteSelectionRequest = new Subject<EventInfo>();
   public readonly designModeSelection = new Subject<EventInfo>();
+  public readonly draftingPanelInvalidation = new Subject<EventInfo>();
   public readonly editModeSelection = new Subject<EventInfo>();
   public readonly gridDensitySelection = new Subject<EventInfo>();
   public readonly guidesToggle = new Subject<EventInfo>();
@@ -28,6 +29,7 @@ export class EventBrokerService {
   public readonly loadSampleRequest = new Subject<EventInfo>();
   public readonly memberNumbersToggle = new Subject<EventInfo>();
   public readonly memberTableToggle = new Subject<EventInfo>();
+  public readonly newDesignRequest = new Subject<EventInfo>();
   public readonly redoRequest = new Subject<EventInfo>();
   public readonly rulersToggle = new Subject<EventInfo>();
   public readonly selectAllRequest = new Subject<EventInfo>();

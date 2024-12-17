@@ -7,9 +7,10 @@ import {
   numberAttribute,
   ViewChild,
 } from '@angular/core';
+import { jqxNotificationComponent, jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditCommand } from '../../../shared/classes/editing';
-import { Graphics } from '../../../shared/classes/graphics';
+import { Geometry, Graphics, Point2D } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { DesignBridgeService } from '../../../shared/services/design-bridge.service';
@@ -26,13 +27,14 @@ import { UndoManagerService } from '../services/undo-manager.service';
 import { ToolSelectorComponent } from '../../controls/tool-selector/tool-selector.component';
 import { ElementSelectorService } from '../services/element-selector.service';
 import { DesignGridDensity, DesignGridService } from '../../../shared/services/design-grid.service';
+import { MoveJointCommand } from '../../controls/edit-commands/move-joint.command';
 
 @Component({
   selector: 'drafting-panel',
   standalone: true,
   templateUrl: './drafting-panel.component.html',
   styleUrl: './drafting-panel.component.scss',
-  imports: [CursorOverlayComponent, ToolSelectorComponent],
+  imports: [jqxNotificationModule, CursorOverlayComponent, ToolSelectorComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DraftingPanelComponent implements AfterViewInit {
@@ -40,6 +42,7 @@ export class DraftingPanelComponent implements AfterViewInit {
   @Input({ transform: numberAttribute }) height: number = screen.availHeight;
   @ViewChild('draftingPanel') draftingPanel!: ElementRef<HTMLCanvasElement>;
   @ViewChild('cursorLayer') cursorLayer!: ElementRef<CursorOverlayComponent>;
+  @ViewChild('moveJointError') moveJointError!: jqxNotificationComponent;
 
   constructor(
     private readonly designBridgeService: DesignBridgeService,
@@ -86,8 +89,8 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   deleteRequestHandler(element: Joint | Member): void {
-    const selectedElements = this.selectedElementsService.selectedElements;
     const bridge = this.designBridgeService.bridge;
+    const selectedElements = this.selectedElementsService.selectedElements;
     const command: EditCommand =
       element instanceof Joint
         ? new DeleteJointCommand(element, bridge, selectedElements)
@@ -96,12 +99,26 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   deleteSelectionRequestHandler(): void {
-    const selectedElements = this.selectedElementsService.selectedElements;
     const bridge = this.designBridgeService.bridge;
+    const selectedElements = this.selectedElementsService.selectedElements;
     const joint = this.selectedElementsService.getSelectedJoint(bridge);
     const command: EditCommand = joint
       ? new DeleteJointCommand(joint, bridge, selectedElements)
       : DeleteMembersCommand.forSelectedMembers(selectedElements, this.designBridgeService);
+    this.undoManagerService.do(command);
+  }
+
+  moveJointRequestHandler({ joint, newLocation }: { joint: Joint; newLocation: Point2D }): void {
+    if (Geometry.areColocated2D(newLocation, joint)) {
+      return;
+    }
+    const bridge = this.designBridgeService.bridge;
+    if (this.designBridgeService.findJointAt(newLocation)) {
+      this.moveJointError.open();
+      return;
+    }
+    const selectedElements = this.selectedElementsService.selectedElements;
+    const command = new MoveJointCommand(joint, newLocation, bridge, selectedElements);
     this.undoManagerService.do(command);
   }
 
@@ -128,6 +145,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.handleResize();
     window.addEventListener('resize', () => this.handleResize());
     this.eventBrokerService.deleteSelectionRequest.subscribe(_info => this.deleteSelectionRequestHandler());
+    this.eventBrokerService.draftingPanelInvalidation.subscribe(_info => this.render());
     this.eventBrokerService.gridDensitySelection.subscribe(info => this.selectGridDensityHandler(info.data));
     this.eventBrokerService.loadBridgeRequest.subscribe(info => this.loadBridge(info.data));
     this.eventBrokerService.selectAllRequest.subscribe(_info => this.selectAllRequestHandler());

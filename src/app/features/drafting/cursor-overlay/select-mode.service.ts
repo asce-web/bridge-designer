@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Rectangle2D } from '../../../shared/classes/graphics';
+import { EventEmitter, Injectable } from '@angular/core';
+import { Point2D, Rectangle2D } from '../../../shared/classes/graphics';
 import { ElementSelectorService } from '../services/element-selector.service';
 import { HotElementService } from '../services/hot-element.service';
 import { SelectCursorService } from '../services/select-cursor.service';
@@ -7,11 +7,14 @@ import { JointCursorService } from '../services/joint-cursor.service';
 import { Joint } from '../../../shared/classes/joint.model';
 import { DesignBridgeService } from '../../../shared/services/design-bridge.service';
 import { SelectedElementsService } from '../services/selected-elements-service';
+import { CoordinateService } from '../services/coordinate.service';
+import { DesignGrid, DesignGridDensity } from '../../../shared/services/design-grid.service';
 
-/** Implementation of the select drafting panel mode i/o. */
+/** Implementation of the select drafting panel mode i/o. Includes moving the selected joint. */
 @Injectable({ providedIn: 'root' })
 export class SelectModeService {
   constructor(
+    private readonly coordinateService: CoordinateService,
     private readonly designBridgeService: DesignBridgeService,
     private readonly elementSelectorService: ElementSelectorService,
     private readonly hotElementService: HotElementService,
@@ -21,11 +24,16 @@ export class SelectModeService {
   ) {}
 
   private _ctx: CanvasRenderingContext2D | undefined;
+  private moveJointRequest: EventEmitter<{ joint: Joint; newLocation: Point2D }> | undefined;
   private initialHotJoint: Joint | undefined;
   private movingJoint: Joint | undefined;
 
-  public initialize(ctx: CanvasRenderingContext2D): SelectModeService {
+  public initialize(
+    ctx: CanvasRenderingContext2D,
+    moveJointRequest: EventEmitter<{ joint: Joint; newLocation: Point2D }>,
+  ): SelectModeService {
     this._ctx = ctx;
+    this.moveJointRequest = moveJointRequest;
     return this;
   }
 
@@ -72,25 +80,45 @@ export class SelectModeService {
       this.elementSelectorService.select(selectCursor, event.ctrlKey || event.shiftKey);
       this.hotElementService.invalidate(this.ctx);
     }
-    this.jointCursorService.end(this.ctx);
+    if (this.movingJoint) {
+      const newLocation = this.jointCursorService.end(this.ctx);
+      this.moveJointRequest?.emit({ joint: this.movingJoint, newLocation });
+    }
     this.movingJoint = this.initialHotJoint = undefined;
   }
 
+  private static readonly FINE_GRID = new DesignGrid(DesignGridDensity.FINE);
+  private readonly nearbyPoint = new Point2D();
+
   handleDocumentKeyDown(event: KeyboardEvent): void {
+    // Ignore if we're in the middle of a cursor drag.
+    if (this.movingJoint || this.selectCursorService.isAnchored) {
+      return;
+    }
     const selectedJoint = this.selectedElementsService.getSelectedJoint(this.designBridgeService.bridge);
     if (!selectedJoint) {
       return;
     }
+    var dx: number = 0;
+    var dy: number = 0;
     switch (event.key) {
       case 'ArrowUp':
+        dy = DesignGrid.FINE_GRID_SIZE;
         break;
       case 'ArrowDown':
+        dy = -DesignGrid.FINE_GRID_SIZE;
         break;
       case 'ArrowRight':
+        dx = DesignGrid.FINE_GRID_SIZE;
         break;
       case 'ArrowLeft':
+        dx = -DesignGrid.FINE_GRID_SIZE;
         break;
+      default:
+        return;
     }
+    this.coordinateService.getNearbyPointOnGrid(this.nearbyPoint, selectedJoint, dx, dy, SelectModeService.FINE_GRID);
+    this.moveJointRequest?.emit({ joint: selectedJoint, newLocation: this.nearbyPoint });
   }
 
   /** Changes from select to joint move if user is dragging the hot joint. */

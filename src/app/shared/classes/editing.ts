@@ -4,7 +4,15 @@ export interface Editable {
 }
 
 export class EditCommand {
-  constructor(public readonly description: string) {}
+  constructor(private _description: string) {}
+
+  public get description(): string {
+    return this._description;
+  }
+
+  protected set description(value: string) {
+    this._description = value;
+  }
 
   public do(): void {}
   public undo(): void {}

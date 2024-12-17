@@ -20,10 +20,7 @@ export class MemberSplitter {
   /** Do member splitting in the given list. */
   public do(): void {
     // Skip redundant initialization during redos.
-    if (!this.isInitialized) {
-      this.initializeMembers();
-      this.isInitialized = true;
-    }
+    this.isInitialized ||= this.initializeMembers();
     if (
       this.members.length + this.mergedMembers.length - this.removedMembers.length >
       DesignConditions.MAX_MEMBER_COUNT
@@ -40,17 +37,18 @@ export class MemberSplitter {
     EditableUtility.merge(this.members, this.removedMembers, this.selectedMembers);
   }
 
-  private initializeMembers(): void {
+  /** Initializes members to be merged and removed for splitting. Returns true on success. */
+  private initializeMembers(): boolean {
     const connectedMemberJointPairs = new Set<string>();
     for (const member of this.members) {
-      if (member.a === this.joint || member.b === this.joint) {
+      if (member.hasJoint(this.joint)) {
         connectedMemberJointPairs.add(member.key);
       }
     }
     var existingMemberCount = this.members.length;
     for (const member of this.members) {
-      // If the splitting point lies on this member and the member is not connected to the
-      // joint we're moving (or inserting, which is never).
+      // If the moving joint on this member and the member isn't
+      // connected to the joint (possible only for moves).
       if (Geometry.isPointOnSegment(this.joint, member.a, member.b) && !connectedMemberJointPairs.has(member.key)) {
         this.removedMembers.push(member);
         existingMemberCount--;
@@ -73,5 +71,6 @@ export class MemberSplitter {
         member.index = index++;
       }
     });
+    return true;
   }
 }

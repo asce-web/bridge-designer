@@ -1,3 +1,24 @@
+<jqxNotification
+  #moveJointError
+  [template] = "'error'"
+  [position] = "'top-right'"
+  >
+Oops... Can't move a joint onto another joint.
+</jqxNotification>
+<jqxNotification
+  #tooManyJointsError
+  [template] = "'error'"
+  [position] = "'top-right'"
+  >
+Oops... That makes too many joints.
+</jqxNotification>
+<jqxNotification
+  #tooManyMembersError
+  [template] = "'error'"
+  [position] = "'top-right'"
+  >
+Oops... That makes too many members.
+</jqxNotification>
 <div class="wrapper">
   <canvas #draftingPanel class="view" width="{{ width }}" height="{{ height }}">
     <tool-selector #toolSelector></tool-selector>
@@ -10,5 +31,6 @@
     (addJointRequest)="addJointRequestHandler($event)"
     (addMemberRequest)="addMemberRequestHandler($event)"
     (deleteRequest)="deleteRequestHandler($event)"
+    (moveJointRequest)="moveJointRequestHandler($event)"
   ></cursor-overlay>
 </div>

@@ -13,16 +13,16 @@ export class AddMemberCommand extends EditCommand {
     private readonly bridge: BridgeModel,
     private readonly elementSelection: SelectedElements,
   ) {
+    super(`Add member, joint ${member.a.number} to ${member.b.number}`);
     const transecting = bridge.joints
       .filter(joint => Geometry.isPointOnSegment(joint, member.a, member.b))
       .sort((x, y) => Geometry.distanceSquared2DPoints(x, member.a) - Geometry.distanceSquared2DPoints(y, member.a));
     // Handle the most common case without copying.
     if (transecting.length === 0) {
-      super(`Add member, joint ${member.a.number} to ${member.b.number}`);
       this.members.push(member);
       return;
     }
-    super(`Add ${transecting.length + 1} members, joint ${member.a.number} to ${member.b.number}`);
+    this.description = `Add ${transecting.length + 1} members, joint ${member.a.number} to ${member.b.number}`;
     var a: Joint = member.a;
     transecting.forEach(b => {
       if (!bridge.members.some(member => member.hasJoints(a, b))) {
