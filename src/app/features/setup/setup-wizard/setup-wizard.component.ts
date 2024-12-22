@@ -1,10 +1,12 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { jqxButtonComponent, jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
-import { jqxInputComponent, jqxInputModule } from 'jqwidgets-ng/jqxinput';
-import { jqxRadioButtonComponent, jqxRadioButtonModule } from 'jqwidgets-ng/jqxradiobutton';
-import { jqxRadioButtonGroupComponent, jqxRadioButtonGroupModule } from 'jqwidgets-ng/jqxradiobuttongroup';
+import { jqxDropDownListComponent, jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
+import { jqxInputModule } from 'jqwidgets-ng/jqxinput';
+import { jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
+import { jqxRadioButtonModule } from 'jqwidgets-ng/jqxradiobutton';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
+import { WidgetHelper } from '../../../shared/classes/widget-helper';
 
 const enum BumpDirection {
   UP = 1,
@@ -15,7 +17,14 @@ const enum BumpDirection {
 @Component({
   selector: 'setup-wizard',
   standalone: true,
-  imports: [jqxButtonModule, jqxInputModule, jqxRadioButtonModule, jqxWindowModule],
+  imports: [
+    jqxButtonModule,
+    jqxDropDownListModule,
+    jqxInputModule,
+    jqxListBoxModule,
+    jqxRadioButtonModule,
+    jqxWindowModule,
+  ],
   templateUrl: './setup-wizard.component.html',
   styleUrl: './setup-wizard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -25,10 +34,13 @@ export class SetupWizardComponent implements AfterViewInit {
 
   readonly edition = 'Cloud edition';
   readonly buttonWidth = 80;
-
+  readonly archHeights = ['4 meters', '8 meters', '12 meters', '16 meters', '20 meters', '24 meters'];
+  readonly deckElevations = ['24 meters', '20 meters', '16 meters', '12 meters', '8 meters', '4 meters', '0 meters'];
+  readonly templates = ['&lt;none&gt;', 'Through truss - Howe'];
   private cardIndex: number = 0;
   private cardElements: NodeListOf<HTMLElement>[] = new Array<NodeListOf<HTMLElement>>(SetupWizardComponent.CARD_COUNT);
 
+  @ViewChild('archHeightDropDownList') archHeightDropDownList!: jqxDropDownListComponent;
   @ViewChild('backButton') backButton!: jqxButtonComponent;
   @ViewChild('content') content!: ElementRef<HTMLDivElement>;
   @ViewChild('dialog') dialog!: jqxWindowComponent;
@@ -36,6 +48,7 @@ export class SetupWizardComponent implements AfterViewInit {
   @ViewChild('finishButton') finishButton!: jqxButtonComponent;
   @ViewChild('localContestCodeInput') localContestCodeInput!: ElementRef<HTMLInputElement>;
   @ViewChild('nextButton') nextButton!: jqxButtonComponent;
+  @ViewChild('pierHeightDropDownList') pierHeightDropDownList!: jqxDropDownListComponent;
 
   constructor(private readonly eventBrokerService: EventBrokerService) {}
 
@@ -55,24 +68,33 @@ export class SetupWizardComponent implements AfterViewInit {
     this.cardIndex = newCardIndex;
   }
 
-  helpButtonOnClickHandler(): void {
-    window.open('https://google.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+  archAbutmentSelectHandler(event: any): void {
+    WidgetHelper.disableDropDownList(this.archHeightDropDownList, !event.args.checked);
   }
 
   backButtonOnClickHandler(): void {
     this.bumpCard(BumpDirection.DOWN);
   }
 
-  nextButtonOnClickHandler(): void {
-    this.bumpCard(BumpDirection.UP);
-  }
-
   finishButtonOnClickHandler(): void {
     this.dialog.close();
   }
 
+  helpButtonOnClickHandler(): void {
+    // TODO: URL is a placeholder. Put the real help link here.
+    window.open('https://google.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+  }
+
   localContestRadioYesHandler(event: any) {
     this.localContestCodeInput.nativeElement.disabled = !event.args.checked;
+  }
+
+  nextButtonOnClickHandler(): void {
+    this.bumpCard(BumpDirection.UP);
+  }
+
+  pierSelectHandler(event: any): void {
+    WidgetHelper.disableDropDownList(this.pierHeightDropDownList, !event.args.checked);
   }
 
   ngAfterViewInit(): void {

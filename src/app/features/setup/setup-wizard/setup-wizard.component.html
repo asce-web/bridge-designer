@@ -3,7 +3,7 @@
   [isModal]="true"
   [autoOpen]="false"
   [width]="850"
-  [height]="590"
+  [height]="588"
 >
   <div
     #header
@@ -26,7 +26,7 @@
     <div class="title-bar card-6"><span class="card-number">6</span> Select a standard truss template (optional)</div>
     <div class="title-bar card-7"><span class="card-number">7</span> Read the design requirement</div>
     <div class="data-entry card-1">
-      <fieldset class="grouping fill-to-row-bottom">
+      <fieldset class="grouping fill-row">
         <legend class="grouping-topic">Design requirement</legend>
         <div class="paragraph">
           As a civil engineer working for the state Department of Transportation, you are responsible for designing a
@@ -41,31 +41,31 @@
       </fieldset>
     </div>
     <div class="data-entry card-2">
-      <fieldset class="grouping fill-to-row-bottom">
+      <fieldset class="grouping fill-row">
         <legend class="grouping-topic">Local contest code</legend>
         <div class="paragraph">Are you participating in a local contest?</div>
-        <div class="local-contest-controls">
-          <jqxRadioButton
-            [width]="232"
-            style="margin-bottom: 4px"
-            [checked]="true"
-            >No</jqxRadioButton
-          >
-          <jqxRadioButton
-            [width]="232"
-            style="margin-bottom: 8px"
-            (onChange)="localContestRadioYesHandler($event)"
-            >Yes!</jqxRadioButton
-          >
+        <jqxRadioButton
+          [width]="232"
+          [checked]="true"
+        >
+          No
+        </jqxRadioButton>
+        <jqxRadioButton
+          [width]="232"
+          (onChange)="localContestRadioYesHandler($event)"
+          style="margin-top: 8px"
+        >
+          Yes!
+        </jqxRadioButton>
+        <div class="vertical-gap">
           <label
             for="localContestCode"
-            class="paragraph"
+            class="vertical-gap paragraph"
             >Enter contest code here:
             <input
               #localContestCodeInput
               id="localContestCode"
-              style="width: 232"
-              name="localContestCodeInput"
+              style="width: 222px"
               type="text"
               disabled
             />
@@ -73,18 +73,223 @@
         </div>
       </fieldset>
     </div>
-    <div class="deck">
+    <div class="data-entry card-3">
+      <fieldset class="grouping">
+        <legend class="grouping-topic">Deck elevation</legend>
+        <jqxDropDownList
+          [width]="200"
+          [source]="deckElevations"
+          [selectedIndex]="0"
+        ></jqxDropDownList>
+      </fieldset>
+      <fieldset class="grouping fill-row">
+        <legend class="grouping-topic">Support configuration</legend>
+        <div class="control-grouping">
+          <jqxRadioButton
+            [groupName]="'support'"
+            [width]="200"
+            [checked]="true"
+          >
+            Standard abutments
+          </jqxRadioButton>
+          <jqxRadioButton
+            [groupName]="'support'"
+            [width]="200"
+            style="margin-top: 8px"
+            (onChange)="archAbutmentSelectHandler($event)"
+          >
+            Arch abutments
+          </jqxRadioButton>
+          <div class="indent vertical-gap">
+            <label>
+              Height of arch:
+              <jqxDropDownList
+                #archHeightDropDownList
+                [width]="184"
+                [source]="archHeights"
+                [selectedIndex]="0"
+                [disabled]="true"
+              ></jqxDropDownList>
+            </label>
+          </div>
+        </div>
+        <div class="control-grouping vertical-gap">
+          <jqxRadioButton
+            [groupName]="'pier'"
+            [width]="200"
+            [checked]="true"
+          >
+            No pier (one span)
+          </jqxRadioButton>
+          <jqxRadioButton
+            [groupName]="'pier'"
+            [width]="200"
+            style="margin-top: 8px"
+            (onChange)="pierSelectHandler($event)"
+          >
+            Pier (two spans)
+          </jqxRadioButton>
+          <div class="indent vertical-gap">
+            <label>
+              Height of pier:
+              <jqxDropDownList
+                #pierHeightDropDownList
+                [width]="184"
+                [source]="archHeights"
+                [selectedIndex]="0"
+                [disabled]="true"
+              ></jqxDropDownList>
+            </label>
+          </div>
+        </div>
+        <div class="control-grouping vertical-gap">
+          <jqxRadioButton
+            [groupName]="'anchorage'"
+            [width]="200"
+            [checked]="true"
+          >
+            No cable anchorages
+          </jqxRadioButton>
+          <jqxRadioButton
+            [groupName]="'anchorage'"
+            [width]="200"
+            style="margin-top: 8px"
+          >
+            One cable anchorage
+          </jqxRadioButton>
+          <jqxRadioButton
+            [groupName]="'anchorage'"
+            [width]="200"
+            style="margin-top: 8px"
+          >
+            Two cable anchorages
+          </jqxRadioButton>
+        </div>
+      </fieldset>
+    </div>
+    <div class="data-entry card-4">
+      <fieldset class="grouping">
+        <legend class="grouping-topic">Deck material</legend>
+        <jqxRadioButton
+          [groupName]="'deckMaterial'"
+          [width]="200"
+          [checked]="true"
+        >
+          Medium-strength concrete<br />(0.23 meters thick)
+        </jqxRadioButton>
+        <jqxRadioButton
+          [groupName]="'deckMaterial'"
+          [width]="200"
+          [checked]="true"
+          style="margin-top: 8px"
+        >
+          High-strength concrete<br />(0.15 meters thick)
+        </jqxRadioButton>
+      </fieldset>
+      <fieldset class="grouping vertical-gap fill-row">
+        <legend class="grouping-topic">Loading</legend>
+        <jqxRadioButton
+          [groupName]="'truckLoad'"
+          [width]="200"
+          [checked]="true"
+        >
+          Standard 2.25 kN truck<br />(two lanes)
+        </jqxRadioButton>
+        <jqxRadioButton
+          [groupName]="'truckLoad'"
+          [width]="200"
+          [checked]="true"
+          style="margin-top: 8px"
+        >
+          480 kN permit loading<br />(centered)
+        </jqxRadioButton>
+      </fieldset>
+    </div>
+    <div class="data-entry card-5">
+      <fieldset class="grouping fill-row">
+        <legend class="grouping-topic">Select a template</legend>
+        <jqxListBox
+          [width]="232"
+          [height]="398"
+          [source]="templates"
+          [selectedIndex]="0"
+        ></jqxListBox>
+      </fieldset>
+    </div>
+    <div class="data-entry card-6">
+      <fieldset class="grouping fill-row">
+        <legend class="grouping-topic">Title block information</legend>
+        <div>
+          <label
+            for="projectName"
+            class="paragraph"
+            >Project name:
+            <input
+              #projectNameInput
+              id="projectName"
+              style="width: 222px"
+              type="text"
+            />
+          </label>
+        </div>
+        <div class="vertical-gap">
+          <label
+            for="designerName"
+            class="paragraph"
+            >Designed by:
+            <input
+              #designerNameInput
+              id="designerName"
+              style="width: 222px"
+              type="text"
+            />
+          </label>
+        </div>
+        <div class="vertical-gap">
+          <label
+            for="projectId"
+            class="paragraph"
+            >Project ID:<br />
+            <span>
+              <span
+                #scenarioIdText
+                class="scenarioIdText"
+                >00001A</span
+              ><span class="scenarioIdText">&#8209;</span
+              ><input
+                #projectIdInput
+                id="projectId"
+                style="width: 172px"
+                type="text"
+            /></span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
+    <div class="data-entry card-7">
+      <fieldset class="grouping fill-row">
+        <legend class="grouping-topic">To design the truss:</legend>
+        <ol>
+          <li>Click the Finish button to activate the drawing board.</li>
+          <li>Draw the joints.</li>
+          <li>Draw the members.</li>
+          <li>Run a load test to check the strength of your design.</li>
+          <li>Strengthen any members that fail during the load test.</li>
+          <li>Optimize the design by minimizing its cost.</li>
+        </ol>
+        <div class="vertical-gap">For more information about the design process, click the Help button below.</div>
+      </fieldset>
+    </div>
+    <div class="graphics">
       <fieldset class="grouping">
         <legend class="grouping-topic">Deck cross-section</legend>
         <img
           #deckCartoon
           class="deck-cartoon"
-          src="img/meddeckstdload.png"
+          src="img/nodecknoload.png"
         />
       </fieldset>
-    </div>
-    <div class="elevation">
-      <fieldset class="grouping fill-to-row-bottom">
+      <fieldset class="grouping fill-row">
         <legend class="grouping-topic">Elevation view</legend>
         <canvas
           #elevationCanvas
@@ -110,7 +315,7 @@
       </fieldset>
     </div>
     <div class="tip">
-      <fieldset class="fill-to-row-bottom">
+      <fieldset class="fill-row">
         <legend class="grouping-topic">Design tip</legend>
         <div class="card-1">
           <div class="paragraph">
@@ -129,11 +334,11 @@
           </div>
         </div>
         <div class="card-2">
-          <img
-            class="tip-icon"
-            src="img/tipicon.png"
-          />
           <div class="paragraph">
+            <img
+              class="tip-icon"
+              src="img/tipicon.png"
+            />
             If you are participating in a local contest using a Local Contest Code furnished by the Bridge Designer
             team, you may only use the specific design project (i.e., site configuration and load case) designated for
             that particular local contest.
@@ -142,6 +347,84 @@
             When you enter the Local Contest Code here, the site configuration and load case for the context will be
             automatically set on the Drawing Board. Then, when you click the Next button, the Design Project Setup
             Wizard will advance to Step&nbsp;5 because the site configuration and load case are already set.
+          </div>
+        </div>
+        <div class="card-3">
+          <div class="paragraph">
+            <img
+              class="tip-icon"
+              src="img/tipicon.png"
+            />
+            The total cost of the design is the Site Cost plus the Truss Cost. The Site Cost is shown below. The Truss
+            Cost will be computed when you design the truss.
+          </div>
+          <div class="paragraph">
+            In general, configurations that increase the Site Cost tend to reduce the Truss Cost and vice versa. For
+            example, a lower deck elevation usually increases the Site Cost because it requires more excavation; but, a
+            lower deck also reduces the Truss Cost because it shortens the span length. Try to find the best balance
+            between these two competing costs.
+          </div>
+          <div class="paragraph">
+            For more information on selecting a site configuration, click the Help button below.
+          </div>
+        </div>
+        <div class="card-4">
+          <div class="paragraph">
+            <img
+              class="tip-icon"
+              src="img/tipicon.png"
+            />
+            Medium-strength concrete is relatively inexpensive, but its use results in a thicker deck, which adds more
+            load to the structure. Greater loadwill tend to increase the truss cost.
+          </div>
+          <div class="paragraph">
+            High-strength concrete is more expensive, but because of its higherstrength, the deck can be thinner and
+            thus lighter. Lower loads associatedwith the deck weight will tend to decrease the truss cost.
+          </div>
+          <div class="paragraph">You may also choose either of the two truck loads shown.</div>
+          <div class="paragraph">For more informaiton on selecting a load case, click the Help button below.</div>
+        </div>
+        <div class="card-5">
+          <div class="paragraph">
+            <img
+              class="tip-icon"
+              src="img/tipicon.png"
+            />
+            A template is a diagram that depicts a standard truss configuration. If you select a template, it will be
+            displayed in light dotted lines on the Drawing Board. The template will show you where to draw joints and
+            members to ensure that your bridge design is stable.
+          </div>
+          <div class="paragraph">
+            A stable truss is one that is composed of interconnected triangles. An unstable truss cannot carry any load.
+            For more information about structural stability, click the Help button below.
+          </div>
+        </div>
+        <div class="card-6">
+          <div class="paragraph">
+            <img
+              class="tip-icon"
+              src="img/tipicon.png"
+            />
+            The title block will be displayed on the lower right-hand corner of the Drawing Board and on your printed
+            design drawings.
+          </div>
+          <div class="paragraph">
+            Enter your name in the Designed By box, and use the Project ID box to give your design a unique name or
+            number. You can change these items later by nclicking them on the Drawing Board.
+          </div>
+        </div>
+        <div class="card-7">
+          <div class="paragraph">
+            <img
+              class="tip-icon"
+              src="img/tipicon.png"
+            />
+            The title block will be displayed on the lower right-hand corner of the Drawing Board and on your printed
+            design drawings.
+          </div>
+          <div class="paragraph">
+            Enter your name in the Designed By box, and use the Project ID box to give your design a unique name or
+            number. You can change these items later by clicking directly on the title block of the Drawing Board.
           </div>
         </div>
       </fieldset>
@@ -156,36 +439,37 @@
       <jqxButton
         #helpButton
         (onClick)="helpButtonOnClickHandler()"
-        style="margin-right: 8px"
         [width]="buttonWidth"
+        style="margin-right: 8px"
         >Help...</jqxButton
       >
       <jqxButton
         #cancelButton
         (onClick)="dialog.close()"
-        style="margin-right: 8px"
         [width]="buttonWidth"
+        style="margin-right: 8px"
         >Cancel</jqxButton
       >
       <jqxButton
         #backButton
         (onClick)="backButtonOnClickHandler()"
-        style="margin-right: 8px"
         [width]="buttonWidth"
         [disabled]="true"
+        style="margin-right: 4px"
         >&lt;&lt;&nbsp;Back</jqxButton
       >
       <jqxButton
         #nextButton
         (onClick)="nextButtonOnClickHandler()"
-        style="margin-right: 8px"
         [width]="buttonWidth"
+        style="margin-right: 8px"
         >Next&nbsp;&gt;&gt;</jqxButton
       >
       <jqxButton
         #finishButton
         (onClick)="finishButtonOnClickHandler()"
         [width]="buttonWidth"
+        style="margin-right: 2px"
         >Finish</jqxButton
       >
     </div>

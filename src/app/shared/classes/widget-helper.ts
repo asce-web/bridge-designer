@@ -1,5 +1,6 @@
 import { Subject } from 'rxjs';
 import { EventInfo, EventOrigin } from '../services/event-broker.service';
+import { jqxDropDownListComponent } from 'jqwidgets-ng/jqxdropdownlist';
 
 export class WidgetHelper {
   public static initToolbarImgButton(title: string, imgSrc: string, tool: any, isDisabled: boolean = false) {
@@ -19,6 +20,16 @@ export class WidgetHelper {
         data,
       }),
     );
+  }
+
+  /** Works around a bug in jqxDropDownList. Programmatic disabling doesn't retract an open dropdown. */
+  public static disableDropDownList(list: jqxDropDownListComponent, isDisabled: boolean = true) {
+    if (isDisabled) {
+      list.disabled(true);
+      list.close();
+    } else {
+      list.disabled(false);
+    }
   }
 
   private static addButtonImg(imgSrc: string, title: string, tool: any) {
