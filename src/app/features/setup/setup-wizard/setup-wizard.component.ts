@@ -23,6 +23,7 @@ import { CartoonSiteRenderingService } from '../../../shared/services/cartoon-si
 import { Graphics } from '../../../shared/classes/graphics';
 import { HeightListComponent } from '../height-list/height-list.component';
 import { BridgeModel } from '../../../shared/classes/bridge.model';
+import { Card } from './setup-wizard.cards';
 
 @Component({
   selector: 'setup-wizard',
@@ -62,6 +63,8 @@ export class SetupWizardComponent implements AfterViewInit {
   private readonly cardElements: NodeListOf<HTMLElement>[] = new Array<NodeListOf<HTMLElement>>(
     SetupWizardComponent.CARD_COUNT,
   );
+  private readonly cards: Card[];
+  private card: Card;
 
   archHeights: string[] = SetupWizardComponent.ALL_ARCH_HEIGHTS.slice();
   readonly buttonWidth = 80;
@@ -70,7 +73,6 @@ export class SetupWizardComponent implements AfterViewInit {
   pierHeights: string[] = SetupWizardComponent.ALL_PIER_HEIGHTS.slice();
   readonly templates = ['&lt;none&gt;', 'Through truss - Howe'];
 
-  private cardIndex: number = 0;
 
   dialogHeight: number = 594;
   dialogWidth: number = 850;
@@ -109,6 +111,8 @@ export class SetupWizardComponent implements AfterViewInit {
     private readonly eventBrokerService: EventBrokerService,
   ) {
     this.designConditions = designBridgeService.designConditions;
+    this.cards = Card.createCards(this);
+    this.card = this.cards[0];
   }
 
   private get designConditions(): DesignConditions {
@@ -196,11 +200,11 @@ export class SetupWizardComponent implements AfterViewInit {
     if (newCardIndex < 0 || newCardIndex >= this.cardElements.length) {
       return;
     }
-    this.setCardVisibility(this.cardIndex, false);
+    this.setCardVisibility(this.card.index, false);
     this.setCardVisibility(newCardIndex);
     this.backButton.disabled(newCardIndex == 0);
     this.nextButton.disabled(newCardIndex == SetupWizardComponent.CARD_COUNT - 1);
-    this.cardIndex = newCardIndex;
+    this.card = this.cards[newCardIndex];
   }
 
   get costSummary(): FixedCostSummary {
@@ -212,7 +216,7 @@ export class SetupWizardComponent implements AfterViewInit {
   }
 
   backButtonOnClickHandler(): void {
-    this.goToCard(this.cardIndex - 1);
+    this.goToCard(this.card.backCardIndex!);
   }
 
   deckElevationSelectHandler(event: any): void {
@@ -243,7 +247,7 @@ export class SetupWizardComponent implements AfterViewInit {
   }
 
   nextButtonOnClickHandler(): void {
-    this.goToCard(this.cardIndex + 1);
+    this.goToCard(this.card.nextCardIndex!);
   }
 
   pierSelectHandler(event: any): void {
@@ -268,10 +272,10 @@ export class SetupWizardComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.eventBrokerService.newDesignRequest.subscribe(_info => this.dialog.open());
-    // Find all the elements associated with cards and hide all but card-1.
+    // Find all the elements associated with cards and hide all but 'card-1'.
     for (var i: number = 0; i < SetupWizardComponent.CARD_COUNT; ++i) {
       this.cardElements[i] = this.content.nativeElement.querySelectorAll(`.card-${i + 1}`);
-      if (i !== this.cardIndex) {
+      if (i !== 0) {
         this.setCardVisibility(i, false);
       }
     }

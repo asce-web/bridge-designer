@@ -3,6 +3,7 @@ import { CartoonSiteRenderingService } from './cartoon-site-rendering.service';
 import { Colors } from '../classes/graphics';
 
 export const enum CartoonOptionMask {
+  NONE = 0,
   ABUTMENTS = 0x1,
   ARCH_LINE = 0x2,
   BRIDGE = 0x4,
