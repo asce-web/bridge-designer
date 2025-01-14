@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventBrokerService, EventInfo, EventOrigin } from './event-broker.service';
 import { CrossSection, InventoryService, Material, Shape, StockId } from './inventory.service';
 
+/** Injectable mirror of the state of the toolbar material selector. */
 @Injectable({ providedIn: 'root' })
 export class InventorySelectionService {
   private _material: Material;

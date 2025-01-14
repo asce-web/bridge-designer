@@ -60,6 +60,7 @@ export class SelectModeService {
     if (this.selectCursorService.isAnchored || this.movingJoint) {
       this.hotElementService.clearRenderedHotElement(this.ctx);
     } else {
+      this.hideKeyboardJointMoveCursor();
       this.hotElementService.updateRenderedHotElement(this.ctx, event.offsetX, event.offsetY, {
         excludeFixedJoints: true,
       });
@@ -87,17 +88,18 @@ export class SelectModeService {
     this.movingJoint = this.initialHotJoint = undefined;
   }
 
-  private readonly nearbyPoint = new Point2D();
+  private readonly validPoint = new Point2D();
 
   handleDocumentKeyDown(event: KeyboardEvent): void {
     // Ignore if we're in the middle of a cursor drag.
     if (this.movingJoint || this.selectCursorService.isAnchored) {
       return;
     }
-    const selectedJoint = this.selectedElementsService.getSelectedJoint(this.bridgeService.bridge);
-    if (!selectedJoint) {
+    const movingJoint = this.selectedElementsService.getSelectedJoint(this.bridgeService.bridge);
+    if (!movingJoint) {
       return;
     }
+    this.hotElementService.clearRenderedHotElement(this.ctx);
     let dx: number = 0;
     let dy: number = 0;
     switch (event.key) {
@@ -116,8 +118,31 @@ export class SelectModeService {
       default:
         return;
     }
-    this.coordinateService.getNearbyPointOnGrid(this.nearbyPoint, selectedJoint, dx, dy, DesignGridService.FINEST_GRID);
-    this.moveJointRequest?.emit({ joint: selectedJoint, newLocation: this.nearbyPoint });
+    // Search for valid point in given direction.
+    this.coordinateService.getNearbyWorldPointOnGrid(
+      this.validPoint,
+      movingJoint,
+      dx,
+      dy,
+      DesignGridService.FINEST_GRID,
+    );
+
+    // Manage the joint cursor.
+    if (!this.jointCursorService.visible) {
+      this.jointCursorService
+        .startAtWorldPoint(this.validPoint, { grid: DesignGridService.FINEST_GRID })
+        .show(this.ctx);
+    } else {
+      this.jointCursorService.moveToWorldPoint(this.ctx, this.validPoint);
+    }
+    this.moveJointRequest?.emit({ joint: movingJoint, newLocation: this.validPoint });
+  }
+
+  /** If a joint is being moved via keyboard, hides the joint reticle cursor. */
+  private hideKeyboardJointMoveCursor(): void {
+    if (!this.movingJoint && this.jointCursorService.visible) {
+      this.jointCursorService.clear(this.ctx);
+    }
   }
 
   /** Changes from select to joint move if user is dragging the hot joint. */
@@ -134,10 +159,14 @@ export class SelectModeService {
     this.selectCursorService.abort();
     const movingJoint = this.initialHotJoint;
     this.movingJoint = movingJoint;
-    const connectedJoints = this.bridgeService
-      .findMembersWithJoint(movingJoint)
-      .map(member => member.getOtherJoint(movingJoint));
     this.elementSelectorService.selectJoint(movingJoint);
-    this.jointCursorService.start(event.offsetX, event.offsetY, connectedJoints).show(this.ctx);
+    this.jointCursorService
+      .start(event.offsetX, event.offsetY, { anchorJoints: this.getConnectedJoints(movingJoint) })
+      .show(this.ctx);
+  }
+
+  /** Gets the joint connected by members to the one given. */
+  private getConnectedJoints(joint: Joint) {
+    return this.bridgeService.findMembersWithJoint(joint).map(member => member.getOtherJoint(joint));
   }
 }

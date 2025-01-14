@@ -47,7 +47,7 @@ export class DesignMemberRenderingService {
     }
     eventBrokerService.memberNumbersToggle.subscribe(_info => {
       this.showMemberNumbers = !this.showMemberNumbers;
-      eventBrokerService.draftingPanelInvalidation.next({ source: EventOrigin.SERVICE });
+      eventBrokerService.draftingPanelInvalidation.next({ source: EventOrigin.SERVICE, data: 'graphic' });
     });
   }
 

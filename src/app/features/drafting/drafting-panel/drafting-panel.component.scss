@@ -27,9 +27,8 @@
   bottom: 0;
   right: 0;
   background-color: white;
-  border-style: double;
-  border-width: 5px;
-  border-color: darkgray;
+  border: double 4px black;
+  margin: -1px;
   width: 340px;
   font: normal 14px sans-serif;
   z-index: 2;

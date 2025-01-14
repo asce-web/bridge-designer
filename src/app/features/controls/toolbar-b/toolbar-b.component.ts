@@ -57,26 +57,25 @@ export class ToolbarBComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgButton('Downsize selected members', 'img/sizedown.png', tool);
         break;
       case Tools.MEMBER_TABLE:
-        WidgetHelper.initToolbarImgButton('Show/hide member table', 'img/memtable.png', tool);
+        WidgetHelper.initToolbarImgToggleButton('Show/hide member table', 'img/memtable.png', tool,  {toggled: true});
         break;
       case Tools.MEMBER_NUMBERS:
         WidgetHelper.initToolbarImgButton('Show/hide member numbers', 'img/numbers.png', tool);
         break;
       case Tools.GUIDES:
-        WidgetHelper.initToolbarImgButton('Show/hide drawing guides', 'img/guides.png', tool);
+        WidgetHelper.initToolbarImgToggleButton('Show/hide drawing guides', 'img/guides.png', tool);
         break;
       case Tools.TEMPLATE:
-        WidgetHelper.initToolbarImgButton('Show/hide template', 'img/template.png', tool);
+        WidgetHelper.initToolbarImgToggleButton('Show/hide template', 'img/template.png', tool, {toggled: true});
         break;
       case Tools.COARSE_GRID:
-        WidgetHelper.initToolbarImgButton('Use coarse drawing grid', 'img/coarsegrid.png', tool);
-        tool.jqxToggleButton({toggled: true});
+        WidgetHelper.initToolbarImgToggleButton('Use coarse drawing grid', 'img/coarsegrid.png', tool, {toggled: true});
         break;
       case Tools.MEDIUM_GRID:
-        WidgetHelper.initToolbarImgButton('Use medium drawing grid', 'img/mediumgrid.png', tool);
+        WidgetHelper.initToolbarImgToggleButton('Use medium drawing grid', 'img/mediumgrid.png', tool);
         break;
       case Tools.FINE_GRID:
-        WidgetHelper.initToolbarImgButton('Use fine drawing grid', 'img/finegrid.png', tool);
+        WidgetHelper.initToolbarImgToggleButton('Use fine drawing grid', 'img/finegrid.png', tool);
         break;
     }
     return { minimizable: false, menuTool: false };

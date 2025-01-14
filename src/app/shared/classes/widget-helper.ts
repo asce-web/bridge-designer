@@ -7,9 +7,14 @@ export class WidgetHelper {
     tool.jqxButton({ height: 28, disabled: isDisabled });
   }
 
-  public static initToolbarImgToggleButton(title: string, imgSrc: string, tool: any, isDisabled: boolean = false) {
+  public static initToolbarImgToggleButton(
+    title: string,
+    imgSrc: string,
+    tool: any,
+    options?: { toggled?: boolean; disabled?: boolean },
+  ) {
     WidgetHelper.addButtonImg(imgSrc, title, tool);
-    tool.jqxToggleButton({ height: 28, disabled: isDisabled });
+    tool.jqxToggleButton({ height: 28, ...options });
   }
 
   public static sendEventOnClick(subject: Subject<EventInfo>, tool: any, data?: any) {

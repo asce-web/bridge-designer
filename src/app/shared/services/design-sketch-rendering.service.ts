@@ -3,17 +3,26 @@ import { BridgeService } from './bridge.service';
 import { ViewportTransform2D } from './viewport-transform.service';
 import { BridgeSketchModel } from '../classes/bridge-sketch.model';
 import { DesignJointRenderingService } from './design-joint-rendering.service';
+import { EventBrokerService, EventOrigin } from './event-broker.service';
 
 @Injectable({ providedIn: 'root' })
 export class DesignSketchRenderingService {
+  private isVisible = true;
+
   constructor(
     private readonly bridgeService: BridgeService,
+    private readonly eventBrokerService: EventBrokerService,
     private readonly viewportTransform: ViewportTransform2D,
-  ) {}
+  ) {
+    this.eventBrokerService.templateToggle.subscribe(info => {
+      this.isVisible = info.data;
+      this.eventBrokerService.draftingPanelInvalidation.next({ source: EventOrigin.SERVICE, data: 'graphic' });
+    });
+  }
 
   public renderSketch(ctx: CanvasRenderingContext2D): void {
     const sketch = this.bridgeService.sketch;
-    if (sketch === BridgeSketchModel.ABSENT) {
+    if (!this.isVisible || sketch === BridgeSketchModel.ABSENT) {
       return;
     }
     const savedStrokeStyle = ctx.strokeStyle;

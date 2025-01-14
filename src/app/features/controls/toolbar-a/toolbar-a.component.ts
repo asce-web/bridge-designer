@@ -79,8 +79,7 @@ export class ToolbarAComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgButton('Print current bridge', 'img/print.png', tool);
         break;
       case Tools.DESIGN:
-        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool);
-        tool.jqxToggleButton({toggled: true});
+        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool, {toggled: true});
         break;
       case Tools.LOAD_TEST:
         WidgetHelper.initToolbarImgToggleButton('Load test bridge', 'img/loadtest.png', tool);
@@ -98,7 +97,7 @@ export class ToolbarAComponent implements AfterViewInit {
         WidgetHelper.sendEventOnClick(this.eventBrokerService.undoRequest, tool);
         break;
       case Tools.UNDO_MULTIPLE:
-        WidgetHelper.initToolbarImgToggleButton('Undo multiple changes', 'img/drop.png', tool, true);
+        WidgetHelper.initToolbarImgToggleButton('Undo multiple changes', 'img/drop.png', tool, { disabled: true });
         const undoDropdown = UndoRedoDropdownComponent.appendDropdownTool(tool);
         const undoComponentRef = this.componentService.load(UndoRedoDropdownComponent, undoDropdown);
         undoComponentRef.setInput('operation', 'Undo');
@@ -110,7 +109,7 @@ export class ToolbarAComponent implements AfterViewInit {
         WidgetHelper.sendEventOnClick(this.eventBrokerService.redoRequest, tool);
         break;
       case Tools.REDO_MULTIPLE:
-        WidgetHelper.initToolbarImgToggleButton('Redo multiple changes', 'img/drop.png', tool, true);
+        WidgetHelper.initToolbarImgToggleButton('Redo multiple changes', 'img/drop.png', tool, { disabled: true });
         const redoDropdown = UndoRedoDropdownComponent.appendDropdownTool(tool);
         const redoComponentRef = this.componentService.load(UndoRedoDropdownComponent, redoDropdown);
         redoComponentRef.setInput('operation', 'Redo');

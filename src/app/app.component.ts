@@ -1,7 +1,4 @@
-import {
-  Component,
-  ViewEncapsulation,
-} from '@angular/core';
+import { AfterViewInit, Component, ViewChild, ViewEncapsulation } from '@angular/core';
 import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
 import { jqxMenuModule } from 'jqwidgets-ng/jqxmenu';
 import { jqxRibbonModule } from 'jqwidgets-ng/jqxribbon';
@@ -17,6 +14,10 @@ import { ToolbarAComponent } from './features/controls/toolbar-a/toolbar-a.compo
 import { ToolbarBComponent } from './features/controls/toolbar-b/toolbar-b.component';
 import { SampleSelectionDialogComponent } from './features/sample-bridges/sample-selection-dialog/sample-selection-dialog.component';
 import { SetupWizardComponent } from './features/setup/setup-wizard/setup-wizard.component';
+import { RulerComponent } from './features/drafting/ruler/ruler.component';
+import { EventBrokerService } from './shared/services/event-broker.service';
+
+// ¯\_(ツ)_/¯
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ import { SetupWizardComponent } from './features/setup/setup-wizard/setup-wizard
   imports: [
     DraftingPanelComponent,
     MenusComponent,
+    RulerComponent,
     SampleSelectionDialogComponent,
     SetupWizardComponent,
     ToolbarAComponent,
@@ -42,6 +44,16 @@ import { SetupWizardComponent } from './features/setup/setup-wizard/setup-wizard
   styleUrls: ['./app.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class AppComponent {
-  constructor() { }
+export class AppComponent implements AfterViewInit {
+  @ViewChild('leftRuler') leftRuler!: RulerComponent;
+  @ViewChild('bottomRuler') bottomRuler!: RulerComponent;
+
+  constructor(private readonly eventBrokerService: EventBrokerService) {}
+
+  ngAfterViewInit(): void {
+    this.eventBrokerService.rulersToggle.subscribe(info => {
+      this.leftRuler.setVisible(info.data);
+      this.bottomRuler.setVisible(info.data);
+    });
+  }
 }

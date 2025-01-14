@@ -19,26 +19,26 @@
 >
   Oops... That makes too many members.
 </jqxNotification>
-<div class="wrapper">
+<div #wrapper class="wrapper">
   <canvas
     #draftingPanel
     class="view"
-    width="{{ width }}"
-    height="{{ height }}"
+    [width]="width"
+    [height]="height"
   >
     <tool-selector #toolSelector></tool-selector>
   </canvas>
   <cursor-overlay
     #cursorLayer
     class="cursor"
-    width="{{ width }}"
-    height="{{ height }}"
+    [width]="width"
+    [height]="height"
     (addJointRequest)="addJointRequestHandler($event)"
     (addMemberRequest)="addMemberRequestHandler($event)"
     (deleteRequest)="deleteRequestHandler($event)"
     (moveJointRequest)="moveJointRequestHandler($event)"
   ></cursor-overlay>
-  <div class="title-block">
+  <div #titleBlock class="title-block">
     <div class="project-name">
       <input
         #projectNameInput

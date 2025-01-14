@@ -52,6 +52,20 @@ export class Utility {
     return value;
   }
 
+  /** Returns a function that collapses any number of calls to a single callback after given delay has passed. */
+  public static throttle(f: () => any, delayMs: number = 100) {
+    let timeout: any;
+    return () => {
+      if (timeout) {
+        return; // Already scheduled. Ignore.
+      }
+      timeout = setTimeout(() => {
+        timeout = undefined;
+        f();
+      }, delayMs);
+    };
+  }
+
   /* TODO: Not currently used. Remove?
   public static setsEqual<T>(a: Set<T>, b: Set<T>) {
     if (a.size !== b.size) {

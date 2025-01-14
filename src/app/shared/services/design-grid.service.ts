@@ -15,6 +15,14 @@ export class DesignGrid {
   public static readonly FINE_GRID_SIZE = 0.25;
   /** Allowable snap grid densities expressed in grid coordinate units, indexed on density. Invariant: multiple == 2^density. */
   static readonly SNAP_MULTIPLES = [4, 2, 1];
+  static readonly DENSITY_BY_SNAP_MULTIPLE = [
+    DesignGridDensity.ERROR, // 0
+    DesignGridDensity.FINE, // 1
+    DesignGridDensity.MEDIUM, // 2
+    DesignGridDensity.ERROR, // 3
+    DesignGridDensity.COARSE, // 4
+  ];
+
   /** Max allowed (coarsest) snap multiple. */
   static readonly MAX_SNAP_MULTIPLE = DesignGrid.SNAP_MULTIPLES[DesignGridDensity.COARSE];
   /** Fine grid size in world coordinate meters. */
@@ -78,7 +86,8 @@ export class DesignGridService {
   public static readonly FINEST_GRID: DesignGrid = new DesignGrid(DesignGridDensity.FINE);
 
   public static getDensityFromSnapMultiple(snapMultiple: number): DesignGridDensity {
-    return DesignGrid.SNAP_MULTIPLES.findIndex(value => value === snapMultiple);
+    const density =  DesignGrid.DENSITY_BY_SNAP_MULTIPLE[snapMultiple];
+    return density === undefined ? DesignGridDensity.ERROR : density;
   }
 
   public static getSnapMultipleOfGrid(coord: number): number {

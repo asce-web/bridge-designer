@@ -1,0 +1,16 @@
+<div #wrapper class="wrapper">
+  <canvas
+    *ngIf="position === 'bottom'"
+    #bottomRuler
+    class="bottom-ruler"
+    [width]="screenWidth"
+    [height]="thickness"
+  ></canvas>
+  <canvas
+    *ngIf="position === 'left'"
+    #leftRuler
+    class="left-ruler"
+    [width]="thickness"
+    [height]="screenHeight"
+  ></canvas>
+</div>

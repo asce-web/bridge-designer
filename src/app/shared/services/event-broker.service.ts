@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
 export const enum EventOrigin {
+  APP,
   DRAFTING_PANEL,
   MENU,
   SAMPLE_DIALOG,

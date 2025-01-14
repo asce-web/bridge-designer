@@ -21,17 +21,17 @@ export class CoordinateService {
   private static readonly SEARCH_RADIUS_METERS: number = 8;
 
   /**
-   * Search the grid in the direction [dx,dy] for the valid point nearest the source that is not already
-   * occupied by a joint. Valid means it's inside the river banks and not on a high pier.  If the search fails,
-   * the destination is set equal to the source.
+   * Search the grid in the direction [dx,dy] for the valid point nearest the source point 
+   * that is not already occupied by a joint. Valid means it's inside the river banks and not on a high
+   * pier. If the search fails, the destination is set equal to the source. All coordinates are world.
    *
    * @param dst search result
    * @param src original point
-   * @param dx x-component of search direction
+   * @param dx x-component of search direction,
    * @param dy y-component of source direction
    * @returns whether a nearby point was found
    */
-  getNearbyPointOnGrid(
+  getNearbyWorldPointOnGrid(
     dst: Point2DInterface,
     src: Point2DInterface,
     dx: number,
@@ -78,10 +78,10 @@ export class CoordinateService {
     let y: number = src.y;
 
     const spanExtent = this.bridgeService.siteInfo.spanExtent;
-    let yTop: number = spanExtent.y0 + spanExtent.height;
+    let yTop: number = spanExtent.y1;
     let yBottom: number = spanExtent.y0;
     let xLeft: number = spanExtent.x0;
-    let xRight: number = spanExtent.x0 + spanExtent.width;
+    let xRight: number = spanExtent.x1;
 
     // Be safe about testing which world zone we're in.
     const tol = 0.5 * DesignGrid.FINE_GRID_SIZE;

@@ -1,0 +1,19 @@
+.wrapper {
+   // No scrollbars.
+   overflow: hidden;
+   position: relative;
+   height: 100%;
+   width: 100%;
+}
+
+.left-ruler {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.bottom-ruler {
+  position: absolute;
+  left: 0;
+  top: 0;
+}

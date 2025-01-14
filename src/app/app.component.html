@@ -1,11 +1,13 @@
-<div #topView class="top-view">
-  <menus #menus class="menus"></menus>
+<div class="top-view">
+  <menus class="menus"></menus>
   <div class="toolbar-wrapper">
-    <toolbar-a #toolbarA></toolbar-a>
-    <toolbar-b #toolbarB></toolbar-b>
+    <toolbar-a></toolbar-a>
+    <toolbar-b></toolbar-b>
   </div>
-  <drafting-panel #draftingPanel class="drafting-panel"></drafting-panel>
-  <div #memberTable class="member-table">Member table</div>
+  <drafting-panel class="drafting-panel"></drafting-panel>
+  <div class="member-table">Member table</div>
+  <ruler #leftRuler class="left-ruler" [position]="'left'"></ruler>
+  <ruler #bottomRuler class="bottom-ruler" [position]="'bottom'"></ruler>
 </div>
 <div>
   <setup-wizard></setup-wizard>

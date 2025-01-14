@@ -1,12 +1,4 @@
-import {
-  AfterViewInit,
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  Input,
-  numberAttribute,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { jqxNotificationComponent, jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditCommand } from '../../../shared/classes/editing';
@@ -40,10 +32,12 @@ import { BridgeSketchModel } from '../../../shared/classes/bridge-sketch.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DraftingPanelComponent implements AfterViewInit {
-  @Input({ transform: numberAttribute }) width: number = screen.availWidth;
-  @Input({ transform: numberAttribute }) height: number = screen.availHeight;
+  width: number = screen.availWidth;
+  height: number = screen.availHeight;
+  @ViewChild('wrapper') wrapper!: ElementRef<HTMLDivElement>;
   @ViewChild('draftingPanel') draftingPanel!: ElementRef<HTMLCanvasElement>;
   @ViewChild('cursorLayer') cursorLayer!: ElementRef<CursorOverlayComponent>;
+  @ViewChild('titleBlock') titleBlock!: ElementRef<HTMLDivElement>;
   @ViewChild('moveJointError') moveJointError!: jqxNotificationComponent;
 
   constructor(
@@ -68,7 +62,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     const h = parent.clientHeight;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);
     this.viewportTransform.setWindow(this.bridgeService.siteInfo.drawingWindow);
-    this.render();
+    this.eventBrokerService.draftingPanelInvalidation.next({ source: EventOrigin.DRAFTING_PANEL, data: 'viewport' });
   }
 
   render(): void {
@@ -160,8 +154,7 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.handleResize();
-    window.addEventListener('resize', () => this.handleResize());
+    new ResizeObserver(() => this.handleResize()).observe(this.wrapper.nativeElement);
     this.eventBrokerService.deleteSelectionRequest.subscribe(_info => this.deleteSelectionRequestHandler());
     this.eventBrokerService.draftingPanelInvalidation.subscribe(_info => this.render());
     this.eventBrokerService.gridDensitySelection.subscribe(info => this.selectGridDensityHandler(info.data));
@@ -169,6 +162,8 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.loadSketchRequest.subscribe(info => this.loadSketch(info.data));
     this.eventBrokerService.selectAllRequest.subscribe(_info => this.selectAllRequestHandler());
     this.eventBrokerService.selectedElementsChange.subscribe(_info => this.render());
+    this.eventBrokerService.titleBlockToggle.subscribe(info => this.titleBlock.nativeElement.style.display = info.data ? '' : 'none');
     this.eventBrokerService.undoManagerStateChange.subscribe(_info => this.render());
+    this.handleResize();
   }
 }
