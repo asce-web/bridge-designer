@@ -9,6 +9,7 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { SelectedElementsService } from '../services/selected-elements-service';
 import { CoordinateService } from '../services/coordinate.service';
 import { DesignGrid, DesignGridService } from '../../../shared/services/design-grid.service';
+import { EventOrigin } from '../../../shared/services/event-broker.service';
 
 /** Implementation of the select drafting panel mode i/o. Includes moving the selected joint. */
 @Injectable({ providedIn: 'root' })
@@ -78,7 +79,7 @@ export class SelectModeService {
     }
     const selectCursor = this.selectCursorService.end(event.offsetX, event.offsetY, this.cursor);
     if (selectCursor) {
-      this.elementSelectorService.select(selectCursor, event.ctrlKey || event.shiftKey);
+      this.elementSelectorService.select(selectCursor, event.ctrlKey || event.shiftKey, EventOrigin.DRAFTING_PANEL);
       this.hotElementService.invalidate(this.ctx);
     }
     if (this.movingJoint) {
@@ -157,11 +158,10 @@ export class SelectModeService {
       return;
     }
     this.selectCursorService.abort();
-    const movingJoint = this.initialHotJoint;
-    this.movingJoint = movingJoint;
-    this.elementSelectorService.selectJoint(movingJoint);
+    this.movingJoint = this.initialHotJoint;
+    this.elementSelectorService.selectJoint(this.movingJoint, EventOrigin.DRAFTING_PANEL);
     this.jointCursorService
-      .start(event.offsetX, event.offsetY, { anchorJoints: this.getConnectedJoints(movingJoint) })
+      .start(event.offsetX, event.offsetY, { anchorJoints: this.getConnectedJoints(this.movingJoint) })
       .show(this.ctx);
   }
 

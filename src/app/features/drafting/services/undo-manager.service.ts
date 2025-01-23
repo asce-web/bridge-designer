@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Deque } from '../../../shared/core/deque';
 import { EditCommand } from '../../../shared/classes/editing';
-import { EventBrokerService, EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 
 @Injectable({ providedIn: 'root' })
 export class UndoManagerService {
@@ -10,19 +10,20 @@ export class UndoManagerService {
   public readonly done: Deque<EditCommand> = new Deque<EditCommand>();
   public readonly undone: Deque<EditCommand> = new Deque<EditCommand>();
 
-  constructor(private readonly eventBrokerService: EventBrokerService) { 
-    eventBrokerService.undoRequest.subscribe((eventInfo: EventInfo) => this.undo(eventInfo.data));
-    eventBrokerService.redoRequest.subscribe((eventInfo: EventInfo) => this.redo(eventInfo.data));
+  constructor(private readonly eventBrokerService: EventBrokerService) {
+    eventBrokerService.undoRequest.subscribe(info => this.undo(info.data));
+    eventBrokerService.redoRequest.subscribe(info => this.redo(info.data));
+    eventBrokerService.loadBridgeRequest.subscribe(_info => this.clear());
   }
 
   public do(editCommand: EditCommand): void {
     editCommand.do();
     this.done.pushLeft(editCommand);
-    if (this.done.length > UndoManagerService.MAX_DONE_COUNT) {
-      this.done.popRight();
+    while (this.done.length > UndoManagerService.MAX_DONE_COUNT) {
+      this.done.popRight(); // In practice, only executes once.
     }
     this.undone.clear();
-    this.emitStateChange();
+    this.emitCommandCompletion(editCommand.effectsMask);
   }
 
   private undo(count: number = 1): void {
@@ -33,7 +34,7 @@ export class UndoManagerService {
       }
       editCommand.undo();
       this.undone.pushLeft(editCommand);
-      this.emitStateChange();
+      this.emitCommandCompletion(editCommand.effectsMask);
     }
   }
 
@@ -45,18 +46,23 @@ export class UndoManagerService {
       }
       editCommand.do();
       this.done.pushLeft(editCommand);
-      this.emitStateChange();
+      this.emitCommandCompletion(editCommand.effectsMask);
     }
   }
 
-  private emitStateChange(): void {
-    this.eventBrokerService.undoManagerStateChange.next(
-      {
-        source: EventOrigin.SERVICE,
-        data: {
-          doneCount: this.done.length,
-          undoneCount: this.undone.length,
-        }
-      });
+  private emitCommandCompletion(effectsMask: number): void {
+    this.eventBrokerService.editCommandCompletion.next({
+      source: EventOrigin.SERVICE,
+      data: {
+        effectsMask: effectsMask,
+        doneCount: this.done.length,
+        undoneCount: this.undone.length,
+      },
+    });
+  }
+
+  private clear(): void {
+    this.done.clear();
+    this.undone.clear();
   }
 }

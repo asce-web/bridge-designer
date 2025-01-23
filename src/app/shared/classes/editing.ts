@@ -3,8 +3,17 @@ export interface Editable {
   swapContents(other: Editable): void;
 }
 
-export class EditCommand {
+export const enum EditEffect {
+  NONE = 0,
+  JOINTS = 0x1,
+  LABELS = 0x2,
+  MEMBERS = 0x4,
+}
+
+export abstract class EditCommand {
   constructor(private _description: string) {}
+
+  abstract get effectsMask(): number;
 
   public get description(): string {
     return this._description;
@@ -16,6 +25,12 @@ export class EditCommand {
 
   public do(): void {}
   public undo(): void {}
+}
+
+export class EditCommandPlaceholder extends EditCommand {
+  override get effectsMask(): number {
+    return EditEffect.NONE;
+  }  
 }
 
 export class EditableUtility {

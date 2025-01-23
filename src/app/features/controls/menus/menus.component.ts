@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { jqxMenuComponent, jqxMenuModule } from 'jqwidgets-ng/jqxmenu';
-import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
+import { EventBrokerService } from '../../../shared/services/event-broker.service';
 import { UiStateService } from '../../drafting/services/ui-state.service';
 
 @Component({
@@ -22,24 +22,21 @@ export class MenusComponent implements AfterViewInit {
 
   handleItemClick(event: any): void {
     const liElement = event.args as HTMLElement;
-    // State service handles radio and toggle behavior.
     this.uiStateService.handleMenuItemClicked(liElement.id);
-    switch (liElement.id) {
-      case 'loadSample':
-        this.eventBrokerService.loadSampleRequest.next({
-          source: EventOrigin.MENU,
-        });
-        break;
-    }
   }
 
   ngAfterViewInit(): void {
     // this.mainMenu.disable('print', true); // TODO: Example/test. Remove.
+    this.uiStateService.registerPlainMenuEntry('new', this.eventBrokerService.newDesignRequest);
+    this.uiStateService.registerPlainMenuEntry('loadSample', this.eventBrokerService.loadSampleRequest);
+    this.uiStateService.registerPlainMenuEntry('loadTemplate', this.eventBrokerService.loadTemplateRequest);
     const gridGroup = ['coarseGrid', 'mediumGrid', 'fineGrid'];
     this.uiStateService.registerSelectMenuItems(gridGroup, this.eventBrokerService.gridDensitySelection);
     const draftingGroup = ['drawingBoard', 'loadTest'];
     this.uiStateService.registerSelectMenuItems(draftingGroup, this.eventBrokerService.designModeSelection);
     const toolsGroup = ['joints', 'members', 'select', 'erase'];
+    this.uiStateService.registerPlainMenuEntry('loadSample', this.eventBrokerService.loadSampleRequest);
+    this.uiStateService.registerPlainMenuEntry('loadTemplate', this.eventBrokerService.loadTemplateRequest);
     this.uiStateService.registerSelectMenuItems(toolsGroup, this.eventBrokerService.editModeSelection);
     this.uiStateService.registerToggleMenuItem('animation', this.eventBrokerService.animationToggle);
     this.uiStateService.registerToggleMenuItem('animationControls', this.eventBrokerService.animationControlsToggle);

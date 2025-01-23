@@ -8,9 +8,10 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { DesignMemberRenderingService } from '../../../shared/services/design-member-rendering.service';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
 import { Member } from '../../../shared/classes/member.model';
+import { GuideKnob, GuidesService } from '../../guides/guides.service';
 
-export type HotElement = Joint | Member | undefined;
-export type HotElementClass = typeof Joint | typeof Member;
+export type HotElement = Joint | Member | GuideKnob | undefined;
+export type HotElementClass = typeof Joint | typeof Member | typeof GuideKnob;
 
 @Injectable({ providedIn: 'root' })
 export class HotElementService {
@@ -19,6 +20,7 @@ export class HotElementService {
     private readonly designJointRenderingService: DesignJointRenderingService,
     private readonly designMemberRenderingService: DesignMemberRenderingService,
     private readonly elementSelectionService: SelectedElementsService,
+    private readonly guidesService: GuidesService,
     private readonly viewportTransform: ViewportTransform2D,
   ) {}
 
@@ -50,29 +52,31 @@ export class HotElementService {
       DesignJointRenderingService.JOINT_RADIUS_VIEWPORT,
     );
     const jointPickRadiusSquared = Utility.sqr(3 * jointRadiusWorld);
+
+    // Following ifs are "last wins."
     if (!options.considerOnly || options.considerOnly.includes(Joint)) {
       // Could stop at the first joint, but look for minimum in case the screen is small enough for joints to overlap.
       let minDistanceSquared: number = Number.MAX_VALUE;
       let minDistanceJoint: Joint | undefined = undefined;
-      bridge.joints.forEach(joint => {
+      for (const joint of bridge.joints) {
         if (
           (options.excludeFixedJoints && joint.isFixed) ||
           (options.excludedJointIndices && options.excludedJointIndices.has(joint.index))
         ) {
-          return; // break forEach
+          break;
         }
         const distanceSquared = Geometry.distanceSquared2D(xWorld, yWorld, joint.x, joint.y);
         if (distanceSquared < minDistanceSquared) {
           minDistanceJoint = joint;
           minDistanceSquared = distanceSquared;
         }
-      });
+      }
       if (minDistanceSquared <= jointPickRadiusSquared) {
         hotElement = minDistanceJoint;
       }
     }
     if (!options.considerOnly || options.considerOnly.includes(Member)) {
-      bridge.members.forEach(member => {
+      for (const member of bridge.members) {
         // Min pixel width eases selection of very narrow members.
         const width = this.designMemberRenderingService.getMemberWidthWorld(member, 10);
         if (
@@ -88,11 +92,17 @@ export class HotElementService {
           )
         ) {
           hotElement = member;
-          return; // break forEach()
+          break;
         }
-      });
+      }
+    } 
+    if (!options.considerOnly || options.considerOnly.includes(GuideKnob)) {
+      const hotGuideKnob = this.guidesService.getHotGuideKnob(x, y);
+      if (hotGuideKnob) {
+        hotElement = hotGuideKnob;
+      }
     }
-    // TODO: Hot bridge labels.
+    // TODO: Hot bridge labels and guides.
     if (hotElement !== this._hotElement) {
       this.erase(ctx, this._hotElement);
       this._hotElement = hotElement;
@@ -110,7 +120,7 @@ export class HotElementService {
     this.render(ctx, this.hotElement);
   }
 
-  private render(ctx: CanvasRenderingContext2D, element: Joint | Member | undefined): void {
+  private render(ctx: CanvasRenderingContext2D, element: HotElement): void {
     if (element === undefined) {
       return; // nothing to rendder
     }
@@ -121,10 +131,12 @@ export class HotElementService {
       this.designMemberRenderingService.renderHot(ctx, member, this.elementSelectionService.isMemberSelected(member));
       this.designJointRenderingService.render(ctx, member.a, this.elementSelectionService.isJointSelected(member.a));
       this.designJointRenderingService.render(ctx, member.b, this.elementSelectionService.isJointSelected(member.b));
+    } else if (element instanceof GuideKnob) {
+      this.guidesService.setKnobMoveCursor(ctx, element);
     }
   }
 
-  private erase(ctx: CanvasRenderingContext2D, element: Joint | Member | undefined): void {
+  private erase(ctx: CanvasRenderingContext2D, element: HotElement): void {
     if (element === undefined) {
       return; // nothing to erase
     }
@@ -132,6 +144,8 @@ export class HotElementService {
       this.designJointRenderingService.clear(ctx, element);
     } else if (element instanceof Member) {
       this.designMemberRenderingService.clear(ctx, element);
+    } else if (element instanceof GuideKnob) {
+      this.guidesService.resetKnobMoveCursor(ctx);
     }
   }
 }

@@ -20,9 +20,7 @@ export class RulerComponent implements AfterViewInit {
   readonly screenHeight = screen.availHeight;
 
   @Input({ required: true }) position!: 'bottom' | 'left';
-  @ViewChild('wrapper') wrapper!: ElementRef<HTMLDivElement>; // TODO: Maybe delete?
-  @ViewChild('bottomRuler') bottomRuler!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('leftRuler') leftRuler!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('ruler') ruler!: ElementRef<HTMLCanvasElement>;
   @HostBinding('style.display') display: string = 'block';
 
   constructor(
@@ -32,12 +30,12 @@ export class RulerComponent implements AfterViewInit {
     private readonly viewportTransform: ViewportTransform2D,
   ) {}
 
-  public setVisible(value: boolean) {
+  public set visible(value: boolean) {
     this.display = value ? 'block' : 'none';
   }
 
   private get ctx(): CanvasRenderingContext2D {
-    return Graphics.getContext(this.bottomRuler || this.leftRuler);
+    return Graphics.getContext(this.ruler);
   }
 
   private render(ctx: CanvasRenderingContext2D): void {
@@ -45,6 +43,7 @@ export class RulerComponent implements AfterViewInit {
     const savedTextAlign = ctx.textAlign;
     const savedTextBaseline = ctx.textBaseline;
 
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     if (this.position === 'bottom') {
       this.renderBottomRuler(ctx);
     } else {
@@ -57,7 +56,6 @@ export class RulerComponent implements AfterViewInit {
   }
 
   private renderBottomRuler(ctx: CanvasRenderingContext2D) {
-    this.clear(ctx);
     const grid = this.designGridService.grid;
     const extent = this.bridgeService.siteInfo.spanExtent;
     const startGrid = grid.xformWorldToGrid(extent.x0);
@@ -71,7 +69,6 @@ export class RulerComponent implements AfterViewInit {
   }
 
   private renderLeftRuler(ctx: CanvasRenderingContext2D) {
-    this.clear(ctx);
     const grid = this.designGridService.grid;
     const extent = this.bridgeService.siteInfo.spanExtent;
     const startGrid = grid.xformWorldToGrid(extent.y0);
@@ -84,12 +81,8 @@ export class RulerComponent implements AfterViewInit {
     }
   }
 
-  private clear(ctx: CanvasRenderingContext2D) {
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  }
-
   private getTickSize(density: number): number {
-    return [8, 6, 3][density] || 5;
+    return [8, 6, 3][density] || 0;
   }
 
   private renderTopTick(ctx: CanvasRenderingContext2D, xGrid: number) {
@@ -128,6 +121,6 @@ export class RulerComponent implements AfterViewInit {
         this.render(this.ctx);
       }
     });
-    this.eventBrokerService.gridDensitySelection.subscribe(() => this.render(this.ctx));
+    this.eventBrokerService.gridDensityChange.subscribe(() => this.render(this.ctx));
   }
 }

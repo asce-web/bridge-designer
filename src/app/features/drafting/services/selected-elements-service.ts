@@ -10,7 +10,11 @@ export type SelectedElements = {
   selectedMembers: SelectedSet;
 };
 
-/** Container for the drafting panel's element selection and hot element. */
+/** 
+ * Container for the drafting panel's element selection and hot element. 
+ * 
+ * Selection should not be mutated directly. Use ElementSelectorService.
+ */
 @Injectable({ providedIn: 'root' })
 export class SelectedElementsService {
   public readonly selectedElements: SelectedElements = {

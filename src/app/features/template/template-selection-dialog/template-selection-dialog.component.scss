@@ -1,0 +1,49 @@
+.header {
+  font-weight: bold;
+}
+
+.content {
+  display: grid;
+  grid-template-columns: auto min-content;
+  grid-template-rows: min-content min-content;
+  column-gap: 8px;
+}
+
+.top-row {
+  grid-row: 1;
+  grid-column: 1 / 2;
+}
+
+.select-label {
+  margin-top: 8px;
+  margin-left: 8px;
+}
+
+.left-column {
+  grid-row: 2;
+  grid-column: 1;
+}
+
+.right-column {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.design-tip {
+  margin-top: -7px;
+  margin-right: 6px;
+  width: 90px;
+  height: 420px;
+}
+
+.dialog-topic {
+  margin-top: 8px;
+  margin-left: 8px;
+}
+
+.preview {
+  margin-left: 8px;
+  border: solid;
+  border-width: 1px;
+  border-color: rgb(197, 197, 197);
+}

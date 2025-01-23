@@ -57,7 +57,7 @@ export class ToolbarBComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgButton('Downsize selected members', 'img/sizedown.png', tool);
         break;
       case Tools.MEMBER_TABLE:
-        WidgetHelper.initToolbarImgToggleButton('Show/hide member table', 'img/memtable.png', tool,  {toggled: true});
+        WidgetHelper.initToolbarImgToggleButton('Show/hide member table', 'img/memtable.png', tool, { toggled: true });
         break;
       case Tools.MEMBER_NUMBERS:
         WidgetHelper.initToolbarImgButton('Show/hide member numbers', 'img/numbers.png', tool);
@@ -66,10 +66,12 @@ export class ToolbarBComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgToggleButton('Show/hide drawing guides', 'img/guides.png', tool);
         break;
       case Tools.TEMPLATE:
-        WidgetHelper.initToolbarImgToggleButton('Show/hide template', 'img/template.png', tool, {toggled: true});
+        WidgetHelper.initToolbarImgToggleButton('Show/hide template', 'img/template.png', tool, { toggled: true });
         break;
       case Tools.COARSE_GRID:
-        WidgetHelper.initToolbarImgToggleButton('Use coarse drawing grid', 'img/coarsegrid.png', tool, {toggled: true});
+        WidgetHelper.initToolbarImgToggleButton('Use coarse drawing grid', 'img/coarsegrid.png', tool, {
+          toggled: true,
+        });
         break;
       case Tools.MEDIUM_GRID:
         WidgetHelper.initToolbarImgToggleButton('Use medium drawing grid', 'img/mediumgrid.png', tool);
@@ -85,15 +87,10 @@ export class ToolbarBComponent implements AfterViewInit {
     const tools = this.toolbar.getTools();
     const gridTools = [Tools.COARSE_GRID, Tools.MEDIUM_GRID, Tools.FINE_GRID];
     this.uiStateService.registerSelectToolbarButtons(tools, gridTools, this.eventBrokerService.gridDensitySelection);
-    this.uiStateService.registerToggleToolbarButton(
-      tools[Tools.MEMBER_TABLE],
-      this.eventBrokerService.memberTableToggle,
-    );
-    this.uiStateService.registerToggleToolbarButton(
-      tools[Tools.MEMBER_NUMBERS],
-      this.eventBrokerService.memberNumbersToggle,
-    );
-    this.uiStateService.registerToggleToolbarButton(tools[Tools.GUIDES], this.eventBrokerService.guidesToggle);
-    this.uiStateService.registerToggleToolbarButton(tools[Tools.TEMPLATE], this.eventBrokerService.templateToggle);
+    const registerToggleButton = this.uiStateService.registerToggleToolbarButton;
+    registerToggleButton(tools[Tools.MEMBER_TABLE], this.eventBrokerService.memberTableToggle);
+    registerToggleButton(tools[Tools.MEMBER_NUMBERS], this.eventBrokerService.memberNumbersToggle);
+    registerToggleButton(tools[Tools.GUIDES], this.eventBrokerService.guidesToggle);
+    registerToggleButton(tools[Tools.TEMPLATE], this.eventBrokerService.templateToggle);
   }
 }

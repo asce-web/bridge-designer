@@ -1,5 +1,5 @@
 import { BridgeModel } from '../../../shared/classes/bridge.model';
-import { EditableUtility, EditCommand } from '../../../shared/classes/editing';
+import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { BridgeService } from '../../../shared/services/bridge.service';
@@ -37,6 +37,10 @@ export class DeleteMembersCommand extends EditCommand {
       .map(i => bridge.members[i]);
     const joints = bridgeService.getJointsForMembersDeletion(selectedElements.selectedMembers);
     return new DeleteMembersCommand(members, joints, bridge, selectedElements);
+  }
+
+  override get effectsMask(): number {
+    return this.joints.length > 0 ? (EditEffect.MEMBERS | EditEffect.JOINTS) : EditEffect.MEMBERS;
   }
 
   public override do(): void {

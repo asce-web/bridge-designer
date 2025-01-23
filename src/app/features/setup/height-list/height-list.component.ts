@@ -101,9 +101,9 @@ export class HeightListComponent implements AfterViewInit {
       this.disableList();
       this.heightList.setContent('');
     } else {
-      this.disableList(this.disabled);
-      this.heightList.selectIndex(this._selectedIndex - this._startIndex);
+      this.heightList.selectedIndex(this._selectedIndex - this._startIndex);
       this.heightList.setContent(this.heights[this._selectedIndex]);
+      this.disableList(this.disabled);
     }
   }
 

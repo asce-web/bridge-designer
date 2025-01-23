@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Joint } from '../classes/joint.model';
-import { ImageService } from '../core/image.service';
+import { ImageService, ImagesLoader } from '../core/image.service';
 import { ViewportTransform2D } from './viewport-transform.service';
 
 const JOINT_SHEET: string = 'img/jointsheet.png';
@@ -17,7 +17,7 @@ const enum JointSheetIndex {
 export class DesignJointRenderingService {
   public static readonly JOINT_RADIUS_VIEWPORT = 8.5;
 
-  private readonly imagesLoader;
+  private readonly imagesLoader: ImagesLoader;
 
   constructor(
     private readonly imageService: ImageService,

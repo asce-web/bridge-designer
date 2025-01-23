@@ -20,15 +20,7 @@ import { JointsModeService } from './joints-mode.service';
 import { SelectModeService } from './select-mode.service';
 import { EraseModeService } from './erase-mode.service';
 import { Point2D } from '../../../shared/classes/graphics';
-
-const enum StandardCursor {
-  ARROW = 'default',
-  AUTO = 'auto',
-  HAND = 'pointer',
-  HORIZONTAL_MOVE = 'ew-resize',
-  MOVE = 'move',
-  VERTICAL_MOVE = 'ns-resize',
-}
+import { StandardCursor, WidgetHelper } from '../../../shared/classes/widget-helper';
 
 @Component({
   selector: 'cursor-overlay',
@@ -74,34 +66,26 @@ export class CursorOverlayComponent implements AfterViewInit {
 
   public setJointsMode(): void {
     this.hotElementService.clearRenderedHotElement(this.ctx);
-    this.setMouseCursor();
+    WidgetHelper.setMouseCursor(this.ctx, StandardCursor.CROSSHAIR);
     this.inputEventDelegator.handlerSet = this.jointsModeService.initialize(this.ctx, this.addJointRequest);
   }
 
   public setMembersMode(): void {
     this.jointCursorService.clear(this.ctx);
-    this.setMouseCursor('img/pencil.png', 0, 31);
+    WidgetHelper.setMouseCursor(this.ctx, 'img/pencil.png', 0, 31);
     this.inputEventDelegator.handlerSet = this.membersModeService.initialize(this.ctx, this.addMemberRequest);
   }
 
   public setSelectMode(): void {
     this.jointCursorService.clear(this.ctx);
-    this.setMouseCursor(StandardCursor.ARROW);
+    WidgetHelper.setMouseCursor(this.ctx, StandardCursor.ARROW);
     this.inputEventDelegator.handlerSet = this.selectModeService.initialize(this.ctx, this.moveJointRequest);
   }
 
   public setEraseMode(): void {
     this.jointCursorService.clear(this.ctx);
-    this.setMouseCursor('img/pencilud.png', 2, 29);
+    WidgetHelper.setMouseCursor(this.ctx, 'img/pencilud.png', 2, 29);
     this.inputEventDelegator.handlerSet = this.eraseModeService.initialize(this.ctx, this.deleteRequest);
-  }
-
-  setMouseCursor(cursor?: string | StandardCursor, orgX: number = 0, orgY: number = 0): void {
-    if (cursor === undefined) {
-      this.ctx.canvas.style.cursor = 'none';
-      return;
-    }
-    this.ctx.canvas.style.cursor = cursor.startsWith('img/') ? `url(${cursor}) ${orgX} ${orgY}, auto` : cursor;
   }
 
   private setCursorModeByControlSelectedIndex(i: number) {

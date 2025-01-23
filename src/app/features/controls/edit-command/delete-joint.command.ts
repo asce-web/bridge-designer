@@ -1,5 +1,5 @@
 import { BridgeModel } from '../../../shared/classes/bridge.model';
-import { EditableUtility, EditCommand } from '../../../shared/classes/editing';
+import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { SelectedElements } from '../../drafting/services/selected-elements-service';
@@ -16,6 +16,10 @@ export class DeleteJointCommand extends EditCommand {
     super(`Delete joint at (${joint.x}, ${joint.y})`);
     this.joint = [joint];
     this.members = bridge.members.filter(member => member.hasJoint(joint));
+  }
+
+  override get effectsMask(): number {
+    return this.members.length > 0 ? (EditEffect.JOINTS | EditEffect.MEMBERS) : EditEffect.JOINTS;
   }
 
   public override do(): void {

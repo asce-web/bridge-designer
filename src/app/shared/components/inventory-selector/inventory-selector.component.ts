@@ -28,9 +28,9 @@ export class InventorySelectorComponent implements AfterViewInit {
   ) {}
 
   public load(stockId: StockId) {
-    this.materialSelector.selectIndex(stockId.materialIndex);
-    this.crossSectionSelector.selectIndex(stockId.sectionIndex);
-    this.sizeSelector.selectIndex(stockId.sizeIndex);
+    this.materialSelector.selectedIndex(stockId.materialIndex);
+    this.crossSectionSelector.selectedIndex(stockId.sectionIndex);
+    this.sizeSelector.selectedIndex(stockId.sizeIndex);
   }
 
   get crossSectionSelectorWidth(): number {

@@ -6,7 +6,6 @@ import { EventBrokerService } from '../../../shared/services/event-broker.servic
 import { UiStateService } from '../../drafting/services/ui-state.service';
 import { UndoManagerService } from '../../drafting/services/undo-manager.service';
 import { UndoRedoDropdownComponent } from '../undo-redo-dropdown/undo-redo-dropdown.component';
-import { BridgeService } from '../../../shared/services/bridge.service';
 
 const enum Tools {
   NEW,
@@ -54,20 +53,17 @@ export class ToolbarAComponent implements AfterViewInit {
 
   constructor(
     private readonly componentService: ComponentService,
-    private readonly bridgeService: BridgeService,
     private readonly eventBrokerService: EventBrokerService,
     private readonly uiStateService: UiStateService,
     private readonly undoManagerService: UndoManagerService,
   ) {
     this.initTools = this.initTools.bind(this);
-    bridgeService.id.push('toolbarA');
   }
 
-  initTools(_type?: string, index?: number, tool?: any, _menuToolIninitialization?: boolean):any {
+  initTools(_type?: string, index?: number, tool?: any, _menuToolIninitialization?: boolean): any {
     switch (index) {
       case Tools.NEW:
         WidgetHelper.initToolbarImgButton('Make new bridge', 'img/new.png', tool);
-        WidgetHelper.sendEventOnClick(this.eventBrokerService.newDesignRequest, tool, () => this.bridgeService.designConditions);
         break;
       case Tools.OPEN:
         WidgetHelper.initToolbarImgButton('Open an existing bridge', 'img/open.png', tool);
@@ -79,22 +75,19 @@ export class ToolbarAComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgButton('Print current bridge', 'img/print.png', tool);
         break;
       case Tools.DESIGN:
-        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool, {toggled: true});
+        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool, { toggled: true });
         break;
       case Tools.LOAD_TEST:
         WidgetHelper.initToolbarImgToggleButton('Load test bridge', 'img/loadtest.png', tool);
         break;
       case Tools.SELECT_ALL:
         WidgetHelper.initToolbarImgButton('Select all', 'img/selectall.png', tool);
-        WidgetHelper.sendEventOnClick(this.eventBrokerService.selectAllRequest, tool);
         break;
       case Tools.DELETE:
         WidgetHelper.initToolbarImgButton('Delete selection', 'img/delete.png', tool);
-        WidgetHelper.sendEventOnClick(this.eventBrokerService.deleteSelectionRequest, tool);
         break;
       case Tools.UNDO:
         WidgetHelper.initToolbarImgButton('Undo changes', 'img/undo.png', tool, true);
-        WidgetHelper.sendEventOnClick(this.eventBrokerService.undoRequest, tool);
         break;
       case Tools.UNDO_MULTIPLE:
         WidgetHelper.initToolbarImgToggleButton('Undo multiple changes', 'img/drop.png', tool, { disabled: true });
@@ -106,7 +99,6 @@ export class ToolbarAComponent implements AfterViewInit {
         break;
       case Tools.REDO:
         WidgetHelper.initToolbarImgButton('Redo undone changes', 'img/redo.png', tool, true);
-        WidgetHelper.sendEventOnClick(this.eventBrokerService.redoRequest, tool);
         break;
       case Tools.REDO_MULTIPLE:
         WidgetHelper.initToolbarImgToggleButton('Redo multiple changes', 'img/drop.png', tool, { disabled: true });
@@ -176,12 +168,18 @@ export class ToolbarAComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    const tools = this.toolbar.getTools();
     this.uiStateService.registerSelectToolbarButtons(
-      this.toolbar.getTools(),
+      tools,
       [Tools.DESIGN, Tools.LOAD_TEST],
       this.eventBrokerService.designModeSelection,
     );
-    this.eventBrokerService.undoManagerStateChange.subscribe(info => {
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.DELETE], this.eventBrokerService.deleteSelectionRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.NEW], this.eventBrokerService.newDesignRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.REDO], this.eventBrokerService.redoRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.SELECT_ALL], this.eventBrokerService.selectAllRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.UNDO], this.eventBrokerService.undoRequest);
+    this.eventBrokerService.editCommandCompletion.subscribe(info => {
       this.disableUndo(info.data.doneCount === 0);
       this.disableRedo(info.data.undoneCount === 0);
     });

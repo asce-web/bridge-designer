@@ -19,7 +19,7 @@ import {
 } from '../../../shared/services/design-conditions.service';
 import { CartoonRenderingService } from '../../../shared/services/cartoon-rendering.service';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
-import { BridgeService } from '../../../shared/services/bridge.service';
+import { BridgeService, RootBridgeService } from '../../../shared/services/bridge.service';
 import { CartoonSiteRenderingService } from '../../../shared/services/cartoon-site-rendering.service';
 import { Graphics } from '../../../shared/classes/graphics';
 import { HeightListComponent } from '../height-list/height-list.component';
@@ -95,7 +95,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
 
   /** Current dialog height. Varies with site cost expander state. */
   dialogHeight: number = 594;
-  readonly dialogWidth: number = 850;
+  readonly dialogWidth: number = 872;
   toDollars = DOLLARS_FORMATTER.format;
   toCount = COUNT_FORMATTER.format;
 
@@ -127,15 +127,15 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
   constructor(
     readonly bridgeService: BridgeService,
     private readonly bridgeSketchService: BridgeSketchService,
+    private readonly cardService: CardService,
     private readonly cartoonRenderingService: CartoonRenderingService,
     private readonly designConditionsService: DesignConditionsService,
     private readonly eventBrokerService: EventBrokerService,
-    private readonly cardService: CardService,
+    private readonly rootBridgeService: RootBridgeService,
     private readonly viewportTransform: ViewportTransform2D,
   ) {
     this.designConditions = bridgeService.designConditions;
     cardService.initialize(this);
-    bridgeService.id.push('setupWizard');
   }
 
   get designConditions(): DesignConditions {
@@ -152,7 +152,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
 
     // Deck elevation
     const deckElevationIndex = Math.trunc((24 - conditions.deckElevation) / 4);
-    this.deckElevationList.selectIndex(deckElevationIndex);
+    this.deckElevationList.selectedIndex(deckElevationIndex);
 
     // Support: standard or arch with height
     if (conditions.isArch) {
@@ -222,7 +222,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     card.enableControls();
   }
 
-  private setCardVisibility(index: number, isVisible: boolean = true): void {
+  private setCardVisibility(index: number, isVisible: boolean): void {
     this.cardElements[index].forEach(element => (element.style.display = isVisible ? '' : 'none'));
   }
 
@@ -232,18 +232,18 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     }
     // Make the old card invisible and new one visible.
     this.setCardVisibility(this.cardService.card.index, false);
-    this.setCardVisibility(newCardIndex);
+    this.setCardVisibility(newCardIndex, true);
     // Install the view and navigation logic for the new card.
     this.cardService.goToCard(newCardIndex);
     // Adjust appearance to incorporate the card change (e.g. navigation buttons).
     this.updateDependentWidgets();
   }
 
-  get scenarioId() : string {
+  get scenarioId(): string {
     if (!this.localContestCodeInput) {
       return '0001A';
     }
-    const localContestCode =  this.localContestCodeInput.code;
+    const localContestCode = this.localContestCodeInput.code;
     return localContestCode?.length === 6 ? localContestCode : `000${this.designConditions.tag}`;
   }
 
@@ -294,7 +294,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.eventBrokerService.loadSketchRequest.next({
       source: EventOrigin.SETUP_DIALOG,
       data: this.bridgeService.sketch,
-    })
+    });
     this.dialog.close();
   }
 
@@ -302,6 +302,20 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     // TODO: Dev only. Implement me for real.
     // console.log(DesignConditionsService.STANDARD_CONDITIONS);
     // window.open('https://google.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+  }
+
+  isPierRadioChangeHandler(event: any): void {
+    if (event.args.checked) {
+      this.pierHeightList.disabled = false;
+      if (this.oneAnchorageButton.checked()) {
+        this.noAnchoragesButton.check();
+      }
+      this.oneAnchorageButton.disable();
+    } else {
+      this.pierHeightList.disabled = true;
+      this.oneAnchorageButton.enable();
+    }
+    this.setDesignConditionsFromWidgets();
   }
 
   localContestInputChangeHandler(_state: LocalContestCodeInputState) {
@@ -329,20 +343,6 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.goToCard(card.nextCardIndex);
   }
 
-  isPierRadioChangeHandler(event: any): void {
-    if (event.args.checked) {
-      this.pierHeightList.disabled = false;
-      if (this.oneAnchorageButton.checked()) {
-        this.noAnchoragesButton.check();
-      }
-      this.oneAnchorageButton.disable();
-    } else {
-      this.pierHeightList.disabled = true;
-      this.oneAnchorageButton.enable();
-    }
-    this.setDesignConditionsFromWidgets();
-  }
-
   siteCostExpandingHandler(): void {
     this.dialogHeight += SetupWizardComponent.SITE_COST_DROPDOWN_HEIGHT;
   }
@@ -356,20 +356,20 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.cardService.card.renderElevationCartoon();
   }
 
-  private get elevationCtx(): CanvasRenderingContext2D {
-    return Graphics.getContext(this.elevationCanvas);
-  }
-
   renderElevationCartoon(options: number): void {
     this.viewportTransform.setWindow(this.bridgeService.siteInfo.drawingWindow);
     this.cartoonRenderingService.options = options;
-    this.cartoonRenderingService.render(this.elevationCtx);
+    const ctx = Graphics.getContext(this.elevationCanvas);
+    this.cartoonRenderingService.render(ctx);
   }
 
   /** Opens the dialog, setting up widgets with given design conditions. */
   private open(conditions: DesignConditions) {
     this.designConditions = conditions;
     this.setWidgetsFromDesignConditions();
+    this.bridgeService.bridge.projectName = this.rootBridgeService.instance.bridge.projectName;
+    this.bridgeService.bridge.designedBy = this.rootBridgeService.instance.bridge.designedBy;
+    this.bridgeService.bridge.projectId = this.rootBridgeService.instance.bridge.projectId;
     this.dialog.open();
   }
 
@@ -395,7 +395,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     }
     this.templateList.displayMember('name');
     this.templateList.source(templateList);
-    this.templateList.selectIndex(0);
+    this.templateList.selectedIndex(0);
     this.templateList.focus();
   }
 
@@ -424,11 +424,12 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
       const legendItemName = element.classList[1].toString();
       this.legendItemsByName.set(legendItemName as LegendItemName, element);
     });
-    const canvas = this.elevationCtx.canvas;
-    const w = canvas.width;
-    const h = canvas.height;
+    const w = this.elevationCanvas.nativeElement.width;
+    const h = this.elevationCanvas.nativeElement.height;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);
     this.cardService.card.renderElevationCartoon();
-    this.eventBrokerService.newDesignRequest.subscribe(info => this.open(info.data));
+    this.eventBrokerService.newDesignRequest.subscribe(_info =>
+      this.open(this.rootBridgeService.instance.designConditions),
+    );
   }
 }

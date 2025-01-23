@@ -57,6 +57,28 @@ export class Member implements Editable {
     return joint === this.a ? this.b : this.a;
   }
 
+  // Extra accessors for member table. 
+
+  public get materialShortName(): string {
+    return this.material.shortName;
+  }
+
+  public get crossSectionShortName(): string {
+    return this.shape.section.shortName;
+  }
+
+  public get materialSize(): number {
+    return 100;
+  }
+
+  public get compression(): string {
+    return '---';
+  }
+
+  public get tension(): string {
+    return '---';
+  }
+
   swapContents(other: Member): void {
     [this.index, other.index] = [other.index, this.index];
     [this.a, other.a] = [other.a, this.a];

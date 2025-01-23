@@ -1,5 +1,5 @@
 import { BridgeModel } from '../../../shared/classes/bridge.model';
-import { EditableUtility, EditCommand } from '../../../shared/classes/editing';
+import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Geometry } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
@@ -31,6 +31,10 @@ export class AddMemberCommand extends EditCommand {
       a = b;
     });
     this.members.push(new Member(-1, a, member.b, member.material, member.shape));
+  }
+
+  override get effectsMask(): number {
+    return EditEffect.MEMBERS;
   }
 
   // TODO: Handle too many members.

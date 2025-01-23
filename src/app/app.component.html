@@ -5,13 +5,27 @@
     <toolbar-b></toolbar-b>
   </div>
   <drafting-panel class="drafting-panel"></drafting-panel>
-  <div class="member-table">Member table</div>
-  <ruler #leftRuler class="left-ruler" [position]="'left'"></ruler>
-  <ruler #bottomRuler class="bottom-ruler" [position]="'bottom'"></ruler>
+  <member-table
+    #memberTable
+    class="member-table"
+  ></member-table>
+  <ruler
+    #leftRuler
+    class="left-ruler"
+    [position]="'left'"
+  ></ruler>
+  <ruler
+    #bottomRuler
+    class="bottom-ruler"
+    [position]="'bottom'"
+  ></ruler>
 </div>
 <div>
   <setup-wizard></setup-wizard>
 </div>
 <div>
   <sample-selection-dialog></sample-selection-dialog>
+</div>
+<div>
+  <template-selection-dialog></template-selection-dialog>
 </div>

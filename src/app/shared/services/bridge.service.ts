@@ -8,13 +8,21 @@ import { DesignConditions, DesignConditionsService } from './design-conditions.s
 import { StockId } from './inventory.service';
 import { BridgeSketchModel } from '../classes/bridge-sketch.model';
 
+/**
+ * Injectable accessor of the root bridge service. Useful in components that provied their own
+ * BridgeService, but also need access to the root instance.
+ */
+@Injectable({ providedIn: 'root' })
+export class RootBridgeService {
+  constructor(public readonly instance: BridgeService) {}
+}
+
 /** Injectable, mutable container for a bridge model and related site and sketch information. */
 @Injectable({ providedIn: 'root' })
 export class BridgeService {
   private _bridge: BridgeModel = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS);
   private _sketch: BridgeSketchModel = BridgeSketchModel.ABSENT;
   private _siteInfo: SiteModel = new SiteModel(this.bridge.designConditions);
-  public id: string[] = [];
 
   public get bridge(): BridgeModel {
     return this._bridge;
@@ -42,6 +50,7 @@ export class BridgeService {
     }
   }
 
+  /** Convenience function that returns the bridge's design conditions.  */
   public get designConditions(): DesignConditions {
     return this.bridge.designConditions;
   }

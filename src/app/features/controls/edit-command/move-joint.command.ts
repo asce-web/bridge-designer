@@ -1,5 +1,5 @@
 import { BridgeModel } from '../../../shared/classes/bridge.model';
-import { EditCommand } from '../../../shared/classes/editing';
+import { EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Point2DInterface } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';
 import { SelectedElements } from '../../drafting/services/selected-elements-service';
@@ -22,6 +22,10 @@ export class MoveJointCommand extends EditCommand {
       this.bridge.members,
       this.selectedElements.selectedMembers,
     );
+  }
+
+  override get effectsMask(): number {
+    return EditEffect.JOINTS;
   }
 
   public override do(): void {

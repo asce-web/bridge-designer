@@ -10,7 +10,7 @@ import { jqxListBoxComponent, jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { Subject } from 'rxjs';
 import { Deque } from '../../../shared/core/deque';
-import { EditCommand } from '../../../shared/classes/editing';
+import { EditCommand, EditCommandPlaceholder } from '../../../shared/classes/editing';
 import {
   EventInfo,
   EventOrigin,
@@ -25,7 +25,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UndoRedoDropdownComponent implements AfterViewInit {
-  private static readonly CANCEL_ITEM: EditCommand = new EditCommand('Cancel');
+  private static readonly CANCEL_ITEM: EditCommand = new EditCommandPlaceholder('Cancel');
 
   @Input({ required: true }) operation!: string;
   @Input({ required: true }) actionEmitter!: Subject<EventInfo>;

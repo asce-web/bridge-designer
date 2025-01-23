@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import { jqxNotificationComponent, jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditCommand } from '../../../shared/classes/editing';
@@ -10,18 +10,18 @@ import { DesignRenderingService } from '../../../shared/services/design-renderin
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { FormsModule } from '@angular/forms';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
-import { AddJointCommand } from '../../controls/edit-commands/add-joint.command';
-import { AddMemberCommand } from '../../controls/edit-commands/add-member.command';
-import { DeleteJointCommand } from '../../controls/edit-commands/delete-joint.command';
-import { DeleteMembersCommand } from '../../controls/edit-commands/delete-members.command';
+import { AddJointCommand } from '../../controls/edit-command/add-joint.command';
+import { AddMemberCommand } from '../../controls/edit-command/add-member.command';
+import { DeleteJointCommand } from '../../controls/edit-command/delete-joint.command';
+import { DeleteMembersCommand } from '../../controls/edit-command/delete-members.command';
 import { CursorOverlayComponent } from '../cursor-overlay/cursor-overlay.component';
 import { SelectedElementsService } from '../services/selected-elements-service';
 import { UndoManagerService } from '../services/undo-manager.service';
 import { ToolSelectorComponent } from '../../controls/tool-selector/tool-selector.component';
-import { ElementSelectorService } from '../services/element-selector.service';
 import { DesignGridDensity, DesignGridService } from '../../../shared/services/design-grid.service';
-import { MoveJointCommand } from '../../controls/edit-commands/move-joint.command';
+import { MoveJointCommand } from '../../controls/edit-command/move-joint.command';
 import { BridgeSketchModel } from '../../../shared/classes/bridge-sketch.model';
+import { GuidesService } from '../../guides/guides.service';
 
 @Component({
   selector: 'drafting-panel',
@@ -42,16 +42,15 @@ export class DraftingPanelComponent implements AfterViewInit {
 
   constructor(
     readonly bridgeService: BridgeService,
+    private readonly changeDetector: ChangeDetectorRef,
     private readonly designGridService: DesignGridService,
     private readonly designRenderingService: DesignRenderingService,
-    private readonly elementSelectorService: ElementSelectorService,
     private readonly eventBrokerService: EventBrokerService,
+    private readonly guideService: GuidesService,
     private readonly selectedElementsService: SelectedElementsService,
     private readonly undoManagerService: UndoManagerService,
     private readonly viewportTransform: ViewportTransform2D,
-  ) {
-    bridgeService.id.push('drafting');
-  }
+  ) { }
 
   handleResize(): void {
     const parent = this.draftingPanel.nativeElement.parentElement;
@@ -66,16 +65,18 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   render(): void {
-    this.designRenderingService.render(Graphics.getContext(this.draftingPanel));
+    const ctx = Graphics.getContext(this.draftingPanel);
+    this.designRenderingService.render(ctx);
+    this.guideService.show(ctx);
   }
 
   loadBridge(bridge: BridgeModel): void {
-    const bridgeDensity = DesignGridService.getDensityOfWorldPoints(bridge.joints);
-    if (bridgeDensity > this.designGridService.grid.density) {
-      this.selectGridDensity(bridgeDensity);
-    }
+    const bridgeGridDensity = DesignGridService.getDensityOfWorldPoints(bridge.joints);
+    this.selectGridDensity(bridgeGridDensity);
     this.bridgeService.bridge = bridge;
     this.handleResize();
+    this.changeDetector.detectChanges(); // Updates title block.
+    this.eventBrokerService.loadBridgeCompletion.next({source: EventOrigin.DRAFTING_PANEL});
   }
 
   loadSketch(sketch: BridgeSketchModel) {
@@ -133,10 +134,6 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.undoManagerService.do(command);
   }
 
-  selectAllRequestHandler(): void {
-    this.elementSelectorService.selectAllMembers();
-  }
-
   // IMPORTANT: Following 2 methods rely on the coincidence that selector indices are the same as density enum values.
 
   /** Sets the design grid density from the selection widget (menu or button) index. */
@@ -160,10 +157,9 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.gridDensitySelection.subscribe(info => this.selectGridDensityHandler(info.data));
     this.eventBrokerService.loadBridgeRequest.subscribe(info => this.loadBridge(info.data));
     this.eventBrokerService.loadSketchRequest.subscribe(info => this.loadSketch(info.data));
-    this.eventBrokerService.selectAllRequest.subscribe(_info => this.selectAllRequestHandler());
     this.eventBrokerService.selectedElementsChange.subscribe(_info => this.render());
     this.eventBrokerService.titleBlockToggle.subscribe(info => this.titleBlock.nativeElement.style.display = info.data ? '' : 'none');
-    this.eventBrokerService.undoManagerStateChange.subscribe(_info => this.render());
+    this.eventBrokerService.editCommandCompletion.subscribe(_info => this.render());
     this.handleResize();
   }
 }

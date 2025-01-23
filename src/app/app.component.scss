@@ -16,7 +16,7 @@
 
 .top-view {
   display: grid;
-  grid-template-columns: min-content 1fr 20%;
+  grid-template-columns: min-content 1fr min-content;
   grid-template-rows: min-content min-content 1fr min-content;
   height: 98vh; // Needed to avoid scrollbar in Chrome. Why?
 }
@@ -49,9 +49,6 @@
 .member-table {
   grid-row: 3 / 5;
   grid-column: 3;
-  border-left: solid;
-  border-left-width: 1px;
-  border-left-color: rgb(197, 197, 197);
 }
 
 .left-ruler {

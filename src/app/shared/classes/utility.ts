@@ -29,6 +29,17 @@ export class Utility {
     return a <= b ? a <= x && x <= b : b <= x && x <= a;
   }
 
+  /** Returns the value x clamped to the range [a, b]. */
+  public static clamp(x: number, a: number, b: number): number {
+    if (x < a) {
+      return a;
+    }
+    if (x > b) {
+      return b;
+    }
+    return x;
+  }
+
   /** Returns [0, 1, ... n-1]. */
   public static indices(n: number): number[] {
     return Array.from({ length: n }, (_, i) => i);
@@ -57,6 +68,7 @@ export class Utility {
     let timeout: any;
     return () => {
       if (timeout) {
+        console.log('!');
         return; // Already scheduled. Ignore.
       }
       timeout = setTimeout(() => {
@@ -64,6 +76,14 @@ export class Utility {
         f();
       }, delayMs);
     };
+  }
+
+  public static applyToSetDifference<T>(f: (item: T) => void, a: Set<T>, b: Set<T>): void {
+    a.forEach(item => {
+      if (!b.has(item)) {
+        f(item);
+      }
+    });
   }
 
   /* TODO: Not currently used. Remove?

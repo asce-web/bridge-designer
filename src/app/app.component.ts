@@ -12,10 +12,12 @@ import { DraftingPanelComponent } from './features/drafting/drafting-panel/draft
 import { MenusComponent } from './features/controls/menus/menus.component';
 import { ToolbarAComponent } from './features/controls/toolbar-a/toolbar-a.component';
 import { ToolbarBComponent } from './features/controls/toolbar-b/toolbar-b.component';
-import { SampleSelectionDialogComponent } from './features/sample-bridges/sample-selection-dialog/sample-selection-dialog.component';
+import { SampleSelectionDialogComponent } from './features/sample-bridge/sample-selection-dialog/sample-selection-dialog.component';
 import { SetupWizardComponent } from './features/setup/setup-wizard/setup-wizard.component';
 import { RulerComponent } from './features/drafting/ruler/ruler.component';
 import { EventBrokerService } from './shared/services/event-broker.service';
+import { MemberTableComponent } from './features/drafting/member-table/member-table.component';
+import { TemplateSelectionDialogComponent } from './features/template/template-selection-dialog/template-selection-dialog.component';
 
 // ¯\_(ツ)_/¯
 
@@ -24,10 +26,12 @@ import { EventBrokerService } from './shared/services/event-broker.service';
   standalone: true,
   imports: [
     DraftingPanelComponent,
+    MemberTableComponent,
     MenusComponent,
     RulerComponent,
     SampleSelectionDialogComponent,
     SetupWizardComponent,
+    TemplateSelectionDialogComponent,
     ToolbarAComponent,
     ToolbarBComponent,
     jqxDropDownButtonModule,
@@ -47,13 +51,12 @@ import { EventBrokerService } from './shared/services/event-broker.service';
 export class AppComponent implements AfterViewInit {
   @ViewChild('leftRuler') leftRuler!: RulerComponent;
   @ViewChild('bottomRuler') bottomRuler!: RulerComponent;
+  @ViewChild('memberTable') memberTable!:MemberTableComponent;
 
   constructor(private readonly eventBrokerService: EventBrokerService) {}
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.rulersToggle.subscribe(info => {
-      this.leftRuler.setVisible(info.data);
-      this.bottomRuler.setVisible(info.data);
-    });
+    this.eventBrokerService.rulersToggle.subscribe(info => this.leftRuler.visible = this.bottomRuler.visible = info.data);
+    this.eventBrokerService.memberTableToggle.subscribe(info => this.memberTable.visible = info.data);
   }
 }

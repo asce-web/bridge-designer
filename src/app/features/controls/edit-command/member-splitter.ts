@@ -17,7 +17,7 @@ export class MemberSplitter {
     private readonly selectedMembers: SelectedSet,
   ) {}
 
-  /** Do member splitting in the given list. */
+  /** Does member splitting in the given list. */
   public do(): void {
     // Skip redundant initialization during redos.
     this.isInitialized ||= this.initializeMembers();
@@ -31,10 +31,15 @@ export class MemberSplitter {
     EditableUtility.merge(this.members, this.mergedMembers, this.selectedMembers);
   }
 
-  /** Undo member splitting in the given list. */
+  /** Undoes member splitting in the given list. */
   public undo(): void {
     EditableUtility.remove(this.members, this.mergedMembers, this.selectedMembers);
     EditableUtility.merge(this.members, this.removedMembers, this.selectedMembers);
+  }
+
+  /** Returns whether the splitter has split anything. */
+  public get hasSplit(): boolean {
+    return this.mergedMembers.length > 0 || this.removedMembers.length > 0;
   }
 
   /** Initializes members to be merged and removed for splitting. Returns true on success. */

@@ -55,6 +55,9 @@ export class JointCursorService {
   }
 
   public show(ctx: CanvasRenderingContext2D): JointCursorService {
+    if (this.visible) {
+      return this;
+    }
     const savedStrokeStyle = ctx.strokeStyle;
     const savedLineDash = ctx.getLineDash();
 
@@ -102,8 +105,9 @@ export class JointCursorService {
     return this;
   }
 
-  public move(ctx: CanvasRenderingContext2D, x: number, y: number): void {
-    if (!this.visible) {
+  /** Moves the visible cursor. If forced, moves invisible cursor and makes it visible. */
+  public move(ctx: CanvasRenderingContext2D, x: number, y: number, force: boolean = false): void {
+    if (!this.visible && !force) {
       return;
     }
     this.clear(ctx).locateInViewport(x, y).show(ctx);
