@@ -1,4 +1,11 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { jqxNotificationComponent, jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditCommand } from '../../../shared/classes/editing';
@@ -50,7 +57,11 @@ export class DraftingPanelComponent implements AfterViewInit {
     private readonly selectedElementsService: SelectedElementsService,
     private readonly undoManagerService: UndoManagerService,
     private readonly viewportTransform: ViewportTransform2D,
-  ) { }
+  ) {}
+
+  private get ctx(): CanvasRenderingContext2D {
+    return Graphics.getContext(this.draftingPanel);
+  }
 
   handleResize(): void {
     const parent = this.draftingPanel.nativeElement.parentElement;
@@ -64,10 +75,11 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.draftingPanelInvalidation.next({ source: EventOrigin.DRAFTING_PANEL, data: 'viewport' });
   }
 
-  render(): void {
-    const ctx = Graphics.getContext(this.draftingPanel);
-    this.designRenderingService.render(ctx);
-    this.guideService.show(ctx);
+  render(showGuides: boolean = true): void {
+    this.designRenderingService.render(this.ctx);
+    if (showGuides) {
+      this.guideService.show(this.ctx);
+    }
   }
 
   loadBridge(bridge: BridgeModel): void {
@@ -76,7 +88,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.bridgeService.bridge = bridge;
     this.handleResize();
     this.changeDetector.detectChanges(); // Updates title block.
-    this.eventBrokerService.loadBridgeCompletion.next({source: EventOrigin.DRAFTING_PANEL});
+    this.eventBrokerService.loadBridgeCompletion.next({ source: EventOrigin.DRAFTING_PANEL });
   }
 
   loadSketch(sketch: BridgeSketchModel) {
@@ -120,6 +132,10 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.undoManagerService.do(command);
   }
 
+  guidesCursorActiveHandler(isActive: boolean) {
+    this.render(!isActive);
+  }
+
   moveJointRequestHandler({ joint, newLocation }: { joint: Joint; newLocation: Point2D }): void {
     if (Geometry.areColocated2D(newLocation, joint)) {
       return;
@@ -138,8 +154,9 @@ export class DraftingPanelComponent implements AfterViewInit {
 
   /** Sets the design grid density from the selection widget (menu or button) index. */
   selectGridDensityHandler(selectorIndex: number) {
-    if (DesignGridDensity.COARSE <= selectorIndex && selectorIndex <= DesignGridDensity.FINE) {
+    if (DesignGridDensity.COARSE <= selectorIndex && selectorIndex <= DesignGridDensity.FINE && selectorIndex != this.designGridService.grid.density) {
       this.designGridService.grid.density = selectorIndex;
+      this.eventBrokerService.gridDensityChange.next({source: EventOrigin.DRAFTING_PANEL});
     }
   }
 
@@ -158,7 +175,9 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.loadBridgeRequest.subscribe(info => this.loadBridge(info.data));
     this.eventBrokerService.loadSketchRequest.subscribe(info => this.loadSketch(info.data));
     this.eventBrokerService.selectedElementsChange.subscribe(_info => this.render());
-    this.eventBrokerService.titleBlockToggle.subscribe(info => this.titleBlock.nativeElement.style.display = info.data ? '' : 'none');
+    this.eventBrokerService.titleBlockToggle.subscribe(
+      info => (this.titleBlock.nativeElement.style.display = info.data ? '' : 'none'),
+    );
     this.eventBrokerService.editCommandCompletion.subscribe(_info => this.render());
     this.handleResize();
   }

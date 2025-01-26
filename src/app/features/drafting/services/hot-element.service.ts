@@ -51,19 +51,19 @@ export class HotElementService {
     const jointRadiusWorld = this.viewportTransform.viewportToWorldDistance(
       DesignJointRenderingService.JOINT_RADIUS_VIEWPORT,
     );
-    const jointPickRadiusSquared = Utility.sqr(3 * jointRadiusWorld);
 
-    // Following ifs are "last wins."
+    // Following ifs are "last wins" for setting hotElement;
     if (!options.considerOnly || options.considerOnly.includes(Joint)) {
       // Could stop at the first joint, but look for minimum in case the screen is small enough for joints to overlap.
       let minDistanceSquared: number = Number.MAX_VALUE;
       let minDistanceJoint: Joint | undefined = undefined;
+      const pickRadiusSquared = Utility.sqr(3 * jointRadiusWorld);
       for (const joint of bridge.joints) {
         if (
           (options.excludeFixedJoints && joint.isFixed) ||
           (options.excludedJointIndices && options.excludedJointIndices.has(joint.index))
         ) {
-          break;
+          continue;
         }
         const distanceSquared = Geometry.distanceSquared2D(xWorld, yWorld, joint.x, joint.y);
         if (distanceSquared < minDistanceSquared) {
@@ -71,7 +71,7 @@ export class HotElementService {
           minDistanceSquared = distanceSquared;
         }
       }
-      if (minDistanceSquared <= jointPickRadiusSquared) {
+      if (minDistanceSquared <= pickRadiusSquared) {
         hotElement = minDistanceJoint;
       }
     }
@@ -95,14 +95,13 @@ export class HotElementService {
           break;
         }
       }
-    } 
+    }
     if (!options.considerOnly || options.considerOnly.includes(GuideKnob)) {
       const hotGuideKnob = this.guidesService.getHotGuideKnob(x, y);
       if (hotGuideKnob) {
         hotElement = hotGuideKnob;
       }
     }
-    // TODO: Hot bridge labels and guides.
     if (hotElement !== this._hotElement) {
       this.erase(ctx, this._hotElement);
       this._hotElement = hotElement;
@@ -115,7 +114,7 @@ export class HotElementService {
     this._hotElement = undefined;
   }
 
-  /** Renders the current hot element. Useful when the hot element state has changed, e.g. it was (un)selected. */
+  /** Renders (usually re-renders) the current hot element. */
   public invalidate(ctx: CanvasRenderingContext2D): void {
     this.render(ctx, this.hotElement);
   }

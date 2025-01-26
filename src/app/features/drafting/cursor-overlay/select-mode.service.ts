@@ -10,14 +10,17 @@ import { SelectedElementsService } from '../services/selected-elements-service';
 import { CoordinateService } from '../services/coordinate.service';
 import { DesignGrid, DesignGridService } from '../../../shared/services/design-grid.service';
 import { EventOrigin } from '../../../shared/services/event-broker.service';
+import { Utility } from '../../../shared/classes/utility';
+import { HotElementDragService } from '../services/hot-element-drag.service';
 
 /** Implementation of the select drafting panel mode i/o. Includes moving the selected joint. */
 @Injectable({ providedIn: 'root' })
 export class SelectModeService {
   constructor(
-    private readonly coordinateService: CoordinateService,
     private readonly bridgeService: BridgeService,
+    private readonly coordinateService: CoordinateService,
     private readonly elementSelectorService: ElementSelectorService,
+    private readonly hotElementDragService: HotElementDragService,
     private readonly hotElementService: HotElementService,
     private readonly jointCursorService: JointCursorService,
     private readonly selectCursorService: SelectCursorService,
@@ -25,8 +28,8 @@ export class SelectModeService {
   ) {}
 
   private _ctx: CanvasRenderingContext2D | undefined;
-  private moveJointRequest: EventEmitter<{ joint: Joint; newLocation: Point2D }> | undefined;
   private initialHotJoint: Joint | undefined;
+  private moveJointRequest: EventEmitter<{ joint: Joint; newLocation: Point2D }> | undefined;
   private movingJoint: Joint | undefined;
 
   public initialize(
@@ -39,24 +42,24 @@ export class SelectModeService {
   }
 
   private get ctx(): CanvasRenderingContext2D {
-    if (!this._ctx) {
-      throw new Error('Select mode service not initialized');
-    }
-    return this._ctx;
+    return Utility.assertNotUndefined(this._ctx);
   }
 
   handleMouseDown(event: MouseEvent): void {
     // Left button down alone to start.
-    if (event.buttons !== 1 << 0 || !this._ctx) {
+    if (event.buttons !== 1 << 0 || this.hotElementDragService.isDragging()) {
       return;
     }
     if (this.hotElementService.hotElement instanceof Joint) {
       this.initialHotJoint = this.hotElementService.hotElement;
     }
-    this.selectCursorService.start(this._ctx, event.offsetX, event.offsetY);
+    this.selectCursorService.start(this.ctx, event.offsetX, event.offsetY);
   }
 
   handleMouseMove(event: MouseEvent): void {
+    if (this.hotElementDragService.isDragging()) {
+      return;
+    }
     this.maybeSwitchToJointMove(event);
     if (this.selectCursorService.isAnchored || this.movingJoint) {
       this.hotElementService.clearRenderedHotElement(this.ctx);
@@ -74,7 +77,7 @@ export class SelectModeService {
   private readonly cursor: Rectangle2D = Rectangle2D.createEmpty();
 
   handleMouseUp(event: MouseEvent): void {
-    if (event.button !== 0) {
+    if (event.button !== 0 || this.hotElementDragService.isDragging(event)) {
       return;
     }
     const selectCursor = this.selectCursorService.end(event.offsetX, event.offsetY, this.cursor);

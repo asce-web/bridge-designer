@@ -14,6 +14,7 @@ export type InputHandlerSet = {
 export class InputEventDelegator {
   public handlerSet: InputHandlerSet = {}; // By default, nothing happens.
 
+  // TODO: Consider switching to pointerXXX events. Might allow use with touch pads.
   public register(canvas: HTMLCanvasElement) {
     const that = this;
     canvas.addEventListener('mouseenter', (event: MouseEvent) => that.handlerSet.handleMouseEnter?.(event));

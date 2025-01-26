@@ -6,43 +6,51 @@ import { InventorySelectionService } from '../../../shared/services/inventory-se
 import { HotElementService } from '../services/hot-element.service';
 import { MemberCursorService } from '../services/member-cursor.service';
 import { GuideKnob } from '../../guides/guides.service';
+import { Utility } from '../../../shared/classes/utility';
+import { HotElementDragService } from '../services/hot-element-drag.service';
 
 @Injectable({ providedIn: 'root' })
 export class MembersModeService {
-  private ctx: CanvasRenderingContext2D | undefined;
+  private _ctx: CanvasRenderingContext2D | undefined;
   private addMemberRequest: EventEmitter<Member> | undefined;
   private readonly existingMemberJointIndices = new Set<number>();
 
   constructor(
-    private readonly hotElementService: HotElementService,
-    private readonly memberCursorService: MemberCursorService,
-    private readonly inventorySelectionService: InventorySelectionService,
     private readonly bridgeService: BridgeService,
+    private readonly hotElementDragService: HotElementDragService,
+    private readonly hotElementService: HotElementService,
+    private readonly inventorySelectionService: InventorySelectionService,
+    private readonly memberCursorService: MemberCursorService,
   ) {}
 
-  public initialize(ctx: CanvasRenderingContext2D, addMemberRequest: EventEmitter<Member>): MembersModeService {
-    this.ctx = ctx;
+  public initialize(ctx: CanvasRenderingContext2D, 
+    addMemberRequest: EventEmitter<Member>): MembersModeService {
+    this._ctx = ctx;
     this.addMemberRequest = addMemberRequest;
     return this;
   }
 
+  private get ctx(): CanvasRenderingContext2D {
+    return Utility.assertNotUndefined(this._ctx);
+  }
+
   handleMouseDown(event: MouseEvent): void {
-    if (this.ctx && event.buttons === 1 << 0) {
-      // Left button down alone to start.
-      const hotElement = this.hotElementService.hotElement;
-      if (hotElement instanceof Joint) {
-        this.existingMemberJointIndices.clear();
-        this.bridgeService
-          .findMembersWithJoint(hotElement)
-          .map(member => member.getOtherJoint(hotElement).index)
-          .forEach(i => this.existingMemberJointIndices.add(i));
-        this.memberCursorService.start(this.ctx, event.offsetX, event.offsetY, hotElement);
-      }
+    if (event.buttons !== 1 << 0 || this.hotElementDragService.isDragging()) {
+      return;
+    }
+    const hotElement = this.hotElementService.hotElement;
+    if (hotElement instanceof Joint) {
+      this.existingMemberJointIndices.clear();
+      this.bridgeService
+        .findMembersWithJoint(hotElement)
+        .map(member => member.getOtherJoint(hotElement).index)
+        .forEach(i => this.existingMemberJointIndices.add(i));
+      this.memberCursorService.start(this.ctx, event.offsetX, event.offsetY, hotElement);
     }
   }
 
   handleMouseMove(event: MouseEvent): void {
-    if (!this.ctx) {
+    if (this.hotElementDragService.isDragging()) {
       return;
     }
     this.hotElementService.updateRenderedHotElement(this.ctx, event.offsetX, event.offsetY, {
@@ -53,18 +61,21 @@ export class MembersModeService {
   }
 
   handleMouseUp(event: MouseEvent): void {
-    if (event.button !== 0) {
-      // Left up to end.
+    if (event.button !== 0 || this.hotElementDragService.isDragging(event)) {
       return;
     }
-    this.existingMemberJointIndices.clear();
     const anchor = this.memberCursorService.end();
+    if (!anchor) {
+      return; 
+    }
+    this.existingMemberJointIndices.clear();
     const hotElement = this.hotElementService.hotElement;
-    if (!anchor || anchor === hotElement || !(hotElement instanceof Joint)) {
+    if (anchor === hotElement || !(hotElement instanceof Joint)) {
       return;
     }
     this.addMemberRequest?.emit(
       new Member(-1, anchor, hotElement, this.inventorySelectionService.material, this.inventorySelectionService.shape),
     );
+    this.hotElementService.invalidate(this.ctx);
   }
 }

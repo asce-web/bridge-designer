@@ -42,7 +42,7 @@ export class MemberCursorService {
 
   public end(): Joint | undefined {
     if (!this._anchorJoint) {
-      return;
+      return undefined;
     }
     this.erase();
     const anchor = this._anchorJoint;

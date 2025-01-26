@@ -21,6 +21,7 @@ import { SelectModeService } from './select-mode.service';
 import { EraseModeService } from './erase-mode.service';
 import { Point2D } from '../../../shared/classes/graphics';
 import { StandardCursor, WidgetHelper } from '../../../shared/classes/widget-helper';
+import { HotElementDragService } from '../services/hot-element-drag.service';
 
 @Component({
   selector: 'cursor-overlay',
@@ -36,21 +37,25 @@ export class CursorOverlayComponent implements AfterViewInit {
   @Output() addJointRequest = new EventEmitter<Joint>();
   @Output() addMemberRequest = new EventEmitter<Member>();
   @Output() deleteRequest = new EventEmitter<Joint | Member>();
+  @Output() guidesCursorActive = new EventEmitter<boolean>();
   @Output() moveJointRequest = new EventEmitter<{ joint: Joint; newLocation: Point2D }>();
 
   @ViewChild('cursorLayer') cursorLayer!: ElementRef<HTMLCanvasElement>;
 
-  private readonly inputEventDelegator: InputEventDelegator = new InputEventDelegator();
+  private readonly dragInputEventDelegator: InputEventDelegator = new InputEventDelegator();
+  private readonly modalInputEventDelegator: InputEventDelegator = new InputEventDelegator();
 
   constructor(
     private readonly eraseModeService: EraseModeService,
     private readonly eventBrokerService: EventBrokerService,
+    private readonly hotElementDragService: HotElementDragService,
     private readonly hotElementService: HotElementService,
     private readonly jointsModeService: JointsModeService,
     private readonly membersModeService: MembersModeService,
     private readonly jointCursorService: JointCursorService,
     private readonly selectModeService: SelectModeService,
-  ) {}
+  ) {
+  }
 
   get canvas(): HTMLCanvasElement {
     return this.cursorLayer.nativeElement;
@@ -67,25 +72,37 @@ export class CursorOverlayComponent implements AfterViewInit {
   public setJointsMode(): void {
     this.hotElementService.clearRenderedHotElement(this.ctx);
     WidgetHelper.setMouseCursor(this.ctx, StandardCursor.CROSSHAIR);
-    this.inputEventDelegator.handlerSet = this.jointsModeService.initialize(this.ctx, this.addJointRequest);
+    this.modalInputEventDelegator.handlerSet = this.jointsModeService.initialize(
+      this.ctx,
+      this.addJointRequest,
+    );
   }
 
   public setMembersMode(): void {
     this.jointCursorService.clear(this.ctx);
-    WidgetHelper.setMouseCursor(this.ctx, 'img/pencil.png', 0, 31);
-    this.inputEventDelegator.handlerSet = this.membersModeService.initialize(this.ctx, this.addMemberRequest);
+    WidgetHelper.setMouseCursor(this.ctx, 'img/pencil.svg', 0, 31);
+    this.modalInputEventDelegator.handlerSet = this.membersModeService.initialize(
+      this.ctx,
+      this.addMemberRequest,
+    );
   }
 
   public setSelectMode(): void {
     this.jointCursorService.clear(this.ctx);
     WidgetHelper.setMouseCursor(this.ctx, StandardCursor.ARROW);
-    this.inputEventDelegator.handlerSet = this.selectModeService.initialize(this.ctx, this.moveJointRequest);
+    this.modalInputEventDelegator.handlerSet = this.selectModeService.initialize(
+      this.ctx,
+      this.moveJointRequest,
+    );
   }
 
   public setEraseMode(): void {
     this.jointCursorService.clear(this.ctx);
     WidgetHelper.setMouseCursor(this.ctx, 'img/pencilud.png', 2, 29);
-    this.inputEventDelegator.handlerSet = this.eraseModeService.initialize(this.ctx, this.deleteRequest);
+    this.modalInputEventDelegator.handlerSet = this.eraseModeService.initialize(
+      this.ctx,
+      this.deleteRequest,
+    );
   }
 
   private setCursorModeByControlSelectedIndex(i: number) {
@@ -106,7 +123,10 @@ export class CursorOverlayComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.inputEventDelegator.register(this.canvas);
+    // IMPORTANT: Order of delegator registration determines listener invocation order.
+    this.dragInputEventDelegator.register(this.canvas);
+    this.modalInputEventDelegator.register(this.canvas);
+    this.dragInputEventDelegator.handlerSet = this.hotElementDragService.initialize(this.ctx, this.guidesCursorActive);
     this.setJointsMode();
     this.eventBrokerService.editModeSelection.subscribe((eventInfo: EventInfo) =>
       this.setCursorModeByControlSelectedIndex(eventInfo.data as number),
