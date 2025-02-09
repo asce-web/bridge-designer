@@ -3,12 +3,12 @@ import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { InventorySelectionService } from '../../../shared/services/inventory-selection.service';
-import { HotElementService } from '../services/hot-element.service';
-import { MemberCursorService } from '../services/member-cursor.service';
+import { HotElementService } from '../shared/hot-element.service';
+import { MemberCursorService } from '../shared/member-cursor.service';
 import { Utility } from '../../../shared/classes/utility';
-import { HotElementDragService } from '../services/hot-element-drag.service';
-import { GuideKnob } from '../services/guides.service';
-import { Labels } from '../services/labels.service';
+import { HotElementDragService } from '../shared/hot-element-drag.service';
+import { GuideKnob } from '../shared/guides.service';
+import { Labels } from '../shared/labels.service';
 
 @Injectable({ providedIn: 'root' })
 export class MembersModeService {

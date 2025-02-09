@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { UndoManagerService } from '../../drafting/services/undo-manager.service';
+import { UndoManagerService } from '../../drafting/shared/undo-manager.service';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
 /**

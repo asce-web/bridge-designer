@@ -96,8 +96,8 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
   /** Current dialog height. Varies with site cost expander state. */
   dialogHeight: number = 594;
   readonly dialogWidth: number = 872;
-  toDollars = DOLLARS_FORMATTER.format;
-  toCount = COUNT_FORMATTER.format;
+  readonly toDollars = DOLLARS_FORMATTER.format;
+  readonly toCount = COUNT_FORMATTER.format;
 
   @ViewChild('archAbutmentsButton') archAbutmentsButton!: jqxRadioButtonComponent;
   @ViewChild('archHeightList') archHeightList!: HeightListComponent;

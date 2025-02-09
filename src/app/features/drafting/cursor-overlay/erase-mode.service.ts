@@ -1,9 +1,9 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
-import { HotElementService } from '../services/hot-element.service';
+import { HotElementService } from '../shared/hot-element.service';
 import { Utility } from '../../../shared/classes/utility';
-import { HotElementDragService } from '../services/hot-element-drag.service';
+import { HotElementDragService } from '../shared/hot-element-drag.service';
 
 @Injectable({ providedIn: 'root' })
 export class EraseModeService {

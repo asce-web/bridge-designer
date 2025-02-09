@@ -21,6 +21,7 @@ import { TemplateSelectionDialogComponent } from './features/template/template-s
 import { WorkflowManagementService } from './features/controls/management/workflow-management.service';
 import { UnstableBridgeDialogComponent } from './features/testing/unstable-bridge-dialog/unstable-bridge-dialog.component';
 import { LoadTestReportDialogComponent } from './features/testing/load-test-report-dialog/load-test-report-dialog.component';
+import { LoadTestReportComponent } from './features/testing/load-test-report/load-test-report.component';
 
 // ¯\_(ツ)_/¯
 
@@ -29,6 +30,7 @@ import { LoadTestReportDialogComponent } from './features/testing/load-test-repo
   standalone: true,
   imports: [
     DraftingPanelComponent,
+    LoadTestReportComponent,
     LoadTestReportDialogComponent,
     MemberTableComponent,
     MenusComponent,

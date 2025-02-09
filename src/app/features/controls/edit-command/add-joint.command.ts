@@ -1,7 +1,7 @@
 import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Joint } from '../../../shared/classes/joint.model';
-import { SelectedElements } from '../../drafting/services/selected-elements-service';
+import { SelectedElements } from '../../drafting/shared/selected-elements-service';
 import { MemberSplitter } from './member-splitter';
 
 export class AddJointCommand extends EditCommand {

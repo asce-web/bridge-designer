@@ -18,7 +18,7 @@ export class MenusComponent implements AfterViewInit {
   constructor(
     private readonly uiStateService: UiStateService,
     private readonly eventBrokerService: EventBrokerService,
-  ) { }
+  ) {}
 
   handleItemClick(event: any): void {
     const liElement = event.args as HTMLElement;
@@ -27,7 +27,7 @@ export class MenusComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // Can't disable items in HTML :-(
-    ['undo', 'redo', 'sizeup', 'sizedown'].forEach(id => this.mainMenu.disable(id, true));
+    ['loadTestResults', 'redo', 'sizedown', 'sizeup', 'undo'].forEach(id => this.mainMenu.disable(id, true));
     this.uiStateService.registerForDisablement(this.mainMenu);
 
     const gridGroup = ['coarseGrid', 'mediumGrid', 'fineGrid'];
@@ -39,9 +39,11 @@ export class MenusComponent implements AfterViewInit {
     const toolsGroup = ['joints', 'members', 'select', 'erase'];
     this.uiStateService.registerSelectMenuItems(toolsGroup, this.eventBrokerService.editModeSelection);
 
+    this.uiStateService.registerPlainMenuEntry('costCalculations', this.eventBrokerService.costReportRequest);
     this.uiStateService.registerPlainMenuEntry('delete', this.eventBrokerService.deleteSelectionRequest);
     this.uiStateService.registerPlainMenuEntry('loadSample', this.eventBrokerService.loadSampleRequest);
     this.uiStateService.registerPlainMenuEntry('loadTemplate', this.eventBrokerService.loadTemplateRequest);
+    this.uiStateService.registerPlainMenuEntry('loadTestResults', this.eventBrokerService.analysisReportRequest);
     this.uiStateService.registerPlainMenuEntry('new', this.eventBrokerService.newDesignRequest);
     this.uiStateService.registerPlainMenuEntry('redo', this.eventBrokerService.redoRequest);
     this.uiStateService.registerPlainMenuEntry('selectAll', this.eventBrokerService.selectAllRequest);
@@ -54,7 +56,6 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerToggleMenuItem('autoCorrect', this.eventBrokerService.autoCorrectToggle);
     this.uiStateService.registerToggleMenuItem('guides', this.eventBrokerService.guidesToggle);
     this.uiStateService.registerToggleMenuItem('legacyGraphics', this.eventBrokerService.legacyGraphicsToggle);
-    this.uiStateService.registerToggleMenuItem('loadTestResults', this.eventBrokerService.analysisReportRequest);
     this.uiStateService.registerToggleMenuItem('memberList', this.eventBrokerService.memberTableToggle);
     this.uiStateService.registerToggleMenuItem('memberNumbers', this.eventBrokerService.memberNumbersToggle);
     this.uiStateService.registerToggleMenuItem('rulers', this.eventBrokerService.rulersToggle);

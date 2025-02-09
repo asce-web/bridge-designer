@@ -2,7 +2,7 @@ import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
-import { SelectedElements } from '../../drafting/services/selected-elements-service';
+import { SelectedElements } from '../../drafting/shared/selected-elements-service';
 
 export class DeleteJointCommand extends EditCommand {
   private readonly joint: Joint[]; // List of one joint.

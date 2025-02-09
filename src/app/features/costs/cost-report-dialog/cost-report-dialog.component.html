@@ -1,0 +1,48 @@
+<jqxWindow
+  #dialog
+  [isModal]="true"
+  [autoOpen]="false"
+  [width]="810"
+  [height]="730"
+  (onOpen)="dialogOpenHandler()"
+>
+  <div class="header">Load test results</div>
+  <div>
+    <div class="scroller">
+      <table class="member-table">
+        <thead class="table-header">
+          <th>Type of cost</th>
+          <th>Item</th>
+          <th>Calculatioms</th>
+          <th>Cost</th>
+        </thead>
+        <tbody class="table-body">
+          @for (materialCostItem of costs.weightByMaterialAndSection; track materialCostItem.trackingTag) {
+            <tr>
+              <td>
+                @if ($first) {
+                  Material cost (M)
+                }
+              </td>
+              <td>{{ materialCostItem.name }}</td>
+              <td>{{ materialCostItem.costTabulation }}</td>
+              <td>=</td>
+              <td>{{ materialCostItem.cost }}</td>
+            </tr>
+          }
+          <tr>
+            <td>Material cost (M)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="buttons">
+      <jqxButton
+        (onClick)="dialog.close()"
+        [width]="'110px'"
+        style="margin-right: 8px"
+        >Close</jqxButton
+      >
+    </div>
+  </div>
+</jqxWindow>

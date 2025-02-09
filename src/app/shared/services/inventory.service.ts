@@ -123,9 +123,9 @@ class Inventory {
   static readonly CROSS_SECTIONS: CrossSection[] = [new BarCrossSection(), new TubeCrossSection()];
 
   static readonly MATERIALS: Material[] = [
-    new Material(0, 'Carbon Steel', 'CS', 200000000, 250000, 7850, [4.3, 6.3]),
-    new Material(1, 'High-Strength Low-Alloy Steel', 'HSS', 200000000, 345000, 7850, [5.6, 7.0]),
-    new Material(2, 'Quenched & Tempered Steel', 'QTS', 200000000, 485000, 7850, [6.0, 7.7]),
+    new Material(0, 'Carbon steel', 'CS', 200000000, 250000, 7850, [4.3, 6.3]),
+    new Material(1, 'High-strength low-alloy steel', 'HSS', 200000000, 345000, 7850, [5.6, 7.0]),
+    new Material(2, 'Quenched & tempered steel', 'QTS', 200000000, 485000, 7850, [6.0, 7.7]),
   ];
 
   static readonly SHAPES: Shape[][] = Inventory.CROSS_SECTIONS.map(cs => cs.createShapes());

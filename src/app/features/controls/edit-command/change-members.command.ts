@@ -1,7 +1,7 @@
 import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Member } from '../../../shared/classes/member.model';
 import { InventoryService, Material, Shape } from '../../../shared/services/inventory.service';
-import { SelectedSet } from '../../drafting/services/selected-elements-service';
+import { SelectedSet } from '../../drafting/shared/selected-elements-service';
 
 export class ChangeMembersCommand extends EditCommand {
   private constructor(

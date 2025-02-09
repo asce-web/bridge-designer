@@ -152,6 +152,8 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.analysisReportRequest.subscribe(_eventInfo => this.dialog.open());
+    // TODO: Remove whole component. This just disables.
+    console.log(this.eventBrokerService);
+    // this.eventBrokerService.analysisReportRequest.subscribe(_eventInfo => this.dialog.open());
   }
 }

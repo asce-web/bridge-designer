@@ -41,6 +41,7 @@ export class EventBrokerService {
   public readonly animationControlsToggle = new Subject<EventInfo>();
   public readonly animationToggle = new Subject<EventInfo>();
   public readonly autoCorrectToggle = new Subject<EventInfo>();
+  public readonly costReportRequest = new Subject<EventInfo>();
   public readonly deleteSelectionRequest = new Subject<EventInfo>();
   public readonly designModeSelection = new Subject<EventInfo>();
   public readonly draftingPanelInvalidation = new Subject<EventInfo>();

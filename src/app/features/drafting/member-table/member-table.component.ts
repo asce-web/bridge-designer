@@ -3,9 +3,9 @@ import { jqxGridComponent, jqxGridModule } from 'jqwidgets-ng/jqxgrid';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { EditEffect } from '../../../shared/classes/editing';
-import { SelectedElementsService } from '../services/selected-elements-service';
+import { SelectedElementsService } from '../shared/selected-elements-service';
 import { Utility } from '../../../shared/classes/utility';
-import { ElementSelectorService } from '../services/element-selector.service';
+import { ElementSelectorService } from '../shared/element-selector.service';
 import { AnalysisValidityService } from '../../controls/management/analysis-validity.service';
 
 @Component({

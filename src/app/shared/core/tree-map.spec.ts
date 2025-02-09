@@ -1,4 +1,4 @@
-import { makeRand } from '../../test/random-generator';
+import { make32BitRandomGenerator } from './random-generator';
 import { TreeMap } from './tree-map';
 
 describe('TreeMap', () => {
@@ -19,13 +19,13 @@ describe('TreeMap', () => {
 
   describe('insert', () => {
     it('should insert a value into an empty tree', () => {
-      expect(treeMap.insert('1')).toBe(true);
+      expect(treeMap.insert('1')).toBeTrue();
       expect(treeMap.find(1)).toBe('1');
     });
 
     it('should not insert a duplicate value', () => {
       treeMap.insert('1');
-      expect(treeMap.insert('1')).toBe(false);
+      expect(treeMap.insert('1')).toBeFalse();
     });
 
     it('should insert multiple ascending values', () => {
@@ -47,15 +47,72 @@ describe('TreeMap', () => {
     });
 
     it('should insert multiple random values', () => {
-      const rand = makeRand(10938443, 3098442, 109999942, 947362228);
+      const rand = make32BitRandomGenerator(10938443, 3098442, 109999942, 947362228);
       const data = [];
       for (let i = 0; i <= 10000; ++i) {
         const n = rand();
         data.push(n);
-        expect(treeMap.insert(n.toString())).withContext(`n=${n}`).toBeTrue();
+        expect(treeMap.insert(n.toString())).withContext(`i=${i}, n=${n}`).toBeTrue();
       }
       for (let i = 0; i <= 10000; ++i) {
         expect(treeMap.find(data[i])).withContext(`i=${i}`).toBe(data[i].toString());
+      }
+    });
+  });
+
+  describe('delete', () => {
+    it('should return false if deleting from empty tree', () => {
+      expect(treeMap.delete(42)).toBeFalse();
+    });
+
+    it('should return false deleting nonexistent element', () => {
+      expect(treeMap.insert('1')).toBeTrue();
+      expect(treeMap.delete(42)).toBeFalse();
+    });
+
+    it('should delete the root', () => {
+      expect(treeMap.insert('1')).toBeTrue();
+      expect(treeMap.delete(1)).toBeTrue();
+      expect(treeMap.find(1)).toBeUndefined();
+    });
+
+    it('should delete multiple ascending values', () => {
+      for (let i = 0; i <= 10000; ++i) {
+        expect(treeMap.insert(i.toString())).withContext(`i=${i}`).toBeTrue();
+      }
+      for (let i = 0; i <= 10000; ++i) {
+        expect(treeMap.delete(i)).withContext(`i=${i}`).toBeTrue();
+      }
+      for (let i = 9999; i >= 0; --i) {
+        expect(treeMap.find(i)).withContext(`i=${i}`).toBeUndefined();
+      }
+    });
+
+    it('should delete multiple decending values', () => {
+      for (let i = 9999; i >= 0; --i) {
+        expect(treeMap.insert(i.toString())).withContext(`i=${i}`).toBeTrue();
+      }
+      for (let i = 9999; i >= 0; --i) {
+        expect(treeMap.delete(i)).withContext(`i=${i}`).toBeTrue();
+      }
+      for (let i = 9999; i >= 0; --i) {
+        expect(treeMap.find(i)).withContext(`i=${i}`).toBeUndefined();
+      }
+    });
+
+    it('should delete multiple random values', () => {
+      const rand = make32BitRandomGenerator(10938443, 3098442, 109999942, 947362228);
+      const data = [];
+      for (let i = 0; i <= 10000; ++i) {
+        const n = rand();
+        data.push(n);
+        expect(treeMap.insert(n.toString())).withContext(`i=${i}, n=${n}`).toBeTrue();
+      }
+      for (let i = 0; i <= 10000; ++i) {
+        expect(treeMap.delete(data[i])).withContext(`i=${i}`).toBeTrue();
+      }
+      for (let i = 9999; i >= 0; --i) {
+        expect(treeMap.find(i)).withContext(`i=${i}`).toBeUndefined();
       }
     });
   });
@@ -73,6 +130,36 @@ describe('TreeMap', () => {
     it('should return undefined for a non-existent value', () => {
       treeMap.insert('1');
       expect(treeMap.find(2)).toBeUndefined();
+    });
+  });
+
+  describe('iterator', () => {
+    it('should not iterate over empty tree', () => {
+      let iterationCount: number = 0;
+      for (const _value of treeMap) {
+        ++iterationCount;
+      }
+      expect(iterationCount).toBe(0);
+    });
+
+    it('should iterate in order', () => {
+      treeMap.insert('1');
+      treeMap.insert('3');
+      treeMap.insert('4');
+      treeMap.insert('3');
+      treeMap.insert('6');
+      treeMap.insert('7');
+      treeMap.insert('5');
+      treeMap.insert('8');
+      treeMap.insert('6');
+      treeMap.insert('2');
+      treeMap.insert('9');
+      treeMap.insert('4');
+      const result = [];
+      for (const value of treeMap) {
+        result.push(value);
+      }
+      expect(result).toEqual(['1', '2', '3', '4', '5', '6', '7', '8', '9']);
     });
   });
 });

@@ -1,20 +1,20 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { Point2D, Rectangle2D } from '../../../shared/classes/graphics';
-import { ElementSelectorService } from '../services/element-selector.service';
-import { HotElementService } from '../services/hot-element.service';
-import { SelectCursorService } from '../services/select-cursor.service';
-import { JointCursorService } from '../services/joint-cursor.service';
+import { ElementSelectorService } from '../shared/element-selector.service';
+import { HotElementService } from '../shared/hot-element.service';
+import { SelectCursorService } from '../shared/select-cursor.service';
+import { JointCursorService } from '../shared/joint-cursor.service';
 import { Joint } from '../../../shared/classes/joint.model';
 import { BridgeService } from '../../../shared/services/bridge.service';
-import { SelectedElementsService } from '../services/selected-elements-service';
-import { CoordinateService } from '../services/coordinate.service';
+import { SelectedElementsService } from '../shared/selected-elements-service';
+import { CoordinateService } from '../shared/coordinate.service';
 import { DesignGrid, DesignGridService } from '../../../shared/services/design-grid.service';
 import { EventOrigin } from '../../../shared/services/event-broker.service';
 import { Utility } from '../../../shared/classes/utility';
-import { HotElementDragService } from '../services/hot-element-drag.service';
+import { HotElementDragService } from '../shared/hot-element-drag.service';
 import { Member } from '../../../shared/classes/member.model';
-import { GuideKnob } from '../services/guides.service';
-import { Labels } from '../services/labels.service';
+import { GuideKnob } from '../shared/guides.service';
+import { Labels } from '../shared/labels.service';
 
 /** Implementation of the select drafting panel mode i/o. Includes moving the selected joint. */
 @Injectable({ providedIn: 'root' })

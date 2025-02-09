@@ -3,7 +3,7 @@ import { Geometry } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
-import { SelectedSet } from '../../drafting/services/selected-elements-service';
+import { SelectedSet } from '../../drafting/shared/selected-elements-service';
 
 /** Helper to handle cases where a new joint or one to be moved transects existing members. */
 export class MemberSplitter {

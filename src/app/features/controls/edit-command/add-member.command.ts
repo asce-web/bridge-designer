@@ -3,7 +3,7 @@ import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classe
 import { Geometry } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
-import { SelectedElements } from '../../drafting/services/selected-elements-service';
+import { SelectedElements } from '../../drafting/shared/selected-elements-service';
 
 export class AddMemberCommand extends EditCommand {
   private members: Member[] = [];

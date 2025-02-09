@@ -7,7 +7,7 @@ import { SiteModel } from '../classes/site.model';
 import { DesignConditions, DesignConditionsService } from './design-conditions.service';
 import { AllowedShapeChangeMask, InventoryService, StockId } from './inventory.service';
 import { BridgeSketchModel } from '../classes/bridge-sketch.model';
-import { SelectedSet } from '../../features/drafting/services/selected-elements-service';
+import { SelectedSet } from '../../features/drafting/shared/selected-elements-service';
 import { DraftingPanelState } from './persistence.service';
 
 /**

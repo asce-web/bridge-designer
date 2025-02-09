@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { SelectedElementsService } from '../../features/drafting/services/selected-elements-service';
+import { SelectedElementsService } from '../../features/drafting/shared/selected-elements-service';
 import { BridgeService } from './bridge.service';
 import { DesignJointRenderingService } from './design-joint-rendering.service';
 import { DesignMemberRenderingService } from './design-member-rendering.service';

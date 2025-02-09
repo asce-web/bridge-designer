@@ -22,15 +22,15 @@ import { AddMemberCommand } from '../../controls/edit-command/add-member.command
 import { DeleteJointCommand } from '../../controls/edit-command/delete-joint.command';
 import { DeleteMembersCommand } from '../../controls/edit-command/delete-members.command';
 import { CursorOverlayComponent } from '../cursor-overlay/cursor-overlay.component';
-import { SelectedElementsService } from '../services/selected-elements-service';
-import { UndoManagerService } from '../services/undo-manager.service';
+import { SelectedElementsService } from '../shared/selected-elements-service';
+import { UndoManagerService } from '../shared/undo-manager.service';
 import { ToolSelectorComponent } from '../../controls/tool-selector/tool-selector.component';
 import { DesignGridDensity, DesignGridService } from '../../../shared/services/design-grid.service';
 import { MoveJointCommand } from '../../controls/edit-command/move-joint.command';
 import { BridgeSketchModel } from '../../../shared/classes/bridge-sketch.model';
-import { GuideKnob, GuidesService } from '../services/guides.service';
-import { Labels, LabelsService } from '../services/labels.service';
-import { Draggable } from '../services/hot-element-drag.service';
+import { GuideKnob, GuidesService } from '../shared/guides.service';
+import { Labels, LabelsService } from '../shared/labels.service';
+import { Draggable } from '../shared/hot-element-drag.service';
 
 @Component({
   selector: 'drafting-panel',

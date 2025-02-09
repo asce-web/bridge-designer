@@ -12,8 +12,8 @@ import {
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { EventBrokerService, EventInfo } from '../../../shared/services/event-broker.service';
-import { HotElementService } from '../services/hot-element.service';
-import { JointCursorService } from '../services/joint-cursor.service';
+import { HotElementService } from '../shared/hot-element.service';
+import { JointCursorService } from '../shared/joint-cursor.service';
 import { InputEventDelegator } from './input-handler';
 import { MembersModeService } from './members-mode.service';
 import { JointsModeService } from './joints-mode.service';
@@ -21,7 +21,7 @@ import { SelectModeService } from './select-mode.service';
 import { EraseModeService } from './erase-mode.service';
 import { Point2D } from '../../../shared/classes/graphics';
 import { StandardCursor } from '../../../shared/classes/widget-helper';
-import { Draggable, HotElementDragService } from '../services/hot-element-drag.service';
+import { Draggable, HotElementDragService } from '../shared/hot-element-drag.service';
 
 @Component({
   selector: 'cursor-overlay',

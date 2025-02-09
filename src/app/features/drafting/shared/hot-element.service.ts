@@ -15,6 +15,7 @@ import { CustomCursor, StandardCursor, WidgetHelper } from '../../../shared/clas
 export type HotElement = GuideKnob | Joint | Labels | Member | undefined;
 export type HotElementClass = typeof GuideKnob | typeof Joint | typeof Labels | typeof Member;
 
+/** Manages graphic elements that "light up" on mouse rollover, optionally be dragged by the pointer. */
 @Injectable({ providedIn: 'root' })
 export class HotElementService {
   private _hotElement: HotElement;
@@ -35,8 +36,8 @@ export class HotElementService {
   }
 
   /**
-   * Chooses a new hot element based on given cursor location.
-   * May be restricted to joints (optionally non-fixed only), members, and/or element labels.
+   * Chooses a new hot element based on given cursor location. Also manages the pointer (mouse) cursor.
+   * May be restricted to joints (optionally non-fixed only), members, guide, and/or element labels.
    */
   public updateRenderedHotElement(
     ctx: CanvasRenderingContext2D,
@@ -120,6 +121,7 @@ export class HotElementService {
       this._hotElement = hotElement;
       this.render(ctx, this._hotElement);
     }
+    // TODO: If this is too expensive, track current setting to avoid redundant per-move-event setting.
     WidgetHelper.setPointerCursor(ctx, pointerCursor);
   }
 

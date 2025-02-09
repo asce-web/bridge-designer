@@ -11,7 +11,7 @@ import { DesignSiteRenderingService } from '../../../shared/services/design-site
 import { EventBrokerService, EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
 import { SAMPLE_BRIDGES, SampleService } from '../../../shared/services/sample.service';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
-import { SelectedElementsService } from '../../drafting/services/selected-elements-service';
+import { SelectedElementsService } from '../../drafting/shared/selected-elements-service';
 import { jqxButtonComponent, jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 
 @Component({
