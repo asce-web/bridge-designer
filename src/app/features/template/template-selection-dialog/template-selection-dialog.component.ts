@@ -70,7 +70,8 @@ export class TemplateSelectionDialogComponent implements AfterViewInit {
 
   dialogOpenHandler(_event: any): void {
     // Transfer design (root injector) bridge to our local instance.
-    this.bridgeService.bridge = this.rootBridgeService.instance.bridge;
+    const rootBridgeService = this.rootBridgeService.instance;
+    this.bridgeService.setBridge(rootBridgeService.bridge, rootBridgeService.draftingPanelState);
  
     // Load the right list of sketches and set up the list box if it's changed.
     this.templateSketches = this.bridgeSketchService.getSketchList(this.bridgeService.designConditions);

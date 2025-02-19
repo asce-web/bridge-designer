@@ -7,7 +7,7 @@ export class BridgeModel {
   public projectName: string = 'Dennis H. Mahan Memorial Bridge';
   public projectId: string = '';
   public designedBy: string = '';
-  public iteration: number = 1;
+  public iterationNumber: number = 1;
   public readonly joints: Joint[] = [];
   public readonly members: Member[] = [];
 
@@ -21,7 +21,7 @@ export class BridgeModel {
     newBridge.projectName = bridge.projectName;
     newBridge.projectId = bridge.projectId;
     newBridge.designedBy = bridge.designedBy;
-    newBridge.iteration = bridge.iteration;
+    newBridge.iterationNumber = bridge.iterationNumber;
     for (let i: number = bridge.designConditions.prescribedJoints.length; i < bridge.joints.length; ++i) {
       const joint = bridge.joints[i];
       newBridge.joints.push(new Joint(joint.index, joint.x, joint.y, joint.isFixed));
@@ -30,8 +30,8 @@ export class BridgeModel {
       newBridge.members.push(
         new Member(
           member.index,
-          bridge.joints[member.a.index],
-          bridge.joints[member.b.index],
+          newBridge.joints[member.a.index],
+          newBridge.joints[member.b.index],
           member.material,
           member.shape,
           member.maxTension,

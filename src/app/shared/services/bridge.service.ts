@@ -26,18 +26,23 @@ export class BridgeService {
   private _bridge: BridgeModel = new BridgeModel(DesignConditionsService.STANDARD_CONDITIONS[0]);
   private _sketch: BridgeSketchModel = BridgeSketchModel.ABSENT;
   private _siteInfo: SiteModel = new SiteModel(this.bridge.designConditions);
-  public draftingPanelState: DraftingPanelState = new DraftingPanelState();
+  private _draftingPanelState: DraftingPanelState = DraftingPanelState.createNew();
 
   public get bridge(): BridgeModel {
     return this._bridge;
   }
 
-  /** Updates the current bridge, cancelling the sketch if it doesnt' match. */
-  public set bridge(value: BridgeModel) {
+  public get draftingPanelState(): DraftingPanelState {
+    return this._draftingPanelState;
+  }
+
+  /** Updates the current bridge and drafting panel state, cancelling the sketch if it doesnt' match. */
+  public setBridge(value: BridgeModel, draftingPanelState: DraftingPanelState) {
     if (value.designConditions.tagGeometryOnly !== this.designConditions.tagGeometryOnly) {
       this._sketch = BridgeSketchModel.ABSENT;
     }
     this._bridge = value;
+    this._draftingPanelState = draftingPanelState;
   }
 
   public get sketch(): BridgeSketchModel {
@@ -47,7 +52,7 @@ export class BridgeService {
   /** Sets or clears the sketch. Does nothing if the given sketch doesn't match the bridge. */
   public set sketch(value: BridgeSketchModel) {
     if (
-      value == BridgeSketchModel.ABSENT ||
+      value === BridgeSketchModel.ABSENT ||
       value.designConditions.tagGeometryOnly === this.designConditions.tagGeometryOnly
     ) {
       this._sketch = value;

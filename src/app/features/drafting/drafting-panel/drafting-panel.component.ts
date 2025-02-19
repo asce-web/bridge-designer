@@ -31,6 +31,7 @@ import { BridgeSketchModel } from '../../../shared/classes/bridge-sketch.model';
 import { GuideKnob, GuidesService } from '../shared/guides.service';
 import { Labels, LabelsService } from '../shared/labels.service';
 import { Draggable } from '../shared/hot-element-drag.service';
+import { DraftingPanelState } from '../../../shared/services/persistence.service';
 
 @Component({
   selector: 'drafting-panel',
@@ -89,11 +90,11 @@ export class DraftingPanelComponent implements AfterViewInit {
     }
   }
 
-  loadBridge(bridge: BridgeModel): void {
-    this.eventBrokerService.selectNoneRequest.next({origin: EventOrigin.DRAFTING_PANEL });
+  loadBridge(bridge: BridgeModel, draftingPanelState: DraftingPanelState): void {
+    this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.DRAFTING_PANEL });
     const bridgeGridDensity = DesignGridService.getDensityOfWorldPoints(bridge.joints);
     this.selectGridDensity(bridgeGridDensity);
-    this.bridgeService.bridge = bridge;
+    this.bridgeService.setBridge(bridge, draftingPanelState);
     this.handleResize();
     this.changeDetector.detectChanges(); // Updates title block.
     this.eventBrokerService.loadBridgeCompletion.next({ origin: EventOrigin.DRAFTING_PANEL, data: bridge });
@@ -185,7 +186,9 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.deleteSelectionRequest.subscribe(_eventInfo => this.deleteSelectionRequestHandler());
     this.eventBrokerService.draftingPanelInvalidation.subscribe(_eventInfo => this.render());
     this.eventBrokerService.gridDensitySelection.subscribe(eventInfo => this.selectGridDensityHandler(eventInfo.data));
-    this.eventBrokerService.loadBridgeRequest.subscribe(eventInfo => this.loadBridge(eventInfo.data));
+    this.eventBrokerService.loadBridgeRequest.subscribe(eventInfo =>
+      this.loadBridge(eventInfo.data.bridge, eventInfo.data.draftingPanelState),
+    );
     this.eventBrokerService.loadSketchRequest.subscribe(eventInfo => this.loadSketch(eventInfo.data));
     this.eventBrokerService.selectedElementsChange.subscribe(_eventInfo => this.render());
     this.eventBrokerService.titleBlockToggle.subscribe(eventInfo => {

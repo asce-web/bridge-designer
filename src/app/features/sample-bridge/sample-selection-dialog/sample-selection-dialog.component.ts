@@ -54,7 +54,8 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
     if (selectedIndex < 0) {
       return;
     }
-    this.bridgeService.bridge = this.sampleService.getSampleBridge(selectedIndex);
+    const saveSet = this.sampleService.getSampleBridge(selectedIndex);
+    this.bridgeService.setBridge(saveSet.bridge, saveSet.draftingPanelState);
     this.viewportTransform.setWindow(this.bridgeService.siteInfo.drawingWindow);
     const ctx = Graphics.getContext(this.preview);
     ctx.resetTransform();
@@ -66,7 +67,10 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
     this.dialog.close();
     this.eventBrokerService.loadBridgeRequest.next({
       origin: EventOrigin.SAMPLE_DIALOG,
-      data: this.bridgeService.bridge,
+      data: {
+        bridge: this.bridgeService.bridge,
+        draftingPanelState: this.bridgeService.draftingPanelState,
+      },
     });
   }
 

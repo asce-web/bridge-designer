@@ -132,7 +132,7 @@ export class ViewportTransform2D {
   */
 
   private setScaleFactor(): void {
-    if (this._widthWindow == 0 || this._heightWindow == 0) {
+    if (this._widthWindow === 0 || this._heightWindow === 0) {
       this._xScaleFactor = this._yScaleFactor = 1;
       return;
     }

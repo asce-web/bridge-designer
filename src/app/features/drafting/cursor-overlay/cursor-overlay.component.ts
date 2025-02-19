@@ -63,7 +63,7 @@ export class CursorOverlayComponent implements AfterViewInit {
 
   get ctx(): CanvasRenderingContext2D {
     const ctx = this.canvas.getContext('2d');
-    if (ctx == null) {
+    if (ctx === null) {
       throw new Error('Get canvas 2d context failed');
     }
     return ctx;

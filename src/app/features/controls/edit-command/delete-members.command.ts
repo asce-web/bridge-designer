@@ -4,6 +4,7 @@ import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { SelectedElements } from '../../drafting/shared/selected-elements-service';
+import { EditCommandDescription } from './edit-command-description';
 
 export class DeleteMembersCommand extends EditCommand {
   private constructor(
@@ -12,10 +13,7 @@ export class DeleteMembersCommand extends EditCommand {
     private readonly bridge: BridgeModel,
     private readonly selectedElements: SelectedElements,
   ) {
-    const description =
-      members.length == 1
-        ? `Delete member, joint ${members[0].a.number} to ${members[0].b.number}`
-        : `Delete ${members.length} members`;
+    const description = EditCommandDescription.formatMemberMessage(members, 'Delete member');
     super(description);
   }
 
@@ -40,7 +38,7 @@ export class DeleteMembersCommand extends EditCommand {
   }
 
   override get effectsMask(): number {
-    return this.joints.length > 0 ? (EditEffect.MEMBERS | EditEffect.JOINTS) : EditEffect.MEMBERS;
+    return this.joints.length > 0 ? EditEffect.MEMBERS | EditEffect.JOINTS : EditEffect.MEMBERS;
   }
 
   public override do(): void {

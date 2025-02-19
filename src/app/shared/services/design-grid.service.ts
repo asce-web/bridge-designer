@@ -13,7 +13,7 @@ export const enum DesignGridDensity {
 export class DesignGrid {
   /** Size if fine grid in world coordinates. */
   public static readonly FINE_GRID_SIZE = 0.25;
-  /** Allowable snap grid densities expressed in grid coordinate units, indexed on density. Invariant: multiple == 2^density. */
+  /** Allowable snap grid densities expressed in grid coordinate units, indexed on density. Invariant: multiple === 2^density. */
   static readonly SNAP_MULTIPLES = [4, 2, 1];
   static readonly DENSITY_BY_SNAP_MULTIPLE = [
     DesignGridDensity.ERROR, // 0
@@ -39,7 +39,7 @@ export class DesignGrid {
     if (DesignGridService.getDensityFromSnapMultiple(theSnapMultiple) === DesignGridDensity.ERROR) {
       throw new Error('Bad snap multiple: ' + theSnapMultiple);
     }
-    this._snapMultiple == theSnapMultiple;
+    this._snapMultiple === theSnapMultiple;
   }
 
   public get snapMultiple(): number {
@@ -92,7 +92,7 @@ export class DesignGridService {
 
   public static getSnapMultipleOfGrid(coord: number): number {
     const lsb = coord & ~(coord - 1);
-    return lsb == 0 || lsb > DesignGrid.MAX_SNAP_MULTIPLE ? DesignGrid.MAX_SNAP_MULTIPLE : lsb;
+    return lsb === 0 || lsb > DesignGrid.MAX_SNAP_MULTIPLE ? DesignGrid.MAX_SNAP_MULTIPLE : lsb;
   }
 
   public static getSnapMultipleOfWorld(coord: number): number {

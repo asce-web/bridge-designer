@@ -17,18 +17,14 @@ export class AddJointCommand extends EditCommand {
 
   /** Returns what's affected by this command. Valid only after do(). */
   override get effectsMask(): number {
-    return this.memberSplitter?.hasSplit ? (EditEffect.MEMBERS | EditEffect.JOINTS) : EditEffect.JOINTS;
+    return this.memberSplitter?.hasSplit ? EditEffect.MEMBERS | EditEffect.JOINTS : EditEffect.JOINTS;
   }
 
   // TODO: Handle too many joints.
   public override do(): void {
     this.joint.index = this.bridge.joints.length; // Append.
     EditableUtility.merge(this.bridge.joints, [this.joint], this.selectedElements.selectedJoints);
-    this.memberSplitter ||= new MemberSplitter(
-      this.joint,
-      this.bridge.members,
-      this.selectedElements.selectedMembers,
-    );
+    this.memberSplitter ||= new MemberSplitter(this.joint, this.bridge.members, this.selectedElements.selectedMembers);
     this.memberSplitter.do();
   }
 

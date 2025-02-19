@@ -110,6 +110,12 @@ export class Utility {
     return Array.from({ length: vectorCount }, () => new BitVector(vectorLength));
   }
 
+  public static replaceElements<T>(tgt: T[], src: T[]): T[] {
+    tgt.length = 0;
+    src.forEach(item => tgt.push(item));
+    return tgt;
+  }
+
   /* TODO: Not currently used. Remove?
   public static setsEqual<T>(a: Set<T>, b: Set<T>) {
     if (a.size !== b.size) {

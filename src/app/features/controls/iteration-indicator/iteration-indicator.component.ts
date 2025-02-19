@@ -1,6 +1,5 @@
-import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { EventBrokerService } from '../../../shared/services/event-broker.service';
-import { BridgeModel } from '../../../shared/classes/bridge.model';
+import { Component } from '@angular/core';
+import { BridgeService } from '../../../shared/services/bridge.service';
 
 @Component({
   selector: 'iteration-indicator',
@@ -8,20 +7,9 @@ import { BridgeModel } from '../../../shared/classes/bridge.model';
   imports: [],
   templateUrl: './iteration-indicator.component.html',
   styleUrl: './iteration-indicator.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class IterationIndicatorComponent implements AfterViewInit {
+export class IterationIndicatorComponent {
   constructor(
-    private readonly changeDetector: ChangeDetectorRef,
-    private readonly eventBrokerService: EventBrokerService,
+    readonly bridgeService: BridgeService,
   ) {}
-
-  iteration: number = 1;
-
-  ngAfterViewInit(): void {
-    this.eventBrokerService.loadBridgeCompletion.subscribe(eventInfo => {
-      this.iteration = (eventInfo.data as BridgeModel).iteration;
-      this.changeDetector.detectChanges();
-    });
-  }
 }

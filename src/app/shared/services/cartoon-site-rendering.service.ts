@@ -321,7 +321,7 @@ export class CartoonSiteRenderingService {
       Colors.CONCRETE,
       'black',
       location,
-      side == AbutmentSide.RIGHT,
+      side === AbutmentSide.RIGHT,
       this.wearSurfaceRenderer,
       viewportTransform,
     );
@@ -339,7 +339,7 @@ export class CartoonSiteRenderingService {
       Colors.CONCRETE,
       'black',
       location,
-      side == AbutmentSide.RIGHT,
+      side === AbutmentSide.RIGHT,
       archHeight,
       this.wearSurfaceRenderer,
       viewportTransform,

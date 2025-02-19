@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { BridgeModel } from '../../shared/classes/bridge.model';
 import { PersistenceService, SaveSet } from '../../shared/services/persistence.service';
 
 export type BridgeSample = {
@@ -9,7 +8,6 @@ export type BridgeSample = {
   saveSet: string,
 };
 
-// TODO: Iteration number should be 1 for all. Some aren't.
 export const SAMPLE_BRIDGES: Array<BridgeSample> = [
   {
     scenario: '01A',
@@ -78,9 +76,9 @@ export class SampleService {
 
   constructor(private readonly persistenceService: PersistenceService) { }
 
-  getSampleBridge(index: number): BridgeModel {
+  getSampleBridge(index: number): SaveSet {
     const saveSet = SaveSet.createNew();
     this.persistenceService.parseSaveSetText(SAMPLE_BRIDGES[index].saveSet, saveSet);
-    return saveSet.bridge;
+    return saveSet;
   }
 }

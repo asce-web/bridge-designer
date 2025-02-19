@@ -30,7 +30,7 @@ export class CostReportDialogComponent implements AfterViewInit {
     private readonly eventBrokerService: EventBrokerService,
     private readonly changeDetector: ChangeDetectorRef,
   ) {
-    this.bridgeCosts = this.bridgeCostService.createBridgeCostModel();
+    this.bridgeCosts = this.bridgeCostService.bridgeCostModel;
   }
 
   get siteCosts(): SiteCostsModel {
@@ -42,7 +42,7 @@ export class CostReportDialogComponent implements AfterViewInit {
   }
 
   dialogOpenHandler(): void {
-    this.bridgeCosts = this.bridgeCostService.createBridgeCostModel();
+    this.bridgeCosts = this.bridgeCostService.bridgeCostModel;
     this.changeDetector.detectChanges();
   }
 

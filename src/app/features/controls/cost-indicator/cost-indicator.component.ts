@@ -18,7 +18,6 @@ export class CostIndicatorComponent {
   ) {}
 
   get cost(): number {
-    const bridgeCosts = this.bridgeCostService.createBridgeCostModel();
-    return bridgeCosts.totalCost + this.bridgeService.designConditions.siteCosts.totalFixedCost;
+    return this.bridgeCostService.bridgeCostModel.totalCost + this.bridgeService.designConditions.siteCosts.totalFixedCost;
   }
 }

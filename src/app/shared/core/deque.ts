@@ -64,7 +64,7 @@ export class Deque<T> {
   public copyTo(list: T[], limit: number = this.length): T[] {
     list.length = 0;
     for (const item of this) {
-      if (limit-- == 0) {
+      if (limit-- === 0) {
         break;
       }
       list.push(item);

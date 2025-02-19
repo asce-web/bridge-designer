@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 export const enum EventOrigin {
   APP,
   CURSOR_OVERLAY,
+  DESIGN_ITERATION_DIALOG,
   DRAFTING_PANEL,
   MEMBER_TABLE,
   MENU,
@@ -43,6 +44,9 @@ export class EventBrokerService {
   public readonly autoCorrectToggle = new Subject<EventInfo>();
   public readonly costReportRequest = new Subject<EventInfo>();
   public readonly deleteSelectionRequest = new Subject<EventInfo>();
+  public readonly designIterationBackRequest = new Subject<EventInfo>();
+  public readonly designIterationForwardRequest = new Subject<EventInfo>();
+  public readonly designIterationChange = new Subject<EventInfo>();
   public readonly designModeSelection = new Subject<EventInfo>();
   public readonly draftingPanelInvalidation = new Subject<EventInfo>();
   public readonly editCommandCompletion = new Subject<EventInfo>();

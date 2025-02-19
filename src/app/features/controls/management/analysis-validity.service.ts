@@ -4,7 +4,7 @@ import { EventBrokerService } from '../../../shared/services/event-broker.servic
 
 /**
  * Container for logic that determines if the last bridge analysis is still valid for the current bridge.
- * Changes during analysis completion and maybe on edit command completion. Should  not be used in handlers
+ * The value during analysis completion and on edit command completion, so don't use this in handlers
  * of those events.
  */
 @Injectable({ providedIn: 'root' })
@@ -16,11 +16,11 @@ export class AnalysisValidityService {
     private readonly undoManagerService: UndoManagerService,
   ) {
     eventBrokerService.analysisCompletion.subscribe(_eventInfo => {
-      this.currentAnalysisToken = undoManagerService.mostRecentlyDone;
+      this.currentAnalysisToken = undoManagerService.stateToken;
     });
   }
 
   public get isLastAnalysisValid(): boolean {
-    return this.currentAnalysisToken === this.undoManagerService.mostRecentlyDone;
+    return this.currentAnalysisToken === this.undoManagerService.stateToken;
   }
 }

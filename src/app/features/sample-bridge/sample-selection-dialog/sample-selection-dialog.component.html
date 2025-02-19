@@ -6,8 +6,16 @@
   [height]="590"
   (onOpen)="dialogOpenHandler($event)"
 >
-  <div #header class="header">Load a sample design</div>
-  <div #content class="content">
+  <div
+    #header
+    class="header"
+  >
+    Load a sample design
+  </div>
+  <div
+    #content
+    class="content"
+  >
     <div class="top-row">
       <div class="select-label">Select a sample:</div>
     </div>
@@ -15,7 +23,7 @@
       <jqxListBox
         #sampleList
         style="margin-left: 8px"
-        [width]="'500px'"
+        [width]="'500'"
         [source]="source"
         [selectedIndex]="0"
         [displayMember]="'description'"
@@ -23,15 +31,23 @@
       >
       </jqxListBox>
       <div class="dialog-topic">Preview:</div>
-      <canvas #preview class="preview" width="498" height="298"> </canvas>
+      <canvas
+        #preview
+        class="preview"
+        width="498"
+        height="298"
+      >
+      </canvas>
     </div>
     <div class="right-column">
       <fieldset class="design-tip">
         <legend class="dialog-topic">Design tip:</legend>
         <div>
-          <img class="tip-icon" src="img/tipicon.png" /> You can use the up and
-          down arrow keys to scroll through the list while previewing each truss
-          below.
+          <img
+            class="tip-icon"
+            src="img/tipicon.png"
+          />
+          You can use the up and down arrow keys to scroll through the list while previewing each truss below.
         </div>
       </fieldset>
       <div>

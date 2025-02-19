@@ -2,6 +2,7 @@ import { EditableUtility, EditCommand, EditEffect } from '../../../shared/classe
 import { Member } from '../../../shared/classes/member.model';
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { SelectedSet } from '../../drafting/shared/selected-elements-service';
+import { EditCommandDescription } from './edit-command-description';
 
 export class ChangeMembersCommand extends EditCommand {
   private constructor(
@@ -18,11 +19,16 @@ export class ChangeMembersCommand extends EditCommand {
 
   /** Returns a command that updates selected items of the bridge members list to a new material. */
   public static forMemberMaterialsUpdate(members: Member[], updatedMembers: Member[]): ChangeMembersCommand {
-    return new ChangeMembersCommand(`Update selected member material`, members, updatedMembers);
+    const description = EditCommandDescription.formatMemberMessage(members, 'Update material for member');
+    return new ChangeMembersCommand(description, members, updatedMembers);
   }
 
   /** Returns a command that in/decrements the sizes of selected items of the bridge members list. */
-  public static forMemberSizeIncrement(members: Member[], selected: SelectedSet, increment: number = 1): ChangeMembersCommand {
+  public static forMemberSizeIncrement(
+    members: Member[],
+    selected: SelectedSet,
+    increment: number = 1,
+  ): ChangeMembersCommand {
     const updatedMembers = [];
     for (const index of selected) {
       const member = members[index];
@@ -31,7 +37,9 @@ export class ChangeMembersCommand extends EditCommand {
         updatedMembers.push(new Member(member.index, member.a, member.b, member.material, newShape));
       }
     }
-    return new ChangeMembersCommand(`${increment > 0 ? 'Increment' : 'Decrement'} selected member sizes`, members, updatedMembers);
+    const action = increment > 0 ? 'Up' : 'Down';
+    const description = EditCommandDescription.formatMemberMessage(members, `${action}-size member`);
+    return new ChangeMembersCommand(description, members, updatedMembers);
   }
 
   public override do(): void {

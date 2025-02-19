@@ -24,8 +24,8 @@ const enum Tools {
   REDO,
   REDO_MULTIPLE,
   ITERATION,
-  PREVIOUS_ITERATION,
-  NEXT_ITERATION,
+  BACK_ITERATION,
+  FORWARD_ITERATION,
   GOTO_ITERATION,
   COST,
   COST_REPORT,
@@ -115,10 +115,10 @@ export class ToolbarAComponent implements AfterViewInit {
       case Tools.ITERATION:
         this.componentService.load(IterationIndicatorComponent, tool[0]);
         break;
-      case Tools.PREVIOUS_ITERATION:
+      case Tools.BACK_ITERATION:
         WidgetHelper.initToolbarImgButton('To previous iteration', 'img/left.png', tool);
         break;
-      case Tools.NEXT_ITERATION:
+      case Tools.FORWARD_ITERATION:
         WidgetHelper.initToolbarImgButton('To next iteration', 'img/right.png', tool);
         break;
       case Tools.GOTO_ITERATION:
@@ -153,6 +153,8 @@ export class ToolbarAComponent implements AfterViewInit {
     this.uiStateService.registerPlainToolbarButton(tools[Tools.GOTO_ITERATION], eventBroker.loadDesignIterationRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.LOAD_TEST_REPORT], eventBroker.analysisReportRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.NEW], eventBroker.newDesignRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.FORWARD_ITERATION], eventBroker.designIterationForwardRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.BACK_ITERATION], eventBroker.designIterationBackRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.REDO], eventBroker.redoRequest);
     this.uiStateService.addWidgetDisabler(eventBroker.redoRequest, disable => {
       const tools = this.toolbar.getTools();

@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { Deque } from '../../../shared/core/deque';
-import { EditCommand } from '../../../shared/classes/editing';
+import { EditCommand, EditCommandPlaceholder } from '../../../shared/classes/editing';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 
 @Injectable({ providedIn: 'root' })
 export class UndoManagerService {
+  public static readonly NO_EDIT_COMMAND = new EditCommandPlaceholder('[no edit command]');
   private static readonly MAX_DONE_COUNT: number = 1000;
 
   public readonly done: Deque<EditCommand> = new Deque<EditCommand>();
@@ -23,12 +24,12 @@ export class UndoManagerService {
       this.done.popRight(); // In practice, only executes once.
     }
     this.undone.clear();
-    this.emitCommandCompletion(editCommand.effectsMask);
+    this.emitCommandCompletion('do', editCommand.effectsMask);
   }
 
   /** Returns the command most recently done. Usable as a state token. */
-  public get mostRecentlyDone(): EditCommand | undefined {
-    return this.done.peekLeft();
+  public get stateToken(): Object {
+    return this.done.peekLeft() || UndoManagerService.NO_EDIT_COMMAND;
   }
 
   private undo(count: number = 1): void {
@@ -42,7 +43,7 @@ export class UndoManagerService {
       effectsMask |= editCommand.effectsMask;
       this.undone.pushLeft(editCommand);
     }
-    this.emitCommandCompletion(effectsMask);
+    this.emitCommandCompletion('undo', effectsMask);
   }
 
   private redo(count: number = 1): void {
@@ -56,13 +57,14 @@ export class UndoManagerService {
       effectsMask |= editCommand.effectsMask;
       this.done.pushLeft(editCommand);
     }
-    this.emitCommandCompletion(effectsMask);
+    this.emitCommandCompletion('redo', effectsMask);
   }
 
-  private emitCommandCompletion(effectsMask: number): void {
+  private emitCommandCompletion(kind: 'do' | 'undo' | 'redo', effectsMask: number): void {
     this.eventBrokerService.editCommandCompletion.next({
       origin: EventOrigin.SERVICE,
       data: {
+        kind,
         effectsMask,
         doneCount: this.done.length,
         undoneCount: this.undone.length,

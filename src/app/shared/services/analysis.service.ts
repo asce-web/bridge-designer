@@ -199,7 +199,7 @@ export class AnalysisService {
       const dof = 2 * ij + 1;
       for (let ilc = 0; ilc < nLoadInstances; ilc++) {
         let load = pointDeadLoad;
-        if (ij == 0 || ij == conditions.loadedJointCount - 1) {
+        if (ij === 0 || ij === conditions.loadedJointCount - 1) {
           load /= 2;
         }
         pointLoads[ilc][dof] -= load;
@@ -399,18 +399,19 @@ export class AnalysisService {
     }
   }
 
-  public static getStatusIcon(status: AnalysisStatus): {src: string, title: string} {
+  public static getStatusIcon(status: AnalysisStatus, useSmall?: boolean): {src: string, title: string} {
+    const small = useSmall ? 'small' : '';
     switch (status) {
       case AnalysisStatus.PASSES:
-        return {src: 'img/good.png', title: 'The design passed its last test.'};
+        return {src: `img/good${small}.png`, title: 'The design passed its last test.'};
       case AnalysisStatus.FAILS_LOAD_TEST:
-        return {src: 'img/bad.png', title: 'The design failed its last test.'};
+        return {src: `img/bad${small}.png`, title: 'The design failed its last test.'};
       case AnalysisStatus.FAILS_SLENDERNESS:
-        return {src: 'img/bad.png', title: 'Some members that are too slender.'};
+        return {src: `img/bad${small}.png`, title: 'Some members that are too slender.'};
       case AnalysisStatus.UNSTABLE:
-        return {src: 'img/bad.png', title: 'The design is unstable.'};
+        return {src: `img/bad${small}.png`, title: 'The design is unstable.'};
       default:
-        return {src: 'img/working.png', title: "The design hasn't been analyzed."};
+        return {src: `img/working${small}.png`, title: "The design hasn't been analyzed."};
     }
   }
 }

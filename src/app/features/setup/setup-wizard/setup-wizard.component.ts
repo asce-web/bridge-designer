@@ -32,6 +32,7 @@ import {
 import { BridgeSketchService } from '../../../shared/services/bridge-sketch.service';
 import { CartoonSketchRenderingService } from '../../../shared/services/cartoon-sketch-rendering.service';
 import { CartoonJointRenderingService } from '../../../shared/services/cartoon-joint-rendering.service';
+import { DraftingPanelState } from '../../../shared/services/persistence.service';
 
 /**
  * The card-based setup wizard.
@@ -144,7 +145,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
   }
 
   set designConditions(value: DesignConditions) {
-    this.bridgeService.bridge = new BridgeModel(value);
+    this.bridgeService.setBridge(new BridgeModel(value), DraftingPanelState.createNew());
   }
 
   /** Sets up widgets directly associated with bridge service design conditions. */
@@ -174,9 +175,9 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     }
 
     // Anchorages: 0, 1, or 2
-    if (conditions.anchorageCount == 2) {
+    if (conditions.anchorageCount === 2) {
       this.twoAnchoragesButton.check();
-    } else if (conditions.anchorageCount == 1) {
+    } else if (conditions.anchorageCount === 1) {
       this.oneAnchorageButton.check();
     } else {
       this.noAnchoragesButton.check();
@@ -290,7 +291,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
   finishButtonOnClickHandler(): void {
     this.eventBrokerService.loadBridgeRequest.next({
       origin: EventOrigin.SETUP_DIALOG,
-      data: this.bridgeService.bridge,
+      data: { bridge: this.bridgeService.bridge, draftingPanelState: this.bridgeService.draftingPanelState },
     });
     this.eventBrokerService.loadSketchRequest.next({
       origin: EventOrigin.SETUP_DIALOG,

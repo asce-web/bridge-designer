@@ -245,7 +245,7 @@ export class DesignSiteRenderingService implements SiteDetailRenderers {
       this.fillPatternService.createConcrete(ctx),
       Colors.CONCRETE,
       location,
-      side == AbutmentSide.RIGHT,
+      side === AbutmentSide.RIGHT,
       DesignSiteRenderingService.renderAbutmentWearSurface,
       viewportTransform,
     );
@@ -263,7 +263,7 @@ export class DesignSiteRenderingService implements SiteDetailRenderers {
       this.fillPatternService.createConcrete(ctx),
       Colors.CONCRETE,
       location,
-      side == AbutmentSide.RIGHT,
+      side === AbutmentSide.RIGHT,
       archHeight,
       DesignSiteRenderingService.renderAbutmentWearSurface,
       viewportTransform,

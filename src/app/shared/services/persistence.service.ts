@@ -1,11 +1,11 @@
-import { Injectable } from "@angular/core";
-import { DesignGridService, DesignGrid } from "./design-grid.service";
-import { BridgeModel } from "../classes/bridge.model";
-import { Joint } from "../classes/joint.model";
-import { Member } from "../classes/member.model";
-import { DesignConditions, DesignConditionsService } from "./design-conditions.service";
-import { InventoryService } from "./inventory.service";
-import { Utility } from "../classes/utility";
+import { Injectable } from '@angular/core';
+import { DesignGridService, DesignGrid } from './design-grid.service';
+import { BridgeModel } from '../classes/bridge.model';
+import { Joint } from '../classes/joint.model';
+import { Member } from '../classes/member.model';
+import { DesignConditions, DesignConditionsService } from './design-conditions.service';
+import { InventoryService } from './inventory.service';
+import { Utility } from '../classes/utility';
 
 const DELIMITER = '|';
 const JOINT_COORD_LENGTH = 3;
@@ -22,7 +22,8 @@ const YEAR_LENGTH = 4;
 export class PersistenceService {
   constructor(
     private readonly designConditionsService: DesignConditionsService,
-    private readonly inventoryService: InventoryService) { }
+    private readonly inventoryService: InventoryService,
+  ) {}
 
   public getSaveSetAsText(saveSet: SaveSet): string {
     const chunks: string[] = [];
@@ -44,7 +45,7 @@ export class PersistenceService {
     }
     chunks.push(saveSet.bridge.designedBy, DELIMITER);
     chunks.push(saveSet.bridge.projectId, DELIMITER);
-    chunks.push(saveSet.bridge.iteration.toString(), DELIMITER);
+    chunks.push(saveSet.bridge.iterationNumber.toString(), DELIMITER);
     chunks.push(saveSet.draftingPanelState.yLabels.toFixed(3), DELIMITER);
     return chunks.join('');
   }
@@ -55,7 +56,8 @@ export class PersistenceService {
       text,
       this.designConditionsService,
       DesignGridService.FINEST_GRID,
-      this.inventoryService).parse(saveSet);
+      this.inventoryService,
+    ).parse(saveSet);
   }
 }
 
@@ -63,24 +65,44 @@ export class PersistenceService {
 export class SaveSet {
   private constructor(
     public readonly bridge: BridgeModel,
-    public readonly draftingPanelState: DraftingPanelState = new DraftingPanelState()) { }
+    public readonly draftingPanelState: DraftingPanelState,
+  ) {}
 
-  public static createNew(designConditions: DesignConditions = DesignConditionsService.PLACEHOLDER_CONDITIONS) {
-    return this.createForBridge(new BridgeModel(designConditions));
+  public static createNew(
+    designConditions: DesignConditions = DesignConditionsService.PLACEHOLDER_CONDITIONS,
+  ): SaveSet {
+    return new SaveSet(new BridgeModel(designConditions),  DraftingPanelState.createNew());
   }
 
-  public static createForBridge(bridge: BridgeModel) {
-    return new SaveSet(bridge);
+  /** Returns a new save set that refers directly to given bridge and drafting panel state. */
+  public static shallowCopy(bridge: BridgeModel, draftingPanelState: DraftingPanelState) {
+    return new SaveSet(bridge, draftingPanelState);
+  }
+
+  /** Returns a new save set containing deep copies of given bridge and drafting panel state. */
+  public static deepCopy(bridge: BridgeModel, draftingPanelState: DraftingPanelState): SaveSet {
+    return new SaveSet(
+      BridgeModel.createClone(bridge),
+      DraftingPanelState.createClone(draftingPanelState),
+    );
   }
 
   clear(): void {
-    this.bridge.clear();  
+    this.bridge.clear();
     this.draftingPanelState.clear();
   }
 }
 
 export class DraftingPanelState {
-  public yLabels: number = 2;
+  private constructor(public yLabels: number = 2) {}
+
+  public static createNew() {
+    return new DraftingPanelState();
+  }
+  
+  public static createClone(existing: DraftingPanelState): DraftingPanelState {
+    return new DraftingPanelState(existing.yLabels);
+  }
 
   clear(): void {
     this.yLabels = 2; // Default for new bridge.
@@ -94,7 +116,8 @@ class SaveSetParser {
     private readonly text: string,
     private readonly designConditionsService: DesignConditionsService,
     private readonly grid: Readonly<DesignGrid>,
-    private readonly inventoryService: InventoryService) { }
+    private readonly inventoryService: InventoryService,
+  ) {}
 
   /** Parse the input text, mutating the save set to match. If the parse fails, the save set is clear. */
   parse(saveSet: SaveSet): void {
@@ -125,7 +148,7 @@ class SaveSetParser {
           throw new Error(`bad prescribed joint ${n}`);
         }
       } else {
-         joint = new Joint(i, this.grid.xformGridToWorld(x), this.grid.xformGridToWorld(y), false);
+        joint = new Joint(i, this.grid.xformGridToWorld(x), this.grid.xformGridToWorld(y), false);
       }
       saveSet.bridge.joints.push(joint);
     }
@@ -142,12 +165,13 @@ class SaveSetParser {
         jointA,
         jointB,
         this.inventoryService.materials[materialIndex],
-        this.inventoryService.getShape(sectionIndex, sizeIndex));
+        this.inventoryService.getShape(sectionIndex, sizeIndex),
+      );
       saveSet.bridge.members.push(member);
     }
     saveSet.bridge.designedBy = this.scanToDelimiter('name of designer');
     saveSet.bridge.projectId = this.scanToDelimiter('project ID');
-    saveSet.bridge.iteration = parseInt(this.scanToDelimiter('iteration'));
+    saveSet.bridge.iterationNumber = parseInt(this.scanToDelimiter('iteration'));
     saveSet.draftingPanelState.yLabels = parseFloat(this.scanToDelimiter('label position'));
   }
 
@@ -166,7 +190,7 @@ class SaveSetParser {
       this.readPtr++;
     }
     return this.text.slice(start, this.readPtr++);
-  };
+  }
 
   scanNumber(allowSign: boolean, width: number, what: string): number {
     let val: number = 0;
@@ -175,7 +199,7 @@ class SaveSetParser {
       width--;
       this.readPtr++;
     }
-    if (allowSign && width >= 2 && this.text[this.readPtr] == '-') {
+    if (allowSign && width >= 2 && this.text[this.readPtr] === '-') {
       width--;
       this.readPtr++;
       isNegated = true;

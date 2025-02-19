@@ -50,7 +50,7 @@ export class ElementSelectorService {
   private selectAllMembers(origin: EventOrigin): void {
     const memberCount = this.bridgeService.bridge.members.length;
     const selectedMembers = this.selectedElementsService.selectedElements.selectedMembers;
-    if (selectedMembers.size == memberCount) {
+    if (selectedMembers.size === memberCount) {
       return;
     }
     for (let i = 0; i < memberCount; ++i) {

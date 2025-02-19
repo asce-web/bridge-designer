@@ -77,7 +77,7 @@ export class LocalContestCodeInputComponent {
   private emitStateChangeEvent(codeLength: number | undefined): void {
     const newState = !codeLength // 0 or undefined
       ? LocalContestCodeInputState.NONE
-      : codeLength == 6
+      : codeLength === 6
         ? LocalContestCodeInputState.COMPLETE
         : LocalContestCodeInputState.PREFIX;
     if (newState !== this.state) {

@@ -17,7 +17,7 @@ export class BridgeCostService {
 
   constructor(private readonly bridgeService: BridgeService) {}
 
-  createBridgeCostModel(): BridgeCostModel {
+  public get bridgeCostModel(): BridgeCostModel {
     const bridge = this.bridgeService.bridge;
     const weightByMaterialAndSection = new TreeMap<string, MaterialSectionWeight>(
       (a, b) => a.localeCompare(b),
@@ -43,5 +43,9 @@ export class BridgeCostService {
       BridgeCostService.CONNECTION_FEE,
       BridgeCostService.PRODUCT_FEE,
     );
+  }
+
+  public get allCosts(): number {
+    return this.bridgeCostModel.totalCost + this.bridgeService.bridge.designConditions.siteCosts.totalFixedCost;
   }
 }

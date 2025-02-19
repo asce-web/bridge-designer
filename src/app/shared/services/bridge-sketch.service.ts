@@ -625,7 +625,7 @@ export class BridgeSketchService {
       }
       members.push({ a: lastJoint, b: leftMastJoint });
     }
-    if (conditions.anchorageCount == 1) {
+    if (conditions.anchorageCount === 1) {
       const x0 = rightAbutmentJoint.x;
       const xa = leftMastJoint.x;
       const a = leftMastJoint.y / Utility.sqr(xa - x0);
@@ -681,7 +681,7 @@ export class BridgeSketchService {
       iLeftBottom++;
       iRightBottom--;
     }
-    if (iLeftTop == iRightTop) {
+    if (iLeftTop === iRightTop) {
       members.push({ a: joints[iLeftTop], b: joints[iLeftBottom] });
     }
     return sketch;
@@ -720,7 +720,7 @@ export class BridgeSketchService {
       iLeftBottom++;
       iRightBottom--;
     }
-    if (iLeftTop == iRightTop) {
+    if (iLeftTop === iRightTop) {
       members.push({ a: joints[iLeftTop], b: joints[iLeftBottom] });
     }
     return sketch;

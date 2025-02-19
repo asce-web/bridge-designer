@@ -33,7 +33,7 @@ export class ImagesLoader {
           const image = new Image();
           image.onload = () => {
             // On last load, execute pending actions.
-            if (--loader.remainingCount == 0) {
+            if (--loader.remainingCount === 0) {
               loader.pendingActions.forEach(action => action(loader.images));
               loader.pendingActions.length = 0; // Not necessary, but nice.
             }
@@ -49,7 +49,7 @@ export class ImagesLoader {
     if (this.errors.length) {
       throw new Error(`Images load fail: ${this.errors}`);
     }
-    if (this.remainingCount == 0) {
+    if (this.remainingCount === 0) {
       action(this.images);
     } else {
       this.pendingActions.push(action);

@@ -37,6 +37,14 @@ export class WorkflowManagementService {
       }
     });
 
+    eventBrokerService.designIterationChange.subscribe(eventInfo => {
+      uiStateService.disable(eventBrokerService.designIterationBackRequest, eventInfo.data.inProgressIndex <= 0);
+      uiStateService.disable(
+        eventBrokerService.designIterationForwardRequest,
+        eventInfo.data.inProgressIndex >= eventInfo.data.iterationCount - 1,
+      );
+    });
+
     // Design mode selection: drafting or test.
     // TODO: If animation is disabled, set selector back to design immediately.
     eventBrokerService.designModeSelection.subscribe(eventInfo => {
@@ -76,12 +84,14 @@ export class WorkflowManagementService {
     });
 
     // Load bridge completion.
-    eventBrokerService.loadBridgeCompletion.subscribe(_eventInfo =>
+    eventBrokerService.loadBridgeCompletion.subscribe(_eventInfo => {
+      uiStateService.disable(eventBrokerService.undoRequest);
+      uiStateService.disable(eventBrokerService.redoRequest);
       eventBrokerService.loadInventorySelectorRequest.next({
         origin: EventOrigin.SERVICE,
         data: bridgeService.getMostCommonStockId(),
-      }),
-    );
+      });
+    });
 
     // Member size change requests.
     eventBrokerService.memberSizeDecreaseRequest.subscribe(_eventInfo => handleMemberSizeChangeRequest(-1));

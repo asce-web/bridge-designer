@@ -2,43 +2,51 @@
   #dialog
   [isModal]="true"
   [autoOpen]="false"
-  [width]="640"
-  [height]="590"
+  [width]="700"
+  [height]="610"
   (onOpen)="dialogOpenHandler($event)"
 >
   <div
     #header
     class="header"
   >
-    Load a sample design
+    Load a design iteration
   </div>
   <div
     #content
     class="content"
   >
-    <div>
+    <div class="top-row">
+      <div class="select-label">Select an iteration:</div>
+    </div>
+    <div class="left-column">
       <jqxTabs
         #tabsReference
-        [width]="'90%'"
-        [height]="200"
+        style="margin-left:8px"
+        [width]="500"
+        [height]="360"
         [position]="'top'"
         [animationType]="'none'"
         [selectionTracker]="false"
       >
         <ul>
-          <li>List view</li>
           <li>Tree view</li>
+          <li>List view</li>
         </ul>
-        <div></div>
         <div>
           <jqxTreeGrid
             #tree
-            [width]="638"
-            [height]="400"
+            [width]="496"
+            [height]="320"
             [columns]="columns"
+            [columnsHeight]="30"
+            [columnsResize]="true"
+            [selectionMode]="'singleRow'"
             [source]="dataAdapter"
+            (onRowDoubleClick)="handleRowDoubleClick($event)"
           ></jqxTreeGrid>
         </div>
+        <div>List view</div>
       </jqxTabs>
       <div class="dialog-topic">Preview:</div>
       <canvas
@@ -49,14 +57,6 @@
       >
       </canvas>
     </div>
-    <div class="dialog-topic">Preview:</div>
-    <canvas
-      #preview
-      class="preview"
-      width="498"
-      height="298"
-    >
-    </canvas>
     <div class="right-column">
       <fieldset class="design-tip">
         <legend class="dialog-topic">Design tip:</legend>
@@ -67,8 +67,8 @@
               src="img/tipicon.png"
             />
             You can select two ways of viewing design iterations. The <b>List view</b> tab presents them in them in the
-            order created. The <b>Tree view shows</b>
-            how each iteration depends on previous ones. Pick the one that makes most sense to you!
+            order created. The <b>Tree view</b> shows how each iteration depends on previous ones. Pick the one that
+            makes most sense to you!
           </p>
           <p>
             In either view, you can use the up and down arrow keys to scroll through the design iterations while viewing

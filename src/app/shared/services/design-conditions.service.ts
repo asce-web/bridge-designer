@@ -125,9 +125,9 @@ export class DesignConditions {
     // digit 9 => panel point at which pier is located. (-1 = no pier).
     this.pierJointIndex = this.pierPanelIndex = code[8] - 1;
     // digit 8 => (0 = simple, 1 = arch, 2 = cable left, 3 = cable both)
-    const isArch = code[7] == 1;
-    const isLeftCable = code[7] == 2 || code[7] == 3;
-    const isRightCable = code[7] == 3;
+    const isArch = code[7] === 1;
+    const isLeftCable = code[7] === 2 || code[7] === 3;
+    const isRightCable = code[7] === 3;
     // digits 6 and 7 => under span clearance
     this.underClearance = 10 * code[5] + code[6];
     // digits 4 and 5 => overhead clearance
@@ -137,8 +137,8 @@ export class DesignConditions {
     // digit 1 is the load case, 1-based
     // -1 correction for 0-based load_case table
     const loadCaseIndex = code[0] - 1;
-    this.loadType = (loadCaseIndex & 1) == 0 ? LoadType.STANDARD_TRUCK : LoadType.HEAVY_TRUCK;
-    this.deckType = (loadCaseIndex & 2) == 0 ? DeckType.MEDIUM_STRENGTH : DeckType.HIGH_STRENGTH;
+    this.loadType = (loadCaseIndex & 1) === 0 ? LoadType.STANDARD_TRUCK : LoadType.HEAVY_TRUCK;
+    this.deckType = (loadCaseIndex & 2) === 0 ? DeckType.MEDIUM_STRENGTH : DeckType.HIGH_STRENGTH;
 
     // Precomputation of condition-dependent site geometry and design constraints.
 
@@ -235,7 +235,7 @@ export class DesignConditions {
     // Cost calculations.
     this.excavationVolume = DesignConditions.getExcavationVolume(this.deckElevation);
     this.deckCostRate =
-      this.deckType == DeckType.MEDIUM_STRENGTH
+      this.deckType === DeckType.MEDIUM_STRENGTH
         ? DesignConditions.DECK_COST_PER_PANEL_MED_STRENGTH
         : DesignConditions.DECK_COST_PER_PANEL_HI_STRENGTH;
 
@@ -340,7 +340,7 @@ export class DesignConditions {
   }
 
   public get deckThickness(): number {
-    return this.deckType == DeckType.MEDIUM_STRENGTH ? 0.23 : 0.15;
+    return this.deckType === DeckType.MEDIUM_STRENGTH ? 0.23 : 0.15;
   }
 
   public get isArch() {
@@ -360,7 +360,7 @@ export class DesignConditions {
   }
 
   public get isAtGrade() {
-    return this.deckElevation == DesignConditions.GAP_DEPTH;
+    return this.deckElevation === DesignConditions.GAP_DEPTH;
   }
 
   public get isFromKeyCode() {
@@ -416,7 +416,7 @@ export class DesignConditions {
   }
 
   private static getCodeError(code: Uint8Array | null): CodeError {
-    if (code == null) {
+    if (code === null) {
       return CodeError.MISSING;
     }
     // Character 1 - Load case scenario (1=Case A, 2=Case B, 3=Case C, 4=Case D); entry of any character other than 1, 2, 3, or 4 is illegal.
@@ -447,7 +447,7 @@ export class DesignConditions {
     if (!Utility.inRange(code[8 - 1], 0, 3)) {
       return CodeError.BAD_ARCH_ANCHORAGE;
     }
-    const arch = code[8 - 1] == 1;
+    const arch = code[8 - 1] === 1;
     // Character 9 - Intermediate pier location, expressed as the numbered deck-level joint(i.e., 1=left end of bridge; 2=4 meters from left end; 3=8 meters from left end...)
     const pierPanelIndex = code[9 - 1] - 1;
     const pier: boolean = pierPanelIndex >= 0;
@@ -491,7 +491,7 @@ export class DesignConditions {
 
     // 5. Restrict the pier to be in the range [left abutment joint + 4 .. right abutment joint - 4].
     // Prevents pier conflict with abutment.
-    if ((pier && pierPanelIndex == 0) || pierPanelIndex >= nPanels - 1) {
+    if ((pier && pierPanelIndex === 0) || pierPanelIndex >= nPanels - 1) {
       return CodeError.INFEASIBLE_PIER_LOCATION;
     }
 

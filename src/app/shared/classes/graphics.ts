@@ -434,7 +434,7 @@ export class Graphics {
   ): void {
     const dx = x1 - x0;
     const dy = y1 - y0;
-    if (dx == 0 && dy == 0) {
+    if (dx === 0 && dy === 0) {
       return;
     }
     const len = Math.sqrt(dx * dx + dy * dy);
