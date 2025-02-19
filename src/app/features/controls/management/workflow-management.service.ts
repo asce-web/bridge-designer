@@ -36,6 +36,7 @@ export class WorkflowManagementService {
       }
     });
 
+    // Design iterations change.
     eventBrokerService.designIterationChange.subscribe(eventInfo => {
       uiStateService.disable(eventBrokerService.designIterationBackRequest, eventInfo.data.inProgressIndex <= 0);
       uiStateService.disable(

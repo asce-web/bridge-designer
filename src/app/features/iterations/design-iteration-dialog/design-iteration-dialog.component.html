@@ -2,9 +2,9 @@
   #dialog
   [isModal]="true"
   [autoOpen]="false"
-  [width]="700"
-  [height]="610"
-  (onOpen)="dialogOpenHandler($event)"
+  [width]="694"
+  [height]="752"
+  (onOpen)="handleDialogOpen($event)"
 >
   <div
     #header
@@ -22,12 +22,13 @@
     <div class="left-column">
       <jqxTabs
         #tabsReference
-        style="margin-left:8px"
-        [width]="500"
+        style="margin-left: 8px"
+        [width]="514"
         [height]="360"
         [position]="'top'"
         [animationType]="'none'"
         [selectionTracker]="false"
+        (onSelected)="handleTabSelected($event)"
       >
         <ul>
           <li>Tree view</li>
@@ -36,23 +37,41 @@
         <div>
           <jqxTreeGrid
             #tree
-            [width]="496"
-            [height]="320"
+            style="margin: 8px"
+            [width]="494"
+            [height]="308"
             [columns]="columns"
             [columnsHeight]="30"
             [columnsResize]="true"
             [selectionMode]="'singleRow'"
             [source]="dataAdapter"
             (onRowDoubleClick)="handleRowDoubleClick($event)"
+            (onRowSelect)="handleTreeRowSelect($event)"
           ></jqxTreeGrid>
         </div>
-        <div>List view</div>
+        <div>
+          <jqxGrid
+            #grid
+            style="margin: 8px"
+            [width]="494"
+            [height]="308"
+            [columns]="columns"
+            [columnsheight]="30"
+            [columnsresize]="true"
+            [rowsheight]="26"
+            [selectionmode]="'singleRow'"
+            [source]="dataAdapter"
+            (onRowDoubleClick)="handleRowDoubleClick($event)"
+            (onRowselect)="handleGridRowSelect($event)"
+          >
+          </jqxGrid>
+        </div>
       </jqxTabs>
       <div class="dialog-topic">Preview:</div>
       <canvas
         #preview
         class="preview"
-        width="498"
+        width="514"
         height="298"
       >
       </canvas>
@@ -89,7 +108,7 @@
       <div>
         <jqxButton
           #okButton
-          (onClick)="okClickHandler()"
+          (onClick)="handleOkClick()"
           style="float: right; margin-top: 16px; margin-right: 8px"
           [width]="'110px'"
           >OK</jqxButton

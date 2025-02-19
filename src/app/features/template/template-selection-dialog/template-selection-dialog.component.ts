@@ -87,6 +87,13 @@ export class TemplateSelectionDialogComponent implements AfterViewInit {
     // Only now is everything set to paint the preview image.
     this.renderPreview();
     this.templateList.focus();
+
+    // Monkeypatch jqxlistbox to handle events it doesn't know about by default.
+    const sampleListElement = this.templateList.elementRef.nativeElement;
+    sampleListElement.addEventListener('keydown', (event: KeyboardEvent) => this.keyDownHandler(event));
+    sampleListElement
+      .querySelectorAll('jqxlistbox .jqx-listitem-element')
+      .forEach((item: Element) => item.addEventListener('dblclick', () => this.okClickHandler()));
   }
 
   keyDownHandler(event: KeyboardEvent): void {
@@ -106,11 +113,5 @@ export class TemplateSelectionDialogComponent implements AfterViewInit {
     const w = this.preview.nativeElement.width;
     const h = this.preview.nativeElement.height;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);
-    // Monkeypatch jqxlistbox to handle events it doesn't know about by default.
-    const sampleListElement = this.templateList.elementRef.nativeElement;
-    sampleListElement.addEventListener('keydown', (event: KeyboardEvent) => this.keyDownHandler(event));
-    sampleListElement
-      .querySelectorAll('jqxlistbox .jqx-listitem-element')
-      .forEach((item: Element) => item.addEventListener('dblclick', () => this.okClickHandler()));
   }
 }

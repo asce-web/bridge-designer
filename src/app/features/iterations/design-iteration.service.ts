@@ -110,6 +110,7 @@ export class DesignIterationService {
     });
     eventBrokerService.designIterationForwardRequest.subscribe(_eventInfo => this.chooseRelative(+1));
     eventBrokerService.designIterationBackRequest.subscribe(_eventInfo => this.chooseRelative(-1));
+    this.createInProgressIteration(bridgeService.bridge, bridgeService.draftingPanelState); // Placeholder.
   }
 
   public get inProgressIndex(): number {

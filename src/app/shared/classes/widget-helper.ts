@@ -53,6 +53,18 @@ export class WidgetHelper {
     list.selectedIndex(index);
   }
 
+  /** Given a collection of event handlers, returns new ones where execution of any disables all others. */
+  public static createMutexHandlerGroup(...handlers: ((event: any) => void)[]): ((event: any) => void)[] {
+    let disabled = false;
+    return handlers.map(handler => event => {
+      if (!disabled) {
+        disabled = true;
+        handler(event);
+        disabled = false;
+      }
+    });
+  }
+
   /* Replaced by uistate service.
   public static sendEventOnToolbarClick(subject: Subject<EventInfo>, tool: any, data?: any) {
     tool.on('click', () =>

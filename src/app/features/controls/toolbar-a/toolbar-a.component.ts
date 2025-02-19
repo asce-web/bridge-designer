@@ -116,10 +116,10 @@ export class ToolbarAComponent implements AfterViewInit {
         this.componentService.load(IterationIndicatorComponent, tool[0]);
         break;
       case Tools.BACK_ITERATION:
-        WidgetHelper.initToolbarImgButton('To previous iteration', 'img/left.png', tool);
+        WidgetHelper.initToolbarImgButton('To previous iteration', 'img/left.png', tool, true);
         break;
       case Tools.FORWARD_ITERATION:
-        WidgetHelper.initToolbarImgButton('To next iteration', 'img/right.png', tool);
+        WidgetHelper.initToolbarImgButton('To next iteration', 'img/right.png', tool, true);
         break;
       case Tools.GOTO_ITERATION:
         WidgetHelper.initToolbarImgButton('Choose a previous iteration', 'img/goto.png', tool);
