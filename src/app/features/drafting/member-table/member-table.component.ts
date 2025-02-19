@@ -136,11 +136,21 @@ export class MemberTableComponent implements AfterViewInit {
     </div>`;
   }
 
-  private renderCompressionForceStrengthRatio(_row?: number, _columnField?: string, value?: any, defaultHtml?: string): string {
+  private renderCompressionForceStrengthRatio(
+    _row?: number,
+    _columnField?: string,
+    value?: any,
+    defaultHtml?: string,
+  ): string {
     return this.renderAnalysisCell(value, defaultHtml!, 'rgb(255,150,150)');
   }
 
-  private renderTensionForceStrengthRatio(_row?: number, _columnField?: string, value?: any, defaultHtml?: string): string {
+  private renderTensionForceStrengthRatio(
+    _row?: number,
+    _columnField?: string,
+    value?: any,
+    defaultHtml?: string,
+  ): string {
     return this.renderAnalysisCell(value, defaultHtml!, 'rgb(150,150,255)');
   }
 
@@ -183,10 +193,7 @@ export class MemberTableComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    // The throttler merges some cases where both following events have the same origin.
-    this.eventBrokerService.analysisCompletion.subscribe(_eventInfo => {
-      this.updateGridContent();
-    });
+    this.eventBrokerService.analysisCompletion.subscribe(_eventInfo => this.updateGridContent());
     this.eventBrokerService.editCommandCompletion.subscribe(eventInfo => {
       if (
         eventInfo.data.effectsMask & EditEffect.MEMBERS ||

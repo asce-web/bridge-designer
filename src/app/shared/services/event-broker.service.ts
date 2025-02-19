@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
+import { AnalysisStatus } from './analysis.service';
 
 /** Origin of an event. For breaking event cycles. */
 export const enum EventOrigin {
@@ -17,6 +18,7 @@ export const enum EventOrigin {
 }
 
 export type EventInfo = { origin: EventOrigin; data?: any };
+export type TypedEventInfo<T> = { origin: EventOrigin, data: T };
 
 /** 
  * Event subject container. Suffixes connote following conventions.
@@ -37,7 +39,8 @@ export type EventInfo = { origin: EventOrigin; data?: any };
  */
 @Injectable({ providedIn: 'root' })
 export class EventBrokerService {
-  public readonly analysisCompletion = new Subject<EventInfo>();
+  public readonly analysisCompletion = new Subject<TypedEventInfo<AnalysisStatus>>();
+  // TODO: Finish replacing EventInfo with TypedEventInfo.
   public readonly analysisReportRequest = new Subject<EventInfo>();
   public readonly animationControlsToggle = new Subject<EventInfo>();
   public readonly animationToggle = new Subject<EventInfo>();

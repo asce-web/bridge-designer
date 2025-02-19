@@ -31,8 +31,7 @@ export class WorkflowManagementService {
     // Analysis completion.
     eventBrokerService.analysisCompletion.subscribe(eventInfo => {
       uiStateService.disable(eventBrokerService.analysisReportRequest, false);
-      const status = eventInfo.data as AnalysisStatus;
-      if (status === AnalysisStatus.UNSTABLE) {
+      if (eventInfo.data === AnalysisStatus.UNSTABLE) {
         eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE });
       }
     });
