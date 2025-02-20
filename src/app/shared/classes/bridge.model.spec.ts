@@ -1,5 +1,5 @@
 import { BridgeModel } from './bridge.model';
-import { DesignConditions } from '../services/design-conditions.service';
+import { DesignConditionsService } from '../services/design-conditions.service';
 import { Joint } from './joint.model';
 import { Member } from './member.model';
 import { InventoryService } from '../services/inventory.service';
@@ -9,7 +9,7 @@ describe('BridgeModel', () => {
 
   describe('createClone', () => {
     it('should create a clone of the bridge model', () => {
-      const originalBridge = new BridgeModel(DesignConditions.createPlaceholderConditions());
+      const originalBridge = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS);
       originalBridge.projectName = 'Original Bridge';
       originalBridge.projectId = '123';
       originalBridge.designedBy = 'Engineer';

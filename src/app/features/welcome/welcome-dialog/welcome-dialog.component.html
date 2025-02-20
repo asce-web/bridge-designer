@@ -1,0 +1,86 @@
+<jqxWindow
+  #dialog
+  [isModal]="true"
+  [autoOpen]="true"
+  [width]="840"
+  [height]="350"
+>
+  <div
+    #header
+    class="header"
+  >
+    Welcome to…
+  </div>
+  <div class="content">
+    <div class="banner">
+      <img class="banner-img" src="img/banner.png" />
+    </div>
+    <div class="radio">
+      <div class="radio-selection">
+        <img
+          class="radio-icon"
+          src="img/new.png"
+        />
+        <jqxRadioButton
+          #newButton
+          style="display: inline-block"
+          [groupName]="'startOptions'"
+          [checked]="true"
+        >
+          <span>Create a new bridge design</span>
+        </jqxRadioButton>
+      </div>
+      <div class="radio-selection">
+        <img
+          class="radio-icon"
+          src="img/loadsample.png"
+        />
+        <jqxRadioButton
+          #loadSampleButton
+          style="display: inline-block"
+          [groupName]="'startOptions'"
+        >
+          <span>Load a sample bridge design</span>
+        </jqxRadioButton>
+      </div>
+      <div class="radio-selection">
+        <img
+          class="radio-icon"
+          src="img/open.png"
+        />
+        <jqxRadioButton
+          #openButton
+          style="display: inline-block"
+          [groupName]="'startOptions'"
+        >
+          <span>Continue work on a saved bridge design</span>
+        </jqxRadioButton>
+      </div>
+    </div>
+    <fieldset class="design-tip">
+      <legend class="dialog-topic">Design tip:</legend>
+      <div>
+        <img
+          class="tip-icon"
+          src="img/tipicon.png"
+        />
+        Your objective is to use the Bridge Designer to design a truss bridge that costs as little as possible, while
+        still passing the load test with no member failures. Good luck!
+      </div>
+    </fieldset>
+    <div class="button-column">
+      <div class="motif"><img src="img/motif01.png" /></div>
+      <jqxButton [width]="208">About…</jqxButton>
+      <jqxButton
+        [width]="208"
+        (onClick)="dialog.close()"
+        >Cancel</jqxButton
+      >
+      <jqxButton
+        [width]="208"
+        (onClick)="handleOkButton()"
+        >OK</jqxButton
+      >
+    </div>
+  </div>
+</jqxWindow>

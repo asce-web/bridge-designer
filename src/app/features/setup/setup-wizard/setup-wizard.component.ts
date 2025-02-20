@@ -367,6 +367,9 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
 
   /** Opens the dialog, setting up widgets with given design conditions. */
   private open(conditions: DesignConditions) {
+    if (conditions === DesignConditionsService.PLACEHOLDER_CONDITIONS) {
+      conditions = this.designConditionsService.getConditionsForCodeLong(conditions.codeLong);
+    }
     this.designConditions = conditions;
     this.setWidgetsFromDesignConditions();
     this.bridgeService.bridge.projectName = this.rootBridgeService.instance.bridge.projectName;
@@ -430,7 +433,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     const h = this.elevationCanvas.nativeElement.height;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);
     this.cardService.card.renderElevationCartoon();
-    this.eventBrokerService.newDesignRequest.subscribe(_info =>
+    this.eventBrokerService.newDesignRequest.subscribe(_eventInfo =>
       this.open(this.rootBridgeService.instance.designConditions),
     );
   }

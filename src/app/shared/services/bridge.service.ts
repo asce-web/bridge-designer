@@ -22,8 +22,7 @@ export class RootBridgeService {
 /** Injectable, mutable container for a bridge model and related site and drafting information. */
 @Injectable({ providedIn: 'root' })
 export class BridgeService {
-  /** Current bridge. Initialized with reasonable default conditions for design drafting. */
-  private _bridge: BridgeModel = new BridgeModel(DesignConditionsService.STANDARD_CONDITIONS[0]);
+  private _bridge: BridgeModel = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS);
   private _sketch: BridgeSketchModel = BridgeSketchModel.ABSENT;
   private _siteInfo: SiteModel = new SiteModel(this.bridge.designConditions);
   private _draftingPanelState: DraftingPanelState = DraftingPanelState.createNew();

@@ -13,11 +13,11 @@ import { EventBrokerService } from '../../../shared/services/event-broker.servic
 })
 export class ToolSelectorComponent implements AfterViewInit {
   readonly imgSize = 25;
-  readonly buttonSize = 42;
+  readonly buttonSize = 34;
   readonly windowWidth = 4 * this.buttonSize + 2;
-  readonly windowHeight = 76;
+  readonly windowHeight = 68;
 
-  @ViewChild('content') content!: jqxWindowComponent;
+  @ViewChild('dialog') dialog!: jqxWindowComponent;
   @ViewChild('jointsButton') jointsButton!: jqxToggleButtonComponent;
   @ViewChild('membersButton') membersButton!: jqxToggleButtonComponent;
   @ViewChild('selectButton') selectButton!: jqxToggleButtonComponent;
@@ -33,5 +33,12 @@ export class ToolSelectorComponent implements AfterViewInit {
       [this.jointsButton, this.membersButton, this.selectButton, this.eraseButton],
       this.eventBrokerService.editModeSelection,
     );
+    this.eventBrokerService.toolsToggle.subscribe(eventInfo => {
+      if (eventInfo.data) {
+        this.dialog.open();
+      } else {
+        this.dialog.close();
+      }
+    });
   }
 }

@@ -6,6 +6,7 @@ import {
   SizeMaterialSectionCount,
 } from '../../../shared/classes/bridge-cost.model';
 import { TreeMap } from '../../../shared/core/tree-map';
+import { DesignConditionsService } from '../../../shared/services/design-conditions.service';
 
 /**
  * Container for logic that tabulates bridge cost information.
@@ -46,6 +47,8 @@ export class BridgeCostService {
   }
 
   public get allCosts(): number {
-    return this.bridgeCostModel.totalCost + this.bridgeService.bridge.designConditions.siteCosts.totalFixedCost;
+    return this.bridgeService.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS
+      ? this.bridgeCostModel.totalCost + this.bridgeService.bridge.designConditions.siteCosts.totalFixedCost
+      : 0;
   }
 }

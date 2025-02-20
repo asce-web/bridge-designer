@@ -316,11 +316,7 @@ export class DesignConditions {
 
   /** Use DesignConditionsService.PLACEHOLDER_CONDITIONS. */
   static get placeholderConditions(): DesignConditions {
-    return new DesignConditions('00X', 4061612100 /* 1072408000 /*1110824000*/);
-  }
-
-  static createPlaceholderConditions(): DesignConditions {
-    return new DesignConditions('00X', 1072408000 /*1110824000*/);
+    return new DesignConditions('00X', 1110824000);
   }
 
   private static getKeyCodeAbutmentCost(deckElevation: number): number {

@@ -1,23 +1,20 @@
 <jqxWindow
   #dialog
+  [autoOpen]="false"
   [position]="{ x: 12, y: 122 }"
   [isModal]="false"
-  [autoOpen]="true"
   [width]="windowWidth"
   [height]="windowHeight"
   [resizable]="false"
 >
-  <div
-    #header
-    class="header"
-  >
-    <img src="img/tools.png" class="header-icon"/>
+  <div class="header">
+    <img
+      src="img/tools.png"
+      class="header-icon"
+    />
     Tools
   </div>
-  <div
-    #content
-    class="content"
-  >
+  <div class="content">
     <jqxToggleButton
       #jointsButton
       [imgSrc]="'img/joint.png'"

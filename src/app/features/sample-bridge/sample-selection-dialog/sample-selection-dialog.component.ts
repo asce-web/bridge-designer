@@ -1,14 +1,14 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { jqxListBoxComponent, jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
-import { jqxButtonComponent, jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
+import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { DesignBridgeRenderingService } from '../../../shared/services/design-bridge-rendering.service';
 import { DesignJointRenderingService } from '../../../shared/services/design-joint-rendering.service';
 import { DesignMemberRenderingService } from '../../../shared/services/design-member-rendering.service';
 import { DesignRenderingService } from '../../../shared/services/design-rendering.service';
 import { DesignSiteRenderingService } from '../../../shared/services/design-site-rendering.service';
-import { EventBrokerService, EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { Graphics } from '../../../shared/classes/graphics';
 import { SampleService, SAMPLE_BRIDGES } from '../sample.service';
 import { SelectedElementsService } from '../../drafting/shared/selected-elements-service';
@@ -38,7 +38,6 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
 
   @ViewChild('dialog') dialog!: jqxWindowComponent;
   @ViewChild('sampleList') sampleList!: jqxListBoxComponent;
-  @ViewChild('okButton') okButton!: jqxButtonComponent;
   @ViewChild('preview') preview!: ElementRef<HTMLCanvasElement>;
 
   constructor(
@@ -92,9 +91,7 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
   source: any[] = SAMPLE_BRIDGES;
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.loadSampleRequest.subscribe((_eventInfo: EventInfo): void => {
-      this.dialog.open();
-    });
+    this.eventBrokerService.loadSampleRequest.subscribe(_eventInfo => this.dialog.open());
     const w = this.preview.nativeElement.width / SampleSelectionDialogComponent.PREVIEW_SCALE;
     const h = this.preview.nativeElement.height / SampleSelectionDialogComponent.PREVIEW_SCALE;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);

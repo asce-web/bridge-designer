@@ -15,6 +15,7 @@ export const enum EventOrigin {
   SETUP_DIALOG,
   TEMPLATE_DIALOG,
   TOOLBAR,
+  WELCOME_DIALOG,
 }
 
 export type EventInfo = { origin: EventOrigin; data?: any };

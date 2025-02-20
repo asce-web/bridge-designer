@@ -36,6 +36,14 @@
   border-radius: 3px;
 }
 
+.drafting-area-cover {
+  grid-row: 3 / 5;
+  grid-column: 1 / span 3;
+  background-color: lightgray;
+  display: block;
+  z-index: 1000; // Member grid uses 520 for "no data" cover.
+}
+
 .drafting-panel {
   grid-row: 3;
   grid-column: 2;

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
 import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
 import { jqxMenuModule } from 'jqwidgets-ng/jqxmenu';
 import { jqxRibbonModule } from 'jqwidgets-ng/jqxribbon';
@@ -15,7 +15,7 @@ import { ToolbarBComponent } from './features/controls/toolbar-b/toolbar-b.compo
 import { SampleSelectionDialogComponent } from './features/sample-bridge/sample-selection-dialog/sample-selection-dialog.component';
 import { SetupWizardComponent } from './features/setup/setup-wizard/setup-wizard.component';
 import { RulerComponent } from './features/drafting/ruler/ruler.component';
-import { EventBrokerService } from './shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from './shared/services/event-broker.service';
 import { MemberTableComponent } from './features/drafting/member-table/member-table.component';
 import { TemplateSelectionDialogComponent } from './features/template/template-selection-dialog/template-selection-dialog.component';
 import { WorkflowManagementService } from './features/controls/management/workflow-management.service';
@@ -23,6 +23,8 @@ import { UnstableBridgeDialogComponent } from './features/testing/unstable-bridg
 import { LoadTestReportDialogComponent } from './features/testing/load-test-report-dialog/load-test-report-dialog.component';
 import { CostReportDialogComponent } from './features/costs/cost-report-dialog/cost-report-dialog.component';
 import { DesignIterationDialogComponent } from './features/iterations/design-iteration-dialog/design-iteration-dialog.component';
+import { DesignConditionsService } from './shared/services/design-conditions.service';
+import { WelcomeDialogComponent } from './features/welcome/welcome-dialog/welcome-dialog.component';
 
 // ¯\_(ツ)_/¯
 
@@ -43,6 +45,7 @@ import { DesignIterationDialogComponent } from './features/iterations/design-ite
     ToolbarAComponent,
     ToolbarBComponent,
     UnstableBridgeDialogComponent,
+    WelcomeDialogComponent,
     jqxDropDownButtonModule,
     jqxDropDownListModule,
     jqxGridModule,
@@ -61,6 +64,7 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('leftRuler') leftRuler!: RulerComponent;
   @ViewChild('bottomRuler') bottomRuler!: RulerComponent;
   @ViewChild('memberTable') memberTable!: MemberTableComponent;
+  @ViewChild('draftingAreaCover') draftingAreaCover!: ElementRef<HTMLDivElement>;
 
   constructor(
     private readonly eventBrokerService: EventBrokerService,
@@ -68,11 +72,24 @@ export class AppComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit(): void {
+    // Toggle rulers visibility.
     this.eventBrokerService.rulersToggle.subscribe(info => {
       this.leftRuler.visible = this.bottomRuler.visible = info.data;
     });
     this.eventBrokerService.memberTableToggle.subscribe(info => {
       this.memberTable.visible = info.data;
+    });
+    // Cancel the cover over the drafting area when the user loads a bridge.
+    this.eventBrokerService.loadBridgeRequest.subscribe(eventInfo => {
+      const style = this.draftingAreaCover.nativeElement.style;
+      const toggleTools = (value: boolean) => this.eventBrokerService.toolsToggle.next({origin: EventOrigin.APP, data: value});
+      if (eventInfo.data.bridge.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS) {
+        style.display = 'none';
+        toggleTools(true);
+      } else {
+        style.display = 'block';
+        toggleTools(false); // Ignores former user intent, but currently never happens. Cover can't be replaced.
+      }
     });
   }
 }

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { BridgeCostService } from '../../costs/cost-report-dialog/bridge-cost.service';
-import { BridgeService } from '../../../shared/services/bridge.service';
 import { DOLLARS_FORMATTER } from '../../../shared/classes/utility';
 
 @Component({
@@ -10,14 +9,12 @@ import { DOLLARS_FORMATTER } from '../../../shared/classes/utility';
   templateUrl: './cost-indicator.component.html',
   styleUrl: './cost-indicator.component.css',
 })
-export class CostIndicatorComponent { 
+export class CostIndicatorComponent {
   readonly toDollars = DOLLARS_FORMATTER.format;
 
-  constructor (private readonly bridgeCostService: BridgeCostService,
-    private readonly bridgeService: BridgeService
-  ) {}
+  constructor(private readonly bridgeCostService: BridgeCostService) {}
 
   get cost(): number {
-    return this.bridgeCostService.bridgeCostModel.totalCost + this.bridgeService.designConditions.siteCosts.totalFixedCost;
+    return this.bridgeCostService.allCosts;
   }
 }
