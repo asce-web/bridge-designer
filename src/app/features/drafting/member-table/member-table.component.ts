@@ -162,7 +162,7 @@ export class MemberTableComponent implements AfterViewInit {
     }
     return html.replace(
       MemberTableComponent.STYLE_MATCH,
-      'style="padding-top: 4.5px;padding-bottom: 3px;margin-bottom: -1px;background-color: magenta',
+      'style="padding: 4.5px 8px 3px 0; margin: 0 -4px -1px 0;background-color: magenta',
     );
   }
 
