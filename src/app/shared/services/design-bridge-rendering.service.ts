@@ -19,19 +19,16 @@ export class DesignBridgeRenderingService {
   public renderDesignBridge(ctx: CanvasRenderingContext2D) {
     this.designSketchRenderingService.renderSketch(ctx);
     const bridge = this.bridgeService.bridge;
-    bridge.members.forEach((member) =>
+    bridge.members.forEach(member =>
       this.memberRenderingService.render(
         ctx,
         member,
-        this.elementSelectionService.isMemberSelected(member)
-      )
+        this.elementSelectionService.isMemberSelected(member),
+        !this.bridgeService.isMemberPassingSlendernessCheck(member),
+      ),
     );
-    bridge.joints.forEach((joint) =>
-      this.jointRenderingService.render(
-        ctx,
-        joint,
-        this.elementSelectionService.isJointSelected(joint)
-      )
+    bridge.joints.forEach(joint =>
+      this.jointRenderingService.render(ctx, joint, this.elementSelectionService.isJointSelected(joint)),
     );
   }
 }

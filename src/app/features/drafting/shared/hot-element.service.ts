@@ -29,7 +29,7 @@ export class HotElementService {
     private readonly guidesService: GuidesService,
     private readonly labelsService: LabelsService,
     private readonly viewportTransform: ViewportTransform2D,
-  ) {  }
+  ) {}
 
   public get hotElement(): HotElement {
     return this._hotElement;
@@ -143,7 +143,9 @@ export class HotElementService {
       this.designJointRenderingService.renderHot(ctx, element, this.elementSelectionService.isJointSelected(element));
     } else if (element instanceof Member) {
       const member: Member = element;
-      this.designMemberRenderingService.renderHot(ctx, member, this.elementSelectionService.isMemberSelected(member));
+      const isSelected = this.elementSelectionService.isMemberSelected(member);
+      const isTooSlender = !this.bridgeService.isMemberPassingSlendernessCheck(member);
+      this.designMemberRenderingService.renderHot(ctx, member, isSelected, isTooSlender);
       this.designJointRenderingService.render(ctx, member.a, this.elementSelectionService.isJointSelected(member.a));
       this.designJointRenderingService.render(ctx, member.b, this.elementSelectionService.isJointSelected(member.b));
     }

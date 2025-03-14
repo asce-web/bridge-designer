@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Graphics, Point2D, Point2DInterface, Rectangle2D } from '../classes/graphics';
+import { Geometry, Graphics, Point2D, Point2DInterface, Rectangle2D } from '../classes/graphics';
 import { Member } from '../classes/member.model';
 import { DesignJointRenderingService } from './design-joint-rendering.service';
 import { InventoryService, Shape } from './inventory.service';
@@ -18,6 +18,7 @@ export class DesignMemberRenderingService {
   public static readonly SELECTED_INNER_COLORS: string[] = DesignMemberRenderingService.createInnerColors(0, 0.9);
   public static readonly HOT_INNER_COLORS: string[] = DesignMemberRenderingService.createInnerColors(0.3, 0);
   public static readonly HOT_SELECTED_INNER_COLORS: string[] = DesignMemberRenderingService.createInnerColors(0.3, 0.9);
+  public static readonly SLENDERNESS_FAIL_MARK: string = 'magenta';
 
   public static readonly CENTER_LINE_DASH: number[] = [10, 4, 4, 4];
 
@@ -74,7 +75,12 @@ export class DesignMemberRenderingService {
   }
 
   // TODO: Factor common functionality of render and renderHot.
-  public render(ctx: CanvasRenderingContext2D, member: Member, isSelected: boolean = false): void {
+  public render(
+    ctx: CanvasRenderingContext2D,
+    member: Member,
+    isSelected: boolean,
+    isMarked: boolean,
+  ): void {
     const outerColor = this.outerColorsFromSelectionState(isSelected)[member.material.index];
     const innerColor =
       member.shape.section.shortName === 'Tube'
@@ -87,12 +93,17 @@ export class DesignMemberRenderingService {
       member.shape.sizeIndex,
       outerColor,
       innerColor,
-      undefined,
+      isMarked ? DesignMemberRenderingService.SLENDERNESS_FAIL_MARK : undefined,
       this.showMemberNumbers || isSelected ? member.number : undefined,
     );
   }
 
-  public renderHot(ctx: CanvasRenderingContext2D, member: Member, isSelected: boolean = false): void {
+  public renderHot(
+    ctx: CanvasRenderingContext2D,
+    member: Member,
+    isSelected: boolean,
+    isMarked: boolean,
+  ): void {
     const outerColor = this.hotOuterColorsFromSelectionState(isSelected)[member.material.index];
     const innerColor =
       member.shape.section.shortName === 'Tube'
@@ -105,7 +116,7 @@ export class DesignMemberRenderingService {
       member.shape.sizeIndex,
       outerColor,
       innerColor,
-      undefined,
+      isMarked ? DesignMemberRenderingService.SLENDERNESS_FAIL_MARK : undefined,
       this.showMemberNumbers || isSelected ? member.number : undefined,
     );
   }
@@ -196,7 +207,17 @@ export class DesignMemberRenderingService {
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
       ctx.stroke();
-      ctx.strokeStyle = markColor || ''; // TODO: Dummy use. Implement for real.
+    }
+    if (markColor) {
+      const savedLineDash = ctx.getLineDash();
+      Graphics.setTickLineDash(ctx, Geometry.distance2DPoints(a, b), [2, 10]);
+      ctx.strokeStyle = markColor;
+      ctx.lineWidth = lineWidths.outer + 4;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+      ctx.setLineDash(savedLineDash);
     }
     ctx.lineCap = savedLineCap;
     ctx.lineWidth = savedLineWidth;

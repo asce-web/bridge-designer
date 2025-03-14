@@ -30,12 +30,15 @@ export class WorkflowManagementService {
 
     // Analysis completion.
     eventBrokerService.analysisCompletion.subscribe(eventInfo => {
-      uiStateService.disable(eventBrokerService.analysisReportRequest, false);
+      let isValidTestResult = false;
       if (eventInfo.data === AnalysisStatus.UNSTABLE) {
         eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE });
       } else if (eventInfo.data === AnalysisStatus.FAILS_SLENDERNESS) {
         eventBrokerService.slendernessFailDialogOpenRequest.next({ origin: EventOrigin.SERVICE });
+      } else {
+        isValidTestResult = true;
       }
+      uiStateService.disable(eventBrokerService.analysisReportRequest, !isValidTestResult);
     });
 
     // Design iterations change.

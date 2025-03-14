@@ -211,8 +211,7 @@ export class Rectangle2D implements Rectangle2DInterface {
     if (x < this.x0) {
       this.width += this.x0 - x;
       this.x0 = x;
-    }
-    else if (x > this.x1) {
+    } else if (x > this.x1) {
       this.width = x - this.x0;
     }
     if (y < this.y0) {
@@ -410,9 +409,12 @@ export class Graphics {
     const cycleLength = dashLength + spaceLength;
     const dashFraction = dashLength / cycleLength;
     const cycles = length / cycleLength;
-    const wholeCyclesWithExtraDash = Math.floor(cycles + dashFraction - 0.0001);
-    ctx.lineDashOffset = (1 - cycles + wholeCyclesWithExtraDash + dashFraction) * 0.5 * cycleLength;
+    const wholeCyclesWithExtraDash = Math.ceil(cycles + dashFraction) - 1;
+    let lineDashOffset = (1 - cycles + wholeCyclesWithExtraDash + dashFraction) * 0.5 * cycleLength;
+    const shift = cycleLength / 2; // Optional shift away from endpoints.
+    ctx.lineDashOffset = lineDashOffset + shift < spaceLength ? lineDashOffset + shift : lineDashOffset;
     ctx.setLineDash(dash);
+    ctx.lineCap = 'butt';
   }
 
   public static getContext(canvasRef: ElementRef<HTMLCanvasElement>): CanvasRenderingContext2D {

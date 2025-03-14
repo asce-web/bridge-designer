@@ -156,14 +156,12 @@ export class MemberTableComponent implements AfterViewInit {
   }
 
   private renderSlenderness(_row?: number, _columnField?: string, value?: any, defaultHtml?: string): string {
-    const html = defaultHtml!;
-    if (value <= this.bridgeService.designConditions.allowableSlenderness) {
-      return html;
-    }
-    return html.replace(
-      MemberTableComponent.STYLE_MATCH,
-      'style="padding: 4.5px 8px 3px 0; margin: 0 -4px -1px 0;background-color: magenta',
-    );
+    return value <= this.bridgeService.designConditions.allowableSlenderness
+      ? defaultHtml!
+      : defaultHtml!.replace(
+          MemberTableComponent.STYLE_MATCH,
+          'style="padding: 4.5px 8px 3px 0;margin: 0 -4px -1px 0;background-color: magenta;',
+        );
   }
 
   private renderAnalysisCell(value: any, defaultHtml: string, backgroundColor: string) {
