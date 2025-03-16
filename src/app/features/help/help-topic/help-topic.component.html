@@ -1,4 +1,7 @@
-<div #topicContainer [class]="containerType">
+<div
+  #topicContainer
+  [class]="containerType"
+>
   <ng-container *ngTemplateOutlet="visibleTopic"></ng-container>
 </div>
 
@@ -122,7 +125,8 @@
     <img
       src="img/help/hs20.png"
       alt="AASHTO H25 Truck Loading"
-    />The <topic-popup name="glos_aashto">AASHTO</topic-popup> H25 loading is a hypothetical cargo truck, similar to the
+    />
+    The <topic-popup name="glos_aashto">AASHTO</topic-popup> H25 loading is a hypothetical cargo truck, similar to the
     one pictured here. The truck has two axles spaced approximately 4 meters apart. The truck has a total weight of 225
     kilonewtons (kN), with 44 <topic-popup name="glos_kn">kN</topic-popup> applied at the front axle and 181 kN at the
     rear.
@@ -163,7 +167,7 @@
 <ng-template topic-name="hlp_show_animation">
   <h1>Show animation check box</h1>
   <p>
-    <img src="img/help/animate.png" />Checking the menu entry <span class="b">Tools</span>,
+    <img src="img/help/animate.png" /> Checking the menu entry <span class="b">Tools</span>,
     <span class="b">Show animation</span> causes a 3D
     <topic-link name="hlp_load_test3">load test animation</topic-link> to be shown immediately after every load test.
     Uncheck the box to continue drafting immediately after each load test.
@@ -348,7 +352,7 @@
 <ng-template topic-name="hlp_auto_correct_errors">
   <h1>Auto-correct errors check box</h1>
   <p>
-    <img src="img/help/wrench.png" />Checking the menu entry at <span class="b">tools</span>,
+    <img src="img/help/wrench.png" /> Checking the menu entry at <span class="b">tools</span>,
     <span class="b">auto-correct errors</span> causes BD to attempt repairs of common minor errors. It does this
     automatically just before each <topic-link name="hlp_load_test_status">load test</topic-link>.
   </p>
@@ -413,8 +417,9 @@
       <img
         alt="To change the properties of a member in your structural model:"
         src="img/help/dropdown.png"
-      />on the <topic-popup name="hlp_member_properties">member properties list</topic-popup> for the property you want
-      to change - <topic-link name="hlp_materials">material</topic-link>,
+      />
+      on the <topic-popup name="hlp_member_properties">member properties list</topic-popup> for the property you want to
+      change - <topic-link name="hlp_materials">material</topic-link>,
       <topic-popup name="hlp_crossxsection">cross-section</topic-popup>, or
       <topic-popup name="glos_member_size">member size</topic-popup>.
     </li>
@@ -457,7 +462,8 @@
       ><img
         src="img/help/gotodp.png"
         alt="Go to iteration icon"
-      />&nbsp;<span class="b">How to design a bridge</span></topic-link
+      />
+      <span class="b">How to design a bridge</span></topic-link
     >
   </p>
   <p>
@@ -465,7 +471,8 @@
       ><img
         src="img/help/goback.png"
         alt="Go back an iteration icon"
-      />&nbsp;<span class="b">Go back one design step</span></topic-link
+      />
+      <span class="b">Go back one design step</span></topic-link
     >
   </p>
   <p>
@@ -473,7 +480,8 @@
       ><img
         src="img/help/gofwd.png"
         alt="Go forward an iteration icon"
-      />&nbsp;<span class="b">Go forward one design step</span></topic-link
+      />
+      <span class="b">Go forward one design step</span></topic-link
     >
   </p>
   <p class="btop">
@@ -795,17 +803,15 @@
     compromise.
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_crossxsection">
-  <h2>Cross-Section</h2>
+  <h1>Cross-section</h1>
   <p>
-    A <span class="b">cross-section</span> is the shape of the surface formed by cutting through a member, perpendicular
-    to its axis.
+    A <span class="b">cross-section</span> is the shape formed by cutting through a member perpendicular to its axis.
   </p>
   <p>The cross-section of the solid bar below is a square measuring <span class="bi">w</span> on each side.</p>
   <p class="in1">
     <img
-      alt="Cross-Section"
+      alt="Solid cross-section"
       src="img/help/bar.png"
     />
   </p>
@@ -815,46 +821,46 @@
   </p>
   <p class="in1">
     <img
-      alt="Cross-Section"
+      alt="Tube cross-section"
       src="img/help/tube.png"
     />
   </p>
   <p>
-    The <span class="b">cross-sectional area</span> of a member is the surface area of the cross-section, represented by
-    the <span class="c2b">light blue</span> shaded region on both pictures above.
+    The <span class="b">cross-sectional area</span> of a member is the surface area of the cross-section. In each
+    picture above, this is the <span class="c2b">light blue</span> shaded region.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_deck_truss">
-  <h2>Deck Truss</h2>
+  <h2>Deck truss</h2>
   <p>
     <img
-      alt="Deck Truss"
+      alt="Deck truss"
       src="img/help/dwarren.png"
-    />A <topic-popup name="glos_deck">deck</topic-popup> <span class="b">truss</span> is a truss with its deck located
-    at the level of the top chord. Vehicles crossing a deck truss are supported <span class="i">above</span> the
-    trusses.
+    />
+    A deck truss is one with its <topic-popup name="glos_deck">deck</topic-popup> located at the level of the top chord.
+    Vehicles crossing a deck truss bridge are supported <span class="i">above</span> its trusses.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_decrease_member">
   <h1>Decrease member size button</h1>
   <p>
     <img
-      alt="Decrease Member Size button"
+      alt="Decrease member size button"
       src="img/help/btnsized.png"
-    />Click the <span class="b">Decrease Member Size button</span> to decrease the
-    <topic-popup name="glos_member_size">member size</topic-popup> of the currently selected member(s) to the next
-    smaller size.
+    />
+    Click the <span class="b">decrease member size button</span> to decrease the
+    <topic-popup name="glos_member_size">size</topic-popup> of currently selected member(s) to the next smaller.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Decrease Member Size button is located on the
-    <topic-link name="hlp_toolbars">Member Properties Toolbar.</topic-link>
+    The decrease member size button is located on the
+    <topic-link name="hlp_toolbars">member properties toolbar.</topic-link>
   </p>
   <p>
     If more than one member is selected, clicking this button will decrease the size of
     <span class="i">all</span> selected <topic-popup name="glos_members">members</topic-popup>, even if they are
-    different sizes. For example, if you have selected a 50mm member, a 90mm member, and a 120mm member simultaneously,
-    clicking the Decrease Member Size button will change these members to 45mm, 80mm, and 110mm, respectively.
+    different sizes. For example, if a 50mm member, a 90mm member, and a 120mm member are all selected, clicking the
+    button will change these to 45mm, 80mm, and 110mm, respectively.
   </p>
   <p>
     When you use the decrease member size button, the
@@ -862,27 +868,27 @@
   </p>
   <p>
     When you use the decrease member size button, the other two
-    <topic-popup name="hlp_member_properties">member properties lists</topic-popup> (material and cross-section type) do
-    not change.
+    <topic-popup name="hlp_member_properties">member properties lists</topic-popup> - material and cross-section type -
+    do not change.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_delete_joint">
   <h1>Delete a joint</h1>
-  <h2 class="in1">To delete a joint from your structural model:</h2>
+  <h2>To delete a joint from your structural model:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_select_tool">Select Tool</topic-popup> on the
-      <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup>
+      Click the <topic-popup name="hlp_select_tool">select tool</topic-popup> on the
+      <topic-popup name="hlp_design_tools">design tools palette.</topic-popup>
     </li>
     <li>
-      Click on the joint you want to delete; the joint will turn <span class="c2b">light blue</span> to indicate that it
-      has been selected.
+      Click on the joint you want to delete. It will turn <span class="c2b">light blue</span> to indicate it has been
+      selected.
     </li>
-    <li>Click on the <topic-popup name="hlp_delete">Delete button</topic-popup> to delete the selected joint.</li>
+    <li>Click on the <topic-popup name="hlp_delete">delete button</topic-popup>.</li>
   </ol>
   <h2 class="btop">Notes and tips</h2>
-  <p>You must be in the <topic-link name="hlp_drawing_board">Drawing Board Mode</topic-link> to delete a joint.</p>
-  <p>The Delete key on your keyboard performs the same function as the Delete button on the toolbar.</p>
+  <p>You must be working in the <topic-link name="hlp_drawing_board">drawing board</topic-link> to delete a joint.</p>
+  <p>The delete key on your keyboard performs the same function as the delete button on the toolbar.</p>
   <p>
     You can only delete one joint at a time.
     <topic-link name="hlp_multiple_selection">Multiple selection</topic-link> of
@@ -897,16 +903,16 @@
     <span class="bd-emph">Bridge Designer</span> when you started the design.
   </p>
   <p>
-    You can also remove a joint from your <topic-popup name="glos_structural_model">structural model</topic-popup> by
+    You can also delete a joint from your <topic-popup name="glos_structural_model">structural model</topic-popup> by
     <topic-link name="hlp_erase">erasing</topic-link> it.
   </p>
   <p>
-    If you accidentally delete a joint, click the <topic-popup name="hlp_undo">Undo button</topic-popup> to restore it.
+    If you accidentally delete a joint, click the <topic-popup name="hlp_undo">undo button</topic-popup> to restore it.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_delete_member">
   <h1>Delete a member</h1>
-  <h2 class="in1">To delete a member from your structural model:</h2>
+  <h2>To delete a member from your structural model:</h2>
   <ol>
     <li>
       Click the <topic-popup name="hlp_select_tool">Select tool</topic-popup> on the
@@ -944,61 +950,63 @@
     <img
       alt="Delete button"
       src="img/help/btndel.png"
-    />Click the <span class="b">Delete button</span> to
+    />
+    Click the <span class="b">delete button</span> to
     <topic-link name="hlp_delete_joint">delete the currently selected joint</topic-link> or to
     <topic-link name="hlp_delete_member">delete the currently selected member(s).</topic-link>
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Delete button is located on the <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> It can also be
+    The delete button is located on the <topic-link name="hlp_toolbars">main toolbar.</topic-link> It can also be
     accessed from the
-    <topic-link name="hlp_menu_bar">Edit menu.</topic-link>
+    <topic-link name="hlp_menu_bar">edit menu.</topic-link>
   </p>
   <p>
-    You can use the <span class="b">Delete key</span> on your keyboard to perform exactly the same function as the
-    Delete button.
+    You can use the <span class="b">delete key</span> on your keyboard to perform exactly the same function as the
+    delete button.
   </p>
   <p>
-    You can also use the <topic-popup name="hlp_erase_tool">Eraser tool</topic-popup> to delete
+    You can also use the <topic-popup name="hlp_erase_tool">eraser tool</topic-popup> to delete
     <topic-popup name="glos_joints">joints</topic-popup> and <topic-popup name="glos_members">members</topic-popup>.
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_design_specifications">
   <h1>Design specifications</h1>
   <p class="box">
     All of the specifications listed below are built into the <span class="bd-emph">Bridge Designer</span>. If you
     follow the <topic-link name="hlp_how_to">design process</topic-link>,
     <span class="bd-emph">Bridge Designer</span> will ensure that you satisfy the specifications. They are listed here
-    only so that you can better understand the sorts of requirements and constraints that engineers must consider when
-    they design real bridges.
+    only so that you can better understand the sorts of requirements and constraints that engineers consider when they
+    design real bridges.
   </p>
   <ol>
     <li>
-      <span class="b">The Problem</span>
+      <span class="b">The problem</span>
       <p class="in1">
-        Your are a civil engineer working for the state department of transportation. You have been assigned
+        You're a civil engineer working for the state department of transportation. You have been assigned
         responsibility for the design of a <topic-link name="hlp_truss_bridges">truss bridge</topic-link> to carry a
         two-lane highway across the river valley shown below.
       </p>
       <p>
         <img
-          alt="Design Specifications"
+          alt="Design specifications river valley"
           src="img/help/valley.png"
         />
       </p>
     </li>
     <li>
-      <span class="b">Design Objective</span>
+      <span class="b">Design objective</span>
       <p class="in1">
-        Satisfy all of the specifications listed below, while keeping the total cost of the project as low as possible.
+        Satisfy all of the specifications listed below while keeping the total cost of the project as low as possible.
       </p>
     </li>
     <li>
-      <span class="b">Bridge Configuration</span>
+      <span class="b">Bridge configuration</span>
       <ol class="alpha">
         <li>
-          The bridge may cross the valley at any elevation from the high water level to 24 meters above the high water
-          level.
+          The bridge may cross the valley at any elevation from the high water level up to 24 meters above the high
+          water level.
         </li>
         <li>
           If the elevation of the bridge <topic-popup name="glos_deck">deck</topic-popup> is below 24 meters, excavation
@@ -1014,7 +1022,7 @@
           The bridge <topic-popup name="glos_substructure">substructure</topic-popup> may consist of either standard
           <topic-popup name="glos_abutment">abutments</topic-popup> (simple supports) or
           <topic-popup name="glos_arch_abutments">arch abutments</topic-popup> (arch supports). If necessary, the bridge
-          may also use one intermediate <topic-popup name="glos_pier">pier</topic-popup>, located near the center of the
+          may also use one intermediate <topic-popup name="glos_pier">pier</topic-popup> located near the center of the
           valley. If necessary, the bridge may also use cable
           <topic-popup name="glos_anchorages">anchorages</topic-popup>, located 8 meters behind one or both abutments.
         </li>
@@ -1033,26 +1041,26 @@
         <li>
           In either case, the deck will be supported by transverse
           <topic-popup name="glos_floor_beams">floor beams</topic-popup> spaced at 4 meter intervals. (See
-          <topic-link name="hlp_component_parts">Component Parts of a Truss Bridge</topic-link> for more information
-          about these terms.) To accommodate these floor beams, your
-          <topic-popup name="glos_structural_model">structural model</topic-popup> must have a row of joints spaced 4
-          meters apart at the level of the deck. These joints are created automatically when you begin a new design.
+          <topic-link name="hlp_component_parts">component parts of a truss bridge</topic-link> for more information
+          about these terms.) To accommodate the floor beams, your
+          <topic-popup name="glos_structural_model">structural model</topic-popup> must have a row of deck support joints spaced 4
+          meters apart at deck level. These joints are created automatically when you begin a new design.
         </li>
-        <li>The bridge deck will be 10 meters wide, such that it can accommodate two lanes of traffic.</li>
+        <li>The bridge deck will be 10 meters wide, allowing it to accommodate two lanes of traffic.</li>
       </ol>
     </li>
     <li>
-      <span class="b">Member Properties</span>
+      <span class="b">Member properties</span>
       <ol class="alpha">
         <li>
-          <topic-link name="hlp_materials">Materials</topic-link>. Each member of the truss will be made of either
-          carbon steel, high-strength low-alloy steel, or quenched and tempered steel.
+          <topic-link name="hlp_materials">Materials</topic-link>. Each member of the truss will be made of carbon
+          steel, high-strength low-alloy steel, or quenched and tempered steel.
         </li>
         <li>
-          <topic-popup name="hlp_crossxsection">Cross-Sections</topic-popup>. The members of the truss can be either
+          <topic-popup name="hlp_crossxsection">Cross-sections</topic-popup>. The members of the truss can be either
           solid bars or hollow tubes. Both types of cross-sections are square.
         </li>
-        <li>Member Size. Both cross-sections are available in a variety of standard sizes.</li>
+        <li><u>Member Size</u>. Both cross-sections are available in a variety of standard sizes.</li>
       </ol>
     </li>
     <li>
@@ -1066,35 +1074,35 @@
           the future.
         </li>
         <li>
-          Weight of the steel floor beams and supplemental bracing members (assumed to be 12.0
-          <topic-popup name="glos_kn">kN</topic-popup> applied at each deck-level joint).
+          Weight of the steel floor beams and supplemental bracing members. These apply a 12.0
+          <topic-popup name="glos_kn">kN</topic-popup> load at each deck support joint.
         </li>
         <li>Weight of the main trusses.</li>
         <li>
-          Either of two possible truck loadings:
+          The weight of either of two possible truck loadings:
           <ol>
             <li>
-              Weight of one standard <topic-link name="hlp_aashto_h20x44">H25 truck loading</topic-link> per lane,
+              One standard <topic-link name="hlp_aashto_h20x44">H25 truck loading</topic-link> per lane,
               including appropriate allowance for the dynamic effects of the moving load. (Since the bridge carries two
               lanes of traffic, each main truss must safely carry one H25 vehicle, placed anywhere along the length of
               the deck.)
               <p class="in3"></p>
             </li>
             <li>
-              Weight of a single 480 kN Permit Loading, including appropriate allowance for the dynamic effects of the
-              moving load. (Since the Permit Loading is assumed to be centered laterally, each main truss must safely
-              carry one-half of the total vehicle weight, placed anywhere along the length of the deck.)
+              A single 480 kN permit Loading, including an allowance for the dynamic effects of the
+              moving load. Since the permit loading is assumed to be centered laterally, each main truss must safely
+              carry one-half of the total vehicle weight, placed anywhere along the length of the deck.
             </li>
           </ol>
         </li>
       </ol>
     </li>
     <li>
-      <span class="b">Structural Safety</span>
+      <span class="b">Structural safety</span>
       <p class="in1">
         The bridge will comply with the structural <topic-popup name="glos_safe">safety</topic-popup> provisions of the
-        1994 LRFD <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification (Load and
-        <topic-popup name="glos_resistance_factor">Resistance Factor</topic-popup> Design), to include:
+        1994 LRFD <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification. LRFD refers to "Load and
+        <topic-popup name="glos_resistance_factor">Resistance Factor</topic-popup> Design. It includes:
       </p>
       <ol class="alpha">
         <li><topic-link name="hlp_material_densities">Material densities</topic-link></li>
@@ -1106,12 +1114,12 @@
     <li>
       <span class="b">Cost</span>
       <p class="in1">
-        The <topic-link name="hlp_cost">cost of the design</topic-link> will be calculated using the following cost
+        The <topic-link name="hlp_cost">cost of the design</topic-link> will be calculated using the following
         factors:
       </p>
       <ol class="alpha">
         <li>
-          Material Cost:
+          Material cost:
           <p class="in2">Carbon steel bars - $4.50 per kilogram</p>
           <p class="in2">Carbon steel tubes - $6.30 per kilogram</p>
           <p class="in2">High-strength steel bars - $5.00 per kilogram</p>
@@ -1119,22 +1127,22 @@
           <p class="in2">Quenched and tempered steel bars - $5.55 per kilogram</p>
           <p class="in2">Quenched and tempered steel tubes - $7.75 per kilogram</p>
         </li>
-        <li>Connection Cost: $500.00 per joint</li>
-        <li>Product Cost: $1000.00 per product</li>
+        <li>Connection cost: $500.00 per joint</li>
+        <li>Product cost: $1000.00 per product</li>
         <li>
           Site Cost:
           <p class="in2">Reinforced concrete deck (medium strength) - $5,150 per 4-meter panel</p>
           <p class="in2">Reinforced concrete deck (high strength) - $5,300 per 4-meter panel</p>
           <p class="in2">
-            Excavation - $1.00 per cubic meter (See the
-            <topic-link name="hlp_setup_wizard">Site Design Wizard</topic-link> for excavation volume)
+            Excavation - $1.00 per cubic meter. See the
+            <topic-link name="hlp_setup_wizard">site design wizard</topic-link> for excavation volume.
           </p>
           <p class="in2">
-            Supports (abutments and pier) - Cost varies (See the
-            <topic-link name="hlp_setup_wizard">Site Design Wizard</topic-link> for specific values)
+            Supports (abutments and pier) - Cost varies. See the
+            <topic-link name="hlp_setup_wizard">site design wizard</topic-link> for specific values.
           </p>
           <p class="in2">
-            <topic-popup name="glos_cable_anchorages">Cable Anchorages</topic-popup>- $6,000 per anchorage
+            <topic-popup name="glos_cable_anchorages">Cable anchorages</topic-popup>- $6,000 per anchorage
           </p>
         </li>
       </ol>
@@ -1143,21 +1151,20 @@
   <h2 class="btop">Notes and tips</h2>
   <p>
     The <span class="bd-emph">Bridge Designer</span> ensures that your design satisfies all of the design specifications
-    listed above. The <topic-link name="hlp_bridge_design_window">Drawing Board</topic-link> is automatically set up so
+    listed above. The <topic-link name="hlp_bridge_design_window">drawing board</topic-link> is automatically set up so
     that your bridge has the correct <topic-popup name="glos_span">span</topic-popup> length, height, and supports.
     <span class="bd-emph">Bridge Designer</span> automatically calculates the
-    <topic-popup name="glos_loads">loads</topic-popup> and the resulting member
+    <topic-popup name="glos_loads">loads</topic-popup> and resulting member
     <topic-popup name="glos_forces">forces</topic-popup>. When you run the
-    <topic-popup name="glos_load_test">load test</topic-popup>, it performs the AASHTO structural safety checks and, if
+    <topic-popup name="glos_load_test">load test</topic-popup>, it performs the AASHTO structural safety checks. If
     any of the members in your structural model are not strong enough, it tells you which ones need it be strengthened.
-    It also calculates the cost of your design automatically.
+    It also calculates the cost of your design.
   </p>
-  <p></p>
   <p>
     The AASHTO safety standards have been simplified considerably in the
     <span class="bd-emph">Bridge Designer</span>. That's one important reason why the software is
     <span class="b">for educational use only</span>. For more information, see
-    <topic-link name="hlp_not_realistic">What is Not Realistic about BD.</topic-link>
+    <topic-link name="hlp_not_realistic">what is not realistic about BD?</topic-link>.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_design_tools">
@@ -1166,7 +1173,8 @@
     <img
       alt="Design Tools palette"
       src="img/help/tpalette.png"
-    />The <span class="b">Design Tools palette</span> is a free-floating toolbar that can be positioned anywhere in the
+    />
+    The <span class="b">Design Tools palette</span> is a free-floating toolbar that can be positioned anywhere in the
     <topic-link name="hlp_bridge_design_window">Bridge Design Window</topic-link>. The Design Tools palette contains the
     following tools for creating and modifying your structural model:
   </p>
@@ -1200,27 +1208,27 @@
 <ng-template topic-name="hlp_draw_joint">
   <h1>Draw joints</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_truss_configuration"
+    <topic-link name="hlp_truss_configuration"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_draw_member"
+    <topic-link name="hlp_draw_member"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -1278,27 +1286,27 @@
 <ng-template topic-name="hlp_draw_member">
   <h1>Draw members</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_draw_joint"
+    <topic-link name="hlp_draw_joint"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_run_load_test"
+    <topic-link name="hlp_run_load_test"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -1403,7 +1411,8 @@
     <img
       src="img/help/dropdown.png"
       alt="Notes and tips"
-    />near the lower right-hand corner of the Design Project Setup Wizard
+    />
+    near the lower right-hand corner of the Design Project Setup Wizard
   </p>
   <p>
     Once you have selected the deck elevation and support configuration, you can click the Finish button at any time.
@@ -1416,7 +1425,8 @@
     <img
       alt="Drawing Board button"
       src="img/help/btndb.png"
-    />Click the <span class="b">Drawing Board button</span> to return to the
+    />
+    Click the <span class="b">Drawing Board button</span> to return to the
     <topic-link name="hlp_drawing_board">Drawing Board Mode</topic-link> after a
     <topic-link name="hlp_run_load_test">load test.</topic-link>
   </p>
@@ -1433,7 +1443,7 @@
 </ng-template>
 <ng-template topic-name="hlp_erase">
   <h1>Erase a joint or member</h1>
-  <h2 class="in1">To erase a joint or member from your structural model:</h2>
+  <h2>To erase a joint or member from your structural model:</h2>
   <ol>
     <li>
       Click the <topic-popup name="hlp_erase_tool">Eraser tool</topic-popup> on the
@@ -1474,7 +1484,8 @@
     <img
       alt="Eraser tool"
       src="img/help/btnerase.png"
-    />Use the <span class="b">Eraser tool</span> to
+    />
+    Use the <span class="b">Eraser tool</span> to
     <topic-link name="hlp_erase">erase a joint or member</topic-link> directly, without having to select it first.
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -1495,27 +1506,27 @@
 <ng-template topic-name="hlp_find_opt_substructure">
   <h1>Find the optimum site configuration and load case</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_try_new_configuration"
+    <topic-link name="hlp_try_new_configuration"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_choose_optimum"
+    <topic-link name="hlp_choose_optimum"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -1630,7 +1641,8 @@
     <img
       alt="Go back button"
       src="img/help/btngobak.png"
-    />Click the <span class="b">Go back button</span> to display the previous
+    />
+    Click the <span class="b">Go back button</span> to display the previous
     <topic-link name="hlp_design_iteration">design iteration</topic-link> on the
     <topic-link name="hlp_drawing_board">Drawing Board.</topic-link>
   </p>
@@ -1658,7 +1670,8 @@
     <img
       alt="Go Forward button"
       src="img/help/btngofwd.png"
-    />Click the <span class="b">Go Forward button</span> to display a more recent
+    />
+    Click the <span class="b">Go Forward button</span> to display a more recent
     <topic-link name="hlp_design_iteration">design iteration</topic-link> on the
     <topic-link name="hlp_drawing_board">Drawing Board.</topic-link>
   </p>
@@ -1686,7 +1699,8 @@
     <img
       alt="Go To Iteration button"
       src="img/help/btngotoi.png"
-    />Click the <span class="b">Go To Iteration button</span> to display the
+    />
+    Click the <span class="b">Go To Iteration button</span> to display the
     <span class="b">Design Iteration Browser</span>. Use the Browser to display on the
     <topic-link name="hlp_drawing_board">Drawing Board</topic-link> <span class="i">any</span>
     <topic-link name="hlp_design_iteration">design iteration</topic-link> created during the current
@@ -1739,11 +1753,11 @@
     </li>
     <li>
       <span class="b">Click here</span>
-      <span topic="hlp_select_project"
+      <topic-link name="hlp_select_project"
         ><img
           alt=""
           src="img/help/gofwd.png"
-      /></span>
+      /></topic-link>
       <span class="b">to browse through the design process, one step at a time.</span>
     </li>
   </ol>
@@ -1909,30 +1923,30 @@
   <h1>Increase member size button</h1>
   <p>
     <img
-      alt="Increase Member Size button"
+      alt="Increase member size button"
       src="img/help/btnsizeu.png"
-    />Click the <span class="b">Increase Member Size button</span> to increase the
-    <topic-popup name="glos_member_size">member size</topic-popup> of the currently selected member(s) to the next
-    larger size.
+    />
+    Click the <span class="b">increase member size button</span> to increase the
+    <topic-popup name="glos_member_size">size</topic-popup> of currently selected member(s) to the next larger.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Increase Member Size button is located on the
-    <topic-link name="hlp_toolbars">Member Properties Toolbar.</topic-link>
+    The increase member size button is located on the
+    <topic-link name="hlp_toolbars">member properties toolbar.</topic-link>
   </p>
   <p>
     If more than one member is selected, clicking this button will increase the size of
     <span class="i">all</span> selected <topic-popup name="glos_members">members</topic-popup>, even if they are
-    different sizes. For example, if you have selected a 50mm member, a 90mm member, and a 120mm member simultaneously,
-    clicking the Increase Member Size button will change these members to 55mm, 100mm, and 130mm, respectively.
+    different. For example, if a 50mm member, a 90mm member, and a 120mm member are all selected, clicking the button
+    will change these to 55mm, 100mm, and 130mm, respectively.
   </p>
   <p>
-    When you use the Increase Member Size button, the
-    <topic-popup name="hlp_member_properties">Member Size list</topic-popup> is updated to reflect the change.
+    When you use the increase member size button, the
+    <topic-popup name="hlp_member_properties">member size list</topic-popup> is updated to reflect the change.
   </p>
   <p>
-    When you use the Increase Member Size button, the other two
-    <topic-popup name="hlp_member_properties">Member Properties lists</topic-popup> (material and cross-section type)
+    When you use the increase member size button, the other two
+    <topic-popup name="hlp_member_properties">member properties lists</topic-popup> - material and cross-section type -
     are not changed.
   </p>
 </ng-template>
@@ -1942,7 +1956,8 @@
     <img
       alt="Joint tool"
       src="img/help/btnjoint.png"
-    />Use the <span class="b">Joint tool</span> to <topic-link name="hlp_draw_joint">draw joints</topic-link> as you
+    />
+    Use the <span class="b">Joint tool</span> to <topic-link name="hlp_draw_joint">draw joints</topic-link> as you
     create your <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -2068,7 +2083,8 @@
     <img
       alt="Load template button"
       src="img/help/btnltemp.png"
-    />Click the <span class="b">Load template button</span> to
+    />
+    Click the <span class="b">Load template button</span> to
     <topic-link name="hlp_load_a_template">load a standard truss template</topic-link> and display it on the
     <topic-link name="hlp_drawing_board">Drawing Board</topic-link>.
   </p>
@@ -2081,7 +2097,8 @@
     <img
       alt="Auto-correct errors"
       src="img/help/chekmark.png"
-    /><span class="b">Attempt to fix unstable structure automatically</span> has been replaced by the
+    />
+    <span class="b">Attempt to fix unstable structure automatically</span> has been replaced by the
     <topic-link name="hlp_auto_correct_errors">Auto-correct errors</topic-link> check box in the Test menu. If this is
     switched on, the <span class="bd-emph">Bridge Designer</span> will attempt to identify the source of instability in
     an <topic-link name="hlp_structural_stability">unstable structural model</topic-link> and modify the structure so
@@ -2093,7 +2110,8 @@
     <img
       alt="Display the animation"
       src="img/help/chekmark.png"
-    /><span class="b">Display the animation</span> has been replaced by the
+    />
+    <span class="b">Display the animation</span> has been replaced by the
     <topic-link name="hlp_show_animation">Show Animation</topic-link> check box in the Test menu. If this is switched
     on, the <topic-popup name="glos_load_test">load test</topic-popup> animation is displayed on every load test. If
     this option is off, the animation is not shown, and the user is returned immediately to the
@@ -2103,7 +2121,8 @@
     <img
       alt="Show exaggerated displacements"
       src="img/help/chekmark.png"
-    /><span class="b">Show exaggerated displacements</span> has been replaced by the <b>Exaggeration</b>check box in the
+    />
+    <span class="b">Show exaggerated displacements</span> has been replaced by the <b>Exaggeration</b>check box in the
     <topic-link name="hlp_animation_controls">Animation controls palette</topic-link>. If this is switched on, the
     bending of the bridge is exaggerated by a factor of 10, to illustrate how truss
     <topic-popup name="glos_members">members</topic-popup> shorten and elongate as they carry load. If this option is
@@ -2113,7 +2132,8 @@
     <img
       alt="Show color-coded member forces"
       src="img/help/chekmark.png"
-    /><span class="b">Show color-coded member forces</span> has been replaced by the <b>Colors</b>check box in the
+    />
+    <span class="b">Show color-coded member forces</span> has been replaced by the <b>Colors</b>check box in the
     <topic-link name="hlp_animation_controls">Animation controls palette</topic-link>. If this is switched on, members
     change color during the animation. The color represents the magnitude of the
     <topic-popup name="glos_member_force">member force</topic-popup>: <span class="c5b">red</span> for
@@ -2145,7 +2165,8 @@
     <img
       alt="Load Test Status"
       src="img/help/statcnst.png"
-    /><span class="b">Under Construction</span>. The
+    />
+    <span class="b">Under Construction</span>. The
     <topic-popup name="glos_structural_model">structural model</topic-popup> is not yet completed, or it has been
     changed since the last
     <topic-link name="hlp_run_load_test">load test.</topic-link>
@@ -2154,7 +2175,8 @@
     <img
       alt="Load Test Status"
       src="img/help/statnogo.png"
-    /><span class="b">Unsafe</span>. The structural model has been load tested, and one or more
+    />
+    <span class="b">Unsafe</span>. The structural model has been load tested, and one or more
     <topic-popup name="glos_members">members</topic-popup> are not strong enough to safely carry the specified
     <topic-popup name="glos_loads">loads</topic-popup>.
   </p>
@@ -2162,8 +2184,9 @@
     <img
       alt="Load Test Status"
       src="img/help/statgo.png"
-    /><span class="b">Safe</span>. The structural model has been load tested, and all members are strong enough to
-    safely carry the specified loads.
+    />
+    <span class="b">Safe</span>. The structural model has been load tested, and all members are strong enough to safely
+    carry the specified loads.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -2182,7 +2205,8 @@
     <img
       alt="Load Test button"
       src="img/help/loadtest.png"
-    />Click the <span class="b">Load Test button</span> to
+    />
+    Click the <span class="b">Load Test button</span> to
     <topic-link name="hlp_run_load_test">load test</topic-link> your current design.
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -2390,7 +2414,7 @@
   <p>
     The Member List can be hidden and restored with the
     <topic-link name="hlp_view_member_list">View Member List button</topic-link> <img src="img/help/memtable.png" />. It
-    can also be closed with the the <img src="img/help/close.png" />button at the upper right.
+    can also be closed with the the <img src="img/help/close.png" /> button at the upper right.
   </p>
   <p>
     To hide the Member List entirely, click the
@@ -2433,14 +2457,16 @@
     <img
       alt="Member Properties lists"
       src="img/help/memprop.png"
-    />Use the three <span class="b">Member Properties lists</span> to define the material, cross-section, and
+    />
+    Use the three <span class="b">Member Properties lists</span> to define the material, cross-section, and
     <topic-popup name="glos_member_size">member size</topic-popup> for each member in your
     <topic-popup name="glos_structural_model">structural model</topic-popup>. To choose a member property, click the
     drop-down button
     <img
       alt="Member Properties lists"
       src="img/help/dropdown.png"
-    />to reveal all of the list items, then click the item you want. The Member Size list can also be updated using the
+    />
+    to reveal all of the list items, then click the item you want. The Member Size list can also be updated using the
     <topic-popup name="hlp_increase_member">Increase Member Size button</topic-popup> and the
     <topic-popup name="hlp_decrease_member">Decrease Member Size button.</topic-popup>
   </p>
@@ -2466,7 +2492,8 @@
     <img
       alt="Member tool"
       src="img/help/btnmemb.png"
-    />Use the <span class="b">Member tool</span> to <topic-link name="hlp_draw_member">draw members</topic-link> as you
+    />
+    Use the <span class="b">Member tool</span> to <topic-link name="hlp_draw_member">draw members</topic-link> as you
     create your <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -2488,7 +2515,8 @@
     <img
       alt="Menu Bar"
       src="img/help/menubar.png"
-    />The <span class="b">Menu Bar</span> is located at the top of the
+    />
+    The <span class="b">Menu Bar</span> is located at the top of the
     <topic-link name="hlp_bridge_design_window">Bridge Design Window,</topic-link> immediately below the
     <topic-link name="hlp_title_bar">Title Bar.</topic-link> The Menu Bar provides the following commands:
   </p>
@@ -2663,7 +2691,8 @@
     <img
       alt="Newdesign button"
       src="img/help/btnnew.png"
-    />Click the <span class="b">New Design button</span> to
+    />
+    Click the <span class="b">New Design button</span> to
     <topic-link name="hlp_start_new_design">start a new bridge design.</topic-link> When you click the button, the
     <topic-link name="hlp_setup_wizard">Design Project Setup Wizard</topic-link> will be displayed.
   </p>
@@ -2758,11 +2787,11 @@
 <ng-template topic-name="hlp_old_style_graphics">
   <h1>Use old-style graphics check box</h1>
   <p>
-    <img src="img/help/legacygraphics.png" />The Cloud Edition load test animation uses game-quality high speed graphics
-    to let you move around the bridge while it is being tested and to see what the truck driver sees as she traverses a
-    successful bridge. Some computers do not support these advanced graphics. If nothing happens when you select 3D
-    <topic-link name="hlp_load_test3">load test animation</topic-link>, or if your computer misbehaves in some other
-    way, then you have one of these computers.
+    <img src="img/help/legacygraphics.png" /> The Cloud Edition load test animation uses game-quality high speed
+    graphics to let you move around the bridge while it is being tested and to see what the truck driver sees as she
+    traverses a successful bridge. Some computers do not support these advanced graphics. If nothing happens when you
+    select 3D <topic-link name="hlp_load_test3">load test animation</topic-link>, or if your computer misbehaves in some
+    other way, then you have one of these computers.
   </p>
   <p>
     Fix the problem by restarting the Bridge Designer and checking the menu entry at
@@ -2801,7 +2830,8 @@
     <img
       alt="Open File button"
       src="img/help/btnopen.png"
-    />Click the <span class="b">Open File button</span> to
+    />
+    Click the <span class="b">Open File button</span> to
     <topic-link name="hlp_open_existing">open an existing bridge design file.</topic-link>
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -2813,27 +2843,27 @@
 <ng-template topic-name="hlp_optimize_configuration">
   <h1>Optimize the shape of the truss</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_optimize_member_selection"
+    <topic-link name="hlp_optimize_member_selection"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_try_new_configuration"
+    <topic-link name="hlp_try_new_configuration"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -2948,27 +2978,27 @@
 <ng-template topic-name="hlp_optimize_member_selection">
   <h1>Optimize the member properties</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_strengthen_failed"
+    <topic-link name="hlp_strengthen_failed"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_optimize_configuration"
+    <topic-link name="hlp_optimize_configuration"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -3075,7 +3105,8 @@
     <img
       alt="Pinned Support"
       src="img/help/pin_spt.png"
-    />A pinned support, represented by this symbol, prevents a joint in the
+    />
+    A pinned support, represented by this symbol, prevents a joint in the
     <topic-popup name="glos_structural_model">structural model</topic-popup> from moving both horizontally and
     vertically.
   </p>
@@ -3265,19 +3296,19 @@
 <ng-template topic-name="hlp_record_design">
   <h1>Record your design</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_choose_optimum"
+    <topic-link name="hlp_choose_optimum"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p class="btop">
@@ -3305,7 +3336,8 @@
     <img
       alt="Redo button"
       src="img/help/btnredo.png"
-    />Click the <span class="b">Redo button</span> to
+    />
+    Click the <span class="b">Redo button</span> to
     <topic-link name="hlp_using_undo">restore a change to your structural model</topic-link> that was mistakenly undone.
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -3322,7 +3354,8 @@
     <img
       alt="Report Cost Calculations button"
       src="img/help/btncost.png"
-    />Click the <span class="b">Report Cost Calculations button</span> to show how the
+    />
+    Click the <span class="b">Report Cost Calculations button</span> to show how the
     <topic-link name="hlp_cost">cost of your current design</topic-link> is calculated. The Cost Calculations Report is
     shown as a table in a separate window. The report can be printed or copied to the Windows clipboard.
   </p>
@@ -3349,9 +3382,10 @@
     <img
       alt="Report Load Test Results button"
       src="img/help/btnltres.png"
-    />Click the <span class="b">Report Load Test Results button</span> to display detailed numerical results of your
-    most recent <topic-link name="hlp_run_load_test">load test.</topic-link> The Load Test Results Report is shown as a
-    table in a separate window. The report can be printed or copied to the Windows clipboard.
+    />
+    Click the <span class="b">Report Load Test Results button</span> to display detailed numerical results of your most
+    recent <topic-link name="hlp_run_load_test">load test.</topic-link> The Load Test Results Report is shown as a table
+    in a separate window. The report can be printed or copied to the Windows clipboard.
   </p>
   <p>
     Use these results as the basis for
@@ -3432,7 +3466,8 @@
     and cross-section. The lengths of these members are drawn as vertical lines on the strength curve with one
     highlighted. The highlighted member can be selected with the Member: selector
     <img src="img/help/memdetmemsel.png" />. Click the arrow buttons or select a member number from the drop down list.
-    All tabs can be drawn on a single strength curve by selecting the <img src="img/help/graphallcheck.png" />check box.
+    All tabs can be drawn on a single strength curve by selecting the <img src="img/help/graphallcheck.png" /> check
+    box.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>Member length and cost will be shown in the Member Details only when exactly one member is selected.</p>
@@ -3443,7 +3478,8 @@
     <img
       alt="Roller Support"
       src="img/help/rol_spt.png"
-    />A roller support, represented by this symbol, prevents a joint in the
+    />
+    A roller support, represented by this symbol, prevents a joint in the
     <topic-popup name="glos_structural_model">structural model</topic-popup> from moving vertically. The joint is still
     free to move horizontally, however.
   </p>
@@ -3482,27 +3518,27 @@
 <ng-template topic-name="hlp_run_load_test">
   <h1>Load test your design</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_draw_member"
+    <topic-link name="hlp_draw_member"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_strengthen_failed"
+    <topic-link name="hlp_strengthen_failed"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -3609,7 +3645,8 @@
     <img
       alt="Save As button"
       src="img/help/btnsavas.png"
-    />Click the <span class="b">Save As button</span> to
+    />
+    Click the <span class="b">Save As button</span> to
     <topic-link name="hlp_save_your_design">save the current design</topic-link> under a new file name.
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -3625,7 +3662,8 @@
     <img
       alt="Save File button"
       src="img/help/btnsave.png"
-    />Click the <span class="b">Save file button</span> to
+    />
+    Click the <span class="b">Save file button</span> to
     <topic-link name="hlp_save_your_design">save the current design</topic-link> as a
     <topic-popup name="glos_bridge_design_file">bridge design file</topic-popup>. If you have not saved the model
     previously, you will be prompted for a filename, directory, and disk drive. If you have saved your structural model
@@ -3700,7 +3738,8 @@
     <img
       alt="Select All button"
       src="img/help/btnselal.png"
-    />Click the <span class="b">Select All button</span> to select every member in the current
+    />
+    Click the <span class="b">Select All button</span> to select every member in the current
     <topic-popup name="glos_structural_model">structural model</topic-popup>. Once the
     <topic-popup name="glos_members">members</topic-popup> are selected, you can
     <topic-link name="hlp_change_member_properties">change their member properties</topic-link> simultaneously.
@@ -3714,19 +3753,19 @@
 <ng-template topic-name="hlp_select_project">
   <h1>Select a site configuration and load case</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_truss_configuration"
+    <topic-link name="hlp_truss_configuration"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -3873,7 +3912,8 @@
     <img
       alt="Select tool"
       src="img/help/btnsel.png"
-    />Use the <span class="b">Select tool</span> to edit your
+    />
+    Use the <span class="b">Select tool</span> to edit your
     <topic-popup name="glos_structural_model">structural model</topic-popup>. When you need to
     <topic-link name="hlp_move_joint">move a joint,</topic-link>
     <topic-link name="hlp_delete_joint">delete a joint,</topic-link>
@@ -3980,39 +4020,45 @@
     <img
       alt="Howe Truss"
       src="img/help/howe.png"
-    />Howe Through Truss
+    />
+    Howe Through Truss
   </p>
   <p class="in1">
     <img
       alt="Howe Truss"
       src="img/help/dhowe.png"
-    />Howe Deck Truss
+    />
+    Howe Deck Truss
   </p>
   <h2>Pratt Truss</h2>
   <p class="in1">
     <img
       alt="Howe Truss"
       src="img/help/pratt.png"
-    />Pratt Through Truss
+    />
+    Pratt Through Truss
   </p>
   <p class="in1">
     <img
       alt="Howe Truss"
       src="img/help/dpratt.png"
-    />Pratt Deck Truss
+    />
+    Pratt Deck Truss
   </p>
   <h2>Warren Truss</h2>
   <p class="in1">
     <img
       alt="Howe Truss"
       src="img/help/warren.png"
-    />Warren Through Truss
+    />
+    Warren Through Truss
   </p>
   <p class="in1">
     <img
       alt="Howe Truss"
       src="img/help/dwarren.png"
-    />Warren Deck Truss
+    />
+    Warren Deck Truss
   </p>
   <p>
     Regardless of their configuration, all trusses have the same basic
@@ -4075,27 +4121,27 @@
 <ng-template topic-name="hlp_strengthen_failed">
   <h1>Strengthen all unsafe members</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_run_load_test"
+    <topic-link name="hlp_run_load_test"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_optimize_member_selection"
+    <topic-link name="hlp_optimize_member_selection"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -4249,8 +4295,9 @@
     <img
       src="img/help/str_pn.png"
       alt="Tensile Strength"
-    />and is measured in units of force, such as kilonewtons (kN). Tensile strength can be calculated using the
-    following equation:
+    />
+    and is measured in units of force, such as kilonewtons (kN). Tensile strength can be calculated using the following
+    equation:
   </p>
   <p class="in2">
     <img
@@ -4399,9 +4446,10 @@
     <img
       alt=" Through Truss"
       src="img/help/warren.png"
-    />A <span class="b">through truss</span> is a truss with its
-    <topic-popup name="glos_deck">deck</topic-popup> located at the level of the bottom chord. On a through truss,
-    vehicles truss pass <span class="i">between</span> the two main trusses as they cross the bridge.
+    />
+    A <span class="b">through truss</span> is one with its <topic-popup name="glos_deck">deck</topic-popup> located at
+    the level of the bottom chord. Vehicles crossing a through truss bridge are supported
+    <span class="i">between</span> its two main trusses.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_tip_of">
@@ -4429,7 +4477,8 @@
     <img
       src="img/help/titlebar.png"
       alt="Title bar"
-    />The <span class="b">Title Bar</span> is the rectangular area at the top of the
+    />
+    The <span class="b">Title Bar</span> is the rectangular area at the top of the
     <topic-link name="hlp_bridge_design_window">Bridge Design Window.</topic-link> It displays the words "Bridge
     Designer," followed by the name of your current
     <topic-popup name="glos_bridge_design_file">bridge design file</topic-popup>.
@@ -4542,27 +4591,27 @@
 <ng-template topic-name="hlp_truss_configuration">
   <h1>Decide on a truss configuration</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         src="img/help/gotodp.png"
         alt=""
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_select_project"
+    <topic-link name="hlp_select_project"
       ><img
         src="img/help/goback.png"
         alt=""
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_draw_joint"
+    <topic-link name="hlp_draw_joint"
       ><img
         src="img/help/gofwd.png"
         alt=""
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -4620,27 +4669,27 @@
 <ng-template topic-name="hlp_try_new_configuration">
   <h1>Find the optimum truss configuration</h1>
   <p>
-    <span topic="hlp_how_to"
+    <topic-link name="hlp_how_to"
       ><img
         src="img/help/gotodp.png"
         alt=""
-    /></span>
+    /></topic-link>
     <span class="b">How to design a bridge</span>
   </p>
   <p>
-    <span topic="hlp_optimize_configuration"
+    <topic-link name="hlp_optimize_configuration"
       ><img
         src="img/help/goback.png"
         alt=""
-    /></span>
+    /></topic-link>
     <span class="b">Go back one step</span>
   </p>
   <p>
-    <span topic="hlp_find_opt_substructure"
+    <topic-link name="hlp_find_opt_substructure"
       ><img
         src="img/help/gofwd.png"
         alt=""
-    /></span>
+    /></topic-link>
     <span class="b">Go forward one step</span>
   </p>
   <p class="btop">
@@ -4822,8 +4871,9 @@
     <img
       alt="Undo button"
       src="img/help/btnundo.png"
-    />Click the <span class="b">Undo button</span> to <topic-link name="hlp_using_undo">undo</topic-link> the most
-    recent change to your <topic-popup name="glos_structural_model">structural model</topic-popup>.
+    />
+    Click the <span class="b">Undo button</span> to <topic-link name="hlp_using_undo">undo</topic-link> the most recent
+    change to your <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -4872,7 +4922,8 @@
       src="img/help/animationctls.png"
       width="24"
       alt="View Design Tools button"
-    />Click the <span class="b">View Animation Controls button</span> in the
+    />
+    Click the <span class="b">View Animation Controls button</span> in the
     <topic-link name="hlp_menu_bar">View menu</topic-link> to display or hide the
     <topic-link name="hlp_animation_controls">Animation Controls</topic-link>. This button functions as a "toggle." If
     the Animation Controls is currently visible, clicking the button will hide it. If the controls are hidden, clicking
@@ -4891,7 +4942,8 @@
     <img
       alt="Grid Resolution buttons"
       src="img/help/rez.png"
-    />Use the <span class="b">Grid Resolution buttons</span> to set the resolution of the
+    />
+    Use the <span class="b">Grid Resolution buttons</span> to set the resolution of the
     <topic-popup name="glos_drawing_grid">drawing grid</topic-popup>.
   </p>
   <p>
@@ -4940,7 +4992,8 @@
     <img
       alt="View member List button"
       src="img/help/btnmlist.png"
-    />Click the <span class="b">View Member List button</span> to display or hide the
+    />
+    Click the <span class="b">View Member List button</span> to display or hide the
     <topic-link name="hlp_member_list">Member List.</topic-link> This button functions as a "toggle." If the Member List
     is currently visible, clicking the button will hide it. If the Member List is hidden, clicking the button will
     display it.
@@ -4958,7 +5011,8 @@
     <img
       alt="View member numbers button"
       src="img/help/btnmnum.png"
-    />Click the <span class="b">View Member Numbers button</span> to display or hide the
+    />
+    Click the <span class="b">View Member Numbers button</span> to display or hide the
     <topic-popup name="glos_member_numbers">member numbers</topic-popup> on the
     <topic-link name="hlp_drawing_board">Drawing Board</topic-link>. This button functions as a "toggle." If the member
     numbers are currently visible, clicking the button will hide them. If the member numbers are hidden, clicking the
@@ -4976,7 +5030,8 @@
     <img
       alt="View rulers button"
       src="img/help/btnruler.png"
-    />Click the <span class="b">View Rulers button</span> to display or hide the
+    />
+    Click the <span class="b">View Rulers button</span> to display or hide the
     <topic-link name="hlp_rulers">rulers.</topic-link> This button functions as a "toggle." If the rulers are currently
     visible, clicking the button will hide them. If the rulers are hidden, clicking the button will display them.
   </p>
@@ -5000,8 +5055,9 @@
           <img
             alt="View Symmetry Guides button"
             src="img/help/symm.png"
-          />Click the <span class="b">View Symmetry Guides button</span> to display or hide a set of two vertical and
-          one horizontal guide lines on the <topic-link name="hlp_drawing_board">Drawing Board.</topic-link> Use these
+          />
+          Click the <span class="b">View Symmetry Guides button</span> to display or hide a set of two vertical and one
+          horizontal guide lines on the <topic-link name="hlp_drawing_board">Drawing Board.</topic-link> Use these
           guides when drawing or moving <topic-popup name="glos_joints">joints</topic-popup>, to ensure that your
           <topic-popup name="glos_structural_model">structural model</topic-popup> is
           <topic-popup name="glos_symmetrical">symmetrical</topic-popup>. The guides can be moved by dragging handles
@@ -5040,7 +5096,8 @@
     <img
       alt="View template button"
       src="img/help/btntempl.png"
-    />Click the <span class="b">View template button</span> to display or hide the current
+    />
+    Click the <span class="b">View template button</span> to display or hide the current
     <topic-popup name="glos_template">template</topic-popup> on the
     <topic-link name="hlp_drawing_board">Drawing Board.</topic-link> This button functions as a "toggle." If the
     template is visible, clicking the button will hide it. If the template is hidden, clicking the button will display
@@ -5066,7 +5123,8 @@
     <img
       alt="View Title Block button"
       src="img/help/btntitle.png"
-    />Click the <span class="b">View title block button</span> to display or hide the
+    />
+    Click the <span class="b">View title block button</span> to display or hide the
     <topic-link name="hlp_titleblock">Title block</topic-link>. This button functions as a "toggle." If the Title Block
     is currently visible, clicking the button will hide it. If the Title Block is hidden, clicking the button will
     display it.
@@ -5090,7 +5148,8 @@
       src="img/help/tools.png"
       width="24"
       alt="View Design Tools button"
-    />Click the <span class="b">View Design Tools button</span> in the
+    />
+    Click the <span class="b">View Design Tools button</span> in the
     <topic-link name="hlp_menu_bar">View menu</topic-link> to display or hide the
     <topic-link name="hlp_design_tools">Design Tools Palette</topic-link>. This button functions as a "toggle." If the
     Design Tools Palette is currently visible, clicking the button will hide it. If the palette is hidden, clicking the
@@ -5373,8 +5432,8 @@
 <ng-template topic-name="glos_deck_truss">
   <h1>Deck truss</h1>
   <p>
-    A deck truss is a truss with its deck is located at the top chord. Vehicles crossing a deck truss are supported
-    above the trusses.
+    A <topic-popup name="glos_deck">deck</topic-popup> truss is a truss with its deck is located at the top chord.
+    Vehicles crossing deck trusses are supported above the trusses.
   </p>
 </ng-template>
 <ng-template topic-name="glos_diagonals">

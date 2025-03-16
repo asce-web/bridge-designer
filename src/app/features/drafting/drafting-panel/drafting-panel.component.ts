@@ -138,6 +138,9 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   deleteSelectionRequestHandler(): void {
+    if (this.selectedElementsService.isSelectionEmpty) {
+      return;
+    }
     const bridge = this.bridgeService.bridge;
     const selectedElements = this.selectedElementsService.selectedElements;
     const joint = this.selectedElementsService.getSelectedJoint(bridge);
@@ -185,6 +188,11 @@ export class DraftingPanelComponent implements AfterViewInit {
     if (density !== DesignGridDensity.ERROR) {
       this.eventBrokerService.gridDensitySelection.next({ origin: EventOrigin.DRAFTING_PANEL, data: density });
     }
+  }
+
+  /** Stops edit keys from bubbling up to the global handler while focus on title block. */
+  handleTitleBlockKeyDown(event: KeyboardEvent) {
+    event.stopPropagation();
   }
 
   ngAfterViewInit(): void {

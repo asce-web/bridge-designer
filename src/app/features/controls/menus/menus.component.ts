@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { jqxMenuComponent, jqxMenuModule } from 'jqwidgets-ng/jqxmenu';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
-import { UiStateService } from '../management/ui-state.service';
+import { ModifierMask, UiStateService } from '../management/ui-state.service';
 
 @Component({
   selector: 'menus',
@@ -70,5 +70,9 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerToggleMenuItem('template', this.eventBrokerService.templateToggle);
     this.uiStateService.registerToggleMenuItem('titleBlock', this.eventBrokerService.titleBlockToggle);
     this.uiStateService.registerToggleMenuItem('tools', this.eventBrokerService.toolsToggle);
+
+    this.uiStateService.registerKey('Delete', 0, this.eventBrokerService.deleteSelectionRequest);
+    this.uiStateService.registerKey('y', ModifierMask.CTRL, this.eventBrokerService.redoRequest);
+    this.uiStateService.registerKey('z', ModifierMask.CTRL, this.eventBrokerService.undoRequest);
   }
 }

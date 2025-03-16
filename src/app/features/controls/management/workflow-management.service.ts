@@ -66,6 +66,11 @@ export class WorkflowManagementService {
       uiStateService.disable(eventBrokerService.redoRequest, eventInfo.data.undoneCount === 0);
       if (eventInfo.data.effectsMask & EditEffect.MEMBERS) {
         disableMemberSizeIncrementWidgets();
+        const selectedMembers = selectedElementsService.selectedElements.selectedMembers;
+        eventBrokerService.loadInventorySelectorRequest.next({
+          origin: EventOrigin.SERVICE,
+          data: bridgeService.getUsefulStockId(selectedMembers),
+        });  
       }
     });
 
@@ -105,11 +110,11 @@ export class WorkflowManagementService {
     // Selected elements change.
     eventBrokerService.selectedElementsChange.subscribe(_eventInfo => {
       const selectedMembers = selectedElementsService.selectedElements.selectedMembers;
-      uiStateService.disable(eventBrokerService.deleteSelectionRequest, selectedMembers.size === 0);
       eventBrokerService.loadInventorySelectorRequest.next({
         origin: EventOrigin.SERVICE,
         data: bridgeService.getUsefulStockId(selectedMembers),
       });
+      uiStateService.disable(eventBrokerService.deleteSelectionRequest, selectedMembers.size === 0);
       disableMemberSizeIncrementWidgets();
     });
 

@@ -32,6 +32,10 @@ export class SelectedElementsService {
     return undefined; // never reached
   }
 
+  public get isSelectionEmpty() : boolean {
+    return this.selectedElements.selectedJoints.size === 0 && this.selectedElements.selectedMembers.size === 0;
+  }
+  
   public isJointSelected(joint: Joint): boolean {
     return this.selectedElements.selectedJoints.has(joint.index);
   }

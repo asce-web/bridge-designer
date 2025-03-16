@@ -5,6 +5,13 @@ import { jqxToggleButtonComponent } from 'jqwidgets-ng/jqxtogglebutton';
 import { jqxMenuComponent } from 'jqwidgets-ng/jqxmenu';
 import { Utility } from '../../../shared/classes/utility';
 
+export const enum ModifierMask {
+  ALT = 0x1,
+  CTRL = 0x2,
+  META = 0x4,
+  SHIFT = 0x8,
+}
+
 /** Container for state and logic that sychronizes multiple UI elements having the same purpose. */
 @Injectable({ providedIn: 'root' })
 export class UiStateService {
@@ -14,10 +21,24 @@ export class UiStateService {
   private readonly toggleMenuItemInfosById: { [id: string]: [HTMLSpanElement, Subject<EventInfo>] } = {};
   private readonly plainMenuItemInfosById: { [id: string]: [Subject<EventInfo>, any] } = {};
   private readonly widgetDisablersBySubject = new Map<Subject<any>, ((disable: boolean) => void)[]>();
+  private readonly keyInfosByKey: { [key: string]: [boolean, Subject<EventInfo>, any] } = {};
   private _menu: jqxMenuComponent | undefined;
 
+  constructor() {
+    addEventListener('keydown', (event: KeyboardEvent): void => {
+      let modifierMask = (+event.shiftKey << 3) | (+event.metaKey << 2) | (+event.ctrlKey << 1) | +event.altKey;
+      const info = this.keyInfosByKey[`${event.key}|${modifierMask}`];
+      if (!info || info[0]) {
+        return;
+      }
+      // Stop <input> from grabbing focus back on control keys.
+      event.preventDefault();
+      info[1].next({ origin: EventOrigin.TOOLBAR, data: info[2] });
+    });
+  }
+
   /** Registers a menu where we'll disable/re-enable items by their associated subjects. */
-  public registerForDisablement(menu: jqxMenuComponent) {
+  public registerForDisablement(menu: jqxMenuComponent): void {
     this._menu = menu;
   }
 
@@ -59,7 +80,9 @@ export class UiStateService {
     indices: number[],
     subject: Subject<EventInfo>,
   ): void {
-    this.addWidgetDisabler(subject, disable => buttonItems.forEach(item => item.tool.jqxToggleButton({ disabled: disable })));
+    this.addWidgetDisabler(subject, disable =>
+      buttonItems.forEach(item => item.tool.jqxToggleButton({ disabled: disable })),
+    );
     buttonItems = indices.map(i => buttonItems[i]);
     buttonItems.forEach((buttonItem, buttonItemIndex) =>
       buttonItem.tool.on('mousedown', () => {
@@ -91,7 +114,7 @@ export class UiStateService {
     });
   }
 
-  public registerToggleMenuItem(itemId: string, subject: Subject<EventInfo>) {
+  public registerToggleMenuItem(itemId: string, subject: Subject<EventInfo>): void {
     this.addWidgetDisabler(subject, disable => this.menu.disable(itemId, disable));
     const menuItem = UiStateService.queryMenuItem(itemId);
     this.toggleMenuItemInfosById[itemId] = [menuItem, subject];
@@ -102,7 +125,7 @@ export class UiStateService {
     });
   }
 
-  public registerToggleToolbarButton(buttonItem: jqwidgets.ToolBarToolItem, subject: Subject<EventInfo>) {
+  public registerToggleToolbarButton(buttonItem: jqwidgets.ToolBarToolItem, subject: Subject<EventInfo>): void {
     this.addWidgetDisabler(subject, disable => buttonItem.tool.jqxToggleButton({ disabled: disable }));
     buttonItem.tool.on('click', () => {
       subject.next({ origin: EventOrigin.TOOLBAR, data: buttonItem.tool.jqxToggleButton('toggled') });
@@ -114,7 +137,7 @@ export class UiStateService {
     });
   }
 
-  public registerPlainMenuEntry(itemId: string, subject: Subject<EventInfo>, data?: any) {
+  public registerPlainMenuEntry(itemId: string, subject: Subject<EventInfo>, data?: any): void {
     this.addWidgetDisabler(subject, disable => this.menu.disable(itemId, disable));
     this.plainMenuItemInfosById[itemId] = [subject, data];
   }
@@ -126,7 +149,19 @@ export class UiStateService {
     });
   }
 
-  public disable(subject: Subject<any>, value: boolean = true) {
+  public registerKey(key: string, modifierMask: number, subject: Subject<EventInfo>, data?: any): void {
+    const lookupKey = `${key}|${modifierMask}`;
+    if (this.keyInfosByKey[lookupKey]) {
+      throw new Error(`Multiple reg for key '${key}'`);
+    }
+    const info: [boolean, Subject<EventInfo>, any] = [false, subject, data];
+    this.keyInfosByKey[lookupKey] = info;
+    this.addWidgetDisabler(subject, disable => {
+      info[0] = disable;
+    });
+  }
+
+  public disable(subject: Subject<any>, value: boolean = true): void {
     this.widgetDisablersBySubject.get(subject)?.forEach(disabler => disabler(value));
   }
 
@@ -144,11 +179,11 @@ export class UiStateService {
     disablers.push(disabler.bind(this));
   }
 
-  private static setMenuItemCheck(menuItem: HTMLSpanElement, value: boolean) {
+  private static setMenuItemCheck(menuItem: HTMLSpanElement, value: boolean): void {
     menuItem.textContent = value ? '✔' : '';
   }
 
-  private static isMenuItemChecked(menuItem: HTMLSpanElement) {
+  private static isMenuItemChecked(menuItem: HTMLSpanElement): boolean {
     return menuItem.textContent === '✔';
   }
 

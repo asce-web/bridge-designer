@@ -1,10 +1,10 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
   forwardRef,
+  HostListener,
   Input,
   ViewChild,
 } from '@angular/core';
@@ -21,7 +21,7 @@ import { HelpTopicComponent } from '../help-topic/help-topic.component';
   styleUrl: './help-topic-popup.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class HelpPopupTopicComponent implements AfterViewInit {
+export class HelpPopupTopicComponent {
   @Input({ required: true }) name!: string;
   @ViewChild('link') link!: ElementRef<HTMLSpanElement>;
   @ViewChild('popup') popup!: ElementRef<HTMLDivElement>;
@@ -81,11 +81,9 @@ export class HelpPopupTopicComponent implements AfterViewInit {
     element.style.display = 'none';
   }
 
-  ngAfterViewInit(): void {
-    ['pointerdown', 'keydown'].forEach(eventName =>
-      document.addEventListener(eventName, _event => {
-        this.hidePopup(this.popup?.nativeElement);
-      }),
-    );
+  @HostListener('document:pointerdown')
+  @HostListener('document:keydown')
+  onPointerOrKeyDown(): void {
+    this.hidePopup(this.popup?.nativeElement);
   }
 }

@@ -69,8 +69,10 @@ export class HelpTopicComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.goToTopic(this.visibleTopicName);
-    this.helpEventService.goToTopicRequest.subscribe(({ topicName, scrollTop }) =>
-      this.goToTopic(topicName, scrollTop),
-    );
+    if (this.containerType === 'pane-content') {
+      this.helpEventService.goToTopicRequest.subscribe(({ topicName, scrollTop }) => {
+        this.goToTopic(topicName, scrollTop);
+      });
+    }
   }
 }

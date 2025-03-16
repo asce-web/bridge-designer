@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   numberAttribute,
   Output,
@@ -128,6 +129,11 @@ export class CursorOverlayComponent implements AfterViewInit {
         this.setEraseMode();
         break;
     }
+  }
+
+  @HostListener('pointerdown')
+  pointerDownListener(): void {
+    this.canvas.focus();
   }
 
   ngAfterViewInit(): void {

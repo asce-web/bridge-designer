@@ -19,7 +19,10 @@
 >
   Oops... That makes too many members.
 </jqxNotification>
-<div #wrapper class="wrapper">
+<div
+  #wrapper
+  class="wrapper"
+>
   <canvas
     #draftingPanel
     class="view"
@@ -39,7 +42,11 @@
     (moveJointRequest)="moveJointRequestHandler($event)"
     (dragCursorActive)="dragCursorActive($event)"
   ></cursor-overlay>
-  <div #titleBlock class="title-block">
+  <div
+    #titleBlock
+    class="title-block"
+    (keydown)="handleTitleBlockKeyDown($event)"
+  >
     <div class="project-name">
       <input
         #projectNameInput
