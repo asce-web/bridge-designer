@@ -52,11 +52,12 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerPlainMenuEntry('loadTestResults', this.eventBrokerService.analysisReportRequest);
     this.uiStateService.registerPlainMenuEntry('new', this.eventBrokerService.newDesignRequest);
     // TODO: Make this actually open a bridge file.
-    this.uiStateService.registerPlainMenuEntry('open', this.eventBrokerService.slendernessFailDialogOpenRequest);
+    this.uiStateService.registerPlainMenuEntry('open', this.eventBrokerService.memberEditRequest);
     this.uiStateService.registerPlainMenuEntry('redo', this.eventBrokerService.redoRequest);
     this.uiStateService.registerPlainMenuEntry('selectAll', this.eventBrokerService.selectAllRequest);
     this.uiStateService.registerPlainMenuEntry('sizedown', this.eventBrokerService.memberSizeDecreaseRequest);
     this.uiStateService.registerPlainMenuEntry('sizeup', this.eventBrokerService.memberSizeIncreaseRequest);
+    this.uiStateService.registerPlainMenuEntry('tip', this.eventBrokerService.tipRequest);
     this.uiStateService.registerPlainMenuEntry('undo', this.eventBrokerService.undoRequest);
 
     this.uiStateService.registerToggleMenuItem('animation', this.eventBrokerService.animationToggle);
@@ -67,6 +68,7 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerToggleMenuItem('memberList', this.eventBrokerService.memberTableToggle);
     this.uiStateService.registerToggleMenuItem('memberNumbers', this.eventBrokerService.memberNumbersToggle);
     this.uiStateService.registerToggleMenuItem('rulers', this.eventBrokerService.rulersToggle);
+    this.uiStateService.registerToggleMenuItem('session', this.eventBrokerService.sessionStateEnableToggle);
     this.uiStateService.registerToggleMenuItem('template', this.eventBrokerService.templateToggle);
     this.uiStateService.registerToggleMenuItem('titleBlock', this.eventBrokerService.titleBlockToggle);
     this.uiStateService.registerToggleMenuItem('tools', this.eventBrokerService.toolsToggle);

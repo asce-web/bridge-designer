@@ -8,6 +8,7 @@
     [valueMember]="'shortName'"
     [selectedIndex]="0"
     [autoDropDownHeight]="true"
+    [popupZIndex]="1000000"
     (onChange)="handleMaterialSelectorOnChange($event)"
   ></jqxDropDownList>
   <jqxDropDownList
@@ -19,6 +20,7 @@
     [valueMember]="'shortName'"
     [selectedIndex]="0"
     [autoDropDownHeight]="true"
+    [popupZIndex]="1000000"
     (onChange)="handleCrossSectionSelectorOnChange($event)"
   ></jqxDropDownList>
   <jqxDropDownList
@@ -30,6 +32,7 @@
     [valueMember]="'name'"
     [selectedIndex]="initialSizeIndex"
     [dropDownHeight]="600"
+    [popupZIndex]="1000000"
     (onChange)="handleSizeSelectorOnChange($event)"
   ></jqxDropDownList>
 </div>

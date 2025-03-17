@@ -1,0 +1,32 @@
+.header {
+  font-weight: 700;
+}
+
+.content {
+  width: calc(100% - 2px);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.tip-icon {
+  float: left;
+}
+
+.tip-box {
+  border: 1px solid lightgray;
+  width: calc(100% - 18px);
+  height: 200px;
+  padding: 8px;
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.controls {
+  display: flex;
+}
+
+.bd-emph {
+  color: darkgreen;
+  font-weight: bold;
+}

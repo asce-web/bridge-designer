@@ -1,0 +1,81 @@
+<jqxWindow
+  #dialog
+  [isModal]="false"
+  [autoOpen]="false"
+  [width]="344"
+  [height]="300"
+>
+  <div class="header">Edit selected members</div>
+  <div class="container">
+    <div class="inventory-selector">
+      <div class="selector-label">Member properties:</div>
+      <inventory-selector
+        [vertical]="true"
+        [sessionStateKey]="undefined"
+      >
+      </inventory-selector>
+    </div>
+    <div class="increase-size-button">
+      <jqxButton
+        #increaseSizeButton
+        [width]="172"
+        [height]="26"
+        [imgPosition]="'left'"
+        [textPosition]="'left'"
+        [textImageRelation]="'imageBeforeText'"
+        [imgSrc]="'img/sizeup.png'"
+      >
+        Increase member size
+      </jqxButton>
+    </div>
+    <div class="decrease-size-button">
+      <jqxButton
+        #decreaseSizeButton
+        [width]="172"
+        [height]="26"
+        [imgPosition]="'left'"
+        [textPosition]="'left'"
+        [textImageRelation]="'imageBeforeText'"
+        [imgSrc]="'img/sizedown.png'"
+      >
+        Decrease member size
+      </jqxButton>
+    </div>
+    <div class="delete-button">
+      <jqxButton
+        #deleteSelectionButton
+        [width]="172"
+        [height]="26"
+        [imgPosition]="'left'"
+        [textPosition]="'left'"
+        [textImageRelation]="'imageBeforeText'"
+        [imgSrc]="'img/delete.png'"
+      >
+        Delete selection
+      </jqxButton>
+    </div>
+    <div class="member-list-button">
+      <jqxToggleButton
+        #memberListToggleButton
+        [width]="120"
+        [height]="26"
+        [imgPosition]="'left'"
+        [textPosition]="'left'"
+        [textImageRelation]="'imageBeforeText'"
+        [imgSrc]="'img/memtable.png'"
+        [toggled]="true"
+      >
+        Member list
+      </jqxToggleButton>
+    </div>
+    <div class="close-button">
+      <jqxButton
+        [width]="120"
+        [height]="26"
+        (onClick)="dialog.close()"
+      >
+        Close
+      </jqxButton>
+    </div>
+  </div>
+</jqxWindow>

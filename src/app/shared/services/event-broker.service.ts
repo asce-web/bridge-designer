@@ -8,6 +8,7 @@ export const enum EventOrigin {
   CURSOR_OVERLAY,
   DESIGN_ITERATION_DIALOG,
   DRAFTING_PANEL,
+  MEMBER_EDIT_DIALOG,
   MEMBER_TABLE,
   MENU,
   SAMPLE_DIALOG,
@@ -43,7 +44,7 @@ export type TypedEventInfo<T> = { origin: EventOrigin, data: T };
 @Injectable({ providedIn: 'root' })
 export class EventBrokerService {
   public readonly analysisCompletion = new Subject<TypedEventInfo<AnalysisStatus>>();
-  // TODO: Finish replacing EventInfo with TypedEventInfo.
+  // TODO: Finish replacing EventInfo with TypedEventInfo. (UiStateService makes this hard.)
   public readonly analysisReportRequest = new Subject<EventInfo>();
   public readonly animationControlsToggle = new Subject<EventInfo>();
   public readonly animationToggle = new Subject<EventInfo>();
@@ -71,6 +72,7 @@ export class EventBrokerService {
   public readonly loadInventorySelectorRequest = new Subject<EventInfo>();
   public readonly loadSampleRequest = new Subject<EventInfo>();
   public readonly loadTemplateRequest = new Subject<EventInfo>();
+  public readonly memberEditRequest = new Subject<EventInfo>();
   public readonly memberSizeIncreaseRequest = new Subject<EventInfo>();
   public readonly memberSizeDecreaseRequest = new Subject<EventInfo>();
   public readonly memberNumbersToggle = new Subject<EventInfo>();
@@ -81,12 +83,16 @@ export class EventBrokerService {
   public readonly selectAllRequest = new Subject<EventInfo>();
   public readonly selectNoneRequest = new Subject<EventInfo>();
   public readonly selectedElementsChange = new Subject<EventInfo>();
+  public readonly sessionStateEnableToggle = new Subject<EventInfo>();
   public readonly sessionStateSaveRequest = new Subject<TypedEventInfo<void>>();
+  public readonly sessionStateSaveEssentialRequest = new Subject<TypedEventInfo<void>>();
   public readonly sessionStateRestoreComplete = new Subject<TypedEventInfo<void>>();
   public readonly slendernessFailDialogOpenRequest = new Subject<EventInfo>();
   public readonly templateToggle = new Subject<EventInfo>();
+  public readonly tipRequest = new Subject<EventInfo>();
   public readonly titleBlockToggle = new Subject<EventInfo>();
   public readonly toolsToggle = new Subject<EventInfo>();
   public readonly undoRequest = new Subject<EventInfo>();
   public readonly unstableBridgeDialogOpenRequest = new Subject<EventInfo>();
+  public readonly welcomeRequest = new Subject<EventInfo>();
 }

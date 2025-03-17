@@ -4,6 +4,7 @@ import { EventInfo, EventOrigin } from '../../../shared/services/event-broker.se
 import { jqxToggleButtonComponent } from 'jqwidgets-ng/jqxtogglebutton';
 import { jqxMenuComponent } from 'jqwidgets-ng/jqxmenu';
 import { Utility } from '../../../shared/classes/utility';
+import { jqxButtonComponent } from 'jqwidgets-ng/jqxbuttons';
 
 export const enum ModifierMask {
   ALT = 0x1,
@@ -137,6 +138,22 @@ export class UiStateService {
     });
   }
 
+  public registerToggleButton(
+    button: jqxToggleButtonComponent,
+    origin: EventOrigin,
+    subject: Subject<EventInfo>,
+  ): void {
+    this.addWidgetDisabler(subject, disable => button.disabled(disable));
+    button.elementRef.nativeElement.addEventListener('click', () => {
+      subject.next({ origin, data: button.toggled() });
+    });
+    subject.subscribe((eventInfo: EventInfo) => {
+      if (eventInfo.origin !== origin) {
+        button.toggled(eventInfo.data);
+      }
+    });
+  }
+
   public registerPlainMenuEntry(itemId: string, subject: Subject<EventInfo>, data?: any): void {
     this.addWidgetDisabler(subject, disable => this.menu.disable(itemId, disable));
     this.plainMenuItemInfosById[itemId] = [subject, data];
@@ -147,6 +164,11 @@ export class UiStateService {
     buttonItem.tool.on('click', () => {
       subject.next({ origin: EventOrigin.TOOLBAR, data });
     });
+  }
+
+  public registerPlainButton(button: jqxButtonComponent, origin: EventOrigin, subject: Subject<EventInfo>, data?: any) {
+    this.addWidgetDisabler(subject, disable => button.disabled(disable));
+    button.elementRef.nativeElement.addEventListener('click', () => subject.next({ origin, data }));
   }
 
   public registerKey(key: string, modifierMask: number, subject: Subject<EventInfo>, data?: any): void {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { jqxRadioButtonModule, jqxRadioButtonComponent } from 'jqwidgets-ng/jqxradiobutton';
@@ -13,7 +13,7 @@ import { SessionStateService } from '../../../shared/services/session-state.serv
   styleUrl: './welcome-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WelcomeDialogComponent {
+export class WelcomeDialogComponent implements AfterViewInit{
   @ViewChild('dialog') dialog!: jqxWindowComponent;
   @ViewChild('newButton') newButton!: jqxRadioButtonComponent;
   @ViewChild('loadSampleButton') loadSampleButton!: jqxRadioButtonComponent;
@@ -35,5 +35,9 @@ export class WelcomeDialogComponent {
     } else if (this.openButton.checked()) {
       // TODO: Load saved bridge!
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.eventBrokerService.welcomeRequest.subscribe(_eventInfo => this.dialog.open());
   }
 }

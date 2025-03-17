@@ -82,7 +82,7 @@
   <p>
     The bridge <topic-popup name="glos_abutment">abutments</topic-popup>,
     <topic-popup name="glos_floor_beams">floor beams</topic-popup>,
-    <topic-popup name="glos_concrete">concrete</topic-popup> <topic-popup name="glos_deck">deck</topic-popup>,
+    <topic-popup name="glos_concrete">concrete</topic-popup>&ngsp;<topic-popup name="glos_deck">deck</topic-popup>,
     <topic-popup name="glos_asphalt">asphalt</topic-popup> road surface, and high-water level are displayed on the
     drawing board at all times. (See
     <topic-link name="hlp_component_parts">component parts of a truss bridge</topic-link> for more information about
@@ -346,8 +346,6 @@
       </td>
     </tr>
   </table>
-  <p></p>
-  <p></p>
 </ng-template>
 <ng-template topic-name="hlp_auto_correct_errors">
   <h1>Auto-correct errors check box</h1>
@@ -970,7 +968,6 @@
     <topic-popup name="glos_joints">joints</topic-popup> and <topic-popup name="glos_members">members</topic-popup>.
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_design_specifications">
   <h1>Design specifications</h1>
   <p class="box">
@@ -1015,8 +1012,8 @@
           <span class="bd-emph">Bridge Designer</span>.
         </li>
         <li>
-          To provide clearance for overhead power lines as shown above, the highest point on the bridge may not exceed an
-          elevation 32.5 meters above the high water level (8.5 meters above the top of the river banks).
+          To provide clearance for overhead power lines as shown above, the highest point on the bridge may not exceed
+          an elevation 32.5 meters above the high water level (8.5 meters above the top of the river banks).
         </li>
         <li>
           The bridge <topic-popup name="glos_substructure">substructure</topic-popup> may consist of either standard
@@ -1043,8 +1040,9 @@
           <topic-popup name="glos_floor_beams">floor beams</topic-popup> spaced at 4 meter intervals. (See
           <topic-link name="hlp_component_parts">component parts of a truss bridge</topic-link> for more information
           about these terms.) To accommodate the floor beams, your
-          <topic-popup name="glos_structural_model">structural model</topic-popup> must have a row of deck support joints spaced 4
-          meters apart at deck level. These joints are created automatically when you begin a new design.
+          <topic-popup name="glos_structural_model">structural model</topic-popup> must have a row of deck support
+          joints spaced 4 meters apart at deck level. These joints are created automatically when you begin a new
+          design.
         </li>
         <li>The bridge deck will be 10 meters wide, allowing it to accommodate two lanes of traffic.</li>
       </ol>
@@ -1070,8 +1068,8 @@
         <li>Weight of the <topic-popup name="glos_reinforced_concrete">reinforced concrete</topic-popup> deck.</li>
         <li>
           Weight of a 5-cm thick <topic-popup name="glos_asphalt">asphalt</topic-popup>
-          <topic-popup name="glos_wearing_surface"> wearing surface</topic-popup>, which might be applied at some time in
-          the future.
+          <topic-popup name="glos_wearing_surface"> wearing surface</topic-popup>, which might be applied at some time
+          in the future.
         </li>
         <li>
           Weight of the steel floor beams and supplemental bracing members. These apply a 12.0
@@ -1082,16 +1080,15 @@
           The weight of either of two possible truck loadings:
           <ol>
             <li>
-              One standard <topic-link name="hlp_aashto_h20x44">H25 truck loading</topic-link> per lane,
-              including appropriate allowance for the dynamic effects of the moving load. (Since the bridge carries two
-              lanes of traffic, each main truss must safely carry one H25 vehicle, placed anywhere along the length of
-              the deck.)
+              One standard <topic-link name="hlp_aashto_h20x44">H25 truck loading</topic-link> per lane, including
+              appropriate allowance for the dynamic effects of the moving load. (Since the bridge carries two lanes of
+              traffic, each main truss must safely carry one H25 vehicle, placed anywhere along the length of the deck.)
               <p class="in3"></p>
             </li>
             <li>
-              A single 480 kN permit Loading, including an allowance for the dynamic effects of the
-              moving load. Since the permit loading is assumed to be centered laterally, each main truss must safely
-              carry one-half of the total vehicle weight, placed anywhere along the length of the deck.
+              A single 480 kN permit Loading, including an allowance for the dynamic effects of the moving load. Since
+              the permit loading is assumed to be centered laterally, each main truss must safely carry one-half of the
+              total vehicle weight, placed anywhere along the length of the deck.
             </li>
           </ol>
         </li>
@@ -1101,8 +1098,8 @@
       <span class="b">Structural safety</span>
       <p class="in1">
         The bridge will comply with the structural <topic-popup name="glos_safe">safety</topic-popup> provisions of the
-        1994 LRFD <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification. LRFD refers to "Load and
-        <topic-popup name="glos_resistance_factor">Resistance Factor</topic-popup> Design. It includes:
+        1994 LRFD <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification. LRFD refers to "Load
+        and <topic-popup name="glos_resistance_factor">Resistance Factor</topic-popup> Design. It includes:
       </p>
       <ol class="alpha">
         <li><topic-link name="hlp_material_densities">Material densities</topic-link></li>
@@ -1114,8 +1111,7 @@
     <li>
       <span class="b">Cost</span>
       <p class="in1">
-        The <topic-link name="hlp_cost">cost of the design</topic-link> will be calculated using the following
-        factors:
+        The <topic-link name="hlp_cost">cost of the design</topic-link> will be calculated using the following factors:
       </p>
       <ol class="alpha">
         <li>
@@ -1156,9 +1152,9 @@
     <span class="bd-emph">Bridge Designer</span> automatically calculates the
     <topic-popup name="glos_loads">loads</topic-popup> and resulting member
     <topic-popup name="glos_forces">forces</topic-popup>. When you run the
-    <topic-popup name="glos_load_test">load test</topic-popup>, it performs the AASHTO structural safety checks. If
-    any of the members in your structural model are not strong enough, it tells you which ones need it be strengthened.
-    It also calculates the cost of your design.
+    <topic-popup name="glos_load_test">load test</topic-popup>, it performs the AASHTO structural safety checks. If any
+    of the members in your structural model are not strong enough, it tells you which ones need it be strengthened. It
+    also calculates the cost of your design.
   </p>
   <p>
     The AASHTO safety standards have been simplified considerably in the
@@ -1171,40 +1167,39 @@
   <h1>Design tools palette</h1>
   <p>
     <img
-      alt="Design Tools palette"
+      alt="Design tools palette"
       src="img/help/tpalette.png"
     />
-    The <span class="b">Design Tools palette</span> is a free-floating toolbar that can be positioned anywhere in the
-    <topic-link name="hlp_bridge_design_window">Bridge Design Window</topic-link>. The Design Tools palette contains the
-    following tools for creating and modifying your structural model:
+    The <span class="b">design tools palette</span> is a free-floating toolbar that can be positioned anywhere in the
+    <topic-link name="hlp_bridge_design_window">bridge design window</topic-link>. It contains the following tools for
+    creating and modifying your structural model:
   </p>
   <p class="in1"><topic-popup name="hlp_joint_tool">Joint tool</topic-popup></p>
   <p class="in1"><topic-popup name="hlp_member_tool">Member tool</topic-popup></p>
   <p class="in1"><topic-popup name="hlp_select_tool">Select tool</topic-popup></p>
   <p class="in1"><topic-popup name="hlp_erase_tool">Eraser tool</topic-popup></p>
   <h2 class="btop">Notes and tips</h2>
-  <p>To move the Design Tools palette to a new location, click and drag the Title Bar of the palette.</p>
-  <p>
-    Unlike the <topic-link name="hlp_toolbars">other toolbars,</topic-link> the Design Tools palette cannot be docked on
-    the top or bottom of the <topic-link name="hlp_bridge_design_window">Bridge Design Window.</topic-link>
-  </p>
+  <p>To move the design tools palette to a new location, click and drag the title bar of the palette.</p>
 </ng-template>
 <ng-template topic-name="hlp_restrictions">
-  <h1>Restrictions on the use of bridge designer</h1>
+  <h1>Restrictions on the use of Bridge Designer</h1>
   <p>
-    The <span class="bd-emph">Bridge Designer</span> is intended for educational use only. No warranty of any kind is
-    expressed or implied by the authors. Use of the software for commercial or construction purposes is prohibited.
+    The <span class="bd-emph">Bridge Designer</span> is intended <span class="b">for educational use only</span>. No
+    warranty of any kind is expressed or implied by the authors. Use of the software for commercial or construction
+    purposes is prohibited.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    To understand why the <span class="bd-emph">Bridge Designer</span> would not be an appropriate tool for designing a
-    real bridge, see <topic-link name="hlp_not_realistic">What is Not Realistic about BD.</topic-link>
+    To understand why the <span class="bd-emph">Bridge Designer</span> is not good for designing a real bridge, see
+    <topic-link name="hlp_not_realistic">What is not realistic about BD?</topic-link> To try would be to invite
+    disaster: destruction, injury, and death.
   </p>
   <p>
-    If you need to design a real bridge, you <span class="i">must</span> obtain the services of a registered
-    professional civil engineer. To do anything less would be irresponsible.
+    If you need to design a real bridge, <span class="i">you must</span> obtain the services of a registered
+    professional civil engineer.
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_draw_joint">
   <h1>Draw joints</h1>
   <p>
@@ -2230,8 +2225,8 @@
   </p>
   <p>
     As the animation begins, your bridge is subjected to its own weight--the weight of the steel structural elements,
-    the <topic-popup name="glos_concrete">concrete</topic-popup> <topic-popup name="glos_deck">deck</topic-popup>, and
-    the <topic-popup name="glos_asphalt">asphalt</topic-popup>
+    the <topic-popup name="glos_concrete">concrete</topic-popup>&ngsp;<topic-popup name="glos_deck">deck</topic-popup>, and
+    the <topic-popup name="glos_asphalt">asphalt</topic-popup>&ngsp;
     <topic-popup name="glos_wearing_surface">wearing surface</topic-popup>. Once the self-weight is applied, the
     <topic-popup name="hlp_aashto_h20x44">AASHTO H25 truck</topic-popup> moves across the bridge from left to right. As
     the <topic-popup name="glos_loads">loads</topic-popup> are applied, the bridge bends downward. The
@@ -3003,7 +2998,7 @@
   </p>
   <p class="btop">
     Once your <topic-popup name="glos_structural_model">structural model</topic-popup> has no
-    <topic-popup name="glos_unsafe">unsafe</topic-popup> <topic-popup name="glos_members">members</topic-popup>, your
+    <topic-popup name="glos_unsafe">unsafe</topic-popup>&ngsp;<topic-popup name="glos_members">members</topic-popup>, your
     design is <span class="i">successful</span>. However, your design is not <span class="i">optimum</span> until you
     minimize its cost. The first step in optimizing your design is to minimize the cost of your
     <span class="i">current truss configuration</span> by optimizing the
@@ -3024,7 +3019,7 @@
       Minimize the <span class="i">material cost</span>. There are several approaches you might use to minimize material
       cost; the following procedure is recommended for inexperienced designers:
     </li>
-    <li>Start by using the lowest cost (but weakest) available material--carbon steel--for all members.</li>
+    <li>Start by using the lowest cost (but weakest) available material - carbon steel - for all members.</li>
     <li>
       Select an appropriate <topic-popup name="hlp_crossxsection">cross-section</topic-popup> for each member. It is
       usually best to use solid bars for <topic-popup name="glos_tension">tension</topic-popup> members and hollow tubes

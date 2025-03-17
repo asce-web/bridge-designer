@@ -16,6 +16,7 @@ import { SessionStateService } from '../../services/session-state.service';
 export class InventorySelectorComponent implements AfterViewInit {
   @Input({ required: true }) vertical: boolean = false;
   @Input() eventOrigin: number = EventOrigin.TOOLBAR;
+  @Input() sessionStateKey: string | undefined = 'inventorySelector.component';
   @ViewChild('materialSelector') materialSelector!: jqxDropDownListComponent;
   @ViewChild('crossSectionSelector') crossSectionSelector!: jqxDropDownListComponent;
   @ViewChild('sizeSelector') sizeSelector!: jqxDropDownListComponent;
@@ -82,7 +83,7 @@ export class InventorySelectorComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.sessionStateService.register('inventorySelector.component', () => this.dehydrate(), state => this.rehydrate(state));
+    this.sessionStateService.register(this.sessionStateKey, () => this.dehydrate(), state => this.rehydrate(state));
     this.eventBrokerService.loadInventorySelectorRequest.subscribe(eventInfo => this.load(eventInfo.data));
   }
 

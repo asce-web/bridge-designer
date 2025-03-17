@@ -18,6 +18,7 @@ import { RulerComponent } from './features/drafting/ruler/ruler.component';
 import { EventBrokerService, EventOrigin } from './shared/services/event-broker.service';
 import { MemberTableComponent } from './features/drafting/member-table/member-table.component';
 import { TemplateSelectionDialogComponent } from './features/template/template-selection-dialog/template-selection-dialog.component';
+import { TipDialogComponent } from './features/tips/tip-dialog/tip-dialog.component';
 import { WorkflowManagementService } from './features/controls/management/workflow-management.service';
 import { UnstableBridgeDialogComponent } from './features/testing/unstable-bridge-dialog/unstable-bridge-dialog.component';
 import { LoadTestReportDialogComponent } from './features/testing/load-test-report-dialog/load-test-report-dialog.component';
@@ -29,6 +30,7 @@ import { SessionStateService } from './shared/services/session-state.service';
 import { UndoManagerSessionStateService } from './features/drafting/shared/undo-manager-session-state.service';
 import { HelpDialogComponent } from './features/help/help-dialog/help-dialog.component';
 import { SlendernessFailDialogComponent } from './features/testing/slenderness-fail-dialog/slenderness-fail-dialog.component';
+import { MemberEditDialogComponent } from './features/drafting/member-edit-dialog/member-edit-dialog.component';
 
 // ¯\_(ツ)_/¯
 
@@ -41,6 +43,7 @@ import { SlendernessFailDialogComponent } from './features/testing/slenderness-f
     DraftingPanelComponent,
     HelpDialogComponent,
     LoadTestReportDialogComponent,
+    MemberEditDialogComponent,
     MemberTableComponent,
     MenusComponent,
     RulerComponent,
@@ -48,6 +51,7 @@ import { SlendernessFailDialogComponent } from './features/testing/slenderness-f
     SetupWizardComponent,
     SlendernessFailDialogComponent,
     TemplateSelectionDialogComponent,
+    TipDialogComponent,
     ToolbarAComponent,
     ToolbarBComponent,
     UnstableBridgeDialogComponent,
@@ -110,12 +114,23 @@ export class AppComponent implements AfterViewInit {
     this.eventBrokerService.loadBridgeRequest.subscribe(eventInfo => {
       this.showDraftingPanel(eventInfo.data.bridge.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS);
     });
-    // Omit the welcome sequence and send a completion event if we're rehydrating.
-    if (this.sessionStateService.isRehydrating) {
+    // Update the UI to match state of session manager.
+    this.sessionStateService.notifyEnabled();
+    // Manage the welcome sequence if there is one. Send a completion event if we're rehydrating.
+    // Not a clean place to handle this, but it's simplest.
+    if (this.sessionStateService.hasRestoredState) {
       this.showDraftingPanel(true);
       this.sessionStateService.notifyComplete();
     } else {
       this.showDraftingPanel(false);
+      this.eventBrokerService.tipRequest.next({ origin: EventOrigin.APP, data: 'startup' });
+    }
+  }
+
+  /** Takes the welcome step of the starup tip+welcome sequence. */
+  handleTipDialogClose({ isStartupTip }: { isStartupTip: boolean }) {
+    if (isStartupTip) {
+      this.eventBrokerService.welcomeRequest.next({ origin: EventOrigin.APP });
     }
   }
 }

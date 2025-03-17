@@ -31,18 +31,35 @@ export class HelpPopupTopicComponent {
 
   constructor(private readonly changeDetector: ChangeDetectorRef) {}
 
-  openPopup(event: MouseEvent): void {
-    let left = 2;
+  togglePopup(event: MouseEvent): void {
+    if (this.isPopupVisible) {
+      this.hidePopup(this.popup.nativeElement);
+    } else {
+      this.showPopup();
+    }
+    event.stopPropagation();
+  }
+
+  private get isPopupVisible(): boolean {
+    return this.popup !== undefined && this.popup.nativeElement.style.display !== 'none';
+  }
+
+  private hidePopup(element: HTMLElement | undefined | null): void {
+    if (element) {
+      element.style.display = 'none';
+    }
+  }
+
+  private showPopup(): void {
     const helpPaneRect = document.querySelector('.pane-content')!.getBoundingClientRect();
     const linkRect = this.link.nativeElement.parentElement!.getBoundingClientRect();
-    const openPopup = document.querySelector('.open-popup') as HTMLElement;
+    // Determine the x-axis position so popup is entirely visible.
     const popupWidth = 640;
-    if (!this.isPopupDescendent) {
-      this.hidePopup(openPopup);
-    }
+    let left = 2;
     if (linkRect.left + popupWidth > helpPaneRect.right) {
       left -= linkRect.left + popupWidth - helpPaneRect.right;
     }
+    // Render content if not already done.
     if (!this.popup) {
       this.renderPopup = true;
       // TODO: Better way to accomplish this?
@@ -50,35 +67,42 @@ export class HelpPopupTopicComponent {
       this.changeDetector.detectChanges();
       this.changeDetector.detectChanges();
     }
+    // Close extraneous existing popups.
     const popupElement = this.popup.nativeElement;
+    this.pruneVisiblesPopups(popupElement);
+    // Make this one visible.
     const style = popupElement.style;
     style.display = 'block';
     style.left = `${left}px`;
-    popupElement.classList.add('open-popup');
     popupElement.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
       inline: 'nearest',
     });
-    event.stopPropagation();
   }
 
-  /** Returns whether this popip is a descendant of some other. */
-  private get isPopupDescendent(): boolean {
-    for (let p = this.link.nativeElement.parentElement; p; p = p.parentElement) {
-      if (p.classList.contains('popup-container')) {
-        return true;
+  /** Hides all popups that aren't on the path from the given leaf popup up to the root help topic. */
+  private pruneVisiblesPopups(leaf: HTMLDivElement): void {
+    const popupAncestorPath = new Set<Element>();
+    let root: HTMLElement | null = leaf;
+    while (root && root.tagName !== 'HELP-TOPIC') {
+      if (root.classList.contains('popup')) {
+        popupAncestorPath.add(root);
       }
+      root = root.parentElement;
     }
-    return false;
-  }
-
-  private hidePopup(element: HTMLElement | undefined | null): void {
-    if (!element) {
-      return;
+    const walk = (element: Element): void => {
+      if (element.classList.contains('popup') && !popupAncestorPath.has(element)) {
+        this.hidePopup(element as HTMLElement);
+      }
+      const children = element.children;
+      for (let i = 0; i < children.length; ++i) {
+        walk(children.item(i)!);
+      }
+    };
+    if (root) {
+      walk(root);
     }
-    element.classList.remove('open-popup');
-    element.style.display = 'none';
   }
 
   @HostListener('document:pointerdown')
