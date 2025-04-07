@@ -21,31 +21,31 @@
       name="bdwMap"
       ><area
         shape="rect"
-        (click)="goToTopic('hlp_title_bar')"
+        (click)="goToTopic('hlp_title_bar', 0)"
         coords="4, 3, 415, 24" /><area
         shape="rect"
-        (click)="goToTopic('hlp_menu_bar')"
+        (click)="goToTopic('hlp_menu_bar', 0)"
         coords="4, 25, 416, 44" /><area
         shape="rect"
-        (click)="goToTopic('hlp_toolbars')"
+        (click)="goToTopic('hlp_toolbars', 0)"
         coords="4, 44, 414, 66" /><area
         shape="rect"
-        (click)="goToTopic('hlp_design_tools')"
+        (click)="goToTopic('hlp_design_tools', 0)"
         coords="25, 81, 116, 123" /><area
         shape="rect"
-        (click)="goToTopic('hlp_rulers')"
+        (click)="goToTopic('hlp_rulers', 0)"
         coords="4, 67, 23, 293" /><area
         shape="rect"
-        (click)="goToTopic('hlp_rulers')"
+        (click)="goToTopic('hlp_rulers', 0)"
         coords="23, 278, 331, 295" /><area
         shape="rect"
-        (click)="goToTopic('hlp_titleblock')"
+        (click)="goToTopic('hlp_titleblock', 0)"
         coords="234, 227, 331, 276" /><area
         shape="rect"
-        (click)="goToTopic('hlp_drawing_board')"
+        (click)="goToTopic('hlp_drawing_board', 0)"
         coords="23, 70, 330, 278" /><area
         shape="rect"
-        (click)="goToTopic('hlp_member_list')"
+        (click)="goToTopic('hlp_member_list', 0)"
         coords="333, 69, 418, 295" /></map
     ><img
       alt="Bridge Design Window"
@@ -461,7 +461,7 @@
         src="img/help/gotodp.png"
         alt="Go to iteration icon"
       />
-      <span class="b">How to design a bridge</span></topic-link
+      <span class="b"> How to design a bridge</span></topic-link
     >
   </p>
   <p>
@@ -470,7 +470,7 @@
         src="img/help/goback.png"
         alt="Go back an iteration icon"
       />
-      <span class="b">Go back one design step</span></topic-link
+      <span class="b"> Go back one design step</span></topic-link
     >
   </p>
   <p>
@@ -479,7 +479,7 @@
         src="img/help/gofwd.png"
         alt="Go forward an iteration icon"
       />
-      <span class="b">Go forward one design step</span></topic-link
+      <span class="b"> Go forward one design step</span></topic-link
     >
   </p>
   <p class="btop">
@@ -1447,7 +1447,6 @@
     Only one can be pressed at a time.
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_erase">
   <h1>Erase a joint or member</h1>
   <h2>To erase a joint or member from your structural model:</h2>
@@ -1492,22 +1491,22 @@
       alt="Eraser tool"
       src="img/help/btnerase.png"
     />
-    Use the <span class="b">Eraser tool</span> to
+    Use the <span class="b">eraser tool</span> to
     <topic-link name="hlp_erase">erase a joint or member</topic-link> directly, without having to select it first.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Eraser tool is located on the <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup> It can
-    also be accessed from the <topic-link name="hlp_menu_bar">Tools menu.</topic-link>
+    The Eraser tool is located on the <topic-popup name="hlp_design_tools">design tools palette.</topic-popup> It's also
+    available in the <topic-link name="hlp_menu_bar">tools menu</topic-link>.
   </p>
   <p>
-    When the Eraser tool is in use, the mouse pointer appears as a pencil with a cross showing the effective location of
-    the cursor <img src="img/help/pencilud.png" />.
+    When the eraser tool is in use, the mouse pointer appears as a pencil with a cross showing the cursor location
+    <img src="img/pencilud.svg" />.
   </p>
   <p>
-    When you move the Eraser tool over the <topic-link name="hlp_drawing_board">Drawing Board,</topic-link>
+    When you move the eraser tool over the <topic-link name="hlp_drawing_board">drawing board</topic-link>,
     <topic-popup name="glos_joints">joints</topic-popup> and <topic-popup name="glos_members">members</topic-popup> are
-    highlighted to indicate that the mouse pointer is directly over them.
+    highlighted to indicate the item that will be erased by left button click.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_find_opt_substructure">
@@ -1517,108 +1516,112 @@
       ><img
         alt=""
         src="img/help/gotodp.png"
-    /></topic-link>
-    <span class="b">How to design a bridge</span>
+      />
+      <span class="b"> How to design a bridge</span></topic-link
+    >
   </p>
   <p>
     <topic-link name="hlp_try_new_configuration"
       ><img
         alt=""
         src="img/help/goback.png"
-    /></topic-link>
-    <span class="b">Go back one step</span>
+      />
+      <span class="b"> Go back one step</span></topic-link
+    >
   </p>
   <p>
     <topic-link name="hlp_choose_optimum"
       ><img
         alt=""
         src="img/help/gofwd.png"
-    /></topic-link>
-    <span class="b">Go forward one step</span>
+      />
+      <span class="b"> Go forward one step</span></topic-link
+    >
   </p>
   <p class="btop">
     At this point in the design process, you have optimized your design for one particular site configuration and load
-    case--one particular combination of <topic-popup name="glos_deck">deck</topic-popup> height,
+    case: one particular combination of <topic-popup name="glos_deck">deck</topic-popup> height,
     <topic-popup name="glos_span">span</topic-popup> length, support configuration, deck material, and truck loading.
-    But you won't know if your design is truly optimal until you have considered other site configurations and load
-    cases as well.
+    But, you won't know if your design is truly optimal until you have considered other site configurations and load
+    cases.
   </p>
   <p>
     The <span class="bd-emph">Bridge Designer</span> allows for 98 possible site configurations, consisting of various
-    combinations of deck elevation, support type, and support height; and four possible load cases, consisting of
-    various combinations of deck material (i.e., deck weight) and truck loading. The
+    combinations of deck elevation, support type, and support height. There are also four possible load cases consisting
+    of various combinations of deck material and truck loading. The
     <topic-link name="hlp_cost">total cost</topic-link> of the bridge equals the
     <topic-popup name="glos_site_cost">site cost</topic-popup> plus the truss cost. Each site configuration supports the
-    bridge in a different way, and thus each one has a different site cost. Each load case has a different effect on the
-    steel truss, and thus each one is likely to result in a different truss cost.
+    bridge in a different way. Thus, each has a different site cost. Each load case has a different effect on the steel
+    truss. Thus, each is likely to result in a different truss cost.
   </p>
   <p>
-    Even though the site cost makes up a substantial portion of the total cost of the bridge, picking the configuration
-    with the lowest site cost will not necessarily result in the lowest total cost. In general, site configurations that
-    have a low site cost tend to have a relatively high truss cost and vice versa.
+    Even though the site cost makes up a major portion of the bridge's total cost, picking the configuration with the
+    lowest site cost will not necessarily result in the lowest total cost. Site configurations that have a low site cost
+    tend to have relatively high truss costs and vice versa.
   </p>
   <p>
-    A site configuration with a high deck elevation will generally have a relatively low site cost, because a higher
-    deck requires little or no excavation. But a configuration with a high deck elevation also has a greater span
-    length. A longer span requires a larger, heavier truss, which results in a higher truss cost.
+    A site configuration with a high deck elevation will generally have a relatively low site cost because it requires
+    little or no excavation. Yet, a configuration with a high deck elevation also has a greater span length. Longer
+    spans require larger, heavier trusses, which leads to higher truss costs.
   </p>
   <p>
     Arch <topic-popup name="glos_abutment">abutments</topic-popup> cost more than
-    <topic-popup name="glos_standard_abutments">standard abutments</topic-popup>, and tall
-    <topic-popup name="glos_arch_abutments">arch abutments</topic-popup> cost more than short ones. Thus site
-    configurations that use arches tend to have higher site cost. But because of the V-shape of the river valley, arch
-    abutments also reduce the span length (for a given deck height)--the taller the
+    <topic-popup name="glos_standard_abutments">standard abutments</topic-popup>. Tall
+    <topic-popup name="glos_arch_abutments">arch abutments</topic-popup> cost more than short ones. Thus, site
+    configurations that use arches tend to have higher site cost. But, the V-shape of the river valley allows arch
+    abutments to reduce the span length for a given deck height. The taller the
     <topic-popup name="glos_abutment">abutment</topic-popup>, the shorter the span. Arch abutments also provide more
-    lateral restraint than standard abutments. Both of these factors tend to cause the truss cost to be less for arches.
+    lateral restraint than standard abutments. Both of these factors tend to lower the truss cost for arches.
   </p>
   <p>
-    Building a <topic-popup name="glos_pier">pier</topic-popup> in the middle of a river can be quite expensive. Thus
+    Building a <topic-popup name="glos_pier">pier</topic-popup> in the middle of a river can be quite expensive. Thus,
     configurations with <topic-popup name="glos_pier">piers</topic-popup> have significantly higher site costs than
-    those without piers. But the pier also divides one long span into two short ones, and two short trusses are usually
-    much less expensive than a single long one.
+    those without. But. the pier also divides one long span into two short ones. Two short trusses are usually much less
+    expensive than a single long one.
   </p>
   <p>
     Cable <topic-popup name="glos_anchorages">anchorages</topic-popup> are also expensive, but they provide for
-    additional support (e.g., the cable supports of a cable-stayed bridge) and thus can reduce the truss cost
-    significantly.
+    additional support and thus can reduce the truss cost significantly. An example is the cable supports of a
+    cable-stayed bridge.
   </p>
   <p>
     The choice of deck material affects both the site cost and the
     <topic-popup name="glos_loads">loads</topic-popup> applied during the
-    <topic-link name="hlp_run_load_test">Load Test</topic-link>. Medium-strength
-    <topic-popup name="glos_concrete">concrete</topic-popup> is less expensive than high-strength concrete but results
-    in a thicker deck, which is heavier. High-strength concrete is more expensive but results in a thinner deck, which
-    is lighter. Thus the less expensive deck material tends to result in a higher truss cost, while the more expensive
-    deck material results in a lower truss cost.
+    <topic-link name="hlp_run_load_test">load test</topic-link>. Medium-strength
+    <topic-popup name="glos_concrete">concrete</topic-popup> is less expensive than high-strength concrete, but it
+    results in a thicker deck, which is heavier. High-strength concrete is more expensive but results in a thinner deck,
+    which is lighter. Thus the less expensive deck material tends to result in a higher truss cost, while the more
+    expensive deck material results in a lower truss cost.
   </p>
   <p>
     Your choice of truck loading has no effect on the site cost but will have a significant effect on the truss cost.
   </p>
   <p>
-    Engineering design always involves <span class="i">tradeoffs</span>, and the tradeoff between the cost of a
-    structure and the cost of its supporting <topic-popup name="glos_substructure">substructure</topic-popup> is a
-    critically important aspect of most real-world bridge designs.
+    From all the above, the lesson to be learned is that engineering design always involves
+    <span class="i">tradeoffs</span>. The tradeoff between the cost of a structure and the cost of its supporting
+    <topic-popup name="glos_substructure">substructure</topic-popup> is a critically important aspect of most real-world
+    bridge designs.
   </p>
   <p>
-    So which site configuration and load case will result in the lowest total cost? The only way you can answer this
-    question is by trial and error, combined with careful logical reasoning.
+    So, which site configuration and load case will result in the lowest total cost? The only way you can answer this
+    question is by trial and error combined with careful logical reasoning.
   </p>
   <h2>To find the optimum substructure configuration:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_new_design">New Design button</topic-popup>. When the
-      <topic-link name="hlp_setup_wizard">Design Project Setup Wizard</topic-link> is displayed, select one of the site
-      configurations or load cases you haven't tried yet. In making this choice, it is best to change only one variable
-      at a time, so you can draw valid conclusions about the effect of the change. For example, suppose your first
-      design was a single span with standard abutments and a deck height of 24 meters For your second design, you might
-      try an arch, but leave the deck height at 24 meters. Then the cost difference between the two trials can be
-      directly attributed to the different support type. If you change the support type <span class="i">and</span> the
-      deck height simultaneously, you won't know how each of these factors affects the cost.
+      Click the <topic-popup name="hlp_new_design">new design button</topic-popup>. When the
+      <topic-link name="hlp_setup_wizard">project setup wizard</topic-link> is displayed, select one of the site
+      configurations or load cases you haven't tried yet. It is best to change only one variable at a time, so you can
+      draw valid conclusions about the effect of the change. For example, suppose your first design was a single span
+      with standard abutments and a deck height of 24 meters. For your second design, you might try an arch, but leave
+      the deck height at 24 meters. Then the cost difference between the two trials can be directly attributed to the
+      different support type. If you change the support type <span class="i">and</span> the deck height simultaneously,
+      you won't know how each of these factors affects the cost.
     </li>
     <li>
       Repeat the previous eight steps of the design process for the new site configuration or load case. Decide on a
       truss configuration, draw <topic-popup name="glos_joints">joints</topic-popup>, draw
-      <topic-popup name="glos_members">members</topic-popup>,
+      <topic-popup name="glos_members">members</topic-popup>, then
       <topic-popup name="glos_load_test">load test</topic-popup> the design, strengthen any
       <topic-popup name="glos_unsafe">unsafe</topic-popup> members, optimize the
       <topic-popup name="glos_member_properties">member properties</topic-popup>, optimize the shape of the truss, and
@@ -1628,19 +1631,19 @@
       Now compare the results of the two trials. Draw a logical conclusion about the one variable you changed on the
       second trial. For a particular deck height, did standard abutments or arch abutments result in a lower cost? How
       large was the difference between the two? If it was very large, you might be able to draw a general conclusion
-      about the two support types. If the two results were close, you'll probably need to do some more trials.
+      about the two support types. If the two results were close, you'll probably need to do more trials.
     </li>
     <li>
-      Try another new site configuration or load case. Again, change only one characteristic. If your second trial was a
+      Try another site configuration or load case. Again, change only one characteristic. If your second trial was a
       4-meter high arch, you might use a 12 meter or 16 meter height for this next trial. Again, repeat the entire
-      design process to optimize your truss for this new site configuration. And again, compare these results with the
-      previous trials and use the comparison as the basis for logical conclusions and new exploration.
-    </li>
-    <li>
-      As you conduct more trials, you will be able to eliminate progressively more uneconomical site configurations and
-      load cases. When you've eliminated all but one, you have the optimum.
+      design process to optimize your truss for this new site configuration. Again, compare these results with the
+      previous trials and use the comparison as the logical basis for new exploration.
     </li>
   </ol>
+  <p>
+    As you conduct more trials, you will be able to eliminate uneconomical site configurations and load cases. When
+    you've eliminated all but one, you have the optimum.
+  </p>
 </ng-template>
 <ng-template topic-name="hlp_go_back">
   <h1>Go back button</h1>
@@ -1649,26 +1652,27 @@
       alt="Go back button"
       src="img/help/btngobak.png"
     />
-    Click the <span class="b">Go back button</span> to display the previous
+    Click the <span class="b">go back button</span> to display the previous
     <topic-link name="hlp_design_iteration">design iteration</topic-link> on the
-    <topic-link name="hlp_drawing_board">Drawing Board.</topic-link>
+    <topic-link name="hlp_drawing_board">drawing board.</topic-link>
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Go back button is located on the <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> It can also be
-    accessed from the <topic-link name="hlp_menu_bar">Edit menu.</topic-link>
+    The go back button is located on the <topic-link name="hlp_toolbars">main toolbar.</topic-link> It's also available
+    in the <topic-link name="hlp_menu_bar">edit menu.</topic-link>
   </p>
   <p>
-    The Go back button can only be used to display design iterations created during the current
-    <topic-popup name="glos_session">session</topic-popup>.
+    Once you have used the go back button to display a previous design iteration, you can use the
+    <topic-popup name="hlp_go_forward">go forward button</topic-popup> to display a more recent iteration.
   </p>
   <p>
-    Once you have used the Go back button to display a previous design iteration, you can use the
-    <topic-popup name="hlp_go_forward">Go Forward button</topic-popup> to display a more recent iteration.
+    You can also use the <topic-popup name="hlp_go_to">go to iteration button</topic-popup> to display
+    <span class="i">any</span> design iteration.
   </p>
   <p>
-    You can also use the <topic-popup name="hlp_go_to">Go To Iteration button</topic-popup> to display
-    <span class="i">any</span> design iteration created during the current session
+    The <span class="bd-emph">Bridge Designer</span> remembers all your design iterations as long as
+    <span class="b">remember my work</span> is checked in the edit menu. When it's unchecked, iterations are lost each
+    time the browser is refreshed or restarted.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_go_forward">
@@ -1678,26 +1682,27 @@
       alt="Go Forward button"
       src="img/help/btngofwd.png"
     />
-    Click the <span class="b">Go Forward button</span> to display a more recent
+    Click the <span class="b">go forward button</span> to display a more recent
     <topic-link name="hlp_design_iteration">design iteration</topic-link> on the
-    <topic-link name="hlp_drawing_board">Drawing Board.</topic-link>
+    <topic-link name="hlp_drawing_board">drawing board.</topic-link>
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Go Forward button is located on the <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> It can also be
-    accessed from the <topic-link name="hlp_menu_bar">Edit menu.</topic-link>
+    The go forward button is located on the <topic-link name="hlp_toolbars">main toolbar.</topic-link> It can also be
+    accessed from the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
   </p>
   <p>
-    The Go Forward button can only be used to display design iterations created during the current
-    <topic-popup name="glos_session">session</topic-popup>.
+    The go forward button is only activated after you have used the
+    <topic-popup name="hlp_go_back">go back button</topic-popup> at least once.
   </p>
   <p>
-    The Go Forward button is only activated after you have used the
-    <topic-popup name="hlp_go_back">Go back button</topic-popup> at least once.
+    You can also use the <topic-popup name="hlp_go_to">go to iteration button</topic-popup> to display
+    <span class="i">any</span> design iteration.
   </p>
   <p>
-    You can also use the <topic-popup name="hlp_go_to">Go To Iteration button</topic-popup> to display
-    <span class="i">any</span> design iteration created during the current session.
+    The <span class="bd-emph">Bridge Designer</span> remembers all your design iterations as long as
+    <span class="b">remember my work</span> is checked in the edit menu. When it's unchecked, iterations are lost each
+    time the browser is refreshed or restarted.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_go_to">
@@ -1707,33 +1712,33 @@
       alt="Go To Iteration button"
       src="img/help/btngotoi.png"
     />
-    Click the <span class="b">Go To Iteration button</span> to display the
-    <span class="b">Design Iteration Browser</span>. Use the Browser to display on the
-    <topic-link name="hlp_drawing_board">Drawing Board</topic-link> <span class="i">any</span>
-    <topic-link name="hlp_design_iteration">design iteration</topic-link> created during the current
-    <topic-popup name="glos_session">session</topic-popup>. Once the Browser is displayed, select the desired iteration,
-    and click OK.
+    Click the <span class="b">go to iteration button</span> to display the
+    <span class="b">design iteration browser</span>. Use the browser load the the
+    <topic-link name="hlp_drawing_board">drawing board</topic-link> with <span class="i">any</span>
+    <topic-link name="hlp_design_iteration">design iteration</topic-link>. Once the browser is displayed, select an
+    iteration, and click OK. Alternately, you can double click the iteration.
   </p>
-  <p>Use the <span class="b">Tree View</span> tab to see how design iterations are related.</p>
   <h2 class="btop">Notes and tips</h2>
+  <p>Use the <span class="b">tree view</span> tab to see how design iterations are related.</p>
   <p>
-    The Go To Iteration button is located on the <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> It can also
-    be accessed from the <topic-link name="hlp_menu_bar">Edit menu.</topic-link>
+    The go to iteration button is located on the <topic-link name="hlp_toolbars">main toolbar.</topic-link> It's also
+    available in the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
   </p>
   <p>
-    The Design Iteration Browser provides a Preview window to help you select the correct iteration before actually
-    displaying it on the Drawing Board.
+    The design iteration browser provides a preview window to help you select an iteration before actually loading it in
+    the drawing board.
   </p>
   <p>
     You can also display previous design iterations with the
-    <topic-popup name="hlp_go_back">Go back button.</topic-popup>
+    <topic-popup name="hlp_go_back">go back button.</topic-popup>
   </p>
   <p>
-    Previous design iterations are only preserved until the end of the current session. When you start a new design or
-    exit the <span class="bd-emph">Bridge Designer</span>, previous iterations are deleted. Thus the Design Iteration
-    Browser can <span class="i">only</span> display iterations created during the current session.
+    The <span class="bd-emph">Bridge Designer</span> remembers all your design iterations as long as
+    <span class="b">remember my work</span> is checked in the edit menu. When it's unchecked, iterations are lost each
+    time the browser is refreshed or restarted.
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template
   #defaultTopic
   topic-name="hlp_how_to"
@@ -1778,87 +1783,87 @@
   <p>
     <map name="flowchart"
       ><area
-        (click)="goToTopic('hlp_select_project')"
+        (click)="goToTopic('hlp_select_project', 0)"
         alt="Select a Site Configuration"
         title="Select a Site Configuration"
         shape="rect"
         coords="36,21,165,62" /><area
-        (click)="goToTopic('hlp_truss_configuration')"
+        (click)="goToTopic('hlp_truss_configuration', 0)"
         alt="Decide on a Truss Configuration"
         title="Decide on a Truss Configuration"
         shape="rect"
         coords="36,85,165,126" /><area
-        (click)="goToTopic('hlp_draw_joint')"
+        (click)="goToTopic('hlp_draw_joint', 0)"
         alt="Draw Joints"
         title="Draw Joints"
         shape="rect"
         coords="36,149,165,174" /><area
-        (click)="goToTopic('hlp_draw_member')"
+        (click)="goToTopic('hlp_draw_member', 0)"
         alt="Draw Members"
         title="Draw Members"
         shape="rect"
         coords="36,197,165,222" /><area
-        (click)="goToTopic('hlp_run_load_test')"
+        (click)="goToTopic('hlp_run_load_test', 0)"
         alt="Load Test your Design"
         title="Load Test your Design"
         shape="rect"
         coords="36,245,165,286" /><area
-        (click)="goToTopic('hlp_strengthen_failed')"
+        (click)="goToTopic('hlp_strengthen_failed', 0)"
         alt="Are all Members Safe?"
         title="Are all Members Safe?"
         shape="poly"
         coords="100,305,163,341,100,377,36,341" /><area
-        (click)="goToTopic('hlp_strengthen_failed')"
+        (click)="goToTopic('hlp_strengthen_failed', 0)"
         alt="Strengthen All Unsafe Members"
         title="Strengthen All Unsafe Members"
         shape="rect"
         coords="196,321,333,362" /><area
-        (click)="goToTopic('hlp_optimize_member_selection')"
+        (click)="goToTopic('hlp_optimize_member_selection', 0)"
         alt="Are Member Properties Optimum?"
         title="Are Member Properties Optimum?"
         shape="poly"
         coords="100,401,36,437,100,473,164,437" /><area
-        (click)="goToTopic('hlp_optimize_member_selection')"
+        (click)="goToTopic('hlp_optimize_member_selection', 0)"
         alt="Optimize the Member Properties"
         title="Optimize the Member Properties"
         shape="rect"
         coords="196,417,333,458" /><area
-        (click)="goToTopic('hlp_optimize_configuration')"
+        (click)="goToTopic('hlp_optimize_configuration', 0)"
         alt="Is the Shape of the Truss Optimum?"
         title="Is the Shape of the Truss Optimum?"
         shape="poly"
         coords="100,497,36,534,100,569,164,533" /><area
-        (click)="goToTopic('hlp_optimize_configuration')"
+        (click)="goToTopic('hlp_optimize_configuration', 0)"
         alt="Optimize the Shape of the Truss"
         title="Optimize the Shape of the Truss"
         shape="rect"
         coords="196,513,333,554" /><area
-        (click)="goToTopic('hlp_try_new_configuration')"
+        (click)="goToTopic('hlp_try_new_configuration', 0)"
         alt="Is the Truss Configuration Optimum?"
         title="Is the Truss Configuration Optimum?"
         shape="poly"
         coords="100,593,36,630,100,665,163,629" /><area
-        (click)="goToTopic('hlp_try_new_configuration')"
+        (click)="goToTopic('hlp_try_new_configuration', 0)"
         alt="Find the Optimum Truss Configuration"
         title="Find the Optimum Truss Configuration"
         shape="rect"
         coords="196,609,333,650" /><area
-        (click)="goToTopic('hlp_find_opt_substructure')"
+        (click)="goToTopic('hlp_find_opt_substructure', 0)"
         alt="Is the Substructure Optimum?"
         title="Is the Substructure Optimum?"
         shape="poly"
         coords="100,689,37,725,100,761,164,725" /><area
-        (click)="goToTopic('hlp_find_opt_substructure')"
+        (click)="goToTopic('hlp_find_opt_substructure', 0)"
         alt="Find the Optimum Site Configuration?"
         title="Find the Optimum Site Configuration?"
         shape="rect"
         coords="196,705,333,746" /><area
-        (click)="goToTopic('hlp_choose_optimum')"
+        (click)="goToTopic('hlp_choose_optimum', 0)"
         alt="Choose the Optimum Design"
         title="Choose the Optimum Design"
         shape="rect"
         coords="4,785,197,810" /><area
-        (click)="goToTopic('hlp_record_design')"
+        (click)="goToTopic('hlp_record_design', 0)"
         alt="Record your Design"
         title="Record your Design"
         shape="rect"
@@ -2710,7 +2715,7 @@
   </p>
 </ng-template>
 <ng-template topic-name="hlp_not_realistic">
-  <h1>What is <em>not</em> realistic About the Bridge Designer?</h1>
+  <h1>What is <em>not</em> realistic about the Bridge Designer?</h1>
   <p>
     One of the <topic-link name="hlp_purposes">purposes</topic-link> of the
     <span class="bd-emph">Bridge Designer</span> is to provide a <span class="i">realistic</span>, hands-on experience
