@@ -39,6 +39,7 @@ export class MenusComponent implements AfterViewInit {
     const toolsGroup = ['joints', 'members', 'select', 'erase'];
     this.uiStateService.registerSelectMenuItems(this.mainMenu, toolsGroup, this.eventBrokerService.editModeSelection);
 
+    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'about', this.eventBrokerService.aboutRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'back', this.eventBrokerService.designIterationBackRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'costCalculations', this.eventBrokerService.costReportRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'delete', this.eventBrokerService.deleteSelectionRequest);

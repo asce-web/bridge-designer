@@ -1709,7 +1709,7 @@
   <h1>Go to iteration button</h1>
   <p>
     <img
-      alt="Go To Iteration button"
+      alt="Go to iteration button"
       src="img/help/btngotoi.png"
     />
     Click the <span class="b">go to iteration button</span> to display the
@@ -1738,7 +1738,6 @@
     time the browser is refreshed or restarted.
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template
   #defaultTopic
   topic-name="hlp_how_to"
@@ -1747,18 +1746,16 @@
   <p>
     When you use the <span class="bd-emph">Bridge Designer</span>, you will experience the
     <topic-link name="hlp_the_engineering">engineering design process</topic-link> in simplified form. You will design a
-    steel <topic-link name="hlp_truss_bridges">truss bridge</topic-link> in much the same manner that practicing civil
+    steel <topic-link name="hlp_truss_bridges">truss bridge</topic-link> in much the same way a practicing civil
     engineers design real highway bridges.
   </p>
-  <p>
-    Your objective is to create an <span class="i">optimal</span> bridge design. An optimal design is one that satisfies
-    all of the <topic-link name="hlp_design_specifications">design specifications,</topic-link> passes a simulated
-    <topic-popup name="glos_load_test">load test</topic-popup>, and costs as little as possible.
-  </p>
-  <p>
-    The diagram below shows an effective methodology for developing an optimal design. To learn more about this
-    methodology:
-  </p>
+  <p>Your objective is to create an <span class="i">optimal</span> bridge design. An optimal design is one that:</p>
+  <ul>
+    <li>satisfies all of the <topic-link name="hlp_design_specifications">design specifications,</topic-link>,</li>
+    <li>passes a simulated <topic-popup name="glos_load_test">load test</topic-popup>, and</li>
+    <li>costs as little as possible.</li>
+  </ul>
+  <p>The diagram below shows an effective method to develop an optimal design. To learn more about this methodology:</p>
   <ol>
     <li>
       <span class="b">Click any block on the diagram for a detailed description of that particular step, or...</span>
@@ -1769,14 +1766,14 @@
         ><img
           alt=""
           src="img/help/gofwd.png"
-      /></topic-link>
-      <span class="b">to browse through the design process, one step at a time.</span>
+      />
+      <span class="b"> to browse through the design process, one step at a time.</span></topic-link>
     </li>
   </ol>
   <p>
     <img
       usemap="#flowchart"
-      alt="How to Design a Bridge"
+      alt="How to design a bridge"
       src="img/help/flowchart.png"
     />
   </p>
@@ -1784,93 +1781,94 @@
     <map name="flowchart"
       ><area
         (click)="goToTopic('hlp_select_project', 0)"
-        alt="Select a Site Configuration"
-        title="Select a Site Configuration"
+        alt="Select a site configuration"
+        title="Select a site configuration"
         shape="rect"
         coords="36,21,165,62" /><area
         (click)="goToTopic('hlp_truss_configuration', 0)"
-        alt="Decide on a Truss Configuration"
-        title="Decide on a Truss Configuration"
+        alt="Decide on a truss configuration"
+        title="Decide on a truss configuration"
         shape="rect"
         coords="36,85,165,126" /><area
         (click)="goToTopic('hlp_draw_joint', 0)"
-        alt="Draw Joints"
-        title="Draw Joints"
+        alt="Draw joints"
+        title="Draw joints"
         shape="rect"
         coords="36,149,165,174" /><area
         (click)="goToTopic('hlp_draw_member', 0)"
-        alt="Draw Members"
-        title="Draw Members"
+        alt="Draw members"
+        title="Draw members"
         shape="rect"
         coords="36,197,165,222" /><area
         (click)="goToTopic('hlp_run_load_test', 0)"
-        alt="Load Test your Design"
-        title="Load Test your Design"
+        alt="Load test your design"
+        title="Load test your design"
         shape="rect"
         coords="36,245,165,286" /><area
         (click)="goToTopic('hlp_strengthen_failed', 0)"
-        alt="Are all Members Safe?"
-        title="Are all Members Safe?"
+        alt="Are all members safe?"
+        title="Are all members safe?"
         shape="poly"
         coords="100,305,163,341,100,377,36,341" /><area
         (click)="goToTopic('hlp_strengthen_failed', 0)"
-        alt="Strengthen All Unsafe Members"
-        title="Strengthen All Unsafe Members"
+        alt="Strengthen all unsafe members"
+        title="Strengthen all unsafe members"
         shape="rect"
         coords="196,321,333,362" /><area
         (click)="goToTopic('hlp_optimize_member_selection', 0)"
-        alt="Are Member Properties Optimum?"
-        title="Are Member Properties Optimum?"
+        alt="Are member properties optimum?"
+        title="Are Mmember properties optimum?"
         shape="poly"
         coords="100,401,36,437,100,473,164,437" /><area
         (click)="goToTopic('hlp_optimize_member_selection', 0)"
-        alt="Optimize the Member Properties"
-        title="Optimize the Member Properties"
+        alt="Optimize member properties"
+        title="Optimize member properties"
         shape="rect"
         coords="196,417,333,458" /><area
         (click)="goToTopic('hlp_optimize_configuration', 0)"
-        alt="Is the Shape of the Truss Optimum?"
-        title="Is the Shape of the Truss Optimum?"
+        alt="Is the shape of the truss optimum?"
+        title="Is the shape of the truss optimum?"
         shape="poly"
         coords="100,497,36,534,100,569,164,533" /><area
         (click)="goToTopic('hlp_optimize_configuration', 0)"
-        alt="Optimize the Shape of the Truss"
-        title="Optimize the Shape of the Truss"
+        alt="Optimize the shape of the truss"
+        title="Optimize the shape of the truss"
         shape="rect"
         coords="196,513,333,554" /><area
         (click)="goToTopic('hlp_try_new_configuration', 0)"
-        alt="Is the Truss Configuration Optimum?"
-        title="Is the Truss Configuration Optimum?"
+        alt="Is the truss configuration optimum?"
+        title="Is the truss configuration optimum?"
         shape="poly"
         coords="100,593,36,630,100,665,163,629" /><area
         (click)="goToTopic('hlp_try_new_configuration', 0)"
-        alt="Find the Optimum Truss Configuration"
-        title="Find the Optimum Truss Configuration"
+        alt="Find the optimum truss configuration"
+        title="Find the optimum truss configuration"
         shape="rect"
         coords="196,609,333,650" /><area
         (click)="goToTopic('hlp_find_opt_substructure', 0)"
-        alt="Is the Substructure Optimum?"
-        title="Is the Substructure Optimum?"
+        alt="Is the substructure optimum?"
+        title="Is the substructure optimum?"
         shape="poly"
         coords="100,689,37,725,100,761,164,725" /><area
         (click)="goToTopic('hlp_find_opt_substructure', 0)"
-        alt="Find the Optimum Site Configuration?"
-        title="Find the Optimum Site Configuration?"
+        alt="Find the optimum site configuration?"
+        title="Find the optimum site configuration?"
         shape="rect"
         coords="196,705,333,746" /><area
         (click)="goToTopic('hlp_choose_optimum', 0)"
-        alt="Choose the Optimum Design"
-        title="Choose the Optimum Design"
+        alt="Choose the optimum design"
+        title="Choose the optimum design"
         shape="rect"
         coords="4,785,197,810" /><area
         (click)="goToTopic('hlp_record_design', 0)"
-        alt="Record your Design"
-        title="Record your Design"
+        alt="Record your design"
+        title="Record your design"
         shape="rect"
         coords="4,837,197,862"
     /></map>
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_how_wpbd_works">
   <h1>How the bridge designer works</h1>
   <p>

@@ -1,0 +1,101 @@
+<jqxWindow
+  #dialog
+  [isModal]="true"
+  [autoOpen]="false"
+  [width]="980"
+  [height]="508"
+>
+  <div
+    #header
+    class="header"
+  >
+    Bridge Designer (Cloud Edition)
+  </div>
+  <div
+    #content
+    class="content"
+  >
+    <div class="left-column">
+      <div>
+        <img
+          class="banner"
+          src="img/banner.png"
+          title="Bridge Designer banner"
+          alt="Bridge Designer banner"
+        />
+      </div>
+      <div class="info-box">
+        <strong>The authors:</strong>
+        <ul>
+          <li>Steve Ressler, PE, PhD</li>
+          <li>Gene Ressler, PhD</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <strong>Partners and contributors:</strong>
+        <ul>
+          <li>Aniket Zinzuwadia</li>
+          <li>John Nutte</li>
+          <li>Michael Belleville</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <strong>IMPORTANT restrictions:</strong>
+        <p>
+          The Bridge Designer is intended solely for educational use. USe of this software for commercial or
+          construction purposes is prohibited.
+        </p>
+        <p>
+          Distribution of this software does not constitute any endorsement, warranty, or guarantee of any kind by the
+          authors or any other party.
+        </p>
+        <p>
+          The Bridge Designer is distributed under the
+          <a
+            href="https://www.gnu.org/licenses/gpl-3.0.en.html"
+            target="_blank"
+            >GNU Public License Version 3</a
+          >.
+        </p>
+      </div>
+    </div>
+    <div class="right-column">
+      <div>
+        <img
+          class="motif"
+          src="img/motif01.png"
+          title="Newburgh-Beacon Bridge, New York"
+          alt="Newburgh-Beacon Bridge, New York"
+        />
+      </div>
+      <div class="version">
+        Version {{version}}
+      </div>
+      <div class="button-holder">
+        <jqxButton
+          #purposesButton
+          (onClick)="handlePurposeButtonClick()"
+          [width]="'248px'"
+          >Purposes...</jqxButton
+        >
+      </div>
+      <div class="button-holder">
+        <jqxButton
+          #howItWorksButton
+          style="margin-top:8px;"
+          (onClick)="handleHowItWorksButtonClick()"
+          [width]="'248px'"
+          >How it works...</jqxButton
+        >
+      </div>
+      <div class="button-holder">
+        <jqxButton
+        style="margin-bottom:4px; margin-top:8px;"
+          (onClick)="dialog.close()"
+          [width]="'248px'"
+          >Close</jqxButton
+        >
+      </div>
+    </div>
+  </div>
+</jqxWindow>

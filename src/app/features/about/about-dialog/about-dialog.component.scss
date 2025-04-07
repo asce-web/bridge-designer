@@ -1,0 +1,61 @@
+.header {
+  font-weight: bold;
+}
+
+.content {
+  background-color: rgb(238,238,238);
+  display: grid;
+  grid-template-columns: min-content min-content;
+  grid-template-rows: min-content;
+  font-size: 12px;
+  column-gap: 16px;
+  padding: 8px;
+}
+
+.left-column {
+  grid-row: 1;
+  grid-column: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.right-column {
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.banner {
+  width: 700px;
+}
+
+.motif {
+  width: 240px;
+  border: 2px lightgray inset;
+}
+
+.info-box {
+  padding: 4px;
+  margin: 4px;
+  border: 2px lightgray ridge;
+}
+
+.version {
+  flex-grow: 1;
+  padding: 8px;
+  text-align: center;
+}
+
+.button-holder {
+  flex-grow: 0;
+  vertical-align: bottom;
+}
+
+ul {
+  list-style: "-";
+}
+
+ul li {
+  padding-left: 1em;
+}

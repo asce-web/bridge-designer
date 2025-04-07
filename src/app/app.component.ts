@@ -31,6 +31,7 @@ import { UndoManagerSessionStateService } from './features/drafting/shared/undo-
 import { HelpDialogComponent } from './features/help/help-dialog/help-dialog.component';
 import { SlendernessFailDialogComponent } from './features/testing/slenderness-fail-dialog/slenderness-fail-dialog.component';
 import { MemberEditDialogComponent } from './features/drafting/member-edit-dialog/member-edit-dialog.component';
+import { AboutDialogComponent } from './features/about/about-dialog/about-dialog.component';
 
 // ¯\_(ツ)_/¯
 
@@ -38,6 +39,7 @@ import { MemberEditDialogComponent } from './features/drafting/member-edit-dialo
   selector: 'app-root',
   standalone: true,
   imports: [
+    AboutDialogComponent,
     CostReportDialogComponent,
     DesignIterationDialogComponent,
     DraftingPanelComponent,

@@ -19,8 +19,6 @@ export class WelcomeDialogComponent implements AfterViewInit{
   @ViewChild('loadSampleButton') loadSampleButton!: jqxRadioButtonComponent;
   @ViewChild('openButton') openButton!: jqxRadioButtonComponent;
 
-  autoOpen: boolean = true;
-
   constructor(
     readonly sessionStateService: SessionStateService,
     private readonly eventBrokerService: EventBrokerService,
@@ -37,6 +35,10 @@ export class WelcomeDialogComponent implements AfterViewInit{
     }
   }
 
+  handleAboutButton(): void {
+    this.eventBrokerService.aboutRequest.next({origin: EventOrigin.WELCOME_DIALOG});
+  }
+  
   ngAfterViewInit(): void {
     this.eventBrokerService.welcomeRequest.subscribe(_eventInfo => this.dialog.open());
   }

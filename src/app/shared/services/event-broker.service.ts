@@ -5,6 +5,7 @@ import { ToastErrorKind } from '../../features/toast/toast/toast-error';
 
 /** Origin of an event. For breaking event cycles. */
 export const enum EventOrigin {
+  ABOUT_DIALOG,
   APP,
   CURSOR_OVERLAY,
   DESIGN_ITERATION_DIALOG,
@@ -44,8 +45,9 @@ export type TypedEventInfo<T> = { origin: EventOrigin, data: T };
  */
 @Injectable({ providedIn: 'root' })
 export class EventBrokerService {
-  public readonly analysisCompletion = new Subject<TypedEventInfo<AnalysisStatus>>();
   // TODO: Finish replacing EventInfo with TypedEventInfo. (UiStateService makes this hard.)
+  public readonly aboutRequest = new Subject<EventInfo>();
+  public readonly analysisCompletion = new Subject<TypedEventInfo<AnalysisStatus>>();
   public readonly analysisReportRequest = new Subject<EventInfo>();
   public readonly animationControlsToggle = new Subject<EventInfo>();
   public readonly animationToggle = new Subject<EventInfo>();

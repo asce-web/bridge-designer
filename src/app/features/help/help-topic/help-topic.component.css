@@ -57,7 +57,7 @@ h3 {
   margin-bottom: 4px;
 }
 
-ol {
+ul,ol {
   font-size: 12pt;
   margin-top: 5px;
   margin-bottom: 0px;
