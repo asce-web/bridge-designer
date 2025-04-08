@@ -21,12 +21,11 @@ const enum Tools {
 }
 
 @Component({
-  selector: 'toolbar-b',
-  standalone: true,
-  imports: [jqxToolBarModule, jqxDropDownListModule],
-  templateUrl: './toolbar-b.component.html',
-  styleUrl: './toolbar-b.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'toolbar-b',
+    imports: [jqxToolBarModule, jqxDropDownListModule],
+    templateUrl: './toolbar-b.component.html',
+    styleUrl: './toolbar-b.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarBComponent implements AfterViewInit {
   readonly tools: string =

@@ -21,24 +21,23 @@ import { Graphics } from '../../../shared/classes/graphics';
 import { DraftingPanelState } from '../../../shared/services/persistence.service';
 
 @Component({
-  selector: 'design-iteration-dialog',
-  standalone: true,
-  imports: [jqxButtonModule, jqxGridModule, jqxListBoxModule, jqxTabsModule, jqxTreeGridModule, jqxWindowModule],
-  /** Component-level injections of stateful services. Root versions are hidden. */
-  providers: [
-    DesignBridgeRenderingService,
-    BridgeService,
-    { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
-    DesignJointRenderingService,
-    DesignMemberRenderingService,
-    DesignRenderingService,
-    DesignSiteRenderingService,
-    SelectedElementsService,
-    ViewportTransform2D,
-  ],
-  templateUrl: './design-iteration-dialog.component.html',
-  styleUrl: './design-iteration-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'design-iteration-dialog',
+    imports: [jqxButtonModule, jqxGridModule, jqxListBoxModule, jqxTabsModule, jqxTreeGridModule, jqxWindowModule],
+    /** Component-level injections of stateful services. Root versions are hidden. */
+    providers: [
+        DesignBridgeRenderingService,
+        BridgeService,
+        { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
+        DesignJointRenderingService,
+        DesignMemberRenderingService,
+        DesignRenderingService,
+        DesignSiteRenderingService,
+        SelectedElementsService,
+        ViewportTransform2D,
+    ],
+    templateUrl: './design-iteration-dialog.component.html',
+    styleUrl: './design-iteration-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DesignIterationDialogComponent implements AfterViewInit {
   private static readonly PREVIEW_SCALE = 0.5;

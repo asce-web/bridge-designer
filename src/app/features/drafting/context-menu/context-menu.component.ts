@@ -4,12 +4,11 @@ import { EventBrokerService } from '../../../shared/services/event-broker.servic
 import { UiStateService } from '../../controls/management/ui-state.service';
 
 @Component({
-  selector: 'context-menu',
-  standalone: true,
-  imports: [jqxMenuModule],
-  templateUrl: './context-menu.component.html',
-  styleUrl: './context-menu.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'context-menu',
+    imports: [jqxMenuModule],
+    templateUrl: './context-menu.component.html',
+    styleUrl: './context-menu.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContextMenuComponent implements AfterViewInit {
   @ViewChild('menu') menu!: jqxMenuComponent;

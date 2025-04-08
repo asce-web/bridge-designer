@@ -5,12 +5,11 @@ import { EventBrokerService } from '../../../shared/services/event-broker.servic
 import { ModifierMask, UiStateService } from '../management/ui-state.service';
 
 @Component({
-  selector: 'menus',
-  standalone: true,
-  imports: [CommonModule, jqxMenuModule],
-  templateUrl: './menus.component.html',
-  styleUrl: './menus.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'menus',
+    imports: [CommonModule, jqxMenuModule],
+    templateUrl: './menus.component.html',
+    styleUrl: './menus.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MenusComponent implements AfterViewInit {
   @ViewChild('mainMenu') mainMenu!: jqxMenuComponent;

@@ -27,12 +27,11 @@ import { ContextMenuComponent } from '../context-menu/context-menu.component';
 import { ContextWidgetService } from './context-widget.service';
 
 @Component({
-  selector: 'cursor-overlay',
-  standalone: true,
-  templateUrl: './cursor-overlay.component.html',
-  styleUrl: './cursor-overlay.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ContextMenuComponent],
+    selector: 'cursor-overlay',
+    templateUrl: './cursor-overlay.component.html',
+    styleUrl: './cursor-overlay.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    imports: [ContextMenuComponent]
 })
 export class CursorOverlayComponent implements AfterViewInit {
   @Input({ transform: numberAttribute }) width: number = screen.availWidth;

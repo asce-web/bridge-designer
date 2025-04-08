@@ -9,12 +9,11 @@ import { ElementSelectorService } from '../shared/element-selector.service';
 import { AnalysisValidityService } from '../../controls/management/analysis-validity.service';
 
 @Component({
-  selector: 'member-table',
-  standalone: true,
-  imports: [jqxGridModule],
-  templateUrl: './member-table.component.html',
-  styleUrl: './member-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'member-table',
+    imports: [jqxGridModule],
+    templateUrl: './member-table.component.html',
+    styleUrl: './member-table.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MemberTableComponent implements AfterViewInit {
   private static readonly MEMBER_DATA_FIELDS = [

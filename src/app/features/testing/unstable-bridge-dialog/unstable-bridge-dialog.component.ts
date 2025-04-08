@@ -6,12 +6,11 @@ import { UnstableBridgeExampleComponent } from '../unstable-bridge-example/unsta
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
 @Component({
-  selector: 'unstable-bridge-dialog',
-  standalone: true,
-  imports: [jqxButtonModule, jqxTabsModule, jqxWindowModule, UnstableBridgeExampleComponent],
-  templateUrl: './unstable-bridge-dialog.component.html',
-  styleUrl: './unstable-bridge-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'unstable-bridge-dialog',
+    imports: [jqxButtonModule, jqxTabsModule, jqxWindowModule, UnstableBridgeExampleComponent],
+    templateUrl: './unstable-bridge-dialog.component.html',
+    styleUrl: './unstable-bridge-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UnstableBridgeDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;

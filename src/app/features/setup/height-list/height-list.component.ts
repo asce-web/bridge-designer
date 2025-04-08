@@ -11,12 +11,11 @@ import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { jqxDropDownListComponent, jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
 
 @Component({
-  selector: 'height-dropdown-list',
-  standalone: true,
-  imports: [jqxButtonModule, jqxDropDownListModule],
-  templateUrl: './height-list.component.html',
-  styleUrl: './height-list.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'height-dropdown-list',
+    imports: [jqxButtonModule, jqxDropDownListModule],
+    templateUrl: './height-list.component.html',
+    styleUrl: './height-list.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeightListComponent implements AfterViewInit {
   @ViewChild('heightList') heightList!: jqxDropDownListComponent;

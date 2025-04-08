@@ -6,12 +6,11 @@ import { EventBrokerService, EventOrigin } from '../../../shared/services/event-
 import { SessionStateService } from '../../../shared/services/session-state.service';
 
 @Component({
-  selector: 'welcome-dialog',
-  standalone: true,
-  imports: [jqxWindowModule, jqxButtonModule, jqxRadioButtonModule],
-  templateUrl: './welcome-dialog.component.html',
-  styleUrl: './welcome-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'welcome-dialog',
+    imports: [jqxWindowModule, jqxButtonModule, jqxRadioButtonModule],
+    templateUrl: './welcome-dialog.component.html',
+    styleUrl: './welcome-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WelcomeDialogComponent implements AfterViewInit{
   @ViewChild('dialog') dialog!: jqxWindowComponent;

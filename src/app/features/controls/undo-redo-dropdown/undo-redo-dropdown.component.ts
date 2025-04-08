@@ -7,12 +7,11 @@ import { EditCommand, EditCommandPlaceholder } from '../../../shared/classes/edi
 import { EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
 
 @Component({
-  selector: 'undo-redo-dropdown',
-  standalone: true,
-  imports: [jqxListBoxModule, jqxWindowModule],
-  templateUrl: './undo-redo-dropdown.component.html',
-  styleUrl: './undo-redo-dropdown.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'undo-redo-dropdown',
+    imports: [jqxListBoxModule, jqxWindowModule],
+    templateUrl: './undo-redo-dropdown.component.html',
+    styleUrl: './undo-redo-dropdown.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UndoRedoDropdownComponent implements AfterViewInit {
   private static readonly CANCEL_ITEM: EditCommand = new EditCommandPlaceholder('Cancel');

@@ -44,35 +44,34 @@ import { DraftingPanelState } from '../../../shared/services/persistence.service
  * Basic appearance and event-handling happens here. Card-specific logic is delegated to CardService.
  */
 @Component({
-  selector: 'setup-wizard',
-  standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    HeightListComponent,
-    jqxButtonModule,
-    jqxDropDownListModule,
-    jqxExpanderModule,
-    jqxInputModule,
-    jqxListBoxModule,
-    jqxRadioButtonModule,
-    jqxWindowModule,
-    LocalContestCodeInputComponent,
-  ],
-  providers: [
-    BridgeService,
-    { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
-    BridgeSketchService,
-    CardService,
-    CartoonJointRenderingService,
-    CartoonRenderingService,
-    CartoonSiteRenderingService,
-    CartoonSketchRenderingService,
-    ViewportTransform2D,
-  ],
-  templateUrl: './setup-wizard.component.html',
-  styleUrl: './setup-wizard.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'setup-wizard',
+    imports: [
+        CommonModule,
+        FormsModule,
+        HeightListComponent,
+        jqxButtonModule,
+        jqxDropDownListModule,
+        jqxExpanderModule,
+        jqxInputModule,
+        jqxListBoxModule,
+        jqxRadioButtonModule,
+        jqxWindowModule,
+        LocalContestCodeInputComponent,
+    ],
+    providers: [
+        BridgeService,
+        { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
+        BridgeSketchService,
+        CardService,
+        CartoonJointRenderingService,
+        CartoonRenderingService,
+        CartoonSiteRenderingService,
+        CartoonSketchRenderingService,
+        ViewportTransform2D,
+    ],
+    templateUrl: './setup-wizard.component.html',
+    styleUrl: './setup-wizard.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView {
   private static readonly ALL_DECK_ELEVATIONS = [

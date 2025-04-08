@@ -14,12 +14,11 @@ import { jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { HelpTopicComponent } from '../help-topic/help-topic.component';
 
 @Component({
-  selector: 'topic-popup',
-  standalone: true,
-  imports: [CommonModule, forwardRef(() => HelpTopicComponent), jqxPopoverModule, jqxWindowModule],
-  templateUrl: './help-topic-popup.component.html',
-  styleUrl: './help-topic-popup.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'topic-popup',
+    imports: [CommonModule, forwardRef(() => HelpTopicComponent), jqxPopoverModule, jqxWindowModule],
+    templateUrl: './help-topic-popup.component.html',
+    styleUrl: './help-topic-popup.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HelpPopupTopicComponent {
   @Input({ required: true }) name!: string;

@@ -15,24 +15,23 @@ import { SelectedElementsService } from '../../drafting/shared/selected-elements
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
 
 @Component({
-  selector: 'sample-selection-dialog',
-  standalone: true,
-  imports: [jqxListBoxModule, jqxWindowModule, jqxButtonModule],
-  /** Component-level injections of stateful services. Root versions are hidden. */
-  providers: [
-    BridgeService,
-    { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
-    DesignBridgeRenderingService,
-    DesignJointRenderingService,
-    DesignMemberRenderingService,
-    DesignRenderingService,
-    DesignSiteRenderingService,
-    SelectedElementsService,
-    ViewportTransform2D,
-  ],
-  templateUrl: './sample-selection-dialog.component.html',
-  styleUrl: './sample-selection-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'sample-selection-dialog',
+    imports: [jqxListBoxModule, jqxWindowModule, jqxButtonModule],
+    /** Component-level injections of stateful services. Root versions are hidden. */
+    providers: [
+        BridgeService,
+        { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
+        DesignBridgeRenderingService,
+        DesignJointRenderingService,
+        DesignMemberRenderingService,
+        DesignRenderingService,
+        DesignSiteRenderingService,
+        SelectedElementsService,
+        ViewportTransform2D,
+    ],
+    templateUrl: './sample-selection-dialog.component.html',
+    styleUrl: './sample-selection-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SampleSelectionDialogComponent implements AfterViewInit {
   private static readonly PREVIEW_SCALE: number = 0.5;

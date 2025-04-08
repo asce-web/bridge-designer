@@ -12,11 +12,10 @@ import { jqxTreeComponent, jqxTreeModule } from 'jqwidgets-ng/jqxtree';
 import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
 
 @Component({
-  selector: 'help-nav-tree',
-  standalone: true,
-  imports: [jqxTreeModule],
-  templateUrl: './help-nav-tree.component.html',
-  styleUrl: './help-nav-tree.component.scss',
+    selector: 'help-nav-tree',
+    imports: [jqxTreeModule],
+    templateUrl: './help-nav-tree.component.html',
+    styleUrl: './help-nav-tree.component.scss'
 })
 export class HelpNavTreeComponent implements AfterViewInit, OnChanges {
   @ViewChild('navTree') navTree!: jqxTreeComponent;

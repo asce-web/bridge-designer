@@ -10,12 +10,11 @@ export const enum LocalContestCodeInputState {
 }
 
 @Component({
-  selector: 'local-contest-code-input',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './local-contest-code-input.component.html',
-  styleUrl: './local-contest-code-input.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'local-contest-code-input',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './local-contest-code-input.component.html',
+    styleUrl: './local-contest-code-input.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LocalContestCodeInputComponent {
   private static readonly LOCAL_CONTEST_MATCHER = /^[0-9A-Z]{3}\d\d[A-D]$/;

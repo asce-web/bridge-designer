@@ -37,12 +37,11 @@ import { ToastError } from '../../toast/toast/toast-error';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 
 @Component({
-  selector: 'drafting-panel',
-  standalone: true,
-  templateUrl: './drafting-panel.component.html',
-  styleUrl: './drafting-panel.component.scss',
-  imports: [CursorOverlayComponent, FormsModule, ToastComponent, ToolSelectorComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'drafting-panel',
+    templateUrl: './drafting-panel.component.html',
+    styleUrl: './drafting-panel.component.scss',
+    imports: [CursorOverlayComponent, FormsModule, ToastComponent, ToolSelectorComponent],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class DraftingPanelComponent implements AfterViewInit {
   width: number = screen.availWidth;

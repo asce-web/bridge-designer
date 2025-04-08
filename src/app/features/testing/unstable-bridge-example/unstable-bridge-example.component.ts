@@ -2,12 +2,11 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, V
 import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 
 @Component({
-  selector: 'unstable-bridge-example',
-  standalone: true,
-  imports: [jqxButtonModule],
-  templateUrl: './unstable-bridge-example.component.html',
-  styleUrl: './unstable-bridge-example.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'unstable-bridge-example',
+    imports: [jqxButtonModule],
+    templateUrl: './unstable-bridge-example.component.html',
+    styleUrl: './unstable-bridge-example.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UnstableBridgeExampleComponent implements AfterViewInit {
   @Input({ required: true }) exampleNumber: number = 1;

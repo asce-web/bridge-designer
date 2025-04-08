@@ -20,11 +20,10 @@ import { HelpEventService } from '../help-event.service';
 import { HelpPopupTopicComponent } from '../help-topic-popup/help-topic-popup.component';
 
 @Component({
-  selector: 'help-topic',
-  standalone: true,
-  imports: [CommonModule, HelpPopupTopicComponent, HelpTopicLinkComponent, TopicNameDirective],
-  templateUrl: './help-topic.component.html',
-  styleUrl: './help-topic.component.css',
+    selector: 'help-topic',
+    imports: [CommonModule, HelpPopupTopicComponent, HelpTopicLinkComponent, TopicNameDirective],
+    templateUrl: './help-topic.component.html',
+    styleUrl: './help-topic.component.css'
 })
 export class HelpTopicComponent implements AfterViewInit, OnChanges {
   @Input() containerType: 'pane-content' | 'popup-content' = 'pane-content';

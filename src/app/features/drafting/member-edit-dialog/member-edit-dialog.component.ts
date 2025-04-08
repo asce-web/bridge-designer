@@ -7,12 +7,11 @@ import { jqxToggleButtonComponent, jqxToggleButtonModule } from 'jqwidgets-ng/jq
 import { UiStateService } from '../../controls/management/ui-state.service';
 
 @Component({
-  selector: 'member-edit-dialog',
-  standalone: true,
-  imports: [InventorySelectorComponent, jqxToggleButtonModule, jqxWindowModule, jqxButtonModule],
-  templateUrl: './member-edit-dialog.component.html',
-  styleUrl: './member-edit-dialog.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'member-edit-dialog',
+    imports: [InventorySelectorComponent, jqxToggleButtonModule, jqxWindowModule, jqxButtonModule],
+    templateUrl: './member-edit-dialog.component.html',
+    styleUrl: './member-edit-dialog.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MemberEditDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;

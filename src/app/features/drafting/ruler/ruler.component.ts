@@ -7,12 +7,11 @@ import { DesignGridDensity, DesignGridService } from '../../../shared/services/d
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
 @Component({
-  selector: 'ruler',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './ruler.component.html',
-  styleUrl: './ruler.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'ruler',
+    imports: [CommonModule],
+    templateUrl: './ruler.component.html',
+    styleUrl: './ruler.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class RulerComponent implements AfterViewInit {
   readonly thickness = 30;

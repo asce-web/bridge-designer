@@ -18,22 +18,21 @@ import { CartoonSketchRenderingService } from '../../../shared/services/cartoon-
 import { BridgeSketchModel } from '../../../shared/classes/bridge-sketch.model';
 
 @Component({
-  selector: 'template-selection-dialog',
-  standalone: true,
-  imports: [jqxListBoxModule, jqxWindowModule, jqxButtonModule],
-  /** Component-level injections of stateful services. Root versions are hidden. */
-  providers: [
-    BridgeService,
-    { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
-    CartoonJointRenderingService,
-    CartoonRenderingService,
-    CartoonSiteRenderingService,
-    CartoonSketchRenderingService,
-    ViewportTransform2D,
-  ],
-  templateUrl: './template-selection-dialog.component.html',
-  styleUrl: './template-selection-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'template-selection-dialog',
+    imports: [jqxListBoxModule, jqxWindowModule, jqxButtonModule],
+    /** Component-level injections of stateful services. Root versions are hidden. */
+    providers: [
+        BridgeService,
+        { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
+        CartoonJointRenderingService,
+        CartoonRenderingService,
+        CartoonSiteRenderingService,
+        CartoonSketchRenderingService,
+        ViewportTransform2D,
+    ],
+    templateUrl: './template-selection-dialog.component.html',
+    styleUrl: './template-selection-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TemplateSelectionDialogComponent implements AfterViewInit {
   private templateSketches: BridgeSketchModel[] = [];

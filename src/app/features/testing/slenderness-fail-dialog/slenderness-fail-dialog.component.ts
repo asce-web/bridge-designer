@@ -4,12 +4,11 @@ import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 
 @Component({
-  selector: 'slenderness-fail-dialog',
-  standalone: true,
-  imports: [jqxButtonModule, jqxWindowModule],
-  templateUrl: './slenderness-fail-dialog.component.html',
-  styleUrl: './slenderness-fail-dialog.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'slenderness-fail-dialog',
+    imports: [jqxButtonModule, jqxWindowModule],
+    templateUrl: './slenderness-fail-dialog.component.html',
+    styleUrl: './slenderness-fail-dialog.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SlendernessFailDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;

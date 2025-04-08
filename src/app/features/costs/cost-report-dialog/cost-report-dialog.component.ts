@@ -10,12 +10,11 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { SiteCostsModel } from '../../../shared/services/design-conditions.service';
 
 @Component({
-  selector: 'cost-report-dialog',
-  standalone: true,
-  imports: [CommonModule, jqxButtonModule, jqxWindowModule],
-  templateUrl: './cost-report-dialog.component.html',
-  styleUrl: './cost-report-dialog.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'cost-report-dialog',
+    imports: [CommonModule, jqxButtonModule, jqxWindowModule],
+    templateUrl: './cost-report-dialog.component.html',
+    styleUrl: './cost-report-dialog.component.css',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CostReportDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;

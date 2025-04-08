@@ -34,12 +34,11 @@ const enum Tools {
 }
 
 @Component({
-  selector: 'toolbar-a',
-  standalone: true,
-  imports: [jqxToolBarModule],
-  templateUrl: './toolbar-a.component.html',
-  styleUrl: './toolbar-a.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'toolbar-a',
+    imports: [jqxToolBarModule],
+    templateUrl: './toolbar-a.component.html',
+    styleUrl: './toolbar-a.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolbarAComponent implements AfterViewInit {
   @ViewChild('toolbar') toolbar!: jqxToolBarComponent;

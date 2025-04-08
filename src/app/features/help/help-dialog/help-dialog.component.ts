@@ -17,20 +17,19 @@ const enum Tools {
 }
 
 @Component({
-  selector: 'help-dialog',
-  standalone: true,
-  imports: [
-    HelpNavTreeComponent,
-    HelpTopicComponent,
-    jqxSplitterModule,
-    jqxTabsModule,
-    jqxToolBarModule,
-    jqxTreeModule,
-    jqxWindowModule,
-    jqxButtonModule,
-  ],
-  templateUrl: './help-dialog.component.html',
-  styleUrl: './help-dialog.component.scss',
+    selector: 'help-dialog',
+    imports: [
+        HelpNavTreeComponent,
+        HelpTopicComponent,
+        jqxSplitterModule,
+        jqxTabsModule,
+        jqxToolBarModule,
+        jqxTreeModule,
+        jqxWindowModule,
+        jqxButtonModule,
+    ],
+    templateUrl: './help-dialog.component.html',
+    styleUrl: './help-dialog.component.scss'
 })
 export class HelpDialogComponent implements AfterViewInit {
   public static readonly DEFAULT_TOPIC_ID = 'hlp_how_to';

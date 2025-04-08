@@ -5,12 +5,11 @@ import { EventBrokerService } from '../../../shared/services/event-broker.servic
 import { Utility } from '../../../shared/classes/utility';
 
 @Component({
-  selector: 'toast',
-  standalone: true,
-  imports: [jqxNotificationModule],
-  templateUrl: './toast.component.html',
-  styleUrl: './toast.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'toast',
+    imports: [jqxNotificationModule],
+    templateUrl: './toast.component.html',
+    styleUrl: './toast.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToastComponent implements AfterViewInit {
   @ViewChildren(jqxNotificationComponent) notifications!: QueryList<jqxNotificationComponent>;

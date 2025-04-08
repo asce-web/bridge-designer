@@ -5,12 +5,11 @@ import { UiStateService } from '../management/ui-state.service';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { SessionStateService } from '../../../shared/services/session-state.service';
 @Component({
-  selector: 'tool-selector',
-  standalone: true,
-  imports: [jqxToggleButtonModule, jqxWindowModule],
-  templateUrl: './tool-selector.component.html',
-  styleUrl: './tool-selector.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'tool-selector',
+    imports: [jqxToggleButtonModule, jqxWindowModule],
+    templateUrl: './tool-selector.component.html',
+    styleUrl: './tool-selector.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ToolSelectorComponent implements AfterViewInit {
   private static readonly SESSION_STATE_KEY = 'toolSelector.component';

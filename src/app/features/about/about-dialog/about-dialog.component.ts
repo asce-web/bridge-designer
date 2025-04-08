@@ -5,12 +5,11 @@ import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { VERSION } from '../../../shared/classes/version';
 
 @Component({
-  selector: 'about-dialog',
-  standalone: true,
-  imports: [jqxWindowModule, jqxButtonModule],
-  templateUrl: './about-dialog.component.html',
-  styleUrl: './about-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'about-dialog',
+    imports: [jqxWindowModule, jqxButtonModule],
+    templateUrl: './about-dialog.component.html',
+    styleUrl: './about-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AboutDialogComponent implements AfterViewInit {
   version: string = VERSION.toString();

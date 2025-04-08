@@ -6,12 +6,11 @@ import { WidgetHelper } from '../../classes/widget-helper';
 import { SessionStateService } from '../../services/session-state.service';
 
 @Component({
-  selector: 'inventory-selector',
-  standalone: true,
-  imports: [jqxDropDownListModule],
-  templateUrl: './inventory-selector.component.html',
-  styleUrl: './inventory-selector.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'inventory-selector',
+    imports: [jqxDropDownListModule],
+    templateUrl: './inventory-selector.component.html',
+    styleUrl: './inventory-selector.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class InventorySelectorComponent implements AfterViewInit {
   @Input({ required: true }) vertical: boolean = false;

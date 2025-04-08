@@ -6,12 +6,11 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
 @Component({
-  selector: 'load-test-report-dialog',
-  standalone: true,
-  imports: [CommonModule, jqxWindowModule, jqxButtonModule],
-  templateUrl: './load-test-report-dialog.component.html',
-  styleUrl: './load-test-report-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'load-test-report-dialog',
+    imports: [CommonModule, jqxWindowModule, jqxButtonModule],
+    templateUrl: './load-test-report-dialog.component.html',
+    styleUrl: './load-test-report-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoadTestReportDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;

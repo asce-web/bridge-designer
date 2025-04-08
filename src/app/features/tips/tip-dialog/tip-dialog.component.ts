@@ -14,12 +14,11 @@ import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { SessionStateService } from '../../../shared/services/session-state.service';
 
 @Component({
-  selector: 'tip-dialog',
-  standalone: true,
-  imports: [jqxCheckBoxModule, jqxWindowModule, jqxButtonModule],
-  templateUrl: './tip-dialog.component.html',
-  styleUrl: './tip-dialog.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'tip-dialog',
+    imports: [jqxCheckBoxModule, jqxWindowModule, jqxButtonModule],
+    templateUrl: './tip-dialog.component.html',
+    styleUrl: './tip-dialog.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TipDialogComponent implements AfterViewInit {
   @Output() readonly onClose = new EventEmitter<{ isStartupTip: boolean }>();
