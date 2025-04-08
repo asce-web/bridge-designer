@@ -79,10 +79,10 @@ export class ToolbarAComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgButton('Print current bridge', 'img/print.png', tool);
         break;
       case Tools.DESIGN:
-        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool, { toggled: true });
+        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool, { toggled: true, disabled: true });
         break;
       case Tools.LOAD_TEST:
-        WidgetHelper.initToolbarImgToggleButton('Run a load test', 'img/loadtest.png', tool);
+        WidgetHelper.initToolbarImgToggleButton('Run a load test', 'img/loadtest.png', tool, { disabled: true });
         break;
       case Tools.SELECT_ALL:
         WidgetHelper.initToolbarImgButton('Select all', 'img/selectall.png', tool);

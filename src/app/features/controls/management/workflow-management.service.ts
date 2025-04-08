@@ -10,6 +10,7 @@ import { AnalysisValidityService } from './analysis-validity.service';
 import { AllowedShapeChangeMask, InventoryService, StockId } from '../../../shared/services/inventory.service';
 import { EditEffect } from '../../../shared/classes/editing';
 import { Member } from '../../../shared/classes/member.model';
+import { DesignConditionsService } from '../../../shared/services/design-conditions.service';
 
 /**
  * Container for the state of the user's design workflow and associated logic.
@@ -101,6 +102,11 @@ export class WorkflowManagementService {
         origin: EventOrigin.SERVICE,
         data: bridgeService.getMostCommonStockId(),
       });
+      // TODO: This where to switch to master UI state mode "no bridge"
+      uiStateService.disable(
+        eventBrokerService.designModeSelection,
+        bridgeService.designConditions === DesignConditionsService.PLACEHOLDER_CONDITIONS,
+      );
     });
 
     // Member size change requests.

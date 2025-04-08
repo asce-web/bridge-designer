@@ -12,6 +12,8 @@ export const enum ModifierMask {
   SHIFT = 0x8,
 }
 
+// TODO: Global overrides for animation and no-bridge states.
+
 /** Container for state and logic that sychronizes multiple UI elements having the same purpose. */
 @Injectable({ providedIn: 'root' })
 export class UiStateService {
