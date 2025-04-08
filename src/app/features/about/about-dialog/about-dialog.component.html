@@ -2,8 +2,8 @@
   #dialog
   [isModal]="true"
   [autoOpen]="false"
-  [width]="980"
-  [height]="508"
+  [width]="772"
+  [height]="476"
 >
   <div
     #header
@@ -68,31 +68,30 @@
           alt="Newburgh-Beacon Bridge, New York"
         />
       </div>
-      <div class="version">
-        Version {{version}}
-      </div>
+      <div class="version">Version {{ version }}</div>
       <div class="button-holder">
         <jqxButton
           #purposesButton
+          style="margin-right: 4px"
           (onClick)="handlePurposeButtonClick()"
-          [width]="'248px'"
+          [width]="'244px'"
           >Purposes...</jqxButton
         >
       </div>
       <div class="button-holder">
         <jqxButton
           #howItWorksButton
-          style="margin-top:8px;"
+          style="margin-top: 8px; margin-right: 4px"
           (onClick)="handleHowItWorksButtonClick()"
-          [width]="'248px'"
+          [width]="'244px'"
           >How it works...</jqxButton
         >
       </div>
       <div class="button-holder">
         <jqxButton
-        style="margin-bottom:4px; margin-top:8px;"
+          style="margin-bottom: 4px; margin-top: 8px; margin-right: 4px"
           (onClick)="dialog.close()"
-          [width]="'248px'"
+          [width]="'244px'"
           >Close</jqxButton
         >
       </div>
