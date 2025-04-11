@@ -25,7 +25,7 @@ export class LocalContestCodeInputComponent {
   @Output() readonly onChange = new EventEmitter<LocalContestCodeInputState>();
   @ViewChild('localContestCodeInputRef') localContestCodeInputRef!: ElementRef<HTMLInputElement>;
 
-  localContestCodeInput = new FormControl({ value: '', disabled: true }, this.validateLocalContestCode.bind(this));
+  readonly localContestCodeInput = new FormControl({ value: '', disabled: true }, this.validateLocalContestCode.bind(this));
   private state: LocalContestCodeInputState = LocalContestCodeInputState.NONE;
 
   constructor(private readonly designConditionsService: DesignConditionsService) {}

@@ -85,7 +85,7 @@ export class AppComponent implements AfterViewInit {
   ) {}
 
   /** Shows the drafting panel or hides it under a gray facade. */
-  private showDraftingPanel(value: boolean): void {
+  private removeDraftingPanelCover(value: boolean): void {
     const coverStyle = this.draftingAreaCover.nativeElement.style;
     const toggleTools = (value: boolean) =>
       this.eventBrokerService.toolsToggle.next({ origin: EventOrigin.APP, data: value });
@@ -113,17 +113,17 @@ export class AppComponent implements AfterViewInit {
     });
     // Cancel the cover over the drafting area when the user loads a bridge.
     this.eventBrokerService.loadBridgeRequest.subscribe(eventInfo => {
-      this.showDraftingPanel(eventInfo.data.bridge.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS);
+      this.removeDraftingPanelCover(eventInfo.data.bridge.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS);
     });
     // Update the UI to match state of session manager.
     this.sessionStateService.notifyEnabled();
     // Manage the welcome sequence if there is one. Send a completion event if we're rehydrating.
     // Not a clean place to handle this, but it's simplest.
     if (this.sessionStateService.hasRestoredState) {
-      this.showDraftingPanel(true);
+      this.removeDraftingPanelCover(true);
       this.sessionStateService.notifyComplete();
     } else {
-      this.showDraftingPanel(false);
+      this.removeDraftingPanelCover(false);
       this.eventBrokerService.tipRequest.next({ origin: EventOrigin.APP, data: 'startup' });
     }
   }

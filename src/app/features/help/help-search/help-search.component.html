@@ -1,0 +1,26 @@
+<div class="container">
+  <div class="search-term-input">
+    <label for="search-term">Search for...
+      <input
+        #searchTermInput
+        type="text"
+        id="search-term"
+        name="search-term"
+        maxlength="100"
+        placeholder="Examples: 'mmber' 'title:trus'"
+        (input)="handleSearchTermInputInput($event)"
+    /></label>
+  </div>
+  <div class="search-results">
+    <div class="results-label">Results:</div>
+    <jqxListBox
+      style="border: none"
+      [displayMember]="'title'"
+      [valueMember]="'topic'"
+      [source]="source"
+      [width]="'100%'"
+      [height]="'calc(100% - 22px)'"
+      (onSelect)="handleSearchResultsSelect($event)"
+    ></jqxListBox>
+  </div>
+</div>

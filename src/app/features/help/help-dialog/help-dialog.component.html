@@ -9,6 +9,7 @@
   [height]="800"
   [maxHeight]="4096"
   [zIndex]="10000"
+  (onOpen)="handleDialogOpen()"
 >
   <div class="header">Bridge Designer help</div>
   <!-- Margin un-hides jqxWindow resize drag area under scrollbar. -->
@@ -38,13 +39,24 @@
             <li>Contents</li>
             <li>Search</li>
           </ul>
-          <div style="height:100%;">
-            <help-nav-tree style="height:100%" [(selectedTopicName)]="currentTopicName"></help-nav-tree>
+          <div style="height: 100%">
+            <help-nav-tree
+              style="height: 100%"
+              [(selectedTopicName)]="currentTopicName"
+            ></help-nav-tree>
           </div>
-          <div>Search</div>
+          <div>
+            <help-search
+              #helpSearch
+              (onSelect)="handleSearchSelect($event)"
+            ></help-search>
+          </div>
         </jqxTabs>
       </div>
-      <help-topic #helpTopic [(visibleTopicName)]="currentTopicName"></help-topic>
+      <help-topic
+        #helpTopic
+        [(visibleTopicName)]="currentTopicName"
+      ></help-topic>
     </jqxSplitter>
   </div>
 </jqxWindow>

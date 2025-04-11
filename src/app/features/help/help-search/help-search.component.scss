@@ -1,0 +1,25 @@
+.container {
+  width: calc(100% - 2px);
+  height: calc(100% - 2px);
+  display: flex;
+  flex-direction: column;
+}
+
+.search-term-input {
+  flex-grow: 0;
+  padding: 4px;
+  border-bottom: 1px solid gray;
+}
+
+.search-term-input input {
+  width: calc(100% - 8px);
+}
+
+.search-results {
+  flex-grow: 1;
+  padding-top: 4px;
+}
+
+.results-label {
+  padding-left: 4px;
+}

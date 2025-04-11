@@ -1,139 +1,173 @@
-from os import listdir
-from os.path import isfile
 from html.parser import HTMLParser
 import re
-import itertools
+import pprint
 
-SKIP_TAGS = ["head", "html", "link", "meta"]
+DEBUG = False  # 'index'
+TRIM = False
+
+DONT_INDEX = """a
+also
+and
+are
+at
+be
+but
+by
+can
+cant
+for
+in
+is
+it
+its
+of
+on
+or
+that
+the
+to
+use
+using
+was
+will
+when
+which
+with
+you
+your"""
 
 
 def attrsToStr(attrs):
-    result = " ".join(f'{tag}="{value}"' for (tag, value) in attrs if tag not in ["border", "align"])
+    result = " ".join(
+        f'{tag}="{value}"' for (tag, value) in attrs if tag not in ["border", "align"]
+    )
     return " " + result if result else ""
 
 
-class MyHTMLParser(HTMLParser):
-    def __init__(self, filename, *, convert_charrefs=True):
+class Indexer(HTMLParser):
+    def __init__(self, *, convert_charrefs=True):
         super().__init__(convert_charrefs=convert_charrefs)
-        self.topicTag = filename.removesuffix(".html")
-        self.stack = []
-        self.out = ""
+        self.spaces = 0
+        self.state = ""
+        self.current_name = "[none]"
+        self.current_title = "[none]"
+        self.text = ""
+        self.data = {}
+        self.ignore_regex = "|".join(
+            map(lambda w: f"\\b{w}\\b", DONT_INDEX.split("\n"))
+        )
 
-    def clean_up(self):
-        # Multiple spaces.
-        self.out = re.sub(r'\s+', ' ', self.out)
-        # Spaces after opening tags.
-        self.out = re.sub(r'(<[^>]+>) ', r'\1', self.out)
-        # Spaces before closing tags.
-        self.out = re.sub(r' (</[^>]+>)', r'\1', self.out)
-        # Re-insert spaces after in-line tags except if followed by punctuation.
-        self.out = re.sub(r'(</(?:span|a)>)([^ .,;:)\]\-!%}])', r'\1 \2', self.out)
-        
+    def indent(self, *args):
+        print(" " * self.spaces, *args)
 
     def handle_starttag(self, tag, attrs):
-        if tag in SKIP_TAGS:
-            return
-        if tag == "body":
-            tag = "div"
-            attrs.append(("id", self.topicTag))
-        if tag == "object":
-            self.stack.append((tag, attrs, {}))
-            return
-        if tag == "param":
-            attrDict = dict(attrs)
-            self.stack[-1][2][attrDict["name"]] = attrDict["value"]
-            return
-        if tag == "title":
-            self.stack.append((tag,))
-            return
-        if tag == "a":
-            attrDict = dict(attrs)
-            # <a> tags in glossary have name rather than url. Let them alone.
-            url = attrDict.get('href')
-            if url:
-                tag = "span"
-                attrDict['topic'] = url.removesuffix(".html")
-                del attrDict['href']
-                self.stack.append(('a->span',))
-            attrs = list(attrDict.items())
-        if tag == 'area':
-            attrDict = dict(attrs)
-            href = attrDict.get('href')
-            if href and href[0] != '#':
-                attrDict['href'] = f"javascript:goToTopic('{href.removesuffix('.html')}')"
-            attrs = list(attrDict.items())
-        self.out += f"<{tag}{attrsToStr(attrs)}>"
-
-    def handle_startendtag(self, tag, attrs):
-        if tag in SKIP_TAGS:
-            return
-        if tag == "param":
-            attrDict = dict(attrs)
-            self.stack[-1][2][attrDict["name"]] = attrDict["value"]
-            return
-        self.out += f"<{tag}{attrsToStr(attrs)}>"
+        if DEBUG == True:
+            self.indent("start:", tag, attrsToStr(attrs))
+            self.spaces += 1
+        match tag:
+            case "ng-template":
+                self.current_name = dict(attrs).get("topic-name")
+            case "h1":
+                self.state = "in-title"
+            case "p" | "span" | "li" | "topic-link" | "topic-popup":
+                self.state = "in-text"
 
     def handle_endtag(self, tag):
-        if tag in SKIP_TAGS:
-            return
-        if tag == "body":
-            tag = "div"
-        if tag == "object":
-            params = self.stack[-1][2]
-            ref = params["content"].removesuffix(".html")
-            self.out += f'<span glossary-ref="{ref}">{params['text']}</span>'
-            self.stack.pop()
-            return
-        if tag == "title":
-            self.stack.pop()
-            return
-        if tag == "a" and self.stack and self.stack[-1][0] == 'a->span':
-            tag = "span"
-            self.stack.pop()
-        self.out += f"</{tag}>"
+        if DEBUG == True:
+            self.spaces -= 1
+            self.indent("end:", tag)
+        match tag:
+            case "ng-template":
+                # collapse whitespace
+                text = re.sub(r"\s+", " ", self.text)
+                if TRIM:
+                    # lowercase
+                    text = text.lower()
+                    # remove apostophes
+                    text = re.sub(r"'", "", text)
+                    # ignore uninteresting words
+                    text = re.sub(self.ignore_regex, "", text)
+                    # collapse whitespace finally
+                    text = re.sub(r"\s+", " ", text)
+                self.data[self.current_name] = (self.current_title, text.strip())
+                self.text = ""
+
+    def handle_startendtag(self, tag, attrs):
+        if DEBUG == True:
+            self.indent("start/end:", tag, attrsToStr(attrs))
 
     def handle_data(self, data):
-        data = data.replace("<", "&lt;").replace(">", "&gt;")
-        if self.stack and self.stack[-1][0] in ["title"]:
-            # h1 covers title info, so dump it
+        if DEBUG == True:
+            self.indent("data:", data)
+        # Remove HTML escapes.
+        data = re.sub(r"&[^;]*;", " ", data.strip())
+        if TRIM:
+            data = re.sub(r"&[^;]*;|[-:,!();]|\.$|\. ", " ", data)
+            data = re.sub(r"\s+", " ", data)
+        if data == "":
             return
-        self.out += f"{data} "
+        match self.state:
+            case "in-title":
+                self.current_title = data
+                self.state = 'in-text'
+            case "in-text":
+                self.text += " "
+                self.text += data
 
     def handle_entityref(self, name):
-        print(f"===ENTITY REF: {name}")
+        if DEBUG == True:
+            self.indent("entity:", name)
 
     def handle_charref(self, name):
-        print(f"===CHAR REF: {name}")
+        if DEBUG == True:
+            self.indent("charref:", name)
 
     def handle_comment(self, data):
-        print(f"===COMMENT: {data}")
+        if DEBUG == True:
+            self.indent("comment:", data)
 
-    def handle_decl(self, data):
-        if re.match(r".*DOCTYPE.*", data, re.IGNORECASE):
-            return
-        print(f"DECL: {data}")
+    def handle_decl(self, decl):
+        if DEBUG == True:
+            self.indent("decl:", decl)
+
+    def handle_pi(self, data):
+        if DEBUG == True:
+            self.indent("pi:", data)
 
     def unknown_decl(self, data):
-        print(f"===UNKNOWN DECL: {data}")
+        if DEBUG == True:
+            self.indent("unknown:", data)
 
 
-filenames = list(listdir())
-hlp = []
-glos = []
-for name in filenames:
-    if not isfile(name) or not name.endswith(".html"):
-        continue
-    if name.startswith("hlp"):
-        hlp.append(name)
-    elif name.startswith("glos"):
-        glos.append(name)
-hlp.sort()
-glos.sort()
+def quote(s):
+    return f"`{s}`" if "'" in s else f"'{s}'"
 
-for filename in itertools.chain(hlp, glos):
-    with open(filename, "r") as file:
-        fileContent = file.read()
-        parser = MyHTMLParser(filename)
-        parser.feed(fileContent)
-        parser.clean_up()
-        print(parser.out)
+PREAMBLE = """export type HelpIndexData = {
+  id: string,
+  title: string,
+  text: string,
+};
+
+export const HELP_INDEX_DATA: HelpIndexData[] = ["""
+
+indexer = Indexer()
+with open("../help-topic/help-topic.component.html", "r") as file:
+    indexer.feed(file.read())
+
+if DEBUG:
+    pprint.pp(indexer.data)
+else:
+    with open("index-data.ts", "w") as f:
+        print(PREAMBLE, file=f)
+        chunk_size = 100
+        for id, (title, text) in sorted(indexer.data.items()):
+            text_chunks = [
+                f"{quote(text[i:i + chunk_size])}"
+                for i in range(0, len(text), chunk_size)
+            ]
+            print("  {", file=f)
+            print(f"    id: '{id}',", file=f)
+            print(f"    title: {quote(title)},", file=f)
+            print(f"    text: {' +\n          '.join(text_chunks)}", file=f)
+            print("  },", file=f)
+        print("];", file=f)

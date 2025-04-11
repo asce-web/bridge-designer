@@ -61,7 +61,7 @@ ul,ol {
   font-size: 12pt;
   margin-top: 5px;
   margin-bottom: 0px;
-  margin-left: 30px;
+  margin-left: 10px;
 }
 
 li {
@@ -76,9 +76,6 @@ li p {
 
 ul {
   list-style-type: square;
-  margin-top: 5px;
-  margin-bottom: 0px;
-  margin-left: 30px;
 }
 
 table {

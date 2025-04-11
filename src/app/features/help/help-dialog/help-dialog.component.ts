@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { jqxSplitterModule } from 'jqwidgets-ng/jqxsplitter';
-import { jqxTabsModule } from 'jqwidgets-ng/jqxtabs';
+import { jqxTabsModule, jqxTabsComponent } from 'jqwidgets-ng/jqxtabs';
 import { jqxTreeComponent, jqxTreeModule } from 'jqwidgets-ng/jqxtree';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
@@ -10,16 +10,23 @@ import { HelpNavTreeComponent } from '../help-nav-tree/help-nav-tree.component';
 import { jqxToolBarComponent, jqxToolBarModule } from 'jqwidgets-ng/jqxtoolbar';
 import { WidgetHelper } from '../../../shared/classes/widget-helper';
 import { HelpEventService } from '../help-event.service';
+import { HelpSearchComponent } from '../help-search/help-search.component';
 
 const enum Tools {
   BACK_TOPIC,
   FORWARD_TOPIC,
 }
 
+export const enum HelpTab {
+  CONTENTS,
+  SEARCH,
+}
+
 @Component({
     selector: 'help-dialog',
     imports: [
         HelpNavTreeComponent,
+        HelpSearchComponent,
         HelpTopicComponent,
         jqxSplitterModule,
         jqxTabsModule,
@@ -35,15 +42,18 @@ export class HelpDialogComponent implements AfterViewInit {
   public static readonly DEFAULT_TOPIC_ID = 'hlp_how_to';
 
   @ViewChild('dialog') dialog!: jqxWindowComponent;
+  @ViewChild('helpSearch') helpSearch!: HelpSearchComponent;
   @ViewChild('helpTopic') helpTopic!: HelpTopicComponent;
   @ViewChild('navTree') navTree!: jqxTreeComponent;
+  @ViewChild('tabs') tabs!: jqxTabsComponent;
   @ViewChild('toolBar') toolBar!: jqxToolBarComponent;
 
   _currentTopicName: string = HelpDialogComponent.DEFAULT_TOPIC_ID;
-  tools: string = 'button button';
+  readonly tools: string = 'button button';
   private backTopicStack: { topicName: string; scrollTop: number }[] = [];
   private forwardTopicStack: { topicName: string; scrollTop: number }[] = [];
   private isInternalGoTo: boolean = false;
+  private tabIndex: number | undefined;
 
   constructor(
     private readonly eventBrokerService: EventBrokerService,
@@ -75,6 +85,15 @@ export class HelpDialogComponent implements AfterViewInit {
 
   get currentTopicName(): string {
     return this._currentTopicName;
+  }
+
+  handleDialogOpen() {
+    this.helpSearch.clear();
+    this.tabs.selectedItem(this.tabIndex === undefined ? HelpTab.CONTENTS : this.tabIndex);
+  }
+
+  handleSearchSelect(topicName: string) {
+    this.currentTopicName = topicName;
   }
 
   private goBack() {
@@ -111,7 +130,8 @@ export class HelpDialogComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.eventBrokerService.helpRequest.subscribe(eventInfo => {
       if (eventInfo.data) {
-        this.goToInternal(eventInfo.data, 0);
+        this.goToInternal(eventInfo.data.topic, 0);
+        this.tabIndex = eventInfo.data.tab;
       }
       this.dialog.open();
     });

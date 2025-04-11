@@ -2,9 +2,9 @@
 
 This is a redesign and implementation as a web app of the Engineering Encounters Bridge Designer, formerly the West
 Point Bridge Designer. Engineering Encounters no longer exists, so the new app is just "Bridge Designer," and it's the
-"Cloud edition" becaust it no longer relies on a native binary installed locally. Earlier versions were desktop apps
-originally in Visual Basic for Windows (circa 2000) and then Java (2003 through present) for Windows and Mac OSX. Our
-purpose is to make the app useful on more platforms, particularly Chromebooks, which are common in K-12 schools.
+"Cloud edition" because it no longer relies on a binary installed locally. Earlier versions were desktop apps originally
+in Visual Basic for Windows (circa 2000) and then Java (2003 through present) for Windows and Mac OSX. Our purpose is to
+make the app useful on many more platforms, particularly Chromebooks, which have grown to be common in K-12 schools.
 
 # Design considerations
 
@@ -19,17 +19,17 @@ BDCE is an Angular app with these goals and characteristics
 
 The following are key, top-level design choices:
 
-- [**jqwidgets:**](https://www.jqwidgets.com/) BDCE uses jqwidgets as the primary UI library. It's full-featured,
+- [**jQWidgets:**](https://www.jqwidgets.com/) BDCE uses jQWidgets as the primary UI library. It's full-featured,
   reasonably priced, free for development sans tech support, and not many bugs. On the other hand, the APIs are a bit
-  quirky, limited and inconsistent. Documentation is mostly by example rather than explanation. This is inadequate when
-  no example covers a needed use case. Reverse engineering and studying the mostly uncommented code are the only
-  alternatives. The jqwidgets team apparently doesn't have a normal issues workflow. Their management tool is a
-  community board.
+  quirky, limited, and inconsistent. Documentation is mostly by example rather than explanation. Reverse engineering and
+  studying the mostly uncommented code are necessary. The jQWidgets team apparently doesn't have a normal issues
+  workflow. Their management tool is a community board with a pay wall. My intent is to pay in for at least one year of
+  support once the implementation is as complete as possible without it.
 
-- **Stateful services**: Against common wisdom favoring central stores with pure reduction semantics, BDCE provides many
-  services with mutable internal state. This supports "Small devices" above by reducing garbage collection pressure. It
-  does complicate persistence across browswer refreshes. It's also well-aligned with the way state is implemented in
-  other versions.
+- **Stateful services**: Against common wisdom favoring central stores with pure reduction semantics over immutable
+  objects, BDCE provides many services with mutable internal state. This supports "Small devices" above by vastly
+  reducing garbage collection pressure. It's also well-aligned with the way state is implemented in other versions. It
+  does complicate persistence across browswer refreshes.
 
 - **Decoupling via broadcast messages**: I considered various schemes for allowing one component or service to pass
   information needed by another. Most of them cause "Law of Demeter" violations: nasty dependency webs. I've chosen to
@@ -39,18 +39,21 @@ The following are key, top-level design choices:
 
 Subject names are nouns. General categories are:
 
-- **Simple clicks and other kinds of request:** buttons and menu items.
+- **Simple click or other kinds of request:** button, menu item, etc.
   - Name of Subject ends in `Request`.
-- **Toggles:** buttons and menu items that toggle on successive clicks.
+- **Toggle:** button or menu item that toggles on successive clicks.
   - Name of Subject ends in `Toggle`.
-- **Selects:** groups of buttons and menu items.
+- **Select:** groups of buttons and menu items where exactly one is selected.
   - Name of Subject ends in `Select`.
-- **Completions:** Some update of state or UI has been completed.
+- **Completion:** major mutation or UI state has been updated. I.e., side effect.
   - Name of Subject ends in `Completion`.
-- **Change:** Some chunk of state has been updated.
+- **Change:** a single logical entity has been updated.
   - Name of Subject ends in `Change`.
+- **Pending change:** some chunk of state is about to be updated.
+  - Name of Subject ends with
 
-`UiStateService` manages flow of events generated and subscribed to by UI widgets.
+`UiStateService` manages flow of events generated and subscribed to by UI widgets. It also handles disabling of UI
+elements using subjects as keys. Hence all widges performing the same function are disabled/enabled as a group.
 
 By convention, dialogs always open in response to a Subject event. They often broadcast a different Subject to effect
 results: loading a new bridge, users' saved bridge, sample bridge, sketch, etc.
@@ -64,8 +67,19 @@ several other containers for the rendered bridge model. We need a different copy
 component-level `providers` for the corresponding dialog. The entire "tree" of injected dependencies must be included.
 See `SampleSelectionDialog` for a prototypical example. But there are several similar ones.
 
-Note that within the scope of these component-level providers, the root instance is invisible. This is a problem when
-the goal of the dialog is to mutate a root instance. Adding a sketch to the root bridge is an example. How to get
-access? Games with injection tokens would work. But the simplest solution I could find is `RootBridgeService` which is
+Note that within the scope of these component-level providers, the root instance is invisible by default. This is a
+problem when the goal of the dialog is to mutate a root instance. Adding a sketch to the root bridge is an example. How
+to get access? Injection tokens could work. But the simplest solution seems to be a 2-line `RootBridgeService` which is
 just a wrapper for a reference. When injected within component provider scope, it still refers to the root instance we
 need.
+
+# Dependencies
+
+Reliance on external libraries is intended to be minimal in order to reduce maintenance forced by others. Yet, some
+features were not worth the cost of re-inventing the wheel:
+
+- [**jQWidgets**](https://www.jqwidgets.com/): The UI widget framework discussed above.
+- [**Orama (open source version)**](https://docs.orama.com/open-source): Full text search for Bridge Designer help.
+- [**three.js**](https://threejs.org/): A fairly thin abstraction layer over native WebGL.
+
+We thank the providers now and forever.

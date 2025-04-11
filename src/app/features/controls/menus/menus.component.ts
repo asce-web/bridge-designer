@@ -3,13 +3,14 @@ import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@a
 import { jqxMenuComponent, jqxMenuModule } from 'jqwidgets-ng/jqxmenu';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 import { ModifierMask, UiStateService } from '../management/ui-state.service';
+import { HelpTab } from '../../help/help-dialog/help-dialog.component';
 
 @Component({
-    selector: 'menus',
-    imports: [CommonModule, jqxMenuModule],
-    templateUrl: './menus.component.html',
-    styleUrl: './menus.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'menus',
+  imports: [CommonModule, jqxMenuModule],
+  templateUrl: './menus.component.html',
+  styleUrl: './menus.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MenusComponent implements AfterViewInit {
   @ViewChild('mainMenu') mainMenu!: jqxMenuComponent;
@@ -42,9 +43,9 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'back', this.eventBrokerService.designIterationBackRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'costCalculations', this.eventBrokerService.costReportRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'delete', this.eventBrokerService.deleteSelectionRequest);
-    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'designWindow', this.eventBrokerService.helpRequest, 'hlp_bridge_design_window');
+    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'designWindow', this.eventBrokerService.helpRequest, {topic: 'hlp_bridge_design_window' });
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'forward', this.eventBrokerService.designIterationForwardRequest);
-    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'howTo', this.eventBrokerService.helpRequest, 'hlp_how_to');
+    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'howTo', this.eventBrokerService.helpRequest, {topic: 'hlp_how_to'});
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'loadSample', this.eventBrokerService.loadSampleRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'loadTemplate', this.eventBrokerService.loadTemplateRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'loadTestResults', this.eventBrokerService.analysisReportRequest);
@@ -52,6 +53,7 @@ export class MenusComponent implements AfterViewInit {
     // TODO: Make this actually open a bridge file.
     // this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'open', this.eventBrokerService.memberEditRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'redo', this.eventBrokerService.redoRequest);
+    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'searchHelp', this.eventBrokerService.helpRequest, {topic: 'hlp_how_to', tab: HelpTab.SEARCH});
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'selectAll', this.eventBrokerService.selectAllRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'sizedown', this.eventBrokerService.memberSizeDecreaseRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'sizeup', this.eventBrokerService.memberSizeIncreaseRequest);

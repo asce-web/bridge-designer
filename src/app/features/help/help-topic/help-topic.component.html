@@ -82,7 +82,7 @@
   <p>
     The bridge <topic-popup name="glos_abutment">abutments</topic-popup>,
     <topic-popup name="glos_floor_beams">floor beams</topic-popup>,
-    <topic-popup name="glos_concrete">concrete</topic-popup>&ngsp;<topic-popup name="glos_deck">deck</topic-popup>,
+    <topic-popup name="glos_concrete">concrete</topic-popup>&nbsp;<topic-popup name="glos_deck">deck</topic-popup>,
     <topic-popup name="glos_asphalt">asphalt</topic-popup> road surface, and high-water level are displayed on the
     drawing board at all times. (See
     <topic-link name="hlp_component_parts">component parts of a truss bridge</topic-link> for more information about
@@ -90,9 +90,9 @@
   </p>
   <p>
     The drawing board is covered by a <topic-popup name="glos_drawing_grid">drawing grid</topic-popup>. (You can't see
-    it, but it's there.) When you draw joints to create your structural model, your mouse "snaps" to the grid line
-    intersections, which are called <topic-popup name="glos_snap_points">snap points</topic-popup>. Joints can only be
-    drawn at the snap points.
+    it, but it's there.) When you draw joints to create your structural model, your mouse &quot;snaps&quot; to the grid
+    line intersections, which are called <topic-popup name="glos_snap_points">snap points</topic-popup>. Joints can only
+    be drawn at the snap points.
   </p>
   <p>
     The drawing grid can be set to low, medium, or high resolution. Use the
@@ -150,7 +150,7 @@
   </p>
   <ol>
     <li>Two lanes of highway traffic, represented by one H25 truck in each lane.</li>
-    <li>A single 480 kN "permit loading," centered laterally on the roadway.</li>
+    <li>A single 480 kN &quot;permit loading,&quot; centered laterally on the roadway.</li>
   </ol>
   <p>
     In the first load case, with two traffic lanes, each of the two main trusses must carry the weight of one lane. Thus
@@ -159,7 +159,7 @@
   </p>
   <p>
     In the second case, with a single truck centered on the roadway, each of the two main trusses must carry one-half of
-    the total truck weight. Thus the Permit Loading used in the
+    the total truck weight. Thus the permit loading used in the
     <span class="bd-emph">Bridge Designer</span> consists of 240 kN, with 120 kN applied at each axle location.
   </p>
   <p>In both cases, the dynamic load allowance is 1.33.</p>
@@ -193,7 +193,7 @@
       applied to the bridge.
     </li>
     <li>
-      Move the <span class="b">animation speed slider</span> to change the speed of theh truck. These vary from 0.5 to
+      Move the <span class="b">animation speed slider</span> to change the speed of the truck. These vary from 0.5 to
       30km per hour.
     </li>
     <li>Press the <span class="b">drop button</span> to reveal and hide additional animation controls.</li>
@@ -254,8 +254,8 @@
   <p>When you pause, you must use the play button to restart.</p>
   <p>
     The smoothness of the animation depends on the speed of your computer's processor and graphics system. If the motion
-    looks too "jerky," try turning off some of the animation features. Turning off shadows is likely to have the
-    greatest effect.
+    looks too &quot;jerky,&quot; try turning off some of the animation features. Turning off shadows is likely to have
+    the greatest effect.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_animation_view_controls">
@@ -1098,8 +1098,9 @@
       <span class="b">Structural safety</span>
       <p class="in1">
         The bridge will comply with the structural <topic-popup name="glos_safe">safety</topic-popup> provisions of the
-        1994 LRFD <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification. LRFD refers to "Load
-        and <topic-popup name="glos_resistance_factor">Resistance Factor</topic-popup> Design. It includes:
+        1994 LRFD <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification. LRFD refers to
+        &quot;Load and <topic-popup name="glos_resistance_factor">Resistance Factor</topic-popup> Design.&quot; It
+        includes:
       </p>
       <ol class="alpha">
         <li><topic-link name="hlp_material_densities">Material densities</topic-link></li>
@@ -1321,9 +1322,7 @@
       Select the <topic-popup name="hlp_member_tool">member tool</topic-popup> from the
       <topic-popup name="hlp_design_tools">design tools palette.</topic-popup>
     </li>
-    <li>
-      Position the mouse pointer over a joint. It will appear to &quot;pop&quot; to show it's ready to be connected.
-    </li>
+    <li>Position the mouse pointer over a joint. It will be highlighted to show it's ready to be connected.</li>
     <li>Click the left mouse button, and hold it down.</li>
     <li>
       Drag the mouse pointer to another joint, and release the button. A new member will be created from the first joint
@@ -1761,13 +1760,14 @@
       <span class="b">Click any block on the diagram for a detailed description of that particular step, or...</span>
     </li>
     <li>
-      <span class="b">Click here</span>
-      <topic-link name="hlp_select_project"
-        ><img
+      <topic-link name="hlp_select_project">
+        <span class="b">Click here</span>
+        <img
           alt=""
           src="img/help/gofwd.png"
-      />
-      <span class="b"> to browse through the design process, one step at a time.</span></topic-link>
+        />
+        <span class="b"> to browse through the design process, one step at a time.</span></topic-link
+      >
     </li>
   </ol>
   <p>
@@ -1868,7 +1868,6 @@
     /></map>
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_how_wpbd_works">
   <h1>How the bridge designer works</h1>
   <p>
@@ -1909,24 +1908,28 @@
   </ul>
   <p>
     The <span class="bd-emph">Bridge Designer</span> gives you complete flexibility to create designs using any shape or
-    configuration you want. Creating the design is fast and easy, so you can experiment with many different alternative
-    configurations as you work toward the best possible solution. The process you will use is quite similar to the
-    process used by practicing civil engineers as they design real structures. Indeed, the
+    configuration you want. Creating a design is quick, so you can experiment with many different alternative
+    configurations as you work toward the best possible one. The process you'll use is quite similar to the one used by
+    practicing civil engineers as they design real structures. Indeed, the
     <span class="bd-emph">Bridge Designer</span> itself is quite similar to the computer-aided design (CAD) software
-    used by practicing engineers, and it will help you in the same way that CAD software helps them--by taking care of
-    the heavy-duty mathematical calculations, so that you can concentrate on the creative part of the design process.
+    used by practicing engineers, and it will help you in the same way that CAD software helps them: by taking care of
+    the heavy-duty mathematical calculations, so you can concentrate on the creative part of the design process.
   </p>
   <p>Good luck!</p>
   <h2 class="btop">Notes and tips</h2>
   <p>
     To learn about how the <span class="bd-emph">Bridge Designer Cloud Edition</span> differs from earlier versions, see
-    " <topic-link name="hlp_whats_new">What's new in the Bridge Designer?</topic-link>."
+    &quot;<topic-link name="hlp_whats_new">What's new in the Bridge Designer?</topic-link>.&quot;
   </p>
   <p>
     The <span class="bd-emph">Bridge Designer</span> was developed by Brigadier General (Retired) Stephen Ressler. It
     was re-engineered (twice!) with open source by Brigadier General (Retired) Eugene Ressler. It is distributed freely
-    under provisions of the <topic-link name="http://www.gnu.org/licenses/gpl">GNU Public License</topic-link>, intended
-    solely for educational use.
+    under provisions of the
+    <a
+      href="http://www.gnu.org/licenses/gpl"
+      target="_blank"
+      >GNU Public License Version 3</a
+    >, intended solely for educational use.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_increase_member">
@@ -1937,12 +1940,12 @@
       src="img/help/btnsizeu.png"
     />
     Click the <span class="b">increase member size button</span> to increase the
-    <topic-popup name="glos_member_size">size</topic-popup> of currently selected member(s) to the next larger.
+    <topic-popup name="glos_member_size">size</topic-popup> of all currently selected members to the next larger.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
     The increase member size button is located on the
-    <topic-link name="hlp_toolbars">member properties toolbar.</topic-link>
+    <topic-link name="hlp_toolbars">member properties toolbar</topic-link>.
   </p>
   <p>
     If more than one member is selected, clicking this button will increase the size of
@@ -1967,22 +1970,23 @@
       alt="Joint tool"
       src="img/help/btnjoint.png"
     />
-    Use the <span class="b">Joint tool</span> to <topic-link name="hlp_draw_joint">draw joints</topic-link> as you
+    Use the <span class="b">joint tool</span> to <topic-link name="hlp_draw_joint">draw joints</topic-link> as you
     create your <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Joint tool is located on the <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup> It can
-    also be accessed from the <topic-link name="hlp_menu_bar">Tools menu.</topic-link>
+    The joint tool is located on the <topic-popup name="hlp_design_tools">design tools palette</topic-popup>. It's also
+    available in the <topic-link name="hlp_menu_bar">tools menu</topic-link>.
   </p>
   <p>
-    When the Joint tool is selected, the mouse pointer appears as a cross-hair
+    When the joint tool is selected, the mouse pointer appears as a cross-hair
     <img
       alt="Notes and tips"
       src="img/help/mpointer.png"
     />.
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_open_sample_design">
   <h1>Open a sample design</h1>
   <p>
@@ -2226,8 +2230,8 @@
   </p>
   <p>
     The Load Test button and the <topic-popup name="hlp_drawing_board_button">Drawing Board button</topic-popup> work
-    like "radio buttons." Only one of the two can be depressed at any given time. When you click one, it remains
-    depressed until you click the other.
+    like &quot;radio buttons.&quot; Only one of the two can be depressed at any given time. When you click one, it
+    remains depressed until you click the other.
   </p>
   <p></p>
 </ng-template>
@@ -2240,8 +2244,8 @@
   </p>
   <p>
     As the animation begins, your bridge is subjected to its own weight--the weight of the steel structural elements,
-    the <topic-popup name="glos_concrete">concrete</topic-popup>&ngsp;<topic-popup name="glos_deck">deck</topic-popup>,
-    and the <topic-popup name="glos_asphalt">asphalt</topic-popup>&ngsp;
+    the <topic-popup name="glos_concrete">concrete</topic-popup>&nbsp;<topic-popup name="glos_deck">deck</topic-popup>,
+    and the <topic-popup name="glos_asphalt">asphalt</topic-popup>&nbsp;
     <topic-popup name="glos_wearing_surface">wearing surface</topic-popup>. Once the self-weight is applied, the
     <topic-popup name="hlp_aashto_h20x44">AASHTO H25 truck</topic-popup> moves across the bridge from left to right. As
     the <topic-popup name="glos_loads">loads</topic-popup> are applied, the bridge bends downward. The
@@ -2372,8 +2376,8 @@
     <topic-popup name="glos_modulus_of_elasticity">modulus of elasticity</topic-popup>.
   </p>
   <p>
-    The "best" material often varies from structure to structure, and a given design may use more than one material.
-    You'll need to do some experimenting to determine which materials are best for your design.
+    The &quot;best&quot; material often varies from structure to structure, and a given design may use more than one
+    material. You'll need to do some experimenting to determine which materials are best for your design.
   </p>
   <p>
     To determine the actual numerical values of <topic-popup name="glos_yield_stress">yield stress</topic-popup>,
@@ -2637,7 +2641,7 @@
       <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup>
     </li>
     <li>
-      While holding down the left button of the mouse, "drag a box" around the
+      While holding down the left button of the mouse, &quot;drag a box&quot; around the
       <topic-popup name="glos_members">members</topic-popup> you want to select, then release the mouse button. All
       members that are entirely enclosed within the box will be selected.
     </li>
@@ -2664,7 +2668,7 @@
   </ol>
   <h2>Shift-Click in the Member List (block selection):</h2>
   <ol>
-    <li>In the Member List, click one member to start a "block."</li>
+    <li>In the Member List, click one member to start a &quot;block.&quot;</li>
     <li>Hold down the Shift key on your keyboard.</li>
     <li>
       In the Member List, click a second member to complete the block. All members listed between the first and second
@@ -2673,7 +2677,7 @@
   </ol>
   <h2>Click-and-Drag in the Member List (block selection):</h2>
   <ol>
-    <li>In the Member List, click one member to start a "block."</li>
+    <li>In the Member List, click one member to start a &quot;block.&quot;</li>
     <li>Drag up or down and then release to select the desired block.</li>
   </ol>
   <h2>Select All:</h2>
@@ -3013,7 +3017,7 @@
   </p>
   <p class="btop">
     Once your <topic-popup name="glos_structural_model">structural model</topic-popup> has no
-    <topic-popup name="glos_unsafe">unsafe</topic-popup>&ngsp;<topic-popup name="glos_members">members</topic-popup>,
+    <topic-popup name="glos_unsafe">unsafe</topic-popup>&nbsp;<topic-popup name="glos_members">members</topic-popup>,
     your design is <span class="i">successful</span>. However, your design is not <span class="i">optimum</span> until
     you minimize its cost. The first step in optimizing your design is to minimize the cost of your
     <span class="i">current truss configuration</span> by optimizing the
@@ -3136,9 +3140,9 @@
     tabular format at the bottom of the page.
   </p>
   <p>
-    Many bridges will look best printed in "landscape" mode. That's with the bridge oriented across the longest
-    dimension of the page. With most web browsers, you'll be able to choose this in the dialog that appears immediately
-    after pressing Print.
+    Many bridges will look best printed in &quot;landscape&quot; mode. That's with the bridge oriented across the
+    longest dimension of the page. With most web browsers, you'll be able to choose this in the dialog that appears
+    immediately after pressing Print.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_print_load_test">
@@ -3419,10 +3423,10 @@
       <topic-link name="hlp_compressive_strength">compressive strength</topic-link> of the member, in
       <topic-popup name="glos_kn">kN</topic-popup>
     </li>
-    <li>compression status ("OK" or "Buckles")</li>
+    <li>compression status (&quot;OK&quot; or &quot;buckles&quot;)</li>
     <li>absolute maximum <topic-popup name="glos_tension">tension</topic-popup> force in the member, in kN</li>
     <li><topic-link name="hlp_tensile_strength">tensile strength</topic-link> of the member, in kN</li>
-    <li>tension status ("OK" or "Yields")</li>
+    <li>tension status (&quot;OK&quot; or &quot;yields&quot;)</li>
   </ul>
   <p>
     Use the Print button (on the right-hand side of the Load Test Results Report window) to print a copy of the report
@@ -4257,7 +4261,7 @@
   </p>
   <p>The triangular arrangement of members ensures that the truss structure is a rigid framework.</p>
   <p>
-    To fix an unstable truss, look for any "panel" of the
+    To fix an unstable truss, look for any &quot;panel&quot; of the
     <topic-popup name="glos_structural_model">structural model</topic-popup> that is not a triangle, then add one or
     more members to transform that panel into a series of interconnected triangular shapes.
   </p>
@@ -4284,8 +4288,8 @@
     panels in a stable truss. This is particularly true for complex truss configurations and for trusses with
     <topic-popup name="glos_arch_supports">arch supports</topic-popup>. In such cases, you probably won't be able to
     tell whether or not the truss is stable just by looking at it. The ultimate test for stability is to run the Load
-    Test. If the Load Test runs without displaying the "your structural model is unstable" warning, then your truss is
-    stable.
+    Test. If the Load Test runs without displaying the &quot;your structural model is unstable&quot; warning, then your
+    truss is stable.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_tensile_strength">
@@ -4473,12 +4477,12 @@
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    If you do not want to see the Tip of the Day dialog box every time you start up the program, uncheck the "Show Tips
-    at Startup" box .
+    If you do not want to see the Tip of the Day dialog box every time you start up the program, uncheck the &quot;show
+    tips at startup&quot; box .
   </p>
   <p>
-    To resume displaying the Tip of the Day at startup, click the Help menu, then click Tip of the Day, then check the
-    "Show Tips at Startup" box.
+    To resume displaying the tip of the day at startup, click the help menu, then click tip of the day. Finally, check
+    the &quot;show tips at startup&quot; box.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_title_bar">
@@ -4488,9 +4492,9 @@
       src="img/help/titlebar.png"
       alt="Title bar"
     />
-    The <span class="b">Title Bar</span> is the rectangular area at the top of the
-    <topic-link name="hlp_bridge_design_window">Bridge Design Window.</topic-link> It displays the words "Bridge
-    Designer," followed by the name of your current
+    The <span class="b">title bar</span> is the rectangular area at the top of the
+    <topic-link name="hlp_bridge_design_window">bridge design window.</topic-link> It displays the words &quot;Bridge
+    Designer,&quot; followed by the name of your current
     <topic-popup name="glos_bridge_design_file">bridge design file</topic-popup>.
   </p>
   <h2 class="btop">Notes and tips</h2>
@@ -4914,14 +4918,14 @@
   </ul>
   <p>Any action that can be undone can also be restored using redo.</p>
   <p>
-    The <span class="bd-emph">Bridge Designer</span> has "three-level undo." That is, you can only undo the three most
+    The <span class="bd-emph">Bridge Designer</span> allows 100 levels of undo. That is, you can undo the 100 most
     recent changes to your structural model.
   </p>
   <p>
     You can only undo changes made during the current
     <topic-link name="hlp_design_iteration">design iteration.</topic-link> To revert to a previous design iteration, use
-    the <topic-popup name="hlp_go_back">Go back button.</topic-popup> For a more detailed explanation, see
-    <topic-link name="hlp_undo_vs_go_back">What's the Difference Between Go Back and Undo?</topic-link>
+    the <topic-popup name="hlp_go_back">go back button.</topic-popup> For a more detailed explanation, see
+    <topic-link name="hlp_undo_vs_go_back">what's the difference between go back and undo?</topic-link>
   </p>
 </ng-template>
 <ng-template topic-name="hlp_view_animation_controls">
@@ -4935,9 +4939,9 @@
     />
     Click the <span class="b">View Animation Controls button</span> in the
     <topic-link name="hlp_menu_bar">View menu</topic-link> to display or hide the
-    <topic-link name="hlp_animation_controls">Animation Controls</topic-link>. This button functions as a "toggle." If
-    the Animation Controls is currently visible, clicking the button will hide it. If the controls are hidden, clicking
-    the button will display them.
+    <topic-link name="hlp_animation_controls">Animation Controls</topic-link>. This button functions as a
+    &quot;toggle.&quot; If the Animation Controls is currently visible, clicking the button will hide it. If the
+    controls are hidden, clicking the button will display them.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -4958,9 +4962,9 @@
   </p>
   <p>
     The <topic-link name="hlp_drawing_board">Drawing Board</topic-link> is covered by a grid. (You can't see it, but
-    it's there.) When you draw or move <topic-popup name="glos_joints">joints</topic-popup>, your mouse "snaps" to the
-    grid line intersections, which are called <topic-popup name="glos_snap_points">snap points</topic-popup>. Joints can
-    only be drawn at the snap points.
+    it's there.) When you draw or move <topic-popup name="glos_joints">joints</topic-popup>, your mouse
+    &quot;snaps&quot; to the grid line intersections, which are called
+    <topic-popup name="glos_snap_points">snap points</topic-popup>. Joints can only be drawn at the snap points.
   </p>
   <p>
     The Grid Resolution buttons are used to set the drawing grid to low, medium, or high resolution. At the
@@ -5004,9 +5008,9 @@
       src="img/help/btnmlist.png"
     />
     Click the <span class="b">View Member List button</span> to display or hide the
-    <topic-link name="hlp_member_list">Member List.</topic-link> This button functions as a "toggle." If the Member List
-    is currently visible, clicking the button will hide it. If the Member List is hidden, clicking the button will
-    display it.
+    <topic-link name="hlp_member_list">Member List.</topic-link> This button functions as a &quot;toggle.&quot; If the
+    Member List is currently visible, clicking the button will hide it. If the Member List is hidden, clicking the
+    button will display it.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -5024,9 +5028,9 @@
     />
     Click the <span class="b">View Member Numbers button</span> to display or hide the
     <topic-popup name="glos_member_numbers">member numbers</topic-popup> on the
-    <topic-link name="hlp_drawing_board">Drawing Board</topic-link>. This button functions as a "toggle." If the member
-    numbers are currently visible, clicking the button will hide them. If the member numbers are hidden, clicking the
-    button will display them.
+    <topic-link name="hlp_drawing_board">Drawing Board</topic-link>. This button functions as a &quot;toggle.&quot; If
+    the member numbers are currently visible, clicking the button will hide them. If the member numbers are hidden,
+    clicking the button will display them.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -5042,8 +5046,9 @@
       src="img/help/btnruler.png"
     />
     Click the <span class="b">View Rulers button</span> to display or hide the
-    <topic-link name="hlp_rulers">rulers.</topic-link> This button functions as a "toggle." If the rulers are currently
-    visible, clicking the button will hide them. If the rulers are hidden, clicking the button will display them.
+    <topic-link name="hlp_rulers">rulers.</topic-link> This button functions as a &quot;toggle.&quot; If the rulers are
+    currently visible, clicking the button will hide them. If the rulers are hidden, clicking the button will display
+    them.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -5077,8 +5082,8 @@
           opposite side of the truss.
         </p>
         <p>
-          The View Symmetry Guides button functions as a "toggle." If the guides are visible, clicking the button will
-          hide them. If the guides are hidden, clicking the button will display them.
+          The View Symmetry Guides button functions as a &quot;toggle.&quot; If the guides are visible, clicking the
+          button will hide them. If the guides are hidden, clicking the button will display them.
         </p>
       </td>
       <td><img src="img/help/symguides.png" /></td>
@@ -5109,9 +5114,9 @@
     />
     Click the <span class="b">View template button</span> to display or hide the current
     <topic-popup name="glos_template">template</topic-popup> on the
-    <topic-link name="hlp_drawing_board">Drawing Board.</topic-link> This button functions as a "toggle." If the
-    template is visible, clicking the button will hide it. If the template is hidden, clicking the button will display
-    it.
+    <topic-link name="hlp_drawing_board">Drawing Board.</topic-link> This button functions as a &quot;toggle.&quot; If
+    the template is visible, clicking the button will hide it. If the template is hidden, clicking the button will
+    display it.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -5135,9 +5140,9 @@
       src="img/help/btntitle.png"
     />
     Click the <span class="b">View title block button</span> to display or hide the
-    <topic-link name="hlp_titleblock">Title block</topic-link>. This button functions as a "toggle." If the Title Block
-    is currently visible, clicking the button will hide it. If the Title Block is hidden, clicking the button will
-    display it.
+    <topic-link name="hlp_titleblock">Title block</topic-link>. This button functions as a &quot;toggle.&quot; If the
+    Title Block is currently visible, clicking the button will hide it. If the Title Block is hidden, clicking the
+    button will display it.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -5161,9 +5166,9 @@
     />
     Click the <span class="b">View Design Tools button</span> in the
     <topic-link name="hlp_menu_bar">View menu</topic-link> to display or hide the
-    <topic-link name="hlp_design_tools">Design Tools Palette</topic-link>. This button functions as a "toggle." If the
-    Design Tools Palette is currently visible, clicking the button will hide it. If the palette is hidden, clicking the
-    button will display it.
+    <topic-link name="hlp_design_tools">Design Tools Palette</topic-link>. This button functions as a
+    &quot;toggle.&quot; If the Design Tools Palette is currently visible, clicking the button will hide it. If the
+    palette is hidden, clicking the button will display it.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -5351,7 +5356,7 @@
   </p>
 </ng-template>
 <ng-template topic-name="glos_astm">
-  <h1>Astm</h1>
+  <h1>ASTM</h1>
   <p>
     The American Society for Testing Materials (ASTM) is a not-for-profit organization, through which manufacturers,
     consumers, researchers, and government officials write standards for the production, testing, and use of building
@@ -5682,10 +5687,10 @@
 <ng-template topic-name="glos_slenderness">
   <h1>Slenderness ratio</h1>
   <p>
-    The slenderness ratio is a number that describes the "thickness" of a member. Members that are long in comparison to
-    their <topic-popup name="hlp_crossxsection">cross-sections</topic-popup> have larger slenderness ratios than those
-    that are shorter. Very slender members are more likely to buckle or to be damaged during handling. A
-    <topic-link name="hlp_slenderness">slenderness check</topic-link> ensures that all members have slenderness ratios
+    The slenderness ratio is a number that describes the &quot;thickness&quot; of a member. Members that are long in
+    comparison to their <topic-popup name="hlp_crossxsection">cross-sections</topic-popup> have larger slenderness
+    ratios than those that are shorter. Very slender members are more likely to buckle or to be damaged during handling.
+    A <topic-link name="hlp_slenderness">slenderness check</topic-link> ensures that all members have slenderness ratios
     of no more than 300. Any overly slender member causes the bridge to fail.
   </p>
 </ng-template>
@@ -5703,9 +5708,9 @@
     A snap point is the intersection of two grid lines on the
     <topic-popup name="glos_drawing_grid">drawing grid</topic-popup>. Joints can only be drawn at the snap points; thus,
     when you draw or move <topic-popup name="glos_joints">joints</topic-popup> in your
-    <topic-popup name="glos_structural_model">structural model</topic-popup>, the mouse pointer automatically "snaps" to
-    the nearest snap point. The grid lines are actually not visible, but their locations are indicated by marks on the
-    vertical and horizontal rulers located on the left and bottom edges of the Drawing Board.
+    <topic-popup name="glos_structural_model">structural model</topic-popup>, the mouse pointer automatically
+    &quot;snaps&quot; to the nearest snap point. The grid lines are actually not visible, but their locations are
+    indicated by marks on the vertical and horizontal rulers located on the left and bottom edges of the Drawing Board.
   </p>
 </ng-template>
 <ng-template topic-name="glos_span">
@@ -5776,8 +5781,8 @@
 <ng-template topic-name="glos_symmetrical">
   <h1>Symmetrical</h1>
   <p>
-    The term "symmetrical" can apply to both a structure and its loading. In a symmetrical structure, the left-hand and
-    right-hand sides of the structure are exact mirror imges of each other. In a symmetrical loading, the
+    The term &quot;symmetrical&quot; can apply to both a structure and its loading. In a symmetrical structure, the
+    left-hand and right-hand sides of the structure are exact mirror imges of each other. In a symmetrical loading, the
     <topic-popup name="glos_loads">loads</topic-popup> applied on either side of the bridge centerline are identical.
   </p>
 </ng-template>

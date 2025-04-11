@@ -42,7 +42,7 @@ export class SlendernessFailDialogComponent implements AfterViewInit {
   }
 
   showSlendernessHelp(): void {
-    this.eventBrokerService.helpRequest.next({ origin: EventOrigin.SLENDERNESS_FAIL_DIALOG, data: 'hlp_slenderness' });
+    this.eventBrokerService.helpRequest.next({ origin: EventOrigin.SLENDERNESS_FAIL_DIALOG, data: {topic: 'hlp_slenderness' } });
   }
 
   ngAfterViewInit(): void {
