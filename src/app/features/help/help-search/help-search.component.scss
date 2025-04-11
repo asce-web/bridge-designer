@@ -12,6 +12,7 @@
 }
 
 .search-term-input input {
+  margin-top: 4px;
   width: calc(100% - 8px);
 }
 
@@ -22,4 +23,5 @@
 
 .results-label {
   padding-left: 4px;
+  padding-bottom: 4px;
 }
