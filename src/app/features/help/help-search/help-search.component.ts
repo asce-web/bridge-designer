@@ -3,13 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
-  Output,
   ViewChild,
 } from '@angular/core';
 import { HelpIndexService, HelpTopic } from '../indexer/help-index.service';
 import { jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
 import { Results } from '@orama/orama';
+import { CurrentTopicService } from '../current-topic.service';
 
 @Component({
   selector: 'help-search',
@@ -20,13 +19,13 @@ import { Results } from '@orama/orama';
 })
 export class HelpSearchComponent {
   private static readonly NOTHING_YET = [{ topic: '', title: 'Nothing so far...' }];
-  @Output() readonly onSelect = new EventEmitter<string>();
   @ViewChild('searchTermInput') searchTermInput!: ElementRef<HTMLInputElement>;
 
   source: any = HelpSearchComponent.NOTHING_YET;
 
   constructor(
     private readonly changeDetector: ChangeDetectorRef,
+    private readonly currentTopicService: CurrentTopicService,
     private readonly helpIndexService: HelpIndexService,
   ) {}
 
@@ -43,15 +42,15 @@ export class HelpSearchComponent {
       this.source =
         result.hits.length === 0
           ? HelpSearchComponent.NOTHING_YET
-          : result.hits.map(hit => ({ topic: hit.id, title: hit.document.title }));
+          : result.hits.map(hit => ({ topicId: hit.id, title: hit.document.title }));
     }
     this.changeDetector.detectChanges();
   }
 
   handleSearchResultsSelect(event: any) {
-    const topic: string = event.args.item.originalItem.topic;
-    if (topic.length) {
-      this.onSelect.emit(topic);
+    const topicId: string | undefined = event.args.item.originalItem.topicId;
+    if (topicId?.length) {
+      this.currentTopicService.goToTopicId(topicId);
     }
   }
 }

@@ -14,13 +14,12 @@
 
 /** Migrated from css written by a ~2010 JavaHelp tool called Helen. */
 p {
-  font-size: 12pt;
   margin-top: 5px;
   margin-bottom: 5px;
 }
 
 h1 {
-  font-size: 16pt;
+  font-size: 12pt;
   font-weight: bold;
   margin-top: 0px;
   margin-bottom: 5px;
@@ -36,14 +35,13 @@ h1 {
 }
 
 h2 {
-  font-size: 14pt;
+  font-size: 12pt;
   font-weight: bold;
   margin-top: 8px;
   margin-bottom: 4px;
 }
 
 h3 {
-  font-size: 12pt;
   font-weight: bold;
   font-style: italic;
   margin-top: 8px;
@@ -51,14 +49,12 @@ h3 {
 }
 
 h3 {
-  font-size: 12pt;
   font-style: italic;
   margin-top: 8px;
   margin-bottom: 4px;
 }
 
 ul,ol {
-  font-size: 12pt;
   margin-top: 5px;
   margin-bottom: 0px;
   margin-left: 10px;

@@ -1,50 +1,31 @@
-import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  Output,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { jqxTreeComponent, jqxTreeModule } from 'jqwidgets-ng/jqxtree';
-import { HelpDialogComponent } from '../help-dialog/help-dialog.component';
+import { CurrentTopicService } from '../current-topic.service';
 
 @Component({
-    selector: 'help-nav-tree',
-    imports: [jqxTreeModule],
-    templateUrl: './help-nav-tree.component.html',
-    styleUrl: './help-nav-tree.component.scss'
+  selector: 'help-nav-tree',
+  imports: [jqxTreeModule],
+  templateUrl: './help-nav-tree.component.html',
+  styleUrl: './help-nav-tree.component.scss',
 })
-export class HelpNavTreeComponent implements AfterViewInit, OnChanges {
+export class HelpNavTreeComponent implements AfterViewInit {
   @ViewChild('navTree') navTree!: jqxTreeComponent;
 
-  @Input() selectedTopicName: string = HelpDialogComponent.DEFAULT_TOPIC_ID;
-  @Output() selectedTopicNameChange = new EventEmitter<string>();
+  constructor(private readonly currentTopicService: CurrentTopicService) {}
 
-  handleSelect(event: any) {
-    const newSelectedTopicName = event.args.element.id;
-    if (newSelectedTopicName === this.selectedTopicName) {
-      return;
-    }
-    this.selectedTopicName = newSelectedTopicName;
-    this.selectedTopicNameChange.emit(newSelectedTopicName);
+  handleSelect(event: any): void {
+    const topicId = event.args.element.id;
+    this.currentTopicService.goToTopicId(topicId);
   }
 
-  getTopicItem(topicId: string): Element | null {
-    return document.getElementById(topicId);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!this.navTree) {
-      return;
-    }
-    const item = this.getTopicItem(changes['selectedTopicName'].currentValue);
-    this.navTree.selectItem(item);
+  private selectTopicId(topicId: string): void {
+    const domItem = document.getElementById(topicId);
+    this.navTree.selectItem(domItem);
+    this.navTree.ensureVisible(domItem);
   }
 
   ngAfterViewInit(): void {
+    this.currentTopicService.currentTopicIdChange.subscribe(info => this.selectTopicId(info.topicId));
     const openFolders: NodeList = this.navTree.elementRef.nativeElement.querySelectorAll('li.open');
     openFolders.forEach(folder => this.navTree.expandItem(folder));
   }

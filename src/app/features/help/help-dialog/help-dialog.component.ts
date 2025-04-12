@@ -9,9 +9,9 @@ import { HelpTopicComponent } from '../help-topic/help-topic.component';
 import { HelpNavTreeComponent } from '../help-nav-tree/help-nav-tree.component';
 import { jqxToolBarComponent, jqxToolBarModule } from 'jqwidgets-ng/jqxtoolbar';
 import { WidgetHelper } from '../../../shared/classes/widget-helper';
-import { HelpEventService } from '../help-event.service';
 import { HelpSearchComponent } from '../help-search/help-search.component';
-import { HelpTopicListComponent } from "../help-topic-list/help-topic-list.component";
+import { HelpTopicListComponent } from '../help-topic-list/help-topic-list.component';
+import { CurrentTopicService } from '../current-topic.service';
 
 const enum Tools {
   BACK_TOPIC,
@@ -25,118 +25,83 @@ export const enum HelpTab {
 }
 
 @Component({
-    selector: 'help-dialog',
-    imports: [
+  selector: 'help-dialog',
+  imports: [
     HelpNavTreeComponent,
     HelpSearchComponent,
     HelpTopicComponent,
+    HelpTopicListComponent,
     jqxSplitterModule,
     jqxTabsModule,
     jqxToolBarModule,
     jqxTreeModule,
     jqxWindowModule,
     jqxButtonModule,
-    HelpTopicListComponent
-],
-    templateUrl: './help-dialog.component.html',
-    styleUrl: './help-dialog.component.scss'
+  ],
+  templateUrl: './help-dialog.component.html',
+  styleUrl: './help-dialog.component.scss',
 })
 export class HelpDialogComponent implements AfterViewInit {
-  public static readonly DEFAULT_TOPIC_ID = 'hlp_how_to';
-
   @ViewChild('dialog') dialog!: jqxWindowComponent;
   @ViewChild('helpSearch') helpSearch!: HelpSearchComponent;
   @ViewChild('helpTopic') helpTopic!: HelpTopicComponent;
   @ViewChild('navTree') navTree!: jqxTreeComponent;
   @ViewChild('tabs') tabs!: jqxTabsComponent;
   @ViewChild('toolBar') toolBar!: jqxToolBarComponent;
+  @ViewChild('topicList') topicList!: HelpTopicListComponent;
 
-  _currentTopicName: string = HelpDialogComponent.DEFAULT_TOPIC_ID;
   readonly tools: string = 'button button';
-  private backTopicStack: { topicName: string; scrollTop: number }[] = [];
-  private forwardTopicStack: { topicName: string; scrollTop: number }[] = [];
-  private isInternalGoTo: boolean = false;
   private tabIndex: number | undefined;
 
   constructor(
+    private readonly currentTopicService: CurrentTopicService,
     private readonly eventBrokerService: EventBrokerService,
-    private readonly helpEventService: HelpEventService,
   ) {}
 
   initTools = ((_type?: string, index?: number, tool?: any, _menuToolIninitialization?: boolean): any => {
     switch (index) {
       case Tools.BACK_TOPIC:
         WidgetHelper.initToolbarImgButton('Back one topic', 'img/back.png', tool);
-        tool.on('click', () => this.goBack());
+        tool.on('click', () => this.currentTopicService.goBack());
         break;
       case Tools.FORWARD_TOPIC:
         WidgetHelper.initToolbarImgButton('Forward one topic', 'img/play.png', tool);
-        tool.on('click', () => this.goForward());
+        tool.on('click', () => this.currentTopicService.goForward());
         break;
     }
   }).bind(this);
 
-  // Listen in on the 2-way binding to maintain stacks.
-  set currentTopicName(value: string) {
-    if (value !== this._currentTopicName && !this.isInternalGoTo) {
-      this.backTopicStack.push({ topicName: this._currentTopicName, scrollTop: this.helpTopic.scrollTop });
-      this.forwardTopicStack.length = 0;
-      this.enableAndDisableButtons();
-    }
-    this._currentTopicName = value;
-  }
-
-  get currentTopicName(): string {
-    return this._currentTopicName;
-  }
-
   handleDialogOpen() {
     this.helpSearch.clear();
-    this.tabs.selectedItem(this.tabIndex === undefined ? HelpTab.CONTENTS : this.tabIndex);
+    this.tabs.select(this.tabIndex === undefined ? HelpTab.CONTENTS : this.tabIndex);
   }
 
-  handleTopicSelect(topicName: string) {
-    this.currentTopicName = topicName;
-  }
-
-  private goBack() {
-    const top = this.backTopicStack.pop();
-    if (top) {
-      this.forwardTopicStack.push({ topicName: this._currentTopicName, scrollTop: this.helpTopic.scrollTop });
-      this.goToInternal(top.topicName, top.scrollTop);
-      this.enableAndDisableButtons();
+  handleTabSelected(event: any) {
+    if (event.args.item === HelpTab.TOPICS) {
+      setTimeout(() => this.topicList.refresh());
     }
-  }
-
-  private goForward() {
-    const top = this.forwardTopicStack.pop();
-    if (top) {
-      this.backTopicStack.push({ topicName: this._currentTopicName, scrollTop: this.helpTopic.scrollTop });
-      this.goToInternal(top.topicName, top.scrollTop);
-      this.enableAndDisableButtons();
-    }
-  }
-
-  /** Go to a topic without handling the resulting change event. */
-  private goToInternal(topicName: string, scrollTop: number) {
-    this.isInternalGoTo = true;
-    this.helpEventService.goToTopicRequest.next({ topicName, scrollTop });
-    this.isInternalGoTo = false;
   }
 
   private enableAndDisableButtons(): void {
     const tools = this.toolBar.getTools();
-    tools[Tools.BACK_TOPIC].tool.jqxButton({ disabled: this.backTopicStack.length === 0 });
-    tools[Tools.FORWARD_TOPIC].tool.jqxButton({ disabled: this.forwardTopicStack.length === 0 });
+    tools[Tools.BACK_TOPIC].tool.jqxButton({ disabled: !this.currentTopicService.hasBackTopics });
+    tools[Tools.FORWARD_TOPIC].tool.jqxButton({ disabled: !this.currentTopicService.hasForwardTopics });
   }
 
   ngAfterViewInit(): void {
+    this.currentTopicService.currentTopicIdChange.subscribe(_id => {
+      this.enableAndDisableButtons();
+    });
     this.eventBrokerService.helpRequest.subscribe(eventInfo => {
       if (eventInfo.data) {
-        this.goToInternal(eventInfo.data.topic, 0);
+        this.currentTopicService.goToTopicId(eventInfo.data.topic, { stack: null });
         this.tabIndex = eventInfo.data.tab;
       }
-      this.dialog.open();
+      if (this.dialog.isOpen()) {
+        this.handleDialogOpen();
+      } else {
+        this.dialog.open();
+      }
     });
     this.enableAndDisableButtons();
   }

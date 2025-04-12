@@ -18,8 +18,8 @@
       [width]="'calc(100% - 2px)'"
       [height]="'calc(100% - 2px)'"
       [panels]="[
-        { size: 320, min: 200, collapsible: true },
-        { size: 1024 - 320, min: 200, collapsible: false },
+        { size: 328, min: 200, collapsible: true },
+        { size: 1024 - 328, min: 200, collapsible: false },
       ]"
     >
       <div>
@@ -34,6 +34,7 @@
           #tabs
           [width]="'100%'"
           [height]="'calc(100% - 32px)'"
+          (onSelected)="handleTabSelected($event)"
         >
           <ul>
             <li>Contents</li>
@@ -41,26 +42,17 @@
             <li>Search</li>
           </ul>
           <div style="height: 100%">
-            <help-nav-tree
-              style="height: 100%"
-              [(selectedTopicName)]="currentTopicName"
-            ></help-nav-tree>
+            <help-nav-tree style="height: 100%"></help-nav-tree>
           </div>
           <div>
-            <help-topic-list (onSelect)="handleTopicSelect($event)"></help-topic-list>
+            <help-topic-list #topicList></help-topic-list>
           </div>
           <div style="height: 100%">
-            <help-search
-              #helpSearch
-              (onSelect)="handleTopicSelect($event)"
-            ></help-search>
+            <help-search #helpSearch></help-search>
           </div>
         </jqxTabs>
       </div>
-      <help-topic
-        #helpTopic
-        [(visibleTopicName)]="currentTopicName"
-      ></help-topic>
+      <help-topic #helpTopic></help-topic>
     </jqxSplitter>
   </div>
 </jqxWindow>

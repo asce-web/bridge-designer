@@ -12,448 +12,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' that writes and publishes design codes for all highway bridges in the United States.'
   },
   {
-    id: 'glos_abutment',
-    title: 'Abutment',
-    text: 'An abutment is a stone or concrete wall that supports one end of a bridge span . The abutment also a' +
-          'cts as a retaining wall, holding back the earth embankments at the approaches to the bridge. An abut' +
-          'ment is part of the substructure of a bridge.'
-  },
-  {
-    id: 'glos_anchorages',
-    title: 'Anchorages',
-    text: 'An anchorage is a foundation structure to which the cables of a suspension bridge are connected. Bec' +
-          'ause the cables support most of the weight of a suspension bridge, anchorages are generally very mas' +
-          'sive and often extend far below the surface of the earth. In the Bridge Designer, anchorages are rep' +
-          'resented by pinned supports.'
-  },
-  {
-    id: 'glos_arch_abutments',
-    title: 'Arch abutments',
-    text: 'In the Bridge Designer, arch abutments are substructure elements that use arch supports to hold up t' +
-          'he bridge and transmit its weight to the soil below.'
-  },
-  {
-    id: 'glos_arch_supports',
-    title: 'Arch supports',
-    text: 'Arch supports consist of a pin at each end of the span . Arch supports allow for no lateral movement' +
-          ' of the bridge and thus provide more restraint than simple supports .'
-  },
-  {
-    id: 'glos_asphalt',
-    title: 'Asphalt',
-    text: 'Asphalt is a mixture of gravel and bitumen, a by-product of the petroleum refining process. Asphalt ' +
-          'is commonly used as a pavement and as a wearing surface for bridge decks.'
-  },
-  {
-    id: 'glos_astm',
-    title: 'ASTM',
-    text: 'The American Society for Testing Materials (ASTM) is a not-for-profit organization, through which ma' +
-          'nufacturers, consumers, researchers, and government officials write standards for the production, te' +
-          'sting, and use of building materials. ASTM standards ensure that all materials have uniformly unders' +
-          'tood engineering properties and an appropriate level of quality.'
-  },
-  {
-    id: 'glos_bearing',
-    title: 'Bearing',
-    text: 'A bearing is another word for a support. Supports are joints at which a structure is attached to its' +
-          ' foundation.'
-  },
-  {
-    id: 'glos_bridge_design_file',
-    title: 'Bridge design file',
-    text: 'A bridge design file is a specially formatted text file created by the Bridge Designer to save a bri' +
-          'dge design for future use.'
-  },
-  {
-    id: 'glos_buckling',
-    title: 'Buckling',
-    text: 'Buckling is the principal failure mode of a member that is loaded in compression . When a member buc' +
-          'kles, it bends sideways as it is compressed axially. The failure is usually sudden and catastrophic.' +
-          ' Members that are long and slender are particularly susceptible to buckling.'
-  },
-  {
-    id: 'glos_cable_anchorages',
-    title: 'Cable anchorages',
-    text: 'A cable anchorage is a foundation structure to which the cables of a suspension bridge are connected' +
-          '. Because the cables support most of the weight of a suspension bridge, anchorages are generally ver' +
-          'y massive and often extend far below the surface of the earth. In the Bridge Designer, cable anchora' +
-          'ges are represented by pinned supports.'
-  },
-  {
-    id: 'glos_chords',
-    title: 'Chords',
-    text: 'Chords are the main horizontal load-carrying members of a truss. In a truss bridge, the top chords n' +
-          'ormally carry compression , while the bottom chords normally carry tension'
-  },
-  {
-    id: 'glos_client',
-    title: 'Client',
-    text: 'A client is a person or organization that hires a professional (like an engineer, a doctor, or a law' +
-          'yer) to perform a specialized service.'
-  },
-  {
-    id: 'glos_compression',
-    title: 'Compression',
-    text: 'Compression is an internal axial member force that tends to >>>shorten<<< a member.'
-  },
-  {
-    id: 'glos_concrete',
-    title: 'Concrete',
-    text: 'Concrete is a mixture of portland cement, sand, gravel, and water. When concrete hardens, it forms a' +
-          ' solid, rock-like substance that can be used to build many kinds of structures.'
-  },
-  {
-    id: 'glos_connections',
-    title: 'Connections',
-    text: 'A connection is an assembly of steel plates, bolts, and/or welds that attach two or more members tog' +
-          'ether in an actual structure. Connections in a real structure are represented by joints in a structu' +
-          'ral model .'
-  },
-  {
-    id: 'glos_cut',
-    title: 'Cut',
-    text: 'A cut is an excavation that lowers the elevation of a roadway below the existing surface of the land' +
-          '.'
-  },
-  {
-    id: 'glos_deck',
-    title: 'Deck',
-    text: 'The deck is the floor of a bridge. It directly supports the vehicles and pedestrians that cross the ' +
-          'bridge. Bridge decks are usually made of reinforced concrete .'
-  },
-  {
-    id: 'glos_deck_truss',
-    title: 'Deck truss',
-    text: 'A deck truss is a truss with its deck is located at the top chord. Vehicles crossing deck trusses ar' +
-          'e supported above the trusses.'
-  },
-  {
-    id: 'glos_diagonals',
-    title: 'Diagonals',
-    text: 'Diagonals are truss members that are oriented diagonally. Usually they connect the top and bottom ch' +
-          'ords together.'
-  },
-  {
-    id: 'glos_displacement',
-    title: 'Displacement',
-    text: 'A displacement is the movement of a joint that occurs when loads are applied to the structure.'
-  },
-  {
-    id: 'glos_drawing_grid',
-    title: 'Drawing grid',
-    text: 'The drawing grid is like a piece of graph paper on your Drawing Board. The grid is made up of two se' +
-          'ts of parallel lines, one horizontal and one vertical. The lines are spaced 0.25, 0.5, or 1.0 meters' +
-          ' apart, depending on the current grid resolution setting. The intersections of the grid lines are ca' +
-          'lled snap points . The grid lines are not visible, but their locations are indicated by the marks on' +
-          ' the vertical and horizontal rulers located on the left and bottom edges of the Drawing Board.'
-  },
-  {
-    id: 'glos_dynamic_load_allowance',
-    title: 'Dynamic load allowance',
-    text: 'The Dynamic Load Allowance is a factor used in bridge design to represent the effect of moving loads' +
-          ' . The Bridge Designer uses a Dynamic Load Allowance of 33%. This means that a moving truck causes 3' +
-          '3% more force in the bridge members than a stationary truck would cause.'
-  },
-  {
-    id: 'glos_floor_beams',
-    title: 'Floor beams',
-    text: 'Floor beams are transverse members that support the bridge deck and transmit loads from the deck to ' +
-          'the joints of the main trusses.'
-  },
-  {
-    id: 'glos_footing',
-    title: 'Footing',
-    text: 'A footing is the base of an abutment or pier --the portion a foundation that rests directly on the s' +
-          'oil and transmits load from the structure to the soil.'
-  },
-  {
-    id: 'glos_forces',
-    title: 'Forces',
-    text: 'A force is a push or a pull. Weight is a common example of a force. Force is measured in pounds (in ' +
-          'the U.S. system of measurement) or newtons (in the SI system). In the Bridge Designer, all forces ar' +
-          'e reported in kilonewtons (kN).'
-  },
-  {
-    id: 'glos_joints',
-    title: 'Joints',
-    text: 'A joint is a point at which the ends of two or more members are connected together. In a truss, a jo' +
-          'int is assumed to act like a frictionless pin or hinge; it does not prevent the connected members fr' +
-          'om rotating with respect to each other.'
-  },
-  {
-    id: 'glos_kilonewton',
-    title: 'Kilonewton',
-    text: 'A kilonewton (kN) is a measurement of force in the SI (metric) system. A kilonewton is 1000 newtons.'
-  },
-  {
-    id: 'glos_kn',
-    title: 'kN',
-    text: `kN is the abbreviation for kilonewton , a metric unit of force. It's equivalent to about 225 pounds.`
-  },
-  {
-    id: 'glos_load_factors',
-    title: 'Load factors',
-    text: 'A load factor is a number (normally greater than 1) which is multiplied by a design load in order to' +
-          ' represent an extreme loading experienced by a structure. For example, the load factor 1.75 is multi' +
-          'plied by the standard AASHTO H25 Truck Loading to represent an extremely heavy truck. In fact, it re' +
-          'presents the heaviest truck that might reasonably be expected to cross the bridge in its lifetime. D' +
-          'ifferent kinds of loads have different load factors, because some loads are more unpredictable than ' +
-          'others. For example, the weight of the bridge is more predictable than the weight of a heavy truck, ' +
-          'so the load factor for bridge weight is much lower.'
-  },
-  {
-    id: 'glos_load_test',
-    title: 'Load test',
-    text: 'In the Bridge Designer, the load test is a simulated test of how well your design would perform if i' +
-          't were built and placed into service. In the load test, your bridge is subjected to its own self-wei' +
-          'ght and to the weight of a standard AASHTO H25 truck loading, and every member in the structural mod' +
-          'el is checked for structural safety .'
-  },
-  {
-    id: 'glos_loads',
-    title: 'Loads',
-    text: 'Loads are forces applied to a structure. On a highway bridge, the loads include the weight of vehicl' +
-          'es that cross the bridge, the weight of the bridge itself, and, in some cases, the weight of snow an' +
-          'd ice on the structure, and the forces caused by high winds and earthquakes.'
-  },
-  {
-    id: 'glos_mass_density',
-    title: 'Mass density',
-    text: 'The mass density of a material is its mass per unit volume. The mass density of steel is significant' +
-          'ly higher than that of concrete or asphalt .'
-  },
-  {
-    id: 'glos_member_force',
-    title: 'Member force',
-    text: 'The member force is the internal force developed in a member as a result of loads applied to the str' +
-          'ucture. The member force can be either tension or compression .'
-  },
-  {
-    id: 'glos_member_numbers',
-    title: 'Member numbers',
-    text: 'Every member in your structural model has a member number. The numbers are assigned in the order tha' +
-          't you create the members . They have no other physical significance. Member numbers are used only fo' +
-          'r reference--member properties and load test results are reported by member number in the Member Lis' +
-          't.'
-  },
-  {
-    id: 'glos_member_properties',
-    title: 'Member properties',
-    text: 'The properties of a member are (1) the material it is made of, (2) the type of cross-section, and (3' +
-          ') the member size .'
-  },
-  {
-    id: 'glos_member_size',
-    title: 'Member size',
-    text: 'The size of a member is represented by the dimensions of its cross-section, in millimeters.'
-  },
-  {
-    id: 'glos_members',
-    title: 'Members',
-    text: 'Members are the individual structural elements that make up a truss. Members are connected to each o' +
-          'ther at joints .'
-  },
-  {
-    id: 'glos_modulus_of_elasticity',
-    title: 'Modulus of elasticity',
-    text: `The modulus of elasticity is a measure of a material's stiffness--its resistance to deformation. A m` +
-          'aterial with a high modulus of elasticity deforms very little when loaded. Modulus of elasticity is ' +
-          'represented by the symbol E and is expressed in units of force per unit area.'
-  },
-  {
-    id: 'glos_moment_of_inertia',
-    title: 'Moment of inertia',
-    text: `The moment of inertia is a measure of a member's resistance to bending and buckling . It is a functi` +
-          'on only of the shape and dimensions of the cross-section. Moment of inertia is represented by the sy' +
-          'mbol I and is expressed in units of length, raised to the 4th power.'
-  },
-  {
-    id: 'glos_pier',
-    title: 'Pier',
-    text: 'A pier is a part of a bridge substructure that provides intermediate support for a multi-span bridge' +
-          '.'
-  },
-  {
-    id: 'glos_reinforced_concrete',
-    title: 'Reinforced concrete',
-    text: 'Reinforced concrete is concrete with steel reinforcing rods embedded inside it for added strength. C' +
-          'oncrete is very strong in compression , but comparatively weak in tension . The reinforcing bars can' +
-          ' substantially increase the ability of reinforced concrete to carry tension.'
-  },
-  {
-    id: 'glos_resistance_factor',
-    title: 'Resistance factor',
-    text: 'A resistance factor is a dimensionless number used in the calculation of tensile strength and compre' +
-          'ssive strength for structural members . The resistance factor provides a margin of safety for the de' +
-          'sign. It accounts for uncertainty in material strength, member dimensions, and construction quality.' +
-          ' A resistance factor is always less than or equal to 1.'
-  },
-  {
-    id: 'glos_safe',
-    title: 'Safe',
-    text: 'A member is safe when the internal member force is less than the strength of the member, in both ten' +
-          'sion and compression .'
-  },
-  {
-    id: 'glos_session',
-    title: 'Session',
-    text: 'You initiate a new session anytime you start new design, load a sample design, or open an existing b' +
-          'ridge design file . Within a given session, all of your design iterations are preserved. You can rev' +
-          'ert to a previous design iteration at any time during the session by clicking the Go back button.'
-  },
-  {
-    id: 'glos_simple_supports',
-    title: 'Simple supports',
-    text: 'Simple supports consist of a pin at one end of the span and a roller at the other end. The roller al' +
-          'lows for lateral expansion and contraction of the bridge, due to loads and temperature changes. In t' +
-          'he Bridge Designer, standard abutments use simple supports.'
-  },
-  {
-    id: 'glos_site_cost',
-    title: 'Site cost',
-    text: 'In the Bridge Designer, the site cost includes the cost of the substructure (the abutments and piers' +
-          ' that support the bridge) and the cost of the concrete deck . The site cost must be added to the tru' +
-          'ss cost to determine the total project cost.'
-  },
-  {
-    id: 'glos_slenderness',
-    title: 'Slenderness ratio',
-    text: 'The slenderness ratio is a number that describes the "thickness" of a member. Members that are long ' +
-          'in comparison to their cross-sections have larger slenderness ratios than those that are shorter. Ve' +
-          'ry slender members are more likely to buckle or to be damaged during handling. A slenderness check e' +
-          'nsures that all members have slenderness ratios of no more than 300. Any overly slender member cause' +
-          's the bridge to fail.'
-  },
-  {
-    id: 'glos_slope',
-    title: 'Slope',
-    text: 'The slope of a roadway or embankment is a measure of its steepness, expressed as a ratio of vertical' +
-          ' distance to horizontal distance. For example, a river bank with a slope of 2:1 rises 2 meters for e' +
-          'very 1 meter of horizontal distance.'
-  },
-  {
-    id: 'glos_snap_points',
-    title: 'Snap points',
-    text: 'A snap point is the intersection of two grid lines on the drawing grid . Joints can only be drawn at' +
-          ' the snap points; thus, when you draw or move joints in your structural model , the mouse pointer au' +
-          'tomatically "snaps" to the nearest snap point. The grid lines are actually not visible, but their lo' +
-          'cations are indicated by marks on the vertical and horizontal rulers located on the left and bottom ' +
-          'edges of the Drawing Board.'
-  },
-  {
-    id: 'glos_span',
-    title: 'Span',
-    text: 'The span of a bridge is its length from support to support.'
-  },
-  {
-    id: 'glos_standard_abutments',
-    title: 'Standard abutments',
-    text: 'In the Bridge Designer, standard abutments are substructure elements that use simple supports to hol' +
-          'd up the bridge and transmit its weight to the soil below.'
-  },
-  {
-    id: 'glos_structural_analysis',
-    title: 'Structural analysis',
-    text: 'A structural analysis is a mathematical analysis of a structural model , to determine all of the mem' +
-          'bers forces resulting from a given set of loads . The Bridge Designer uses a structural analysis for' +
-          'mulation called the Direct Stiffness Method.'
-  },
-  {
-    id: 'glos_structural_model',
-    title: 'Structural model',
-    text: 'A structural model is a mathematical idealization of an actual structure. The model allows us to pre' +
-          'dict how the actual structure will behave when it is loaded. A structural model of a truss has the f' +
-          'ollowing idealized characteristics: It is composed of members , interconnected at joints . Each memb' +
-          'er is connected to exactly two joints, one at each end. The joints are assumed to act like hinges; t' +
-          'hat is, they hold the members together, but do not prevent the ends of the members from rotating wit' +
-          'h respect to each other. The members only carry axial force--either compression or tension . They do' +
-          ' not bend. Loads can be applied to the structure only at the joints. Supports can be placed only at ' +
-          'the joints.'
-  },
-  {
-    id: 'glos_substructure',
-    title: 'Substructure',
-    text: 'The substructure is the foundation of a bridge. It consists of the abutments and piers that support ' +
-          'the bridge and transmit its weight to the earth below.'
-  },
-  {
-    id: 'glos_supports',
-    title: 'Supports',
-    text: 'A support is a joint at which a structure is attached to its foundation. A truss bridge can have two' +
-          ' different types of supports: (1) pinned supports, which restrain both horizontal and vertical movem' +
-          'ent of the associated joint, and (2) roller supports, which restrain vertical movement but allow hor' +
-          'izontal expansion of the structure.'
-  },
-  {
-    id: 'glos_symmetrical',
-    title: 'Symmetrical',
-    text: 'The term "symmetrical" can apply to both a structure and its loading. In a symmetrical structure, th' +
-          'e left-hand and right-hand sides of the structure are exact mirror imges of each other. In a symmetr' +
-          'ical loading, the loads applied on either side of the bridge centerline are identical.'
-  },
-  {
-    id: 'glos_template',
-    title: 'Template',
-    text: 'In the Bridge Designer, a template is a diagram depicting a standard truss configuration. If you loa' +
-          'd a template, it is displayed on the Drawing Board in light grey dotted lines. The template will sho' +
-          'w you where to locate joints and members to create a stable truss design.'
-  },
-  {
-    id: 'glos_tension',
-    title: 'Tension',
-    text: 'Tension is an internal axial member force that tends to <<<lengthen>>> a member.'
-  },
-  {
-    id: 'glos_through_truss',
-    title: 'Through truss',
-    text: 'A through truss is a truss with its deck located at the bottom chord. On a through truss, vehicles t' +
-          'russ pass between the two main trusses as they cross the bridge.'
-  },
-  {
-    id: 'glos_unsafe',
-    title: 'Unsafe',
-    text: 'A member is unsafe when the internal member force exceeds the strength of the member. A member is un' +
-          'safe in tension if the maximum tension force exceeds the tensile strength. A member is unsafe in com' +
-          'pression if the maximum compression force exceeds the compressive strength.'
-  },
-  {
-    id: 'glos_verticals',
-    title: 'Verticals',
-    text: 'Verticals are truss members that are oriented vertically. Usually they connect the top and bottom ch' +
-          'ords together.'
-  },
-  {
-    id: 'glos_wearing_surface',
-    title: 'Wearing surface',
-    text: 'A wearing surface is a layer of pavement material--normally asphalt or concrete --placed on top of a' +
-          ' bridge deck to protect the deck from being damaged by automobile traffic.'
-  },
-  {
-    id: 'glos_yield_stress',
-    title: 'Yield stress',
-    text: 'The yield stress is the strength of a metal. It is the force per unit area at which the metal fails ' +
-          'by yielding .'
-  },
-  {
-    id: 'glos_yielding',
-    title: 'Yielding',
-    text: 'Yielding is one possible failure mode for a member made of metal. When a metallic material fails by ' +
-          'yielding, it undergoes very large deformations (i.e., it stretches) without being able to carry any ' +
-          'additional load.'
-  },
-  {
-    id: 'glossary',
-    title: 'Glossary',
-    text: 'A AASHTO abutment anchorages arch abutments arch supports asphalt ASTM B bearing bridge design file ' +
-          'buckling C cable anchorages chords client compression concrete connections cut D deck deck truss dia' +
-          'gonals displacement drawing grid Dynamic Load Allowance F floor beams footing forces J joints K kilo' +
-          'newton kN L load factors load test loads M mass density member force member numbers member propertie' +
-          's member size members modulus of elasticity moment of inertia P pier R reinforced concrete resistanc' +
-          'e factor S safe session simple supports site cost slope snap points span standard abutments structur' +
-          'al analysis structural model substructure supports symmetrical T template tension through truss U un' +
-          'safe V verticals W wearing surface Y yield stress yielding'
-  },
-  {
     id: 'hlp_aashto_h20x44',
     title: 'AASHTO H25 truck loading',
     text: 'The AASHTO H25 loading is a hypothetical cargo truck, similar to the one pictured here. The truck ha' +
@@ -472,6 +30,21 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' truck centered on the roadway, each of the two main trusses must carry one-half of the total truck ' +
           'weight. Thus the permit loading used in the Bridge Designer consists of 240 kN, with 120 kN applied ' +
           'at each axle location. In both cases, the dynamic load allowance is 1.33.'
+  },
+  {
+    id: 'glos_abutment',
+    title: 'Abutment',
+    text: 'An abutment is a stone or concrete wall that supports one end of a bridge span . The abutment also a' +
+          'cts as a retaining wall, holding back the earth embankments at the approaches to the bridge. An abut' +
+          'ment is part of the substructure of a bridge.'
+  },
+  {
+    id: 'glos_anchorages',
+    title: 'Anchorages',
+    text: 'An anchorage is a foundation structure to which the cables of a suspension bridge are connected. Bec' +
+          'ause the cables support most of the weight of a suspension bridge, anchorages are generally very mas' +
+          'sive and often extend far below the surface of the earth. In the Bridge Designer, anchorages are rep' +
+          'resented by pinned supports.'
   },
   {
     id: 'hlp_animation_controls',
@@ -521,6 +94,32 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ridge. Drag the mouse left, right, up, and down to see all around.'
   },
   {
+    id: 'glos_arch_abutments',
+    title: 'Arch abutments',
+    text: 'In the Bridge Designer, arch abutments are substructure elements that use arch supports to hold up t' +
+          'he bridge and transmit its weight to the soil below.'
+  },
+  {
+    id: 'glos_arch_supports',
+    title: 'Arch supports',
+    text: 'Arch supports consist of a pin at each end of the span . Arch supports allow for no lateral movement' +
+          ' of the bridge and thus provide more restraint than simple supports .'
+  },
+  {
+    id: 'glos_asphalt',
+    title: 'Asphalt',
+    text: 'Asphalt is a mixture of gravel and bitumen, a by-product of the petroleum refining process. Asphalt ' +
+          'is commonly used as a pavement and as a wearing surface for bridge decks.'
+  },
+  {
+    id: 'glos_astm',
+    title: 'ASTM',
+    text: 'The American Society for Testing Materials (ASTM) is a not-for-profit organization, through which ma' +
+          'nufacturers, consumers, researchers, and government officials write standards for the production, te' +
+          'sting, and use of building materials. ASTM standards ensure that all materials have uniformly unders' +
+          'tood engineering properties and an appropriate level of quality.'
+  },
+  {
     id: 'hlp_auto_correct_errors',
     title: 'Auto-correct errors check box',
     text: 'Checking the menu entry at tools , auto-correct errors causes BD to attempt repairs of common minor ' +
@@ -529,24 +128,16 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' can be removed with undo after analysis is complete.'
   },
   {
-    id: 'hlp_bars_or_tubes',
-    title: 'Solid bar or hollow tube?',
-    text: 'As you optimize the member properties in your design, one of the most important decisions you will m' +
-          'ake is the selection of a cross-section type - solid bar or hollow tube - for each member in your st' +
-          'ructural model . In making this decision, you should consider the effect of the different cross-sect' +
-          'ions on member strength in both tension and compression . Compression members: For a given material,' +
-          ' hollow tubes are somewhat more expensive than solid bars, in dollars per kilogram. Compared with a ' +
-          'solid bar of the same mass , though, a hollow tube provides a much larger moment of inertia . Thus a' +
-          ' hollow tube resists buckling more efficiently than a solid bar. Its compressive strength is usually' +
-          ' substantially greater. For compression members , then, the increased compressive strength of a tube' +
-          ' often outweighs the increased cost per kilogram. It is usually most economical to use hollow tubes ' +
-          'for members that carry load primarily in compression. Tension members: For a given material, solid b' +
-          'ars are somewhat less expensive than hollow tubes, in dollars per kilogram. However, tensile strengt' +
-          'h depends only on the cross-sectional area of the member, not the moment of inertia. A solid bar and' +
-          ' a hollow tube of the same mass also have the same cross-sectional area. Therefore, both have the sa' +
-          'me tensile strength. Since the solid bar costs less, and the hollow tube offers no strength advantag' +
-          'e in tension, solid bars are usually the better choice for tension members. It is usually most econo' +
-          'mical to use solid bars for members that carry load primarily in tension.'
+    id: 'glos_bearing',
+    title: 'Bearing',
+    text: 'A bearing is another word for a support. Supports are joints at which a structure is attached to its' +
+          ' foundation.'
+  },
+  {
+    id: 'glos_bridge_design_file',
+    title: 'Bridge design file',
+    text: 'A bridge design file is a specially formatted text file created by the Bridge Designer to save a bri' +
+          'dge design for future use.'
   },
   {
     id: 'hlp_bridge_design_window',
@@ -556,6 +147,21 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'esign window. To learn more about each component, click the corresponding area on the diagram. Notes' +
           ` and tips It's best to keep the bridge design window maximized while working on your design. Reducin` +
           'g the window size makes drawing and editing your structural model more difficult.'
+  },
+  {
+    id: 'glos_buckling',
+    title: 'Buckling',
+    text: 'Buckling is the principal failure mode of a member that is loaded in compression . When a member buc' +
+          'kles, it bends sideways as it is compressed axially. The failure is usually sudden and catastrophic.' +
+          ' Members that are long and slender are particularly susceptible to buckling.'
+  },
+  {
+    id: 'glos_cable_anchorages',
+    title: 'Cable anchorages',
+    text: 'A cable anchorage is a foundation structure to which the cables of a suspension bridge are connected' +
+          '. Because the cables support most of the weight of a suspension bridge, anchorages are generally ver' +
+          'y massive and often extend far below the surface of the earth. In the Bridge Designer, cable anchora' +
+          'ges are represented by pinned supports.'
   },
   {
     id: 'hlp_change_member_properties',
@@ -590,6 +196,18 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'on, ease of maintenance, local availability of materials, and environmental impact.'
   },
   {
+    id: 'glos_chords',
+    title: 'Chords',
+    text: 'Chords are the main horizontal load-carrying members of a truss. In a truss bridge, the top chords n' +
+          'ormally carry compression , while the bottom chords normally carry tension'
+  },
+  {
+    id: 'glos_client',
+    title: 'Client',
+    text: 'A client is a person or organization that hires a professional (like an engineer, a doctor, or a law' +
+          'yer) to perform a specialized service.'
+  },
+  {
     id: 'hlp_component_parts',
     title: 'Component parts of a truss bridge',
     text: 'The major component parts of a typical truss bridge are: chords (top and bottom) verticals (also cal' +
@@ -598,6 +216,11 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'hese component parts are illustrated below: 3-dimensional view Elevation (side) view Notes and tips ' +
           'A number of standard truss configurations are commonly used in bridge structures. These are defined ' +
           'primarily by the geometry of their vertical and diagonal members.'
+  },
+  {
+    id: 'glos_compression',
+    title: 'Compression',
+    text: 'Compression is an internal axial member force that tends to >>>shorten<<< a member.'
   },
   {
     id: 'hlp_compressive_strength',
@@ -622,6 +245,19 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'unts for the fact that actual structural members are never perfectly straight. Because of their slig' +
           'ht crookedness, actual structural members buckle at an internal force that is (on average) about 12%' +
           ' lower than theory predicts.'
+  },
+  {
+    id: 'glos_concrete',
+    title: 'Concrete',
+    text: 'Concrete is a mixture of portland cement, sand, gravel, and water. When concrete hardens, it forms a' +
+          ' solid, rock-like substance that can be used to build many kinds of structures.'
+  },
+  {
+    id: 'glos_connections',
+    title: 'Connections',
+    text: 'A connection is an assembly of steel plates, bolts, and/or welds that attach two or more members tog' +
+          'ether in an actual structure. Connections in a real structure are represented by joints in a structu' +
+          'ral model .'
   },
   {
     id: 'hlp_cost',
@@ -720,6 +356,34 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'g a deck truss bridge are supported above its trusses.'
   },
   {
+    id: 'glos_cut',
+    title: 'Cut',
+    text: 'A cut is an excavation that lowers the elevation of a roadway below the existing surface of the land' +
+          '.'
+  },
+  {
+    id: 'hlp_truss_configuration',
+    title: 'Decide on a truss configuration',
+    text: 'How to design a bridge Go back one step Go forward one step Once you have selected a site configurat' +
+          'ion, you must decide on the overall configuration of your truss bridge. The Bridge Designer allows y' +
+          'ou to use any truss configuration, as long as the structural model you create is stable . Notes and ' +
+          'tips Developing a stable structural model can be tricky. We highly recommend that new and inexperien' +
+          'ced users start with a standard truss configuration. If you decide to use a standard truss configura' +
+          'tion, you can load and display a template to help you correctly draw the joints and members .'
+  },
+  {
+    id: 'glos_deck',
+    title: 'Deck',
+    text: 'The deck is the floor of a bridge. It directly supports the vehicles and pedestrians that cross the ' +
+          'bridge. Bridge decks are usually made of reinforced concrete .'
+  },
+  {
+    id: 'glos_deck_truss',
+    title: 'Deck truss',
+    text: 'A deck truss is a truss with its deck is located at the top chord. Vehicles crossing deck trusses ar' +
+          'e supported above the trusses.'
+  },
+  {
     id: 'hlp_decrease_member',
     title: 'Decrease member size button',
     text: 'Click the decrease member size button to decrease the size of currently selected member(s) to the ne' +
@@ -730,14 +394,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'vely. When you use the decrease member size button, the member size list is updated to reflect the c' +
           'hange. When you use the decrease member size button, the other two member properties lists - materia' +
           'l and cross-section type - do not change.'
-  },
-  {
-    id: 'hlp_delete',
-    title: 'Delete button',
-    text: 'Click the delete button to delete the currently selected joint or to delete the currently selected m' +
-          'ember(s). Notes and tips The delete button is located on the main toolbar. It can also be accessed f' +
-          'rom the edit menu. You can use the delete key on your keyboard to perform exactly the same function ' +
-          'as the delete button. You can also use the eraser tool to delete joints and members .'
   },
   {
     id: 'hlp_delete_joint',
@@ -766,28 +422,12 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ou accidentally delete a member, click the Undo button to restore it.'
   },
   {
-    id: 'hlp_design_iteration',
-    title: 'What is a design iteration?',
-    text: 'Anytime you make one or more changes to your structural model , then run the load test , you have pe' +
-          'rformed one design iteration . The Bridge Designer saves all design iterations created during the cu' +
-          'rrent session and provides the capability for you to revert to previous iterations at any time durin' +
-          'g the session. Notes and tips To revert to a previous design iteration, click the Go back button or ' +
-          'the Go To Iteration button. The current design iteration number is always displayed on the Main Tool' +
-          'bar . The number is incremented at the start of each new iteration--whenever you make the first chan' +
-          'ge to your structural model after a load test. Design iteration numbers are never duplicated, and th' +
-          'e design iterations themselves are never overwritten, even when you revert to a previous iteration. ' +
-          'For example, suppose you are working on design iteration 10 , then decide to go back to to iteration' +
-          ' 6. The design iteration number displayed on the Main Toolbar will change from 10 to 6 accordingly. ' +
-          'But as soon as you make any change to the structural model, the design iteration number will update ' +
-          'to 11, since you now have initiated a new iteration. In this way, all of your previous iterations--6' +
-          ', 7, 8, 9, and 10--are preserved for future use. You can see how design iterations are related using' +
-          ' the Tree View tab. Reverting to a previous design iteration can be particularly useful when you are' +
-          ' optimizing your design. The optimization process is never linear; it is always marked by dead ends ' +
-          'and unexpected outcomes. Some of your attempts at optimization will be successful and others will no' +
-          't. After an unsuccessful attempt, you can simply revert to a previous successful design iteration an' +
-          'd try again. Previous design iterations are only preserved until the end of the current session. Whe' +
-          'n you start a new design or exit the Bridge Designer , previous iterations are deleted. Thus the Des' +
-          'ign Iteration Browser can only display iterations created during the current session.'
+    id: 'hlp_delete',
+    title: 'Delete button',
+    text: 'Click the delete button to delete the currently selected joint or to delete the currently selected m' +
+          'ember(s). Notes and tips The delete button is located on the main toolbar. It can also be accessed f' +
+          'rom the edit menu. You can use the delete key on your keyboard to perform exactly the same function ' +
+          'as the delete button. You can also use the eraser tool to delete joints and members .'
   },
   {
     id: 'hlp_design_specifications',
@@ -856,6 +496,17 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'sign window . It contains the following tools for creating and modifying your structural model: Join' +
           't tool Member tool Select tool Eraser tool Notes and tips To move the design tools palette to a new ' +
           'location, click and drag the title bar of the palette.'
+  },
+  {
+    id: 'glos_diagonals',
+    title: 'Diagonals',
+    text: 'Diagonals are truss members that are oriented diagonally. Usually they connect the top and bottom ch' +
+          'ords together.'
+  },
+  {
+    id: 'glos_displacement',
+    title: 'Displacement',
+    text: 'A displacement is the movement of a joint that occurs when loads are applied to the structure.'
   },
   {
     id: 'hlp_draw_joint',
@@ -927,6 +578,22 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'Click the drawing board button to return to drawing board mode after a load test. Notes and tips The' +
           ' drawing board button is located on the main toolbar . It can also be accessed from the test menu . ' +
           'The drawing board button and load test button work as a pair. Only one can be pressed at a time.'
+  },
+  {
+    id: 'glos_drawing_grid',
+    title: 'Drawing grid',
+    text: 'The drawing grid is like a piece of graph paper on your Drawing Board. The grid is made up of two se' +
+          'ts of parallel lines, one horizontal and one vertical. The lines are spaced 0.25, 0.5, or 1.0 meters' +
+          ' apart, depending on the current grid resolution setting. The intersections of the grid lines are ca' +
+          'lled snap points . The grid lines are not visible, but their locations are indicated by the marks on' +
+          ' the vertical and horizontal rulers located on the left and bottom edges of the Drawing Board.'
+  },
+  {
+    id: 'glos_dynamic_load_allowance',
+    title: 'Dynamic load allowance',
+    text: 'The Dynamic Load Allowance is a factor used in bridge design to represent the effect of moving loads' +
+          ' . The Bridge Designer uses a Dynamic Load Allowance of 33%. This means that a moving truck causes 3' +
+          '3% more force in the bridge members than a stationary truck would cause.'
   },
   {
     id: 'hlp_erase',
@@ -1010,6 +677,85 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           `l site configurations and load cases. When you've eliminated all but one, you have the optimum.`
   },
   {
+    id: 'hlp_try_new_configuration',
+    title: 'Find the optimum truss configuration',
+    text: 'How to design a bridge Go back one step Go forward one step Design is inherently an iterative proces' +
+          's. To achieve a truly optimal design, you will probably need to try many different truss configurati' +
+          'ons. As you might guess, however, there are millions of possible configurations, and you probably wo' +
+          `n't have time to try them all! How can you find the optimum, without modeling and testing every poss` +
+          'ible truss configuration? One approach is to consider alternative configurations in a very systemati' +
+          'c way. Select a configuration, optimize its member properties , and carefully observe how changes in' +
+          ' the configuration affected the cost of your design. Keep track of which changes produce reductions ' +
+          'in cost and which do not. Then use these observations to guide the selection of your next alternativ' +
+          'e configuration. To find the optimum truss configuration: Try a different deck location. If your fir' +
+          'st design was a deck truss , try the corresponding through truss configuration, and vice versa. Try ' +
+          'a different standard truss configuration. For example, if your first design was a Pratt truss, try a' +
+          ' Howe or Warren configuration. Try reducing the length of the compression members in the truss. The ' +
+          'compressive strength of a member is a function of its length. As a member gets longer, its compressi' +
+          've strength decreases substantially--it has much less resistance to buckling . For this reason, the ' +
+          'cost of a truss design can sometimes be reduced by shortening one or more compression members. For e' +
+          `xample, let's start with a standard Warren Through Truss: Because the top chords of a simple-span tr` +
+          'uss bridge are always in compression, we might be able to reduce the cost of the Warren truss by sub' +
+          'dividing its top chord members, like this: Now consider a standard Pratt Through Truss: In this conf' +
+          'iguration, the top chords and the verticals are normally in compression. Thus, we could subdivide bo' +
+          'th the top chords and the verticals, like this: Note that, in both examples, the length of each comp' +
+          'ression member is reduced by half. This reduction in length will usually allow the designer to use a' +
+          ' substantially smaller member size to achieve the required compressive strength. Note also that, whe' +
+          'n you subdivide a member, you will always need to add additional joints and members to maintain the ' +
+          'stability of the truss. To be stable, a truss generally must be made up of a series of interconnecte' +
+          'd triangles. To subdivide a compression member in the Bridge Designer , you must: delete the compres' +
+          'sion member you want to subdivide, add a new joint at or near the midpoint of the member you just de' +
+          'leted, add two new members to replace the original member, add additional members to ensure stabilit' +
+          'y, and optimize the member properties of all new members. Reducing the length of compression members' +
+          ' may or may not reduce the total cost of your design, depending on whether the cost saving from usin' +
+          'g smaller member sizes is enough to offset the increased cost of the additional joints and members. ' +
+          'Try reducing the number of joints. The cost of your design includes a fixed cost per joint. Thus you' +
+          ' may be able to reduce the total cost by reducing the number of joints in your structural model . Fo' +
+          'r example, consider the standard Howe Deck Truss: This configuration can be improved by simply remov' +
+          'ing the joint at the midpoint of the bottom chord, like this: When you delete this joint, all three ' +
+          'attached members will be deleted as well. You will need to add a single new member to replace the tw' +
+          'o bottom chord members you deleted. This modification is often effective for tension members (like t' +
+          'he bottom chord members in the example above), because tensile strength is not a function of length.' +
+          ' However, removing a joint from the top chord of a truss, as shown below, is less likely to be effec' +
+          'tive. By deleting a top chord joint and replacing two chord members with one, you would double the l' +
+          'ength of a compression member, making it much weaker. You would need to use a substantially larger m' +
+          'ember size to make this member strong enough to pass the load test . Thus any benefit from the reduc' +
+          'ed number of joints would probably be lost. Try inventing your own truss configuration, or copy the ' +
+          'configuration of an actual bridge. Here are some examples of actual bridge configurations you might ' +
+          'consider: Recognize that each of these through trusses could also be designed as a deck truss .'
+  },
+  {
+    id: 'glos_floor_beams',
+    title: 'Floor beams',
+    text: 'Floor beams are transverse members that support the bridge deck and transmit loads from the deck to ' +
+          'the joints of the main trusses.'
+  },
+  {
+    id: 'glos_footing',
+    title: 'Footing',
+    text: 'A footing is the base of an abutment or pier --the portion a foundation that rests directly on the s' +
+          'oil and transmits load from the structure to the soil.'
+  },
+  {
+    id: 'glos_forces',
+    title: 'Forces',
+    text: 'A force is a push or a pull. Weight is a common example of a force. Force is measured in pounds (in ' +
+          'the U.S. system of measurement) or newtons (in the SI system). In the Bridge Designer, all forces ar' +
+          'e reported in kilonewtons (kN).'
+  },
+  {
+    id: 'glossary',
+    title: 'Glossary',
+    text: 'A AASHTO abutment anchorages arch abutments arch supports asphalt ASTM B bearing bridge design file ' +
+          'buckling C cable anchorages chords client compression concrete connections cut D deck deck truss dia' +
+          'gonals displacement drawing grid Dynamic Load Allowance F floor beams footing forces J joints K kilo' +
+          'newton kN L load factors load test loads M mass density member force member numbers member propertie' +
+          's member size members modulus of elasticity moment of inertia P pier R reinforced concrete resistanc' +
+          'e factor S safe session simple supports site cost slope snap points span standard abutments structur' +
+          'al analysis structural model substructure supports symmetrical T template tension through truss U un' +
+          'safe V verticals W wearing surface Y yield stress yielding'
+  },
+  {
     id: 'hlp_go_back',
     title: 'Go back button',
     text: 'Click the go back button to display the previous design iteration on the drawing board. Notes and ti' +
@@ -1067,17 +813,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'tion buttons.'
   },
   {
-    id: 'hlp_how_to',
-    title: 'How to design a bridge',
-    text: 'When you use the Bridge Designer , you will experience the engineering design process in simplified ' +
-          'form. You will design a steel truss bridge in much the same way a practicing civil engineers design ' +
-          'real highway bridges. Your objective is to create an optimal bridge design. An optimal design is one' +
-          ' that: satisfies all of the design specifications, , passes a simulated load test , and costs as lit' +
-          'tle as possible. The diagram below shows an effective method to develop an optimal design. To learn ' +
-          'more about this methodology: Click any block on the diagram for a detailed description of that parti' +
-          'cular step, or... Click here to browse through the design process, one step at a time.'
-  },
-  {
     id: 'hlp_how_wpbd_works',
     title: 'How the bridge designer works',
     text: 'The Bridge Designer is intended for educational purposes only. When you use the Bridge Designer , yo' +
@@ -1108,6 +843,17 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'nder provisions of the GNU Public License Version 3 , intended solely for educational use.'
   },
   {
+    id: 'hlp_how_to',
+    title: 'How to design a bridge',
+    text: 'When you use the Bridge Designer , you will experience the engineering design process in simplified ' +
+          'form. You will design a steel truss bridge in much the same way a practicing civil engineers design ' +
+          'real highway bridges. Your objective is to create an optimal bridge design. An optimal design is one' +
+          ' that: satisfies all of the design specifications, , passes a simulated load test , and costs as lit' +
+          'tle as possible. The diagram below shows an effective method to develop an optimal design. To learn ' +
+          'more about this methodology: Click any block on the diagram for a detailed description of that parti' +
+          'cular step, or... Click here to browse through the design process, one step at a time.'
+  },
+  {
     id: 'hlp_increase_member',
     title: 'Increase member size button',
     text: 'Click the increase member size button to increase the size of all currently selected members to the ' +
@@ -1125,6 +871,23 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'Use the joint tool to draw joints as you create your structural model . Notes and tips The joint too' +
           `l is located on the design tools palette . It's also available in the tools menu . When the joint to` +
           'ol is selected, the mouse pointer appears as a cross-hair .'
+  },
+  {
+    id: 'glos_joints',
+    title: 'Joints',
+    text: 'A joint is a point at which the ends of two or more members are connected together. In a truss, a jo' +
+          'int is assumed to act like a frictionless pin or hinge; it does not prevent the connected members fr' +
+          'om rotating with respect to each other.'
+  },
+  {
+    id: 'glos_kilonewton',
+    title: 'Kilonewton',
+    text: 'A kilonewton (kN) is a measurement of force in the SI (metric) system. A kilonewton is 1000 newtons.'
+  },
+  {
+    id: 'glos_kn',
+    title: 'kN',
+    text: `kN is the abbreviation for kilonewton , a metric unit of force. It's equivalent to about 225 pounds.`
   },
   {
     id: 'hlp_load_a_template',
@@ -1158,10 +921,29 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' BD .'
   },
   {
+    id: 'glos_load_factors',
+    title: 'Load factors',
+    text: 'A load factor is a number (normally greater than 1) which is multiplied by a design load in order to' +
+          ' represent an extreme loading experienced by a structure. For example, the load factor 1.75 is multi' +
+          'plied by the standard AASHTO H25 Truck Loading to represent an extremely heavy truck. In fact, it re' +
+          'presents the heaviest truck that might reasonably be expected to cross the bridge in its lifetime. D' +
+          'ifferent kinds of loads have different load factors, because some loads are more unpredictable than ' +
+          'others. For example, the weight of the bridge is more predictable than the weight of a heavy truck, ' +
+          'so the load factor for bridge weight is much lower.'
+  },
+  {
     id: 'hlp_load_template',
     title: 'Load template',
     text: 'Click the Load template button to load a standard truss template and display it on the Drawing Board' +
           ' . Notes and tips The Load Template button is located in the File menu .'
+  },
+  {
+    id: 'glos_load_test',
+    title: 'Load test',
+    text: 'In the Bridge Designer, the load test is a simulated test of how well your design would perform if i' +
+          't were built and placed into service. In the load test, your bridge is subjected to its own self-wei' +
+          'ght and to the weight of a standard AASHTO H25 truck loading, and every member in the structural mod' +
+          'el is checked for structural safety .'
   },
   {
     id: 'hlp_load_test3',
@@ -1234,6 +1016,47 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ost recent load test , click the Report Load Test Results button or view the Member List.'
   },
   {
+    id: 'hlp_run_load_test',
+    title: 'Load test your design',
+    text: 'How to design a bridge Go back one step Go forward one step Once you have a complete, stable structu' +
+          'ral model , you must run a simulated load test to ensure that all of the members in your design are ' +
+          'strong enough to carry the loads prescribed in Design Specification 5. To load test your design: Cli' +
+          'ck the Load Test button . Sit back and watch. The Bridge Designer will perform the load test, displa' +
+          'y the load test animation, and update the load test status display. If the animation does not appear' +
+          `, you may have a computer that's incompatible with the advanced graphics features of the Cloud Editi` +
+          'on. See the Use Old-Style Graphics menu item to switch to basic graphics that virtually all computer' +
+          's support. Once the load test is complete, click the Drawing Board button to return to the Drawing B' +
+          'oard. Notes and tips When you click the Load Test Mode button, the Bridge Designer will automaticall' +
+          'y perform the following actions: Create pin and roller supports at the appropriate locations in your' +
+          ' structural model. Calculate the weight of all members, and apply these forces to the structure as l' +
+          'oads. Calculate the weight of the concrete bridge deck , asphalt wearing surface , and floor beams (' +
+          'see Design Specification 5 for more information), and apply the corresponding loads to the structure' +
+          '. Apply the AASHTO H25 truck loading to the structure at multiple positions, representing the moveme' +
+          'nt of the truck across the bridge. Check the structural model for stability. If the structural model' +
+          ' is unstable, the Bridge Designer will attempt to fix the problem. If it is unsuccessful, it will st' +
+          'op the load test, inform you of the problem, provide some suggestions for fixing it, and return you ' +
+          'to the Drawing Board. Perform a structural analysis , considering the combined effects of the bridge' +
+          ' self-weight and truck loading. For each truck position, calculate the displacement of each joint an' +
+          'd the member force for each member in the structural model. For each member, compare the calculated ' +
+          'member forces for all truck positions, and determine the absolute maximum tension force and the abso' +
+          'lute maximum compression force. These are the critical forces that determine whether or not a given ' +
+          'member is safe . Calculate the tensile strength and compressive strength of each member. For each me' +
+          'mber, compare the absolute maximum tension force with the tensile strength, and compare the absolute' +
+          ' maximum compression force with the compressive strength. If the force exceeds the strength in eithe' +
+          'r case, the member is unsafe; if not, the member is safe. Prepare and display the load test animatio' +
+          'n. Update the load test status display. To save time, you can run the load test without displaying t' +
+          `he load test animation. Use the Load Test Options to switch off the animation. If you don't want the` +
+          ' Bridge Designer to attempt to automatically fix an unstable structure, you can use the Load Test Op' +
+          'tions to switch off this feature.'
+  },
+  {
+    id: 'glos_loads',
+    title: 'Loads',
+    text: 'Loads are forces applied to a structure. On a highway bridge, the loads include the weight of vehicl' +
+          'es that cross the bridge, the weight of the bridge itself, and, in some cases, the weight of snow an' +
+          'd ice on the structure, and the forces caused by high winds and earthquakes.'
+  },
+  {
     id: 'hlp_local_contest',
     title: 'Local contest code',
     text: 'The Bridge Design Contest (BDC) includes support for two different types of local bridge design cont' +
@@ -1257,6 +1080,12 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'able loadings combined with one of the two available concrete deck thicknesses. As soon as a valid 6' +
           '-character Local Contest Code is entered in the Design Project Setup Wizard, the corresponding site ' +
           'configuration and load case are displayed in the Preview window.'
+  },
+  {
+    id: 'glos_mass_density',
+    title: 'Mass density',
+    text: 'The mass density of a material is its mass per unit volume. The mass density of steel is significant' +
+          'ly higher than that of concrete or asphalt .'
   },
   {
     id: 'hlp_material_densities',
@@ -1307,6 +1136,12 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' when exactly one member is selected.'
   },
   {
+    id: 'glos_member_force',
+    title: 'Member force',
+    text: 'The member force is the internal force developed in a member as a result of loads applied to the str' +
+          'ucture. The member force can be either tension or compression .'
+  },
+  {
     id: 'hlp_member_list',
     title: 'Member list',
     text: 'The Member List is a movable grid that is normally displayed on the right-hand side of the Bridge De' +
@@ -1345,6 +1180,20 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'oad test results.'
   },
   {
+    id: 'glos_member_numbers',
+    title: 'Member numbers',
+    text: 'Every member in your structural model has a member number. The numbers are assigned in the order tha' +
+          't you create the members . They have no other physical significance. Member numbers are used only fo' +
+          'r reference--member properties and load test results are reported by member number in the Member Lis' +
+          't.'
+  },
+  {
+    id: 'glos_member_properties',
+    title: 'Member properties',
+    text: 'The properties of a member are (1) the material it is made of, (2) the type of cross-section, and (3' +
+          ') the member size .'
+  },
+  {
     id: 'hlp_member_properties',
     title: 'Member properties lists',
     text: 'Use the three Member Properties lists to define the material, cross-section, and member size for eac' +
@@ -1357,11 +1206,22 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' lists are used to change the properties of the currently selected member(s).'
   },
   {
+    id: 'glos_member_size',
+    title: 'Member size',
+    text: 'The size of a member is represented by the dimensions of its cross-section, in millimeters.'
+  },
+  {
     id: 'hlp_member_tool',
     title: 'Member tool',
     text: 'Use the Member tool to draw members as you create your structural model . Notes and tips The Member ' +
           'tool is located on the Design Tools palette. It can also be accessed from the Tools menu. When the M' +
           'ember tool is selected, the mouse pointer appears as a pencil .'
+  },
+  {
+    id: 'glos_members',
+    title: 'Members',
+    text: 'Members are the individual structural elements that make up a truss. Members are connected to each o' +
+          'ther at joints .'
   },
   {
     id: 'hlp_menu_bar',
@@ -1373,6 +1233,20 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'k Member numbers Symmetry guides Template Grid resolution Drawing Tools Joint tool Member tool Selec' +
           't tool Eraser tool Test Drawing board Load test Show animation Use old-style graphics Auto-correct e' +
           'rrors Report Cost calculations Load test results Help Tip of the day'
+  },
+  {
+    id: 'glos_modulus_of_elasticity',
+    title: 'Modulus of elasticity',
+    text: `The modulus of elasticity is a measure of a material's stiffness--its resistance to deformation. A m` +
+          'aterial with a high modulus of elasticity deforms very little when loaded. Modulus of elasticity is ' +
+          'represented by the symbol E and is expressed in units of force per unit area.'
+  },
+  {
+    id: 'glos_moment_of_inertia',
+    title: 'Moment of inertia',
+    text: `The moment of inertia is a measure of a member's resistance to bending and buckling . It is a functi` +
+          'on only of the shape and dimensions of the cross-section. Moment of inertia is represented by the sy' +
+          'mbol I and is expressed in units of length, raised to the 4th power.'
   },
   {
     id: 'hlp_move_joint',
@@ -1422,61 +1296,14 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'bar. It can also be accessed from the File menu.'
   },
   {
-    id: 'hlp_not_realistic',
-    title: 'What is',
-    text: 'not realistic about the Bridge Designer? One of the purposes of the Bridge Designer is to provide a ' +
-          'realistic , hands-on experience that will help you to understand how civil engineers design real str' +
-          'uctures. Many aspects of the software accurately reflect the structural design process; however, a n' +
-          'umber of significant compromises have been made to keep the program from getting too complex. Bridge' +
-          ' Designer is intended as an introduction to engineering design, with emphasis on the design process ' +
-          ', rather than the detailed technical aspects of structural design. The bottom line is that some aspe' +
-          'cts of the Bridge Designer are realistic, and some are not. It is important that you understand the ' +
-          'difference. The following aspects of the Bridge Designer do not accurately reflect the process that ' +
-          'practicing civil engineers use to design real bridges: In designing an actual bridge, engineers must' +
-          ' developed detailed designs and cost estimates for the abutments , the piers , the roadway, the deck' +
-          ' , and the complete three-dimensional structural system, including the main trusses, all connections' +
-          ' , the concrete deck, its supporting steel framing, and many secondary members . Engineers would als' +
-          'o need to consider the environmental impact of the bridge and the effects of water and ice in the ri' +
-          'ver channel as an integral part of the design. In Bridge Designer you only design the main trusses a' +
-          'nd make some preliminary decisions about the configurations of the roadway and supports. The design ' +
-          'is strictly two-dimensional and thus does not account for three-dimensional stability. In designing ' +
-          'an actual bridge, engineers must consider the effects of fatigue --the tendency of a structural mate' +
-          'rial to fail prematurely as a result of the repetitive loading caused by vehicular traffic. Bridge D' +
-          'esigner does not consider fatigue. In designing an actual bridge, engineers must consider many diffe' +
-          'rent types of loading, to include several different forms of vehicular loads , self-weight, wind, sn' +
-          'ow, collision by vehicles and ships, and earthquakes. They must consider both the longitudinal and l' +
-          'ateral position of the vehicular loads on the bridge deck. They must also consider numerous load com' +
-          'binations --eleven in the 1994 AASHTO Bridge Design Specification. Bridge Designer considers only tw' +
-          'o types of vehicular loading and the self-weight of the bridge. It considers only the longitudinal p' +
-          'osition of the vehicular loading, not the lateral position. In designing an actual bridge, engineers' +
-          ' must consider limitations on deflections --the amount of bending that occurs when a vehicle crosses' +
-          ' the bridge. Bridge Designer calculates deflections and displays them during the load test , but doe' +
-          's not use them as a design criterion. In designing an actual bridge, engineers must consider many ad' +
-          'ditional member failure modes not considered by the Bridge Designer . In the Bridge Designer load te' +
-          'st, the AASHTO truck loading represents two lanes of highway traffic, and this loading is moved acro' +
-          'ss the bridge in one direction - from left to right. The AASHTO loading has a heavy rear axle and a ' +
-          'lighter front axle. Because this loading is asymmetrical, an optimally designed bridge might be asym' +
-          'metrical as well. However, the design of real bridges must consider the movement of the AASHTO loadi' +
-          'ng in both directions: left to right and right to left. As a result, optimally designed real-world b' +
-          'ridges are generally symmetrical. Though Bridge Designer attempts to accurately demonstrate the cost' +
-          ' tradeoffs inherent in engineering design, the actual costs of the structural materials and componen' +
-          'ts used in the software are not intended to be accurate. In designing an actual bridge, engineers mu' +
-          'st consider esthetics . Bridge Designer does not include esthetics as a design criterion, though you' +
-          ' can certainly set a personal goal to design only good-looking bridges! It is important to recognize' +
-          ' that these limitations exist. But it is equally important to understand what is realistic about the' +
-          ' Bridge Designer.'
-  },
-  {
-    id: 'hlp_old_style_graphics',
-    title: 'Use old-style graphics check box',
-    text: 'The Cloud Edition load test animation uses game-quality high speed graphics to let you move around t' +
-          'he bridge while it is being tested and to see what the truck driver sees as she traverses a successf' +
-          'ul bridge. Some computers do not support these advanced graphics. If nothing happens when you select' +
-          ' 3D load test animation , or if your computer misbehaves in some other way, then you have one of the' +
-          'se computers. Fix the problem by restarting the Bridge Designer and checking the menu entry at Tools' +
-          ' , Use Old-Style Graphics . This causes the 3D load test animation to be shown using basic graphics ' +
-          'that work on virtually all computers. Notes and tips Most newer computers support the advanced graph' +
-          'ics features needed by the Cloud Edition.'
+    id: 'hlp_open_sample_design',
+    title: 'Open a sample design',
+    text: 'The Bridge Designer includes a variety of sample designs, which you can open, modify, and load test ' +
+          '. All of these are stable truss configurations, but none of them are optimized for minimum cost. To ' +
+          'load a sample design: Click the Open sample design entry of the File menu. Select a sample design, a' +
+          'nd click OK.. The sample design will be displayed on the Drawing Board. Notes and tips You must be i' +
+          'n the Drawing Board Mode to load a sample design. If your current structural model has not been save' +
+          'd, you will be prompted to save it before the sample design is loaded.'
   },
   {
     id: 'hlp_open_existing',
@@ -1494,53 +1321,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     title: 'Open file button',
     text: 'Click the Open File button to open an existing bridge design file. Notes and tips The Open File butt' +
           'on is located on the Main Toolbar. It can also be accessed from the File menu.'
-  },
-  {
-    id: 'hlp_open_sample_design',
-    title: 'Open a sample design',
-    text: 'The Bridge Designer includes a variety of sample designs, which you can open, modify, and load test ' +
-          '. All of these are stable truss configurations, but none of them are optimized for minimum cost. To ' +
-          'load a sample design: Click the Open sample design entry of the File menu. Select a sample design, a' +
-          'nd click OK.. The sample design will be displayed on the Drawing Board. Notes and tips You must be i' +
-          'n the Drawing Board Mode to load a sample design. If your current structural model has not been save' +
-          'd, you will be prompted to save it before the sample design is loaded.'
-  },
-  {
-    id: 'hlp_optimize_configuration',
-    title: 'Optimize the shape of the truss',
-    text: 'How to design a bridge Go back one step Go forward one step At this point in the design process, you' +
-          ' have optimized the member properties for one specific truss configuration. But there are probably o' +
-          'ther configurations that will result in more economical designs. Design is inherently an iterative p' +
-          'rocess. To achieve a truly optimal design, you will need to experiment with many different configura' +
-          'tions, and carefully observe how changes in the truss geometry affect the cost of your design. Befor' +
-          'e you try a totally new truss configuration, you should first optimize the shape of your current str' +
-          'uctural model . You can change the shape of the truss by moving one or more joints --by dragging the' +
-          'm to a new location with your mouse or keyboard. This modification is very easy to do and can produc' +
-          'e significant reductions in the cost of your design. To optimize the shape of your current structura' +
-          'l model: Try changing the depth of your truss. For example, suppose you started with the standard Pr' +
-          'att Through Truss for your current design: You might try reducing its depth: And you might try incre' +
-          'asing its depth: At first glance, reducing the depth of the truss might seem like the better alterna' +
-          'tive. Reducing the depth will make the verticals and diagonals shorter and, since these members will' +
-          ' require less material, their cost will decrease. However, reducing the depth of a truss also causes' +
-          ' the member force in the top and bottom chords to increase . Thus you will probably need to increase' +
-          ' the size (and cost) of the top and bottom chord members to ensure that the design still passes the ' +
-          'load test . If you increase the depth of the truss, the opposite effects will occur. The verticals a' +
-          'nd diagonals will get longer and, thus, they will increase in cost. But the member forces in the top' +
-          ' and bottom chords will decrease, allowing you to use smaller, less expensive members for the chords' +
-          '. There is a trade-off between these two competing factors: (1) the member force in the top and bott' +
-          'om chords and (2) the length of the verticals and diagonals. Every truss has an optimum depth, which' +
-          ' represents the best compromise between these two factors. The best way to find the optimum depth fo' +
-          'r your design is through trial and error. Try changing the overall shape of your truss. For example,' +
-          ' suppose you started with the standard Pratt Through Truss for your current design: Try moving the t' +
-          'op-chord joints to create a more rounded shape: Often this minor adjustment can reduce the cost of a' +
-          ' design significantly. When a truss has this rounded shape, the member forces tend to be nearly equa' +
-          'l in every member in the top chord. Thus, if you get the shape just right, you can use a single opti' +
-          'mum member size for the entire top chord--resulting in a substantial reduction in product cost. Chan' +
-          'ging to a more rounded shape is also effective for the bottom chord of a deck truss : Notes and tips' +
-          ' Whenever you change the shape of your truss, you will need to repeat the previous three steps in th' +
-          'e design process: (1) run the load test, (2) identify and strengthen all unsafe members, and (3) opt' +
-          'imize the member properties. Only then can you determine whether or not the change was effective in ' +
-          'reducing the cost of your design.'
   },
   {
     id: 'hlp_optimize_member_selection',
@@ -1600,6 +1380,49 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' selection capabilities of the Member List.'
   },
   {
+    id: 'hlp_optimize_configuration',
+    title: 'Optimize the shape of the truss',
+    text: 'How to design a bridge Go back one step Go forward one step At this point in the design process, you' +
+          ' have optimized the member properties for one specific truss configuration. But there are probably o' +
+          'ther configurations that will result in more economical designs. Design is inherently an iterative p' +
+          'rocess. To achieve a truly optimal design, you will need to experiment with many different configura' +
+          'tions, and carefully observe how changes in the truss geometry affect the cost of your design. Befor' +
+          'e you try a totally new truss configuration, you should first optimize the shape of your current str' +
+          'uctural model . You can change the shape of the truss by moving one or more joints --by dragging the' +
+          'm to a new location with your mouse or keyboard. This modification is very easy to do and can produc' +
+          'e significant reductions in the cost of your design. To optimize the shape of your current structura' +
+          'l model: Try changing the depth of your truss. For example, suppose you started with the standard Pr' +
+          'att Through Truss for your current design: You might try reducing its depth: And you might try incre' +
+          'asing its depth: At first glance, reducing the depth of the truss might seem like the better alterna' +
+          'tive. Reducing the depth will make the verticals and diagonals shorter and, since these members will' +
+          ' require less material, their cost will decrease. However, reducing the depth of a truss also causes' +
+          ' the member force in the top and bottom chords to increase . Thus you will probably need to increase' +
+          ' the size (and cost) of the top and bottom chord members to ensure that the design still passes the ' +
+          'load test . If you increase the depth of the truss, the opposite effects will occur. The verticals a' +
+          'nd diagonals will get longer and, thus, they will increase in cost. But the member forces in the top' +
+          ' and bottom chords will decrease, allowing you to use smaller, less expensive members for the chords' +
+          '. There is a trade-off between these two competing factors: (1) the member force in the top and bott' +
+          'om chords and (2) the length of the verticals and diagonals. Every truss has an optimum depth, which' +
+          ' represents the best compromise between these two factors. The best way to find the optimum depth fo' +
+          'r your design is through trial and error. Try changing the overall shape of your truss. For example,' +
+          ' suppose you started with the standard Pratt Through Truss for your current design: Try moving the t' +
+          'op-chord joints to create a more rounded shape: Often this minor adjustment can reduce the cost of a' +
+          ' design significantly. When a truss has this rounded shape, the member forces tend to be nearly equa' +
+          'l in every member in the top chord. Thus, if you get the shape just right, you can use a single opti' +
+          'mum member size for the entire top chord--resulting in a substantial reduction in product cost. Chan' +
+          'ging to a more rounded shape is also effective for the bottom chord of a deck truss : Notes and tips' +
+          ' Whenever you change the shape of your truss, you will need to repeat the previous three steps in th' +
+          'e design process: (1) run the load test, (2) identify and strengthen all unsafe members, and (3) opt' +
+          'imize the member properties. Only then can you determine whether or not the change was effective in ' +
+          'reducing the cost of your design.'
+  },
+  {
+    id: 'glos_pier',
+    title: 'Pier',
+    text: 'A pier is a part of a bridge substructure that provides intermediate support for a multi-span bridge' +
+          '.'
+  },
+  {
     id: 'hlp_pinned_support',
     title: 'Pinned support',
     text: 'A pinned support, represented by this symbol, prevents a joint in the structural model from moving b' +
@@ -1648,64 +1471,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'e.'
   },
   {
-    id: 'hlp_realistic',
-    title: 'What is realistic about the bridge designer?',
-    text: 'One of the purposes of the Bridge Designer is to provide a realistic , hands-on experience that will' +
-          ' help you to understand how civil engineers design real structures. Many aspects of the software acc' +
-          'urately reflect the structural design process; however, a number of significant compromises have bee' +
-          'n made to keep the program from getting too complex. Bridge Designer is intended as an introduction ' +
-          'to engineering design, with emphasis on the design process , rather than the detailed technical aspe' +
-          'cts of structural design. The bottom line is that some aspects of the Bridge Designer are realistic,' +
-          ' and some are not. It is important that you understand the difference. The following aspects of the ' +
-          'Bridge Designer reflect, with reasonable accuracy, the nature of engineering design and the process ' +
-          'that practicing civil engineers use to design real bridges: Design is an open-ended process. Real-wo' +
-          'rld design problems always have many possible solutions. Bridge Designer demonstrates this aspect of' +
-          ' the design process by allowing you much freedom in developing the configuration of your bridge. Tho' +
-          'ugh design is open-ended, the process is always constrained by real-world conditions and restriction' +
-          's. Bridge Designer demonstrates this aspect of the design process by limiting your design to specifi' +
-          'c span lengths and support configurations that conform to the conditions of the project site; by lim' +
-          'iting your choices of available materials and member types; and by imposing the requirement to minim' +
-          'ize cost. Design is inherently an iterative process. Because engineers usually work with incomplete ' +
-          'information, they must often make assumptions, then subsequently check and revise those assumptions ' +
-          'as the design process progresses. Developing a high-quality solution always requires the engineer to' +
-          ' consider many different design alternatives, and ultimately select the best one. Bridge Designer cl' +
-          'early demonstrates this aspect of the design process. It is impossible to achieve a truly optimal br' +
-          'idge design without considering many different alternative truss configurations, materials, cross-se' +
-          'ctions, and member sizes. Design always involves trade-offs. It is usually not possible to find a si' +
-          'ngle design solution that best satisfies all design criteria. Making improvements in one area often ' +
-          'causes unexpected problems somewhere else. You will experience many of these same trade-offs when yo' +
-          'u use Bridge Designer . For example, as you attempt to optimize your design, you will discover that ' +
-          'reducing the depth of a truss causes the cost of the verticals and diagonals to decrease (because th' +
-          'ey get shorter); but it also causes the cost of the top and bottom chords to increase (because their' +
-          ' member force increases, and a larger member sizes are needed to preserve structural safety ). As in' +
-          ' real-world structural design, you will need to find the optimum balance between the two competing c' +
-          'riteria. Structural engineering design is regulated through the use of codes . Codes ensure that eng' +
-          'ineering is practiced in a consistent, safe manner throughout the country, region, or municipality. ' +
-          'There are separate, industry-standard codes governing the design of steel, concrete , and wood struc' +
-          'tures. There are regional and local building codes that specify design loads , fire protection stand' +
-          'ards, and many other requirements for designing buildings. Design of highway bridges in the U.S. is ' +
-          'governed by the AASHTO Bridge Design Specification. In Bridge Designer , the load test uses a standa' +
-          'rd (but slightly modified) AASHTO truck loading, and the compressive and tensile strengths of member' +
-          's are computed exactly as specified in the AASHTO Specification. Structures are generally designed s' +
-          'uch that they can safely carry one or more code-specified loadings. Minimizing cost is also often an' +
-          ' important objective--but never as important as structural safety. Cost reductions can never be made' +
-          ' if those reductions compromise structural safety. The formulation of Bridge Designer is based on th' +
-          'is same relationship between safety and cost. In Bridge Designer your design objective is to minimiz' +
-          'e cost, but a design is never valid if it fails the load test. Structural design is often characteri' +
-          'zed by trade-offs between material cost, fabrication cost, and construction cost. When a structure i' +
-          's designed to minimize material cost, the design will often include many different member types and ' +
-          'sizes. But a variety of member sizes makes it harder (and therefore more expensive) to cut and fit t' +
-          'he members (fabrication) and to actually assemble them on a job site (construction). Structural desi' +
-          'gners usually attempt to achieve a degree of standardization in their selection of structural elemen' +
-          'ts, even if that means over-designing some of them. The resulting increase in material cost is usual' +
-          'ly offset by savings in fabrication and construction costs. The Bridge Designer cost calculation sim' +
-          'ulates this trade-off with reasonable authenticity. In modern structural engineering practice, struc' +
-          'tural analysis is generally performed using a computer -based method called matrix structural analys' +
-          'is --more specifically the Direct Stiffness Method . Bridge Designer uses this same method to comput' +
-          `e member forces during the load test. That's the good news! But it is also important for you to reco` +
-          'gnize the bad news-- what is not realistic about BD.'
-  },
-  {
     id: 'hlp_record_design',
     title: 'Record your design',
     text: 'How to design a bridge Go back one step Once you have completed your design, you should record it to' +
@@ -1720,6 +1485,13 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'Click the Redo button to restore a change to your structural model that was mistakenly undone. Notes' +
           ' and tips The Redo button is located on the Main Toolbar. It can also be accessed from the Edit menu' +
           '. The Redo button works in conjunction with the Undo button.'
+  },
+  {
+    id: 'glos_reinforced_concrete',
+    title: 'Reinforced concrete',
+    text: 'Reinforced concrete is concrete with steel reinforcing rods embedded inside it for added strength. C' +
+          'oncrete is very strong in compression , but comparatively weak in tension . The reinforcing bars can' +
+          ' substantially increase the ability of reinforced concrete to carry tension.'
   },
   {
     id: 'hlp_report_cost',
@@ -1753,6 +1525,14 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'djustment of your tab settings may be necessary to get the numbers to display correctly.'
   },
   {
+    id: 'glos_resistance_factor',
+    title: 'Resistance factor',
+    text: 'A resistance factor is a dimensionless number used in the calculation of tensile strength and compre' +
+          'ssive strength for structural members . The resistance factor provides a margin of safety for the de' +
+          'sign. It accounts for uncertainty in material strength, member dimensions, and construction quality.' +
+          ' A resistance factor is always less than or equal to 1.'
+  },
+  {
     id: 'hlp_restrictions',
     title: 'Restrictions on the use of Bridge Designer',
     text: 'The Bridge Designer is intended for educational use only . No warranty of any kind is expressed or i' +
@@ -1784,38 +1564,10 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'e specified maximum elevation.'
   },
   {
-    id: 'hlp_run_load_test',
-    title: 'Load test your design',
-    text: 'How to design a bridge Go back one step Go forward one step Once you have a complete, stable structu' +
-          'ral model , you must run a simulated load test to ensure that all of the members in your design are ' +
-          'strong enough to carry the loads prescribed in Design Specification 5. To load test your design: Cli' +
-          'ck the Load Test button . Sit back and watch. The Bridge Designer will perform the load test, displa' +
-          'y the load test animation, and update the load test status display. If the animation does not appear' +
-          `, you may have a computer that's incompatible with the advanced graphics features of the Cloud Editi` +
-          'on. See the Use Old-Style Graphics menu item to switch to basic graphics that virtually all computer' +
-          's support. Once the load test is complete, click the Drawing Board button to return to the Drawing B' +
-          'oard. Notes and tips When you click the Load Test Mode button, the Bridge Designer will automaticall' +
-          'y perform the following actions: Create pin and roller supports at the appropriate locations in your' +
-          ' structural model. Calculate the weight of all members, and apply these forces to the structure as l' +
-          'oads. Calculate the weight of the concrete bridge deck , asphalt wearing surface , and floor beams (' +
-          'see Design Specification 5 for more information), and apply the corresponding loads to the structure' +
-          '. Apply the AASHTO H25 truck loading to the structure at multiple positions, representing the moveme' +
-          'nt of the truck across the bridge. Check the structural model for stability. If the structural model' +
-          ' is unstable, the Bridge Designer will attempt to fix the problem. If it is unsuccessful, it will st' +
-          'op the load test, inform you of the problem, provide some suggestions for fixing it, and return you ' +
-          'to the Drawing Board. Perform a structural analysis , considering the combined effects of the bridge' +
-          ' self-weight and truck loading. For each truck position, calculate the displacement of each joint an' +
-          'd the member force for each member in the structural model. For each member, compare the calculated ' +
-          'member forces for all truck positions, and determine the absolute maximum tension force and the abso' +
-          'lute maximum compression force. These are the critical forces that determine whether or not a given ' +
-          'member is safe . Calculate the tensile strength and compressive strength of each member. For each me' +
-          'mber, compare the absolute maximum tension force with the tensile strength, and compare the absolute' +
-          ' maximum compression force with the compressive strength. If the force exceeds the strength in eithe' +
-          'r case, the member is unsafe; if not, the member is safe. Prepare and display the load test animatio' +
-          'n. Update the load test status display. To save time, you can run the load test without displaying t' +
-          `he load test animation. Use the Load Test Options to switch off the animation. If you don't want the` +
-          ' Bridge Designer to attempt to automatically fix an unstable structure, you can use the Load Test Op' +
-          'tions to switch off this feature.'
+    id: 'glos_safe',
+    title: 'Safe',
+    text: 'A member is safe when the internal member force is less than the strength of the member, in both ten' +
+          'sion and compression .'
   },
   {
     id: 'hlp_save_as',
@@ -1851,13 +1603,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'nsion for all bridge design files. Bridge design files created in Bridge Designer cannot be read by ' +
           'earlier versions of the software. You can save your structural model at any time, even if it is inco' +
           'mplete.'
-  },
-  {
-    id: 'hlp_select_all',
-    title: 'Select all button',
-    text: 'Click the Select All button to select every member in the current structural model . Once the member' +
-          's are selected, you can change their member properties simultaneously. Notes and tips The Select All' +
-          ' button is located on the Main Toolbar. It can also be accessed from the Edit menu.'
   },
   {
     id: 'hlp_select_project',
@@ -1917,6 +1662,13 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ater in the process.'
   },
   {
+    id: 'hlp_select_all',
+    title: 'Select all button',
+    text: 'Click the Select All button to select every member in the current structural model . Once the member' +
+          's are selected, you can change their member properties simultaneously. Notes and tips The Select All' +
+          ' button is located on the Main Toolbar. It can also be accessed from the Edit menu.'
+  },
+  {
     id: 'hlp_select_tool',
     title: 'Select tool',
     text: 'Use the Select tool to edit your structural model . When you need to move a joint, delete a joint, c' +
@@ -1925,6 +1677,13 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'te. It can also be accessed from the Tools menu. When the Select tool is in use, the mouse pointer a' +
           'ppears as an arrow . When you move the Select tool over the Drawing Board, joints and members are hi' +
           'ghlighted to indicate that the mouse pointer is close enough to select them.'
+  },
+  {
+    id: 'glos_session',
+    title: 'Session',
+    text: 'You initiate a new session anytime you start new design, load a sample design, or open an existing b' +
+          'ridge design file . Within a given session, all of your design iterations are preserved. You can rev' +
+          'ert to a previous design iteration at any time during the session by clicking the Go back button.'
   },
   {
     id: 'hlp_setup_wizard',
@@ -1958,6 +1717,20 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'es and tips Disabling the animation allows quicker design iterations.'
   },
   {
+    id: 'glos_simple_supports',
+    title: 'Simple supports',
+    text: 'Simple supports consist of a pin at one end of the span and a roller at the other end. The roller al' +
+          'lows for lateral expansion and contraction of the bridge, due to loads and temperature changes. In t' +
+          'he Bridge Designer, standard abutments use simple supports.'
+  },
+  {
+    id: 'glos_site_cost',
+    title: 'Site cost',
+    text: 'In the Bridge Designer, the site cost includes the cost of the substructure (the abutments and piers' +
+          ' that support the bridge) and the cost of the concrete deck . The site cost must be added to the tru' +
+          'ss cost to determine the total project cost.'
+  },
+  {
     id: 'hlp_slenderness',
     title: 'Slenderness check',
     text: 'Very slender members are difficult to handle on a construction site. They tend to be inadvertently b' +
@@ -1979,6 +1752,62 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ss check, click the Report Member Properties button. The maximum length is indicated by a vertical l' +
           'ine that is colored magenta . To obtain the numerical values of A and I for a given cross-section an' +
           'd member size, click the Report Member Properties button .'
+  },
+  {
+    id: 'glos_slenderness',
+    title: 'Slenderness ratio',
+    text: 'The slenderness ratio is a number that describes the "thickness" of a member. Members that are long ' +
+          'in comparison to their cross-sections have larger slenderness ratios than those that are shorter. Ve' +
+          'ry slender members are more likely to buckle or to be damaged during handling. A slenderness check e' +
+          'nsures that all members have slenderness ratios of no more than 300. Any overly slender member cause' +
+          's the bridge to fail.'
+  },
+  {
+    id: 'glos_slope',
+    title: 'Slope',
+    text: 'The slope of a roadway or embankment is a measure of its steepness, expressed as a ratio of vertical' +
+          ' distance to horizontal distance. For example, a river bank with a slope of 2:1 rises 2 meters for e' +
+          'very 1 meter of horizontal distance.'
+  },
+  {
+    id: 'glos_snap_points',
+    title: 'Snap points',
+    text: 'A snap point is the intersection of two grid lines on the drawing grid . Joints can only be drawn at' +
+          ' the snap points; thus, when you draw or move joints in your structural model , the mouse pointer au' +
+          'tomatically "snaps" to the nearest snap point. The grid lines are actually not visible, but their lo' +
+          'cations are indicated by marks on the vertical and horizontal rulers located on the left and bottom ' +
+          'edges of the Drawing Board.'
+  },
+  {
+    id: 'hlp_bars_or_tubes',
+    title: 'Solid bar or hollow tube?',
+    text: 'As you optimize the member properties in your design, one of the most important decisions you will m' +
+          'ake is the selection of a cross-section type - solid bar or hollow tube - for each member in your st' +
+          'ructural model . In making this decision, you should consider the effect of the different cross-sect' +
+          'ions on member strength in both tension and compression . Compression members: For a given material,' +
+          ' hollow tubes are somewhat more expensive than solid bars, in dollars per kilogram. Compared with a ' +
+          'solid bar of the same mass , though, a hollow tube provides a much larger moment of inertia . Thus a' +
+          ' hollow tube resists buckling more efficiently than a solid bar. Its compressive strength is usually' +
+          ' substantially greater. For compression members , then, the increased compressive strength of a tube' +
+          ' often outweighs the increased cost per kilogram. It is usually most economical to use hollow tubes ' +
+          'for members that carry load primarily in compression. Tension members: For a given material, solid b' +
+          'ars are somewhat less expensive than hollow tubes, in dollars per kilogram. However, tensile strengt' +
+          'h depends only on the cross-sectional area of the member, not the moment of inertia. A solid bar and' +
+          ' a hollow tube of the same mass also have the same cross-sectional area. Therefore, both have the sa' +
+          'me tensile strength. Since the solid bar costs less, and the hollow tube offers no strength advantag' +
+          'e in tension, solid bars are usually the better choice for tension members. It is usually most econo' +
+          'mical to use solid bars for members that carry load primarily in tension.'
+  },
+  {
+    id: 'glos_span',
+    title: 'Span',
+    text: 'The span of a bridge is its length from support to support.'
+  },
+  {
+    id: 'glos_standard_abutments',
+    title: 'Standard abutments',
+    text: 'In the Bridge Designer, standard abutments are substructure elements that use simple supports to hol' +
+          'd up the bridge and transmit its weight to the soil below.'
   },
   {
     id: 'hlp_standard_truss',
@@ -2044,6 +1873,25 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' test again.'
   },
   {
+    id: 'glos_structural_analysis',
+    title: 'Structural analysis',
+    text: 'A structural analysis is a mathematical analysis of a structural model , to determine all of the mem' +
+          'bers forces resulting from a given set of loads . The Bridge Designer uses a structural analysis for' +
+          'mulation called the Direct Stiffness Method.'
+  },
+  {
+    id: 'glos_structural_model',
+    title: 'Structural model',
+    text: 'A structural model is a mathematical idealization of an actual structure. The model allows us to pre' +
+          'dict how the actual structure will behave when it is loaded. A structural model of a truss has the f' +
+          'ollowing idealized characteristics: It is composed of members , interconnected at joints . Each memb' +
+          'er is connected to exactly two joints, one at each end. The joints are assumed to act like hinges; t' +
+          'hat is, they hold the members together, but do not prevent the ends of the members from rotating wit' +
+          'h respect to each other. The members only carry axial force--either compression or tension . They do' +
+          ' not bend. Loads can be applied to the structure only at the joints. Supports can be placed only at ' +
+          'the joints.'
+  },
+  {
     id: 'hlp_structural_stability',
     title: 'Structural stability',
     text: 'A truss is stable if all of its members are interconnected as a rigid framework. Stability is usuall' +
@@ -2070,6 +1918,34 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ing the "your structural model is unstable" warning, then your truss is stable.'
   },
   {
+    id: 'glos_substructure',
+    title: 'Substructure',
+    text: 'The substructure is the foundation of a bridge. It consists of the abutments and piers that support ' +
+          'the bridge and transmit its weight to the earth below.'
+  },
+  {
+    id: 'glos_supports',
+    title: 'Supports',
+    text: 'A support is a joint at which a structure is attached to its foundation. A truss bridge can have two' +
+          ' different types of supports: (1) pinned supports, which restrain both horizontal and vertical movem' +
+          'ent of the associated joint, and (2) roller supports, which restrain vertical movement but allow hor' +
+          'izontal expansion of the structure.'
+  },
+  {
+    id: 'glos_symmetrical',
+    title: 'Symmetrical',
+    text: 'The term "symmetrical" can apply to both a structure and its loading. In a symmetrical structure, th' +
+          'e left-hand and right-hand sides of the structure are exact mirror imges of each other. In a symmetr' +
+          'ical loading, the loads applied on either side of the bridge centerline are identical.'
+  },
+  {
+    id: 'glos_template',
+    title: 'Template',
+    text: 'In the Bridge Designer, a template is a diagram depicting a standard truss configuration. If you loa' +
+          'd a template, it is displayed on the Drawing Board in light grey dotted lines. The template will sho' +
+          'w you where to locate joints and members to create a stable truss design.'
+  },
+  {
     id: 'hlp_tensile_strength',
     title: 'Tensile strength',
     text: 'The tensile strength of a member is the internal member force at which a member becomes unsafe in te' +
@@ -2084,6 +1960,11 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'tural model during the Load Test. The tensile strength of a member is always greater than its compre' +
           'ssive strength. If the member is relatively long and slender, the difference can be quite substantia' +
           'l.'
+  },
+  {
+    id: 'glos_tension',
+    title: 'Tension',
+    text: 'Tension is an internal axial member force that tends to <<<lengthen>>> a member.'
   },
   {
     id: 'hlp_the_engineering',
@@ -2135,6 +2016,12 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     title: 'The engineering design process',
     text: 'Through Truss A through truss is one with its deck located at the level of the bottom chord. Vehicle' +
           's crossing a through truss bridge are supported between its two main trusses.'
+  },
+  {
+    id: 'glos_through_truss',
+    title: 'Through truss',
+    text: 'A through truss is a truss with its deck located at the bottom chord. On a through truss, vehicles t' +
+          'russ pass between the two main trusses as they cross the bridge.'
   },
   {
     id: 'hlp_tip_of',
@@ -2202,64 +2089,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' These include beam bridges, arches, suspension bridges, and cable-stayed bridges.'
   },
   {
-    id: 'hlp_truss_configuration',
-    title: 'Decide on a truss configuration',
-    text: 'How to design a bridge Go back one step Go forward one step Once you have selected a site configurat' +
-          'ion, you must decide on the overall configuration of your truss bridge. The Bridge Designer allows y' +
-          'ou to use any truss configuration, as long as the structural model you create is stable . Notes and ' +
-          'tips Developing a stable structural model can be tricky. We highly recommend that new and inexperien' +
-          'ced users start with a standard truss configuration. If you decide to use a standard truss configura' +
-          'tion, you can load and display a template to help you correctly draw the joints and members .'
-  },
-  {
-    id: 'hlp_try_new_configuration',
-    title: 'Find the optimum truss configuration',
-    text: 'How to design a bridge Go back one step Go forward one step Design is inherently an iterative proces' +
-          's. To achieve a truly optimal design, you will probably need to try many different truss configurati' +
-          'ons. As you might guess, however, there are millions of possible configurations, and you probably wo' +
-          `n't have time to try them all! How can you find the optimum, without modeling and testing every poss` +
-          'ible truss configuration? One approach is to consider alternative configurations in a very systemati' +
-          'c way. Select a configuration, optimize its member properties , and carefully observe how changes in' +
-          ' the configuration affected the cost of your design. Keep track of which changes produce reductions ' +
-          'in cost and which do not. Then use these observations to guide the selection of your next alternativ' +
-          'e configuration. To find the optimum truss configuration: Try a different deck location. If your fir' +
-          'st design was a deck truss , try the corresponding through truss configuration, and vice versa. Try ' +
-          'a different standard truss configuration. For example, if your first design was a Pratt truss, try a' +
-          ' Howe or Warren configuration. Try reducing the length of the compression members in the truss. The ' +
-          'compressive strength of a member is a function of its length. As a member gets longer, its compressi' +
-          've strength decreases substantially--it has much less resistance to buckling . For this reason, the ' +
-          'cost of a truss design can sometimes be reduced by shortening one or more compression members. For e' +
-          `xample, let's start with a standard Warren Through Truss: Because the top chords of a simple-span tr` +
-          'uss bridge are always in compression, we might be able to reduce the cost of the Warren truss by sub' +
-          'dividing its top chord members, like this: Now consider a standard Pratt Through Truss: In this conf' +
-          'iguration, the top chords and the verticals are normally in compression. Thus, we could subdivide bo' +
-          'th the top chords and the verticals, like this: Note that, in both examples, the length of each comp' +
-          'ression member is reduced by half. This reduction in length will usually allow the designer to use a' +
-          ' substantially smaller member size to achieve the required compressive strength. Note also that, whe' +
-          'n you subdivide a member, you will always need to add additional joints and members to maintain the ' +
-          'stability of the truss. To be stable, a truss generally must be made up of a series of interconnecte' +
-          'd triangles. To subdivide a compression member in the Bridge Designer , you must: delete the compres' +
-          'sion member you want to subdivide, add a new joint at or near the midpoint of the member you just de' +
-          'leted, add two new members to replace the original member, add additional members to ensure stabilit' +
-          'y, and optimize the member properties of all new members. Reducing the length of compression members' +
-          ' may or may not reduce the total cost of your design, depending on whether the cost saving from usin' +
-          'g smaller member sizes is enough to offset the increased cost of the additional joints and members. ' +
-          'Try reducing the number of joints. The cost of your design includes a fixed cost per joint. Thus you' +
-          ' may be able to reduce the total cost by reducing the number of joints in your structural model . Fo' +
-          'r example, consider the standard Howe Deck Truss: This configuration can be improved by simply remov' +
-          'ing the joint at the midpoint of the bottom chord, like this: When you delete this joint, all three ' +
-          'attached members will be deleted as well. You will need to add a single new member to replace the tw' +
-          'o bottom chord members you deleted. This modification is often effective for tension members (like t' +
-          'he bottom chord members in the example above), because tensile strength is not a function of length.' +
-          ' However, removing a joint from the top chord of a truss, as shown below, is less likely to be effec' +
-          'tive. By deleting a top chord joint and replacing two chord members with one, you would double the l' +
-          'ength of a compression member, making it much weaker. You would need to use a substantially larger m' +
-          'ember size to make this member strong enough to pass the load test . Thus any benefit from the reduc' +
-          'ed number of joints would probably be lost. Try inventing your own truss configuration, or copy the ' +
-          'configuration of an actual bridge. Here are some examples of actual bridge configurations you might ' +
-          'consider: Recognize that each of these through trusses could also be designed as a deck truss .'
-  },
-  {
     id: 'hlp_undo',
     title: 'Undo button',
     text: 'Click the Undo button to undo the most recent change to your structural model . Notes and tips The U' +
@@ -2267,17 +2096,23 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'on works in conjunction with the Redo button.'
   },
   {
-    id: 'hlp_undo_vs_go_back',
-    title: `What's the difference between undo and go back?`,
-    text: 'At first glance, the Go back button and the Undo button might appear to be performing the same funct' +
-          'ion. In practice, the two functions are closely related, but there are important distinctions betwee' +
-          'n the two: Use Undo to correct any mistakes you make while working on the current design iteration. ' +
-          'Use Go Back to revert to a previous design iteration. The Go Back function is normally used as part ' +
-          'of the optimization process, rather than to correct drawing or editing errors. Undo is only availabl' +
-          'e for the 100 most recent changes to your structural model , but you can Go Back to any previous des' +
-          'ign iteration created during the current session . Because Undo only applies to the current design i' +
-          'teration, the Undo function is disabled whenever you Go Back to a previous iteration. Undo is enable' +
-          'd again as soon as you make any new changes to the structural model.'
+    id: 'glos_unsafe',
+    title: 'Unsafe',
+    text: 'A member is unsafe when the internal member force exceeds the strength of the member. A member is un' +
+          'safe in tension if the maximum tension force exceeds the tensile strength. A member is unsafe in com' +
+          'pression if the maximum compression force exceeds the compressive strength.'
+  },
+  {
+    id: 'hlp_old_style_graphics',
+    title: 'Use old-style graphics check box',
+    text: 'The Cloud Edition load test animation uses game-quality high speed graphics to let you move around t' +
+          'he bridge while it is being tested and to see what the truck driver sees as she traverses a successf' +
+          'ul bridge. Some computers do not support these advanced graphics. If nothing happens when you select' +
+          ' 3D load test animation , or if your computer misbehaves in some other way, then you have one of the' +
+          'se computers. Fix the problem by restarting the Bridge Designer and checking the menu entry at Tools' +
+          ' , Use Old-Style Graphics . This causes the 3D load test animation to be shown using basic graphics ' +
+          'that work on virtually all computers. Notes and tips Most newer computers support the advanced graph' +
+          'ics features needed by the Cloud Edition.'
   },
   {
     id: 'hlp_using_undo',
@@ -2293,12 +2128,26 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'undo?'
   },
   {
+    id: 'glos_verticals',
+    title: 'Verticals',
+    text: 'Verticals are truss members that are oriented vertically. Usually they connect the top and bottom ch' +
+          'ords together.'
+  },
+  {
     id: 'hlp_view_animation_controls',
     title: 'View animation controls button',
     text: 'Click the View Animation Controls button in the View menu to display or hide the Animation Controls ' +
           '. This button functions as a "toggle." If the Animation Controls is currently visible, clicking the ' +
           'button will hide it. If the controls are hidden, clicking the button will display them. Notes and ti' +
           `ps You won't be able to show the Animation Controls while the Drawing Board is in use.`
+  },
+  {
+    id: 'hlp_view_tools',
+    title: 'View design tools button',
+    text: 'Click the View Design Tools button in the View menu to display or hide the Design Tools Palette . Th' +
+          'is button functions as a "toggle." If the Design Tools Palette is currently visible, clicking the bu' +
+          'tton will hide it. If the palette is hidden, clicking the button will display it. Notes and tips You' +
+          ` won't be able to show the Design Tools Palette while the Load Test Animation is in progress.`
   },
   {
     id: 'hlp_view_member_list',
@@ -2365,12 +2214,137 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' In this case, you might need to hide the Title Block to create or edit your structural model .'
   },
   {
-    id: 'hlp_view_tools',
-    title: 'View design tools button',
-    text: 'Click the View Design Tools button in the View menu to display or hide the Design Tools Palette . Th' +
-          'is button functions as a "toggle." If the Design Tools Palette is currently visible, clicking the bu' +
-          'tton will hide it. If the palette is hidden, clicking the button will display it. Notes and tips You' +
-          ` won't be able to show the Design Tools Palette while the Load Test Animation is in progress.`
+    id: 'glos_wearing_surface',
+    title: 'Wearing surface',
+    text: 'A wearing surface is a layer of pavement material--normally asphalt or concrete --placed on top of a' +
+          ' bridge deck to protect the deck from being damaged by automobile traffic.'
+  },
+  {
+    id: 'hlp_not_realistic',
+    title: 'What is',
+    text: 'not realistic about the Bridge Designer? One of the purposes of the Bridge Designer is to provide a ' +
+          'realistic , hands-on experience that will help you to understand how civil engineers design real str' +
+          'uctures. Many aspects of the software accurately reflect the structural design process; however, a n' +
+          'umber of significant compromises have been made to keep the program from getting too complex. Bridge' +
+          ' Designer is intended as an introduction to engineering design, with emphasis on the design process ' +
+          ', rather than the detailed technical aspects of structural design. The bottom line is that some aspe' +
+          'cts of the Bridge Designer are realistic, and some are not. It is important that you understand the ' +
+          'difference. The following aspects of the Bridge Designer do not accurately reflect the process that ' +
+          'practicing civil engineers use to design real bridges: In designing an actual bridge, engineers must' +
+          ' developed detailed designs and cost estimates for the abutments , the piers , the roadway, the deck' +
+          ' , and the complete three-dimensional structural system, including the main trusses, all connections' +
+          ' , the concrete deck, its supporting steel framing, and many secondary members . Engineers would als' +
+          'o need to consider the environmental impact of the bridge and the effects of water and ice in the ri' +
+          'ver channel as an integral part of the design. In Bridge Designer you only design the main trusses a' +
+          'nd make some preliminary decisions about the configurations of the roadway and supports. The design ' +
+          'is strictly two-dimensional and thus does not account for three-dimensional stability. In designing ' +
+          'an actual bridge, engineers must consider the effects of fatigue --the tendency of a structural mate' +
+          'rial to fail prematurely as a result of the repetitive loading caused by vehicular traffic. Bridge D' +
+          'esigner does not consider fatigue. In designing an actual bridge, engineers must consider many diffe' +
+          'rent types of loading, to include several different forms of vehicular loads , self-weight, wind, sn' +
+          'ow, collision by vehicles and ships, and earthquakes. They must consider both the longitudinal and l' +
+          'ateral position of the vehicular loads on the bridge deck. They must also consider numerous load com' +
+          'binations --eleven in the 1994 AASHTO Bridge Design Specification. Bridge Designer considers only tw' +
+          'o types of vehicular loading and the self-weight of the bridge. It considers only the longitudinal p' +
+          'osition of the vehicular loading, not the lateral position. In designing an actual bridge, engineers' +
+          ' must consider limitations on deflections --the amount of bending that occurs when a vehicle crosses' +
+          ' the bridge. Bridge Designer calculates deflections and displays them during the load test , but doe' +
+          's not use them as a design criterion. In designing an actual bridge, engineers must consider many ad' +
+          'ditional member failure modes not considered by the Bridge Designer . In the Bridge Designer load te' +
+          'st, the AASHTO truck loading represents two lanes of highway traffic, and this loading is moved acro' +
+          'ss the bridge in one direction - from left to right. The AASHTO loading has a heavy rear axle and a ' +
+          'lighter front axle. Because this loading is asymmetrical, an optimally designed bridge might be asym' +
+          'metrical as well. However, the design of real bridges must consider the movement of the AASHTO loadi' +
+          'ng in both directions: left to right and right to left. As a result, optimally designed real-world b' +
+          'ridges are generally symmetrical. Though Bridge Designer attempts to accurately demonstrate the cost' +
+          ' tradeoffs inherent in engineering design, the actual costs of the structural materials and componen' +
+          'ts used in the software are not intended to be accurate. In designing an actual bridge, engineers mu' +
+          'st consider esthetics . Bridge Designer does not include esthetics as a design criterion, though you' +
+          ' can certainly set a personal goal to design only good-looking bridges! It is important to recognize' +
+          ' that these limitations exist. But it is equally important to understand what is realistic about the' +
+          ' Bridge Designer.'
+  },
+  {
+    id: 'hlp_design_iteration',
+    title: 'What is a design iteration?',
+    text: 'Anytime you make one or more changes to your structural model , then run the load test , you have pe' +
+          'rformed one design iteration . The Bridge Designer saves all design iterations created during the cu' +
+          'rrent session and provides the capability for you to revert to previous iterations at any time durin' +
+          'g the session. Notes and tips To revert to a previous design iteration, click the Go back button or ' +
+          'the Go To Iteration button. The current design iteration number is always displayed on the Main Tool' +
+          'bar . The number is incremented at the start of each new iteration--whenever you make the first chan' +
+          'ge to your structural model after a load test. Design iteration numbers are never duplicated, and th' +
+          'e design iterations themselves are never overwritten, even when you revert to a previous iteration. ' +
+          'For example, suppose you are working on design iteration 10 , then decide to go back to to iteration' +
+          ' 6. The design iteration number displayed on the Main Toolbar will change from 10 to 6 accordingly. ' +
+          'But as soon as you make any change to the structural model, the design iteration number will update ' +
+          'to 11, since you now have initiated a new iteration. In this way, all of your previous iterations--6' +
+          ', 7, 8, 9, and 10--are preserved for future use. You can see how design iterations are related using' +
+          ' the Tree View tab. Reverting to a previous design iteration can be particularly useful when you are' +
+          ' optimizing your design. The optimization process is never linear; it is always marked by dead ends ' +
+          'and unexpected outcomes. Some of your attempts at optimization will be successful and others will no' +
+          't. After an unsuccessful attempt, you can simply revert to a previous successful design iteration an' +
+          'd try again. Previous design iterations are only preserved until the end of the current session. Whe' +
+          'n you start a new design or exit the Bridge Designer , previous iterations are deleted. Thus the Des' +
+          'ign Iteration Browser can only display iterations created during the current session.'
+  },
+  {
+    id: 'hlp_realistic',
+    title: 'What is realistic about the bridge designer?',
+    text: 'One of the purposes of the Bridge Designer is to provide a realistic , hands-on experience that will' +
+          ' help you to understand how civil engineers design real structures. Many aspects of the software acc' +
+          'urately reflect the structural design process; however, a number of significant compromises have bee' +
+          'n made to keep the program from getting too complex. Bridge Designer is intended as an introduction ' +
+          'to engineering design, with emphasis on the design process , rather than the detailed technical aspe' +
+          'cts of structural design. The bottom line is that some aspects of the Bridge Designer are realistic,' +
+          ' and some are not. It is important that you understand the difference. The following aspects of the ' +
+          'Bridge Designer reflect, with reasonable accuracy, the nature of engineering design and the process ' +
+          'that practicing civil engineers use to design real bridges: Design is an open-ended process. Real-wo' +
+          'rld design problems always have many possible solutions. Bridge Designer demonstrates this aspect of' +
+          ' the design process by allowing you much freedom in developing the configuration of your bridge. Tho' +
+          'ugh design is open-ended, the process is always constrained by real-world conditions and restriction' +
+          's. Bridge Designer demonstrates this aspect of the design process by limiting your design to specifi' +
+          'c span lengths and support configurations that conform to the conditions of the project site; by lim' +
+          'iting your choices of available materials and member types; and by imposing the requirement to minim' +
+          'ize cost. Design is inherently an iterative process. Because engineers usually work with incomplete ' +
+          'information, they must often make assumptions, then subsequently check and revise those assumptions ' +
+          'as the design process progresses. Developing a high-quality solution always requires the engineer to' +
+          ' consider many different design alternatives, and ultimately select the best one. Bridge Designer cl' +
+          'early demonstrates this aspect of the design process. It is impossible to achieve a truly optimal br' +
+          'idge design without considering many different alternative truss configurations, materials, cross-se' +
+          'ctions, and member sizes. Design always involves trade-offs. It is usually not possible to find a si' +
+          'ngle design solution that best satisfies all design criteria. Making improvements in one area often ' +
+          'causes unexpected problems somewhere else. You will experience many of these same trade-offs when yo' +
+          'u use Bridge Designer . For example, as you attempt to optimize your design, you will discover that ' +
+          'reducing the depth of a truss causes the cost of the verticals and diagonals to decrease (because th' +
+          'ey get shorter); but it also causes the cost of the top and bottom chords to increase (because their' +
+          ' member force increases, and a larger member sizes are needed to preserve structural safety ). As in' +
+          ' real-world structural design, you will need to find the optimum balance between the two competing c' +
+          'riteria. Structural engineering design is regulated through the use of codes . Codes ensure that eng' +
+          'ineering is practiced in a consistent, safe manner throughout the country, region, or municipality. ' +
+          'There are separate, industry-standard codes governing the design of steel, concrete , and wood struc' +
+          'tures. There are regional and local building codes that specify design loads , fire protection stand' +
+          'ards, and many other requirements for designing buildings. Design of highway bridges in the U.S. is ' +
+          'governed by the AASHTO Bridge Design Specification. In Bridge Designer , the load test uses a standa' +
+          'rd (but slightly modified) AASHTO truck loading, and the compressive and tensile strengths of member' +
+          's are computed exactly as specified in the AASHTO Specification. Structures are generally designed s' +
+          'uch that they can safely carry one or more code-specified loadings. Minimizing cost is also often an' +
+          ' important objective--but never as important as structural safety. Cost reductions can never be made' +
+          ' if those reductions compromise structural safety. The formulation of Bridge Designer is based on th' +
+          'is same relationship between safety and cost. In Bridge Designer your design objective is to minimiz' +
+          'e cost, but a design is never valid if it fails the load test. Structural design is often characteri' +
+          'zed by trade-offs between material cost, fabrication cost, and construction cost. When a structure i' +
+          's designed to minimize material cost, the design will often include many different member types and ' +
+          'sizes. But a variety of member sizes makes it harder (and therefore more expensive) to cut and fit t' +
+          'he members (fabrication) and to actually assemble them on a job site (construction). Structural desi' +
+          'gners usually attempt to achieve a degree of standardization in their selection of structural elemen' +
+          'ts, even if that means over-designing some of them. The resulting increase in material cost is usual' +
+          'ly offset by savings in fabrication and construction costs. The Bridge Designer cost calculation sim' +
+          'ulates this trade-off with reasonable authenticity. In modern structural engineering practice, struc' +
+          'tural analysis is generally performed using a computer -based method called matrix structural analys' +
+          'is --more specifically the Direct Stiffness Method . Bridge Designer uses this same method to comput' +
+          `e member forces during the load test. That's the good news! But it is also important for you to reco` +
+          'gnize the bad news-- what is not realistic about BD.'
   },
   {
     id: 'hlp_whats_new',
@@ -2393,5 +2367,31 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'prints. Print your bridge in a beautiful format suitable for framing. Click and drag member list sel' +
           'ections. Click and drag to select a group of members in the member list. Filename associations. .Dou' +
           'ble-click a file with a bdc file name extension to start the BD and load the file.'
+  },
+  {
+    id: 'hlp_undo_vs_go_back',
+    title: `What's the difference between undo and go back?`,
+    text: 'At first glance, the Go back button and the Undo button might appear to be performing the same funct' +
+          'ion. In practice, the two functions are closely related, but there are important distinctions betwee' +
+          'n the two: Use Undo to correct any mistakes you make while working on the current design iteration. ' +
+          'Use Go Back to revert to a previous design iteration. The Go Back function is normally used as part ' +
+          'of the optimization process, rather than to correct drawing or editing errors. Undo is only availabl' +
+          'e for the 100 most recent changes to your structural model , but you can Go Back to any previous des' +
+          'ign iteration created during the current session . Because Undo only applies to the current design i' +
+          'teration, the Undo function is disabled whenever you Go Back to a previous iteration. Undo is enable' +
+          'd again as soon as you make any new changes to the structural model.'
+  },
+  {
+    id: 'glos_yield_stress',
+    title: 'Yield stress',
+    text: 'The yield stress is the strength of a metal. It is the force per unit area at which the metal fails ' +
+          'by yielding .'
+  },
+  {
+    id: 'glos_yielding',
+    title: 'Yielding',
+    text: 'Yielding is one possible failure mode for a member made of metal. When a metallic material fails by ' +
+          'yielding, it undergoes very large deformations (i.e., it stretches) without being able to carry any ' +
+          'additional load.'
   },
 ];

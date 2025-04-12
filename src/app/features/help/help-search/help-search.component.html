@@ -7,7 +7,7 @@
         id="search-term"
         name="search-term"
         maxlength="100"
-        placeholder="Examples: 'mmber' 'title:trus'"
+        placeholder="Examples: 'member' 'title:truss'"
         (input)="handleSearchTermInputInput($event)"
     /></label>
   </div>
@@ -18,7 +18,7 @@
       [displayMember]="'title'"
       [valueMember]="'topic'"
       [source]="source"
-      [width]="'100%'"
+      [width]="'calc(100% - 4px)'"
       [height]="'calc(100% - 22px)'"
       (onSelect)="handleSearchResultsSelect($event)"
     ></jqxListBox>

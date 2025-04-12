@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
-import { HelpEventService } from '../help-event.service';
+import { CurrentTopicService } from '../current-topic.service';
 
 @Component({
     selector: 'topic-link',
@@ -11,10 +11,10 @@ import { HelpEventService } from '../help-event.service';
 export class HelpTopicLinkComponent {
   @Input({ required: true }) name!: string;
 
-  constructor(private readonly helpEventService: HelpEventService) {}
+  constructor(private readonly currentTopicService: CurrentTopicService) {}
 
   handlePointerDown(event: any) {
-    this.helpEventService.goToTopicRequest.next({ topicName: this.name, scrollTop: 0 });
+    this.currentTopicService.goToTopicId(this.name);
     event.stopPropagation();
   }
 }

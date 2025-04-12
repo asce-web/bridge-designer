@@ -160,7 +160,7 @@ else:
     with open("index-data.ts", "w") as f:
         print(PREAMBLE, file=f)
         chunk_size = 100
-        for id, (title, text) in sorted(indexer.data.items()):
+        for id, (title, text) in sorted(indexer.data.items(), key=lambda item: item[1][0].lower()):
             text_chunks = [
                 f"{quote(text[i:i + chunk_size])}"
                 for i in range(0, len(text), chunk_size)

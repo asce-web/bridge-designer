@@ -31,7 +31,7 @@ export class HelpIndexService {
       properties,
       boost: { title: 3 },
       limit: 100,
-      tolerance: 1,
+      // causes non-intuitive results imo: tolerance: 1,
     }
     return search(this.helpDb, searchParams) as Results<HelpTopic>; // Ignore Promise<> alternate.
   }
