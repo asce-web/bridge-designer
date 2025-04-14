@@ -7,6 +7,8 @@
 export type ToastErrorKind =
   | 'duplicateJointError'
   | 'duplicateMemberError'
+  | 'fileReadError'
+  | 'fileWriteError'
   | 'highPierError'
   | 'moveJointError'
   | 'tooManyJointsError'

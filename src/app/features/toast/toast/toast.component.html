@@ -13,6 +13,20 @@
   Oops... Can't have two members with the same joints.
 </jqxNotification>
 <jqxNotification
+  id="fileReadError"
+  [template]="'error'"
+  [position]="'bottom-left'"
+>
+  Oops... Couldn't read that file.
+</jqxNotification>
+<jqxNotification
+  id="fileWriteError"
+  [template]="'error'"
+  [position]="'bottom-left'"
+>
+  Oops... Couldn't save that file.
+</jqxNotification>
+<jqxNotification
   id="highPierError"
   [template]="'error'"
   [position]="'bottom-left'"

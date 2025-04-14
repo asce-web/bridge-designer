@@ -72,6 +72,7 @@ export class EventBrokerService {
   public readonly inventorySelectionCompletion = new Subject<EventInfo>();
   public readonly legacyGraphicsToggle = new Subject<EventInfo>();
   public readonly loadBridgeCompletion = new Subject<EventInfo>();
+  public readonly loadBridgeFileRequest = new Subject<EventInfo>();
   public readonly loadBridgeRequest = new Subject<EventInfo>();
   public readonly loadDesignIterationRequest = new Subject<EventInfo>();
   public readonly loadSketchRequest = new Subject<EventInfo>();
@@ -86,6 +87,7 @@ export class EventBrokerService {
   public readonly newDesignRequest = new Subject<EventInfo>();
   public readonly redoRequest = new Subject<EventInfo>();
   public readonly rulersToggle = new Subject<EventInfo>();
+  public readonly saveBridgeFileRequest = new Subject<EventInfo>();
   public readonly selectAllRequest = new Subject<EventInfo>();
   public readonly selectNoneRequest = new Subject<EventInfo>();
   public readonly selectedElementsChange = new Subject<EventInfo>();

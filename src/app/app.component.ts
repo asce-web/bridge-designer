@@ -32,6 +32,7 @@ import { SlendernessFailDialogComponent } from './features/testing/slenderness-f
 import { MemberEditDialogComponent } from './features/drafting/member-edit-dialog/member-edit-dialog.component';
 import { AboutDialogComponent } from './features/about/about-dialog/about-dialog.component';
 import { FlyThruPaneComponent } from './features/fly-thru/fly-thru-pane/fly-thru-pane.component';
+import { SaveLoadService } from './features/save-load/save-load.service';
 
 // ¯\_(ツ)_/¯
 
@@ -81,6 +82,7 @@ export class AppComponent implements AfterViewInit {
   constructor(
     private readonly eventBrokerService: EventBrokerService,
     private readonly sessionStateService: SessionStateService,
+    _saveLoadService: SaveLoadService, // Instantiate only.
     _undoManagerSessionStateService: UndoManagerSessionStateService, // Instantiate only.
     _workflowManagementService: WorkflowManagementService, // Instantiate only.
   ) {}

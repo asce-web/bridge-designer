@@ -286,10 +286,17 @@ export class BridgeService {
     return true;
   }
 
+  public get saveSet(): SaveSet {
+    return SaveSet.create(this.bridge, this.draftingPanelState);
+  }
+
+  public get saveSetText(): string {
+    return this.persistenceService.getSaveSetAsText(this.saveSet);
+  }
+
   private dehydrate(): State {
-    const text = this.persistenceService.getSaveSetAsText(SaveSet.create(this.bridge, this.draftingPanelState));
     return {
-      saveSetText: text,
+      saveSetText: this.saveSetText,
       sketchName: this.sketch.name,
     };
   }
