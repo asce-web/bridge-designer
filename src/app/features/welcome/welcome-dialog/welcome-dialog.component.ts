@@ -6,13 +6,13 @@ import { EventBrokerService, EventOrigin } from '../../../shared/services/event-
 import { SessionStateService } from '../../../shared/services/session-state.service';
 
 @Component({
-    selector: 'welcome-dialog',
-    imports: [jqxWindowModule, jqxButtonModule, jqxRadioButtonModule],
-    templateUrl: './welcome-dialog.component.html',
-    styleUrl: './welcome-dialog.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'welcome-dialog',
+  imports: [jqxWindowModule, jqxButtonModule, jqxRadioButtonModule],
+  templateUrl: './welcome-dialog.component.html',
+  styleUrl: './welcome-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WelcomeDialogComponent implements AfterViewInit{
+export class WelcomeDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;
   @ViewChild('newButton') newButton!: jqxRadioButtonComponent;
   @ViewChild('loadSampleButton') loadSampleButton!: jqxRadioButtonComponent;
@@ -30,14 +30,14 @@ export class WelcomeDialogComponent implements AfterViewInit{
     } else if (this.loadSampleButton.checked()) {
       this.eventBrokerService.loadSampleRequest.next({ origin: EventOrigin.WELCOME_DIALOG });
     } else if (this.openButton.checked()) {
-      // TODO: Load saved bridge!
+      this.eventBrokerService.loadBridgeFileRequest.next({ origin: EventOrigin.WELCOME_DIALOG });
     }
   }
 
   handleAboutButton(): void {
-    this.eventBrokerService.aboutRequest.next({origin: EventOrigin.WELCOME_DIALOG});
+    this.eventBrokerService.aboutRequest.next({ origin: EventOrigin.WELCOME_DIALOG });
   }
-  
+
   ngAfterViewInit(): void {
     this.eventBrokerService.welcomeRequest.subscribe(_eventInfo => this.dialog.open());
   }

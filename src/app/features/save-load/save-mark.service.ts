@@ -5,7 +5,7 @@ import { UndoManagerService } from '../drafting/shared/undo-manager.service';
 /** A container for the bit that reflects whether the current design needs saving. */
 @Injectable({ providedIn: 'root' })
 export class SaveMarkService {
-  private savedMark: any;
+  private savedMark: any = UndoManagerService.NO_EDIT_COMMAND;
 
   constructor(
     eventBrokerService: EventBrokerService,

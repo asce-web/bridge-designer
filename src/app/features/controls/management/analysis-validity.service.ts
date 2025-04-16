@@ -25,7 +25,7 @@ export class AnalysisValidityService {
     });
     // Must follow subscription above for rehydration.
     sessionStateService.register(
-      'analysis-validity.service',
+      'analysisValidity.service',
       () => this.dehydrate(),
       state => this.rehydrate(state),
     );
