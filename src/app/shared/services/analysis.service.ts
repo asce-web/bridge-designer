@@ -22,7 +22,6 @@ export const enum AnalysisStatus {
   PASSES,
 }
 
-
 @Injectable({ providedIn: 'root' })
 export class AnalysisService {
   constructor(
@@ -145,8 +144,8 @@ export class AnalysisService {
   }
 
   /**
-   * Analyzes the bridge provided by BridgeService. 
-   * 
+   * Analyzes the bridge provided by BridgeService.
+   *
    * Optionally populates the bridge with UI info and degrades selected members for failure animation.
    *
    * @param bridge bridge to analyze
@@ -155,7 +154,7 @@ export class AnalysisService {
   public analyze(options?: { degradeMembersMask?: BitVector; populateBridgeMembers?: boolean }): void {
     this.analyzeImpl(options || {});
     if (options?.populateBridgeMembers) {
-      this.eventBrokerService.analysisCompletion.next({origin: EventOrigin.SERVICE, data: this._status})
+      this.eventBrokerService.analysisCompletion.next({ origin: EventOrigin.SERVICE, data: this._status });
     }
   }
 
@@ -182,10 +181,11 @@ export class AnalysisService {
     const nLoadInstances = conditions.loadedJointCount;
     const pointLoads = Utility.create2dFloat64Array(nLoadInstances, nEquations);
     for (let im = 0; im < nMembers; im++) {
+      const member = members[im];
       const deadLoad =
-        AnalysisService.deadLoadFactor * members[im].shape.area * length[im] * members[im].material.density * 9.8066 / 2.0 / 1000.0;
-      const dof1 = 2 * members[im].a.index + 1;
-      const dof2 = 2 * members[im].b.index + 1;
+        (AnalysisService.deadLoadFactor * member.shape.area * length[im] * member.material.density * 9.8066) / 2000.0;
+      const dof1 = 2 * member.a.index + 1;
+      const dof2 = 2 * member.b.index + 1;
       for (let ilc = 0; ilc < nLoadInstances; ilc++) {
         pointLoads[ilc][dof1] -= deadLoad;
         pointLoads[ilc][dof2] -= deadLoad;
@@ -304,6 +304,9 @@ export class AnalysisService {
       const pivot = stiffness[ie][ie];
       if (Math.abs(pivot) < 0.99) {
         this._status = AnalysisStatus.UNSTABLE;
+        if (options?.populateBridgeMembers) {
+          this.depopulateBridgeMembers();
+        }
         return;
       }
       const pivr = 1.0 / pivot;
@@ -399,19 +402,25 @@ export class AnalysisService {
     }
   }
 
-  public static getStatusIcon(status: AnalysisStatus, useSmall?: boolean): {src: string, title: string} {
+  public static getStatusIcon(status: AnalysisStatus, useSmall?: boolean): { src: string; title: string } {
     const small = useSmall ? 'small' : '';
     switch (status) {
       case AnalysisStatus.PASSES:
-        return {src: `img/good${small}.png`, title: 'The design passed its last test.'};
+        return { src: `img/good${small}.png`, title: 'The design passed its last test.' };
       case AnalysisStatus.FAILS_LOAD_TEST:
-        return {src: `img/bad${small}.png`, title: 'The design failed its last test.'};
+        return { src: `img/bad${small}.png`, title: 'The design failed its last test.' };
       case AnalysisStatus.FAILS_SLENDERNESS:
-        return {src: `img/bad${small}.png`, title: 'Some members that are too slender.'};
+        return { src: `img/bad${small}.png`, title: 'Some members that are too slender.' };
       case AnalysisStatus.UNSTABLE:
-        return {src: `img/bad${small}.png`, title: 'The design is unstable.'};
+        return { src: `img/bad${small}.png`, title: 'The design is unstable.' };
       default:
-        return {src: `img/working${small}.png`, title: "The design hasn't been analyzed."};
+        return { src: `img/working${small}.png`, title: "The design hasn't been analyzed." };
+    }
+  }
+
+  private depopulateBridgeMembers(): void {
+    for (const member of this.bridgeService.bridge.members) {
+      member.maxCompression = member.compressionStrength = member.maxTension = member.tensionStrength = NaN;
     }
   }
 }
