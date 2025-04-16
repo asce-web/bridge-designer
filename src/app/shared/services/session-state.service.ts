@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { EventBrokerService, EventOrigin } from './event-broker.service';
+import { VERSION } from '../classes/version';
 
 @Injectable({ providedIn: 'root' })
 export class SessionStateService {
-  private static readonly LOCAL_STORAGE_KEY = 'bridgedesigner.v1.00000';
+  /** Local storage key that advances for every build via `npm run build`. */
+  private static readonly LOCAL_STORAGE_KEY = `bridge-designer.v${VERSION}`;
   private static readonly SESSION_KEY = 'session.service';
   private stateAccumulator: { [key: string]: Object } | undefined;
   private isEnabled: boolean = true;

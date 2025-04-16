@@ -1,10 +1,5 @@
-/**
- * Kinds of toast error.
- *
- * Thrown in DraftingPanelComponent whenever possible. An exception is tooManyMembersError, where
- * DraftingPanelComponent doesn't have enough state. When throw in deeper calls, take care to clean up.
- */
-export type ToastErrorKind =
+/** Kinds of toast error. Must match id's in toast.component.html (except for 'noError'). */
+export type ToastKind =
   | 'duplicateJointError'
   | 'duplicateMemberError'
   | 'fileReadError'
@@ -16,12 +11,21 @@ export type ToastErrorKind =
   | 'tooManyJointsError'
   | 'tooManyMembersError';
 
+/** Exception handled by showing a toast.
+ *
+ * By convention, thrown in DraftingPanelComponent whenever possible. An exception is e.g. tooManyMembersError, 
+ * where DraftingPanelComponent doesn't have enough state. When thrown in deeper calls, take care to clean up.
+ *
+ * Handled in /shared/core/global-error-handler.service.ts.
+ * 
+ * A toast can be shown without throwing (e.g. upon success) using eventBrokerService.toastRequest.
+ */
 export class ToastError extends Error {
-  constructor(kind: ToastErrorKind) {
+  constructor(kind: ToastKind) {
     super(kind);
   }
 
-  public get kind(): ToastErrorKind {
-    return this.message as ToastErrorKind;
+  public get kind(): ToastKind {
+    return this.message as ToastKind;
   }
 }

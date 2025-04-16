@@ -8,7 +8,7 @@ export class GlobalErrorHandlerService implements ErrorHandler {
 
   handleError(error: any): void {
     if (error instanceof ToastError) {
-      if (error.kind != 'noError') {
+      if (error.kind !== 'noError') {
         this.eventBrokerService.toastRequest.next({origin: EventOrigin.SERVICE, data: error.kind});
       }
     } else {

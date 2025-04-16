@@ -89,9 +89,11 @@ We thank the providers now and forever.
 - Animation
 - Auto-correct
 - Complete help edit
-- Dirty for save management
 - Legacy animation
-- Load and save
 - Member details
 - Printing, 2D
 - Printing, 3D
+
+# Issues
+- Set help height based on window size.
+- Maybe move toasts to app level.

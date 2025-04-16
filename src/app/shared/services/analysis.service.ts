@@ -145,9 +145,9 @@ export class AnalysisService {
   }
 
   /**
-   * Analyzes the bridge provided by BridgeService, and stores results internally for future queries.
-   *
-   * Options support artificially decreasing the strength of failed members for the failure animation.
+   * Analyzes the bridge provided by BridgeService. 
+   * 
+   * Optionally populates the bridge with UI info and degrades selected members for failure animation.
    *
    * @param bridge bridge to analyze
    * @param failureStatus status of failed members: FAILED, NOT_FAILED, base member getLength, which implies FAILED.

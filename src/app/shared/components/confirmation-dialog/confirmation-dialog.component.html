@@ -8,10 +8,10 @@
   <div
     #header
     class="header"
-    [innerHTML]="headerHtml"
+    [innerHTML]="sanitizedHeaderHtml"
   ></div>
   <div class="content">
-    <div class="textContent" [innerHTML]="contentHtml"></div>
+    <div class="textContent" [innerHTML]="sanitizedContentHtml"></div>
     <div class="buttons">
       <div *ngIf="buttons.includes('ok')">
         <jqxButton

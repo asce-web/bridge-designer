@@ -1,0 +1,51 @@
+<jqxWindow
+  #dialog
+  [isModal]="true"
+  [autoOpen]="false"
+  [width]="400"
+  [height]="200"
+  (onClose)="handleClose()"
+>
+  <div
+    #header
+    class="header"
+    [innerHTML]="headerHtml"
+  ></div>
+  <div class="content">
+    <div class="prompt">
+      <label
+        for="input"
+        class="label"
+        [innerHTML]="sanitizedPromptHtml"
+      ></label>
+    </div>
+    <div>
+      <input
+        id="input"
+        #input
+        type="text"
+        maxlength="1000"
+      />
+    </div>
+    <div
+      class="note"
+      [innerHTML]="sanitizedNoteHtml"
+    ></div>
+    <div class="buttons">
+      <div>
+        <jqxButton
+          [width]="buttonWidth"
+          (onClick)="handleOkButtonClick()"
+          >OK</jqxButton
+        >
+      </div>
+      <div>
+        <jqxButton
+          [width]="buttonWidth"
+          (onClick)="dialog.close()"
+          >Cancel</jqxButton
+        >
+      </div>
+    </div>
+  </div>
+</jqxWindow>

@@ -117,7 +117,7 @@ export class AppComponent implements AfterViewInit {
     this.eventBrokerService.uiModeRequest.subscribe(eventInfo =>
       this.showDraftingPanelCover(eventInfo.data === 'initial'),
     );
-    // Let everyone know if session management is enabled.
+    // Let everyone know if session management is enabled. E.g. the menu checked status.
     this.sessionStateService.restoreSessionManagementEnabled();
     // Manage the welcome sequence if there is one. Send a completion event if we're rehydrating.
     // Not a clean place to handle this, but it's simplest.

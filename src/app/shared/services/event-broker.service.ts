@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { AnalysisStatus } from './analysis.service';
-import { ToastErrorKind } from '../../features/toast/toast/toast-error';
+import { ToastKind } from '../../features/toast/toast/toast-error';
 import { UiMode } from '../../features/controls/management/ui-state.service';
 
 /** Origin of an event. For breaking event cycles. */
@@ -100,7 +100,7 @@ export class EventBrokerService {
   public readonly templateToggle = new Subject<EventInfo>();
   public readonly tipRequest = new Subject<EventInfo>();
   public readonly titleBlockToggle = new Subject<EventInfo>();
-  public readonly toastRequest = new Subject<TypedEventInfo<ToastErrorKind>>();
+  public readonly toastRequest = new Subject<TypedEventInfo<ToastKind>>();
   public readonly toolsToggle = new Subject<EventInfo>();
   public readonly undoRequest = new Subject<EventInfo>();
   public readonly unstableBridgeDialogOpenRequest = new Subject<EventInfo>();

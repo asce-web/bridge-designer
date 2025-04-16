@@ -24,10 +24,11 @@
       [selectionTracker]="false"
     >
       <ul>
-        <li>Example 1</li>
-        <li>Example 2</li>
-        <li>Example 3</li>
-        <li>Example 4</li>
+        <!-- Height settings work around jqxTab height calc fail for some browsers. -->
+        <li style="height: 16px;">Example 1</li>
+        <li style="height: 16px;">Example 2</li>
+        <li style="height: 16px;">Example 3</li>
+        <li style="height: 16px;">Example 4</li>
       </ul>
       <div>
         <unstable-bridge-example [exampleNumber]="1">

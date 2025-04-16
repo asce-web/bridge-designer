@@ -61,7 +61,7 @@ export class UiStateService {
     const initial: UiMode[] = ['initial'];
     const initialAndAnimation: UiMode[] = ['initial', 'animation'];
     const initialAndDrafting: UiMode[] = ['initial', 'drafting'];
-    this.addDisableOverrides(eventBrokerService.analysisReportRequest, initial);
+    this.addDisableOverrides(eventBrokerService.analysisReportRequest, initial, true);
     this.addDisableOverrides(eventBrokerService.animationControlsToggle, initialAndDrafting);
     this.addDisableOverrides(eventBrokerService.costReportRequest, initial);
     this.addDisableOverrides(eventBrokerService.deleteSelectionRequest, initialAndAnimation);

@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, QueryList, ViewChildren } from '@angular/core';
 import { jqxNotificationComponent, jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
-import { ToastErrorKind } from './toast-error';
+import { ToastKind } from './toast-error';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 import { Utility } from '../../../shared/classes/utility';
 
@@ -18,7 +18,7 @@ export class ToastComponent implements AfterViewInit {
 
   constructor(private readonly eventBrokerService: EventBrokerService) {}
 
-  public show(kind: ToastErrorKind): void {
+  public show(kind: ToastKind): void {
     Utility.assertNotUndefined(this.notifications.find(item => item.elementRef.nativeElement.id === kind), kind).open();
   }
 
