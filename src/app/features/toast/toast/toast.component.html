@@ -1,4 +1,12 @@
 <jqxNotification
+  id="autofixInfo"
+  [template]="'info'"
+  [position]="'bottom-left'"
+  [autoCloseDelay]="autoCloseDelay"
+>
+  Hey! Auto-corrections were applied. Undo if you like.
+</jqxNotification>
+<jqxNotification
   id="duplicateJointError"
   [template]="'error'"
   [position]="'bottom-left'"
@@ -53,6 +61,14 @@
   [autoCloseDelay]="autoCloseDelay"
 >
   Oops... Can't move a joint onto another joint.
+</jqxNotification>
+<jqxNotification
+  id="noMembersToAddError"
+  [template]="'error'"
+  [position]="'bottom-left'"
+  [autoCloseDelay]="autoCloseDelay"
+>
+  Oops... No members to add!
 </jqxNotification>
 <jqxNotification
   id="tooManyJointsError"

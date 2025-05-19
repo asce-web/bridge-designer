@@ -14,7 +14,7 @@ import { DesignIterationDialogComponent } from './features/iterations/design-ite
 import { DesignSaverLoaderComponent } from './features/save-load/design-saver-loader/design-saver-loader.component';
 import { DraftingPanelComponent } from './features/drafting/drafting-panel/drafting-panel.component';
 import { EventBrokerService, EventOrigin } from './shared/services/event-broker.service';
-import { FlyThruPaneComponent } from './features/fly-thru/fly-thru-pane/fly-thru-pane.component';
+import { FlyThruPaneComponent } from './features/fly-thru/pane/fly-thru-pane.component';
 import { HelpDialogComponent } from './features/help/help-dialog/help-dialog.component';
 import { LoadTestReportDialogComponent } from './features/testing/load-test-report-dialog/load-test-report-dialog.component';
 import { MemberEditDialogComponent } from './features/drafting/member-edit-dialog/member-edit-dialog.component';

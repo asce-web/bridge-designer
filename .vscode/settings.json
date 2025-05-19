@@ -1,11 +1,14 @@
 {
   "angular-schematics.schematicsDefaultOptions": {
     "angular-*": {
-      "externalTemplate": true
+      "externalTemplate": true,
+      "style": "scss"
     }
   },
   "prettier.printWidth": 100,
   "prettier.requireConfig": false,
   "prettier.proseWrap": "always",
-  "markdown.highlightjs.enabled": false
+  "markdown.highlightjs.enabled": false,
+  "java.format.settings.url": "eclipse-formatter.xml",
+  "java.debug.settings.onBuildFailureProceed": true
 }

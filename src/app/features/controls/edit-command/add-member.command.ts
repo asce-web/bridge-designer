@@ -36,20 +36,29 @@ export class AddMemberCommand extends EditCommand {
     command.description = `Add ${transecting.length + 1} members, joint ${member.a.number} to ${member.b.number}`;
     let a: Joint = member.a;
     transecting.forEach(b => {
+      addMember(a, b);
+      a = b;
+    });
+    addMember(a, member.b);
+    return command;
+
+    function addMember(a: Joint, b: Joint) {
       if (!bridge.members.some(member => member.hasJoints(a, b))) {
         command.members.push(new Member(-1, a, b, member.material, member.shape));
       }
-      a = b;
-    });
-    command.members.push(new Member(-1, a, member.b, member.material, member.shape));
-    return command;
+    }
   }
 
   public override do(): void {
+    if (this.members.length === 0) {
+      throw new ToastError('noMembersToAddError');
+    }
     if (this.bridge.members.length + this.members.length > DesignConditions.MAX_MEMBER_COUNT) {
       throw new ToastError('tooManyMembersError');
     }
-    this.members.forEach((member, index) => (member.index = index + this.bridge.members.length));
+    this.members.forEach((member, index) => {
+      member.index = index + this.bridge.members.length;
+    });
     EditableUtility.merge(this.bridge.members, this.members, this.selectedElements.selectedMembers);
   }
 

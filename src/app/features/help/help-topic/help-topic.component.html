@@ -351,8 +351,9 @@
   <h1>Auto-correct errors check box</h1>
   <p>
     <img src="img/help/wrench.png" /> Checking the menu entry at <span class="b">tools</span>,
-    <span class="b">auto-correct errors</span> causes BD to attempt repairs of common minor errors. It does this
-    automatically just before each <topic-link name="hlp_load_test_status">load test</topic-link>.
+    <span class="b">auto-correct errors</span> causes <span class="bd-emph">Bridge Designer</span> to attempt repairs of
+    common minor errors. It does this automatically just before each
+    <topic-link name="hlp_load_test_status">load test</topic-link>.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
@@ -2014,34 +2015,34 @@
     will be prompted to save it before the sample design is loaded.
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_load_a_template">
   <h1>Load and display a template</h1>
   <p>
     The <span class="bd-emph">Bridge Designer</span> includes a variety of truss templates, which you can load and
-    display on the <topic-link name="hlp_drawing_board">Drawing Board.</topic-link> The
-    <topic-popup name="glos_template">template</topic-popup> will show you where to draw
+    display on the <topic-link name="hlp_drawing_board">drawing board</topic-link> as light gray outlines. Trace the
+    <topic-popup name="glos_template">template</topic-popup> with
     <topic-popup name="glos_joints">joints</topic-popup> and <topic-popup name="glos_members">members</topic-popup> to
     create a
-    <topic-link name="hlp_structural_stability">stable</topic-link>
+    <topic-link name="hlp_structural_stability">stable </topic-link>
     <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </p>
   <h2 class="in1">To load and display a template:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_load_template">Load Template button</topic-popup> located in the
-      <topic-link name="hlp_menu_bar">File menu.</topic-link>
+      Click <topic-popup name="hlp_load_template">load template</topic-popup> in the
+      <topic-link name="hlp_menu_bar">file menu.</topic-link>
     </li>
     <li>
-      Select a template, and click OK.. The template will be displayed on the
-      <topic-link name="hlp_drawing_board">Drawing Board.</topic-link>
+      Select a template, and click OK, or else double click it. The template will be displayed on the
+      <topic-link name="hlp_drawing_board">drawing board</topic-link>.
     </li>
   </ol>
   <h2 class="btop">Notes and tips</h2>
-  <p>You must be in the <topic-link name="hlp_drawing_board">Drawing Board Mode</topic-link> to load a template.</p>
+  <p>You must be in the <topic-link name="hlp_drawing_board">drawing board mode</topic-link> to load a template.</p>
   <p>
     Once a template is loaded, you can hide it by clicking the
-    <topic-popup name="hlp_view_template">View Template button.</topic-popup>
+    <topic-popup name="hlp_view_template">template button</topic-popup> in the toolbar or in the
+    <topic-link name="hlp_menu_bar">view menu</topic-link> entry.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_load_combinations">
@@ -2049,37 +2050,38 @@
   <p>
     Structural engineers use <span class="b">load combinations</span> to account for the fact that structures often
     experience several different types of <topic-popup name="glos_loads">loads</topic-popup> at the same time. For
-    example, a bridge must simultaneously carry its own weight, plus the weight of the traffic and pedestrians crossing
-    it. But the bridge <span class="i">might</span> also have to carry the loads caused by high winds, snow, ice, or
-    even an earthquake. It is highly unlikely that all of these extreme loads could occur at exactly the same time. For
-    this reason, most structural design codes specify a number of different load combinations, each of which corresponds
-    to a particular extreme event--a really heavy truck loading, or a really strong earthquake, for example. For each
-    load combination, the extreme loading is combined with average levels of other loads that might be present at the
-    same time the extreme event occurs.
+    example, a bridge must simultaneously carry its own weight plus the weight of traffic and pedestrians crossing it.
+    But the bridge <span class="i">might</span> also need to carry loads caused by high winds, snow, ice, or even an
+    earthquake. It is highly unlikely that all these extreme loads will occur at the same time. For this reason, most
+    structural design codes specify several different load combinations. Each corresponds to a particular extreme event
+    - a really heavy truck loading or a really strong earthquake, for example. For each load combination, the extreme
+    loading is combined with the average of other loads that might be present at the same time.
   </p>
   <p>
     The 1994 <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification requires bridge engineers
-    to check eleven different load combinations for every bridge they design. The
-    <span class="bd-emph">Bridge Designer</span> uses only one of these eleven. It is:
+    to check eleven different load combinations for each bridge they design. The
+    <span class="bd-emph">Bridge Designer</span> uses only one these. It is:
   </p>
   <p class="in1">
-    Total Load = 1.25 <span class="bi">Ws</span> + 1.5 <span class="bi">Ww</span> + 1.75 <span class="bi">T</span> (1+
-    <span class="bi">DLA</span>)
+    Total Load = 1.25 <span class="bi">W<sub>s</sub></span> + 1.5 <span class="bi">W<sub>w</sub></span> + 1.75
+    <span class="bi">T</span> (1 + <span class="bi">DLA</span>)
   </p>
   <p class="in1">where:</p>
   <p class="in2">
-    <span class="bi">Ws</span> = weight of the structure, including the
+    <span class="bi">W<sub>s</sub></span> = weight of the structure, including the
     <topic-popup name="glos_deck">deck</topic-popup> and all structural components
   </p>
   <p class="in2">
-    <span class="bi">Ww</span> = weight of the <topic-popup name="glos_asphalt">asphalt</topic-popup>
-    <topic-popup name="glos_wearing_surface">wearing surface</topic-popup>
+    <span class="bi">W<sub>w</sub></span> = weight of the
+    <topic-popup name="glos_asphalt">asphalt</topic-popup>&nbsp;<topic-popup name="glos_wearing_surface"
+      >wearing surface</topic-popup
+    >
   </p>
   <p class="in2">
-    <span class="bi">T</span> = weight of the <topic-popup name="hlp_aashto_h20x44">AASHTO Truck Loading</topic-popup>
+    <span class="bi">T</span> = weight of the <topic-popup name="hlp_aashto_h20x44">AASHTO truck loading</topic-popup>
   </p>
   <p class="in2">
-    <span class="bi">DLA</span> = <topic-popup name="glos_dynamic_load_allowance">Dynamic Load Allowance</topic-popup>
+    <span class="bi">DLA</span> = <topic-popup name="glos_dynamic_load_allowance">dynamic load allowance</topic-popup>
   </p>
   <p class="in1">
     The numbers 1.25, 1.5, and 1.75 are <topic-popup name="glos_load_factors">load factors</topic-popup>.
@@ -2088,7 +2090,7 @@
   <p>
     The fact that the <span class="bd-emph">Bridge Designer</span> considers only one of eleven different code-specified
     load combinations is one important reason why this software is <span class="b">for educational use only</span>. For
-    other reasons, see <topic-link name="hlp_not_realistic">What is Not Realistic about BD</topic-link>.
+    other reasons, see <topic-link name="hlp_not_realistic">what is not realistic about Bridge Designer</topic-link>.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_load_template">
@@ -2098,12 +2100,12 @@
       alt="Load template button"
       src="img/help/btnltemp.png"
     />
-    Click the <span class="b">Load template button</span> to
+    Click the <span class="b">load template button</span> to
     <topic-link name="hlp_load_a_template">load a standard truss template</topic-link> and display it on the
-    <topic-link name="hlp_drawing_board">Drawing Board</topic-link>.
+    <topic-link name="hlp_drawing_board">drawing board</topic-link>.
   </p>
   <h2 class="btop">Notes and tips</h2>
-  <p>The Load Template button is located in the <topic-link name="hlp_menu_bar">File menu</topic-link>.</p>
+  <p>The load template button is available in the <topic-link name="hlp_menu_bar">file menu</topic-link>.</p>
 </ng-template>
 <ng-template topic-name="hlp_load_test_options">
   <h1>Load test options</h1>
@@ -2112,83 +2114,81 @@
       alt="Auto-correct errors"
       src="img/help/chekmark.png"
     />
-    <span class="b">Attempt to fix unstable structure automatically</span> has been replaced by the
-    <topic-link name="hlp_auto_correct_errors">Auto-correct errors</topic-link> check box in the Test menu. If this is
-    switched on, the <span class="bd-emph">Bridge Designer</span> will attempt to identify the source of instability in
-    an <topic-link name="hlp_structural_stability">unstable structural model</topic-link> and modify the structure so
-    that it can be load-tested. These modifications might include deleting an unattached joint, adding a new member, or
-    breaking a member into two or more shorter ones. The modifications might not be successful, depending on the type
-    and extent of instability. Nonetheless, we strongly recommend that you keep this option switched on.
+    The
+    <topic-link name="hlp_auto_correct_errors">auto-correct errors</topic-link> check box in the
+    <topic-link name="hlp_menu_bar">test menu</topic-link> causes the <span class="bd-emph">Bridge Designer</span> to
+    attempt to identify the source of instability in an
+    <topic-link name="hlp_structural_stability">unstable structural model</topic-link> and modify it so that it can be
+    load-tested. The modifications might include deleting an unattached joint or member or adding new required members.
+    The modifications might not be successful, depending on the type and extent of instability. Still, it's best keep
+    this option switched on unless there's good reason to turn it off.
   </p>
   <p>
     <img
-      alt="Display the animation"
+      alt="Show animation"
       src="img/help/chekmark.png"
     />
-    <span class="b">Display the animation</span> has been replaced by the
-    <topic-link name="hlp_show_animation">Show Animation</topic-link> check box in the Test menu. If this is switched
-    on, the <topic-popup name="glos_load_test">load test</topic-popup> animation is displayed on every load test. If
-    this option is off, the animation is not shown, and the user is returned immediately to the
-    <topic-link name="hlp_drawing_board">Drawing Board Mode</topic-link> after each load test.
+    The <topic-link name="hlp_show_animation">show animation</topic-link> check box is in the Test menu. If switched on,
+    the <topic-popup name="glos_load_test">load test</topic-popup> animation is displayed for every load test. If it's
+    off, the animation is not shown, and the user is returned immediately to
+    <topic-link name="hlp_drawing_board">drawing board mode</topic-link> after each load test.
   </p>
   <p>
     <img
-      alt="Show exaggerated displacements"
+      alt="Exaggeration"
       src="img/help/chekmark.png"
     />
-    <span class="b">Show exaggerated displacements</span> has been replaced by the <b>Exaggeration</b>check box in the
-    <topic-link name="hlp_animation_controls">Animation controls palette</topic-link>. If this is switched on, the
-    bending of the bridge is exaggerated by a factor of 10, to illustrate how truss
+    The <b>Exaggeration</b>check box is in the
+    <topic-link name="hlp_animation_controls">animation controls palette</topic-link>. If switched on, the bending of
+    the bridge is exaggerated by a factor of 10, to show more clearly how truss
     <topic-popup name="glos_members">members</topic-popup> shorten and elongate as they carry load. If this option is
     off, <topic-popup name="glos_displacement">displacements</topic-popup> are not exaggerated.
   </p>
   <p>
     <img
-      alt="Show color-coded member forces"
+      alt="Member colors"
       src="img/help/chekmark.png"
     />
-    <span class="b">Show color-coded member forces</span> has been replaced by the <b>Colors</b>check box in the
-    <topic-link name="hlp_animation_controls">Animation controls palette</topic-link>. If this is switched on, members
-    change color during the animation. The color represents the magnitude of the
+    The <b>member colors</b>check box is in the
+    <topic-link name="hlp_animation_controls">animation controls palette</topic-link>. If switched on, members change
+    color during the animation to show the magnitude of the
     <topic-popup name="glos_member_force">member force</topic-popup>: <span class="c5b">red</span> for
     <topic-popup name="glos_compression">compression</topic-popup> and <span class="c1b">blue</span> for
     <topic-popup name="glos_tension">tension</topic-popup>. The more intense the color, the closer the member is to
-    failure. If this option is off, the members do not change color during the animation.
+    failure. When switched off, the members do not change color during the animation.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    In the <span class="bd-emph">Bridge Designer</span>, changing speed has no effect on the amount of memory or
-    processor time used for the animation, though it did in earlier versions. If you have an older computer that does
-    not perform well with the new game-quality animation graphics, use the Test menu to check the
-    <topic-link name="hlp_old_style_graphics">Use Old-Style Graphics</topic-link> checkbox.
+    If you have a computer that does not perform well with the game-quality animation graphics, use the test menu to
+    check the
+    <topic-link name="hlp_old_style_graphics">use old-style graphics</topic-link> checkbox.
   </p>
   <p>
-    The two options that should be <b>turned off</b>to make your bridge appear as realistic as possible are now both
-    available in the <topic-link name="hlp_animation_controls">Animation controls palette</topic-link>. They are
-    <b>Exaggeration</b>and <b>Colors</b>.
+    Exaggeration and member colors options should be turned off to make your bridge appear as realistic as possible.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_load_test_status">
   <h1>Load test status</h1>
   <p>
     The current status of your design is displayed as an icon on the
-    <topic-link name="hlp_toolbars">Status toolbar.</topic-link> Your design will always be in one of three possible
+    <topic-link name="hlp_toolbars">status toolbar</topic-link>. Your design will always be in one of three possible
     states:
   </p>
   <p>
     <img
-      alt="Load Test Status"
+      alt="Load test status under construction"
       src="img/help/statcnst.png"
+      class="img-bullet"
     />
-    <span class="b">Under Construction</span>. The
+    <span class="b">Under construction</span>. The
     <topic-popup name="glos_structural_model">structural model</topic-popup> is not yet completed, or it has been
-    changed since the last
-    <topic-link name="hlp_run_load_test">load test.</topic-link>
+    changed since the last <topic-link name="hlp_run_load_test">load test</topic-link>.
   </p>
   <p>
     <img
-      alt="Load Test Status"
+      alt="Load test status unsafe"
       src="img/help/statnogo.png"
+      class="img-bullet"
     />
     <span class="b">Unsafe</span>. The structural model has been load tested, and one or more
     <topic-popup name="glos_members">members</topic-popup> are not strong enough to safely carry the specified
@@ -2196,87 +2196,87 @@
   </p>
   <p>
     <img
-      alt="Load Test Status"
+      alt="Load test status safe"
       src="img/help/statgo.png"
+      class="img-bullet"
     />
     <span class="b">Safe</span>. The structural model has been load tested, and all members are strong enough to safely
     carry the specified loads.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    Anytime you make a change to your structural model, the status will change to Under Construction until you run the
-    load test again.
+    Anytime you make a change to your structural model, the status will change to under construction until another load
+    test is run.
   </p>
   <p>
     To get detailed numerical results of the most recent <topic-popup name="glos_load_test">load test</topic-popup>,
-    click the <topic-popup name="hlp_report_load_test">Report Load Test Results button</topic-popup> or view the
-    <topic-link name="hlp_member_list">Member List.</topic-link>
+    click the <topic-popup name="hlp_report_load_test">report load test results button</topic-popup>. The
+    <topic-link name="hlp_member_list">member list</topic-link> also has a summary.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_load_test_button">
   <h1>Load test button</h1>
   <p>
     <img
-      alt="Load Test button"
+      alt="Load test button"
       src="img/help/loadtest.png"
     />
-    Click the <span class="b">Load Test button</span> to
+    Click the <span class="b">load test button</span> to
     <topic-link name="hlp_run_load_test">load test</topic-link> your current design.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Load Test button is located on the <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> It can also be
-    accessed from the <topic-link name="hlp_menu_bar">Test menu</topic-link>.
+    The load test button is located on the <topic-link name="hlp_toolbars">main toolbar.</topic-link> It's also
+    available in the <topic-link name="hlp_menu_bar">test menu</topic-link>.
   </p>
   <p>
-    The Load Test button and the <topic-popup name="hlp_drawing_board_button">Drawing Board button</topic-popup> work
-    like &quot;radio buttons.&quot; Only one of the two can be depressed at any given time. When you click one, it
-    remains depressed until you click the other.
+    The load test button and the <topic-popup name="hlp_drawing_board_button">drawing board button</topic-popup> work in
+    tandem. Only one can be depressed at any given time. When you click one, it remains depressed until you click the
+    other. The exception is if you've turned off the show animation option in the test menu. This causes the mode to
+    switch back to the drawing board immediately after the test is complete.
   </p>
-  <p></p>
 </ng-template>
 <ng-template topic-name="hlp_load_test3">
   <h1>Load test animation</h1>
   <p>
-    The <topic-popup name="glos_load_test">load test</topic-popup> <span class="b">animation</span> is a graphical
-    simulation of your bridge undergoing the <topic-link name="hlp_run_load_test">load test</topic-link>. To initiate
-    the animation, click the <topic-popup name="hlp_load_test_button">Load Test button</topic-popup>.
+    The <topic-popup name="glos_load_test">load test</topic-popup>&nbsp;<span class="b">animation</span> is a graphical
+    simulation of your bridge undergoing the <topic-link name="hlp_run_load_test">load test</topic-link>. To start the
+    animation, click the <topic-popup name="hlp_load_test_button">load test button</topic-popup>.
   </p>
   <p>
-    As the animation begins, your bridge is subjected to its own weight--the weight of the steel structural elements,
-    the <topic-popup name="glos_concrete">concrete</topic-popup>&nbsp;<topic-popup name="glos_deck">deck</topic-popup>,
-    and the <topic-popup name="glos_asphalt">asphalt</topic-popup>&nbsp;
-    <topic-popup name="glos_wearing_surface">wearing surface</topic-popup>. Once the self-weight is applied, the
-    <topic-popup name="hlp_aashto_h20x44">AASHTO H25 truck</topic-popup> moves across the bridge from left to right. As
-    the <topic-popup name="glos_loads">loads</topic-popup> are applied, the bridge bends downward. The
-    <topic-popup name="glos_displacement">displacements</topic-popup> of the bridge are exaggerated by a factor of 10,
-    to illustrate how truss <topic-popup name="glos_members">members</topic-popup> shorten and elongate as they carry
-    load. As the member <topic-popup name="glos_forces">forces</topic-popup> increase, the members change color--
-    <span class="c5b">red</span> for <topic-popup name="glos_compression">compression</topic-popup> and
+    As the animation begins, your bridge is subjected to only its own weight: its steel structural elements,
+    <topic-popup name="glos_concrete">concrete</topic-popup>&nbsp;<topic-popup name="glos_deck">deck</topic-popup>, and
+    <topic-popup name="glos_asphalt">asphalt</topic-popup>&nbsp;<topic-popup name="glos_wearing_surface"
+      >wearing surface</topic-popup
+    >. Once the self-weight is applied, an <topic-popup name="hlp_aashto_h20x44">AASHTO H25 truck</topic-popup> moves
+    across the bridge from left to right. As the <topic-popup name="glos_loads">loads</topic-popup> are applied, the
+    bridge bends. The <topic-popup name="glos_displacement">displacements</topic-popup> of the bridge may be exaggerated
+    by a factor of 10, to illustrate how truss <topic-popup name="glos_members">members</topic-popup> shorten and
+    elongate as they carry load. As member <topic-popup name="glos_forces">forces</topic-popup> increase, the members
+    change color: <span class="c5b">red</span> for <topic-popup name="glos_compression">compression</topic-popup> and
     <span class="c1b">blue</span> for <topic-popup name="glos_tension">tension</topic-popup>. The more intense the
     color, the closer the member is to failure. If one or more members are found to be
-    <topic-popup name="glos_unsafe">unsafe</topic-popup>, the animation includes a depiction of these members failing
-    and the resulting collapse of the bridge.
+    <topic-popup name="glos_unsafe">unsafe</topic-popup>, the animation shows these members failing and how the bridge
+    might look as it begins to collapse.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
     You can pause, rewind, and restart the animation at any time, using the
-    <topic-popup name="hlp_animation_controls">Animation Controls.</topic-popup>
+    <topic-popup name="hlp_animation_controls">animation controls.</topic-popup>
   </p>
   <p>
     You can change the appearance of the load test animation or opt not to show it at all by changing the
-    <topic-popup name="hlp_load_test_options">Load Test Options</topic-popup>.
+    <topic-popup name="hlp_load_test_options">load test options</topic-popup>.
   </p>
   <p>
-    Whenever a member is found to be unsafe, the load test animation depicts the failure of that member, in either the
+    Whenever a member is found to be unsafe, the load test animation depicts the failure of that member in either the
     <topic-popup name="glos_yielding">yielding</topic-popup> or
-    <topic-popup name="glos_buckling">buckling</topic-popup> failure mode. This depiction is not entirely realistic.
-    Engineers always build a substantial margin of <topic-popup name="glos_safe">safety</topic-popup> into the design of
-    structural members. This margin of safety is represented by the
-    <topic-popup name="glos_load_factors">load factors</topic-popup> in code-specified
+    <topic-popup name="glos_buckling">buckling</topic-popup> failure mode. This is not entirely realistic. Engineers
+    always build a margin of <topic-popup name="glos_safe">safety</topic-popup> into structural members. This margin is
+    represented by the <topic-popup name="glos_load_factors">load factors</topic-popup> in code-specified
     <topic-link name="hlp_load_combinations">load combinations</topic-link> and by the resistance factors in the
     equations for <topic-link name="hlp_tensile_strength">tensile strength</topic-link> and
-    <topic-link name="hlp_compressive_strength">compressive strength.</topic-link> An unsafe member
+    <topic-link name="hlp_compressive_strength">compressive strength</topic-link>. An unsafe member
     <span class="i">might</span> fail, or it might continue to carry load with a reduced margin of safety.
   </p>
   <p>
@@ -2288,40 +2288,32 @@
 <ng-template topic-name="hlp_local_contest">
   <h1>Local contest code</h1>
   <p>
-    The Bridge Design Contest (BDC) includes support for two different types of local bridge design contests. In either
-    case, a contest code is issued to the local contest organizer by the national BDC Coordinator. The first type, which
-    uses a <span class="b">4-character Local Contest Code</span>, is best when the national BDC is in progress. Any
-    bridge submitted to the local contest simultaneously competes in the national contest.
+    The <span class="bd-emph">Bridge Designer</span> includes support for local bridge design contests. A
+    <span class="b">6-character local contest code</span> may be entered in the
+    <topic-link name="hlp_setup_wizard">Design Project Setup Wizard</topic-link>. The code causes automatic selection of
+    site conditions including the load case. Your task is to design the best possible bridge for those conditions.
   </p>
   <p>
-    A <span class="b">6-character Local Contest Code</span> is restricted to a single site configuration and load case.
-    The designated site configuration and load case are embedded in the Local Contest Code. For this reason, the
-    <span class="bd-emph">Bridge Designer</span> allows the user to input a six-character Local Contest Code at the
-    start of each new design. Local Contest Code entry is included as Step 2 in the
-    <topic-link name="hlp_setup_wizard">Design Project Setup Wizard</topic-link>.The advantage of a 6-character contest
-    is that students quickly produce competitive bridges for the single site. A disadvantage occurs if the national BDC
-    is in progress: Bridges designed for the local contest are unlikely to be competitive nationally due to the site
-    restriction.
+    A future enhancement of the <span class="bd-emph">Bridge Designer</span> - which depends on suitable funding - will
+    automatically produce a scoreboard for all designs having the same code. Until then, you'll have to manually track
+    who's winning.
   </p>
   <h2 class="in1">To enter a Local Contest Code:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_new_design">New Design button</topic-popup> to display the
-      <topic-link name="hlp_setup_wizard">Design Project Setup Wizard</topic-link>.
+      Click the <topic-popup name="hlp_new_design">new design button</topic-popup> to display the
+      <topic-link name="hlp_setup_wizard">project setup wizard</topic-link>.
     </li>
-    <li>
-      At Step 2 in the Wizard, check <span class="b">Yes</span> to indicate which type of Local Contest Code
-      (4-character or 6-character) you will be using.
-    </li>
-    <li>If you are using a 6-character Local Contest Code, enter it in the text box.</li>
+    <li>At Step 2 in the Wizard, check <span class="b">Yes</span>.</li>
+    <li>Enter your code in the text box.</li>
   </ol>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The first three characters of a 6-character Local Contest Code uniquely identify the local contest (e.g., NHS for
-    Northampton High School). The next two characters are a two-digit number representing the site configuration (i.e.,
-    the <topic-popup name="glos_deck">deck</topic-popup> elevation and supports). The final character is a letter (A, B,
-    C, or D) designating the Load Case. The load case consists of one of the two truck available loadings combined with
-    one of the two available <topic-popup name="glos_concrete">concrete</topic-popup> deck thicknesses.
+    The first three characters of a local contest code can be used to uniquely identify the contest (e.g., NHS for
+    Northampton High School). The next two are a two-digit number representing the site configuration (i.e., the
+    <topic-popup name="glos_deck">deck</topic-popup> elevation and supports). The final character is a letter (A, B, C,
+    or D) designating the Load Case. The load case consists of one of the two truck available loadings combined with one
+    of the two available <topic-popup name="glos_concrete">concrete</topic-popup> deck thicknesses.
   </p>
   <p>
     As soon as a valid 6-character Local Contest Code is entered in the Design Project Setup Wizard, the corresponding
@@ -2335,14 +2327,19 @@
     <span class="bd-emph">Bridge Designer</span> uses material densities as specified in the 1994
     <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specifications, as follows:
   </p>
-  <h2>Material</h2>
-  <h2>Density</h2>
-  <p>Reinforced <topic-popup name="glos_concrete">Concrete</topic-popup></p>
-  <p>2400 kg per cubic meter</p>
-  <p>Asphalt</p>
-  <p>2250 kg per cubic meter</p>
-  <p>Steel (all types)</p>
-  <p>7850 kg per cubic meter</p>
+  <ul>
+    <li>
+      <span class="b">Reinforced <topic-popup name="glos_concrete">Concrete</topic-popup>:</span> 2400 kg per cubic
+      meter
+    </li>
+    <li>
+      <span class="b"><topic-popup name="glos_asphalt">Asphalt</topic-popup>:</span> 2250 kg per cubic meter
+    </li>
+    <li>
+      <span class="b"><topic-link name="hlp_materials">Steel (all types)</topic-link></span
+      >: 7850 kg per cubic meter.
+    </li>
+  </ul>
 </ng-template>
 <ng-template topic-name="hlp_materials">
   <h1>Materials</h1>
@@ -2352,17 +2349,17 @@
   </p>
   <ol>
     <li>
-      Carbon steel. This is the most common grade of structural steel, composed primarily of iron and about 0.26%
-      carbon.
+      <span class="b">Carbon steel.</span> This is the most common grade of structural steel, composed primarily of iron
+      and about 0.26% carbon.
     </li>
     <li>
-      High-Strength Low-Alloy steel. This increasingly popular structural steel is similar to carbon steel but
-      significantly stronger. The higher strength is attained from small amounts of manganese, columbium, vanadium, and
-      other alloying elements added during the manufacturing process.
+      <span class="b">High-Strength Low-Alloy steel.</span> This increasingly popular structural steel is similar to
+      carbon steel but significantly stronger. The higher strength is attained from small amounts of manganese,
+      columbium, vanadium, and other alloying elements added during the manufacturing process.
     </li>
     <li>
-      Quenched and Tempered Low-Alloy Steel. This very high-strength steel is similar to high-strength low-alloy steel,
-      but its strength is further increased through a special heat-treating process.
+      <span class="b">Quenched and Tempered Low-Alloy Steel.</span> This very high-strength steel is similar to
+      high-strength low-alloy steel, but its strength is further increased through a special heat-treating process.
     </li>
   </ol>
   <h2 class="btop">Notes and tips</h2>
@@ -2376,29 +2373,30 @@
     <topic-popup name="glos_modulus_of_elasticity">modulus of elasticity</topic-popup>.
   </p>
   <p>
-    The &quot;best&quot; material often varies from structure to structure, and a given design may use more than one
-    material. You'll need to do some experimenting to determine which materials are best for your design.
+    The &quot;best&quot; material often varies from structure to structure. A design may use more than one. You'll need
+    to experiment to determine which materials are best for your design.
   </p>
   <p>
-    To determine the actual numerical values of <topic-popup name="glos_yield_stress">yield stress</topic-popup>,
+    To determine the numerical values of <topic-popup name="glos_yield_stress">yield stress</topic-popup>,
     <topic-popup name="glos_mass_density">mass density</topic-popup>, and modulus of elasticity for a given material,
-    click the <topic-popup name="hlp_member_details">Report Member Properties button.</topic-popup> To determine the
-    unit cost of a material, click the <topic-link name="hlp_report_cost">Report Cost Calculations button.</topic-link>
+    use the <topic-link name="hlp_member_details">member details tab</topic-link>. To determine the unit cost of a
+    material, check the <topic-link name="hlp_report_cost">cost calculations report</topic-link>.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_member_list">
   <h1>Member list</h1>
   <p>
-    The <span class="b">Member List</span> is a movable grid that is normally displayed on the right-hand side of the
-    <topic-link name="hlp_bridge_design_window">Bridge Design Window.</topic-link> When in use, the Member List reduces
-    space available for the <topic-link name="hlp_drawing_board">Drawing Board;</topic-link> however, it can be easily
-    hidden in order to view or edit the <topic-popup name="glos_structural_model">structural model</topic-popup>.
+    The <span class="b">member list</span> is a movable grid that is normally displayed on the right-hand side of the
+    <topic-link name="hlp_bridge_design_window">bridge design window.</topic-link> When in use, the Member List reduces
+    space available for the <topic-link name="hlp_drawing_board">drawing board</topic-link>. However, it can be easily
+    hidden to make more space for editing the <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </p>
   <p>
-    The <span class="b">Member List</span> and Member Details occupy the same screen location. If Member Details are
-    visible, you can change to the Member List by clicking its tab at the upper right corner.
+    The <span class="b">member list</span> and <topic-link name="hlp_member_details">member details</topic-link> occupy
+    the same screen location. If member details are visible, you can change to the member list by clicking its tab at
+    the upper right.
   </p>
-  <p>The Member List does the following:</p>
+  <p>The member list does the following:</p>
   <ul>
     <li>Lists all of the <topic-popup name="glos_members">members</topic-popup> in the current structural model.</li>
     <li>
@@ -2410,94 +2408,90 @@
     <li>
       Provides the most recent <topic-popup name="glos_load_test">load test</topic-popup> results for each member.
     </li>
-    <li>Provides a convenient means of selecting one or more members.</li>
-    <li>Provides a means of sorting members--by member number, by engineering properties, or by load test results.</li>
+    <li>Provides a convenient way to select one or more members.</li>
+    <li>Allows sorting members by member number, by engineering properties, or by load test results.</li>
   </ul>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    In the Member List, load test results are shown as a ratio of
+    In the member list, load test results are shown as ratios of
     <topic-popup name="glos_member_force">member force</topic-popup> to strength, for both
     <topic-popup name="glos_compression">compression</topic-popup> and
-    <topic-popup name="glos_tension">tension</topic-popup>. Thus, if the ratio is greater than 1, the member is
-    <topic-popup name="glos_unsafe">unsafe</topic-popup>. (Members that are unsafe in tension are highlighted in
-    <span class="c1b">blue</span>; those that are unsafe in compression are highlighted in
-    <span class="c5b">red</span>.) If the ratio is less than 1, the member is
-    <topic-popup name="glos_safe">safe</topic-popup>. If the ratio is <span class="i">much</span> less than 1, the
-    member is much stronger than it really needs to be and therefore is probably uneconomical.
+    <topic-popup name="glos_tension">tension</topic-popup>. If the ratio is greater than one, the member is
+    <topic-popup name="glos_unsafe">unsafe</topic-popup>. Members unsafe in tension are highlighted in
+    <span class="c1b">blue</span>. Those unsafe in compression are highlighted in <span class="c5b">red</span>. If the
+    ratio is less than one, the member is <topic-popup name="glos_safe">safe</topic-popup>. If the ratio is
+    <span class="i">much</span> less than one, the member is much stronger than it needs to be. It's probably
+    uneconomical.
   </p>
   <p>
-    The Member List can be hidden and restored with the
-    <topic-link name="hlp_view_member_list">View Member List button</topic-link> <img src="img/help/memtable.png" />. It
-    can also be closed with the the <img src="img/help/close.png" /> button at the upper right.
+    The member list can be hidden and restored with the
+    <topic-link name="hlp_view_member_list">view member list button</topic-link> <img src="img/help/memtable.png" />.
   </p>
   <p>
-    To hide the Member List entirely, click the
-    <topic-popup name="hlp_view_member_list">View Member List button.</topic-popup> If the list is already hidden, click
-    the same button to restore it.
-  </p>
-  <p>
-    To select a member, click anywhere within the corresponding row of the Member List. A selected member is highlighted
-    in <span class="c2b">light blue</span>, both in the Member List and on the Drawing Board.
+    To select a member, click the corresponding row of the member List. A selected member is highlighted in
+    <span class="c2b">light blue</span>, both in the member list and the drawing board.
   </p>
   <p>
     You can click and drag with the mouse button down to select a range of members. Alternately you can select a range
     by clicking on one member, holding the Shift key down, and clicking a second member. This selects both of the
     clicked members and all members between
   </p>
-  <p>To select more than one member simultaneously, hold down the Ctrl key while clicking the Member List.</p>
+  <p>To select more than one member not in a range, hold down the Ctrl key while clicking rows in the member list.</p>
   <p>
-    To sort the Member List, click the heading of the column you want to sort by. For example, to sort members by
-    <span class="i">length</span>, click the heading of the Length column. The first time you click a column heading,
-    the list will be sorted in <span class="i">ascending</span> order; if you click the same button a second time, it
-    will be sorted in <span class="i">descending</span> order.
+    To sort the member list, click the heading of the column to sort by. For example, to sort members by
+    <span class="i">length</span>, click the heading of the length column. The first time you click a column heading,
+    the list will be sorted in <span class="i">ascending</span> order; if you click again, it will be sorted in
+    <span class="i">descending</span> order. A third click restores the default sort order, which is by number.
   </p>
   <p>
-    The Member List can be used to
-    <topic-link name="hlp_optimize_member_selection">optimize the member properties</topic-link> in your structural
-    model very efficiently. Immediately following a Load Test, sort the Member List by
-    <span class="c5b">compression</span> load test results. (Click Compression Force/Strength column heading.) The list
-    will be sorted from <span class="i">most safe</span> to <span class="i">least safe</span>. Any unsafe members will
-    be at the bottom of the list (highlighted in <span class="c5b">red</span>), and any excessively strong (i.e.,
-    uneconomical) members will be at the top. Now you can select a block of members that needs to be made larger or
-    smaller (see the discussion of block selection above), then use the
-    <topic-popup name="hlp_increase_member">Increase Member Size button</topic-popup> or the
-    <topic-popup name="hlp_decrease_member">Decrease Member Size button</topic-popup> to make the appropriate change to
-    the entire selected block. Repeat the process for <span class="c1b">tension</span> load test results.
+    The member list can be used to efficiently
+    <topic-link name="hlp_optimize_member_selection">optimize member properties</topic-link> in your structural model.
+    Immediately following a <topic-popup name="glos_load_test">load test</topic-popup>, sort by
+    <span class="c5b">compression</span> load test results by clicking the compression force/strength column heading.
+    The list will be sorted from <span class="i">most safe</span> to <span class="i">least safe</span>. Any unsafe
+    members will be at the bottom of the list (highlighted in <span class="c5b">red</span>), and any excessively strong
+    (i.e., uneconomical) members will be at the top. Now you can select a block of members that needs to be made larger
+    or smaller (using click and drag or Shift selection as above), then use the
+    <topic-popup name="hlp_increase_member">increase member size button</topic-popup> or the
+    <topic-popup name="hlp_decrease_member">decrease member size button</topic-popup> to change all selected rows at
+    once. Repeat for <span class="c1b">tension</span> load test results.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_member_properties">
   <h1>Member properties lists</h1>
   <p>
     <img
-      alt="Member Properties lists"
+      alt="Member properties lists"
       src="img/help/memprop.png"
     />
-    Use the three <span class="b">Member Properties lists</span> to define the material, cross-section, and
+    Use the three <span class="b">member properties lists</span> to define the material, cross-section, and
     <topic-popup name="glos_member_size">member size</topic-popup> for each member in your
     <topic-popup name="glos_structural_model">structural model</topic-popup>. To choose a member property, click the
     drop-down button
     <img
-      alt="Member Properties lists"
+      alt="Member properties lists"
       src="img/help/dropdown.png"
     />
-    to reveal all of the list items, then click the item you want. The Member Size list can also be updated using the
-    <topic-popup name="hlp_increase_member">Increase Member Size button</topic-popup> and the
-    <topic-popup name="hlp_decrease_member">Decrease Member Size button.</topic-popup>
+    to reveal all of the list items, then click the item you want. The member size list can also be updated using the
+    <topic-popup name="hlp_increase_member">increase member size</topic-popup> and
+    <topic-popup name="hlp_decrease_member">decrease member size</topic-popup> buttons.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Member Properties lists are located on the
-    <topic-link name="hlp_toolbars">Member Properties Toolbar.</topic-link>
+    The member properties lists are located on the
+    <topic-link name="hlp_toolbars">member properties toolbar.</topic-link>
   </p>
   <p>
     When <topic-link name="hlp_draw_member">adding new members,</topic-link> the material, cross-section, and size
-    currently displayed in the three Member Properties lists are automatically assigned to each new member as it is
-    created.
+    currently displayed in the member properties lists are automatically assigned to each new member as it is created.
   </p>
   <p>
-    When editing the structural model, the Member Properties lists are used to
-    <topic-link name="hlp_change_member_properties">change the properties</topic-link> of the currently selected
-    member(s).
+    When editing the structural model, the member properties lists are used to
+    <topic-link name="hlp_change_member_properties">change the properties</topic-link> of currently selected members.
+  </p>
+  <p>
+    When no members are selected, the member properties lists show the properties used for the largest number of members
+    in your current design.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_member_tool">
@@ -2507,22 +2501,23 @@
       alt="Member tool"
       src="img/help/btnmemb.png"
     />
-    Use the <span class="b">Member tool</span> to <topic-link name="hlp_draw_member">draw members</topic-link> as you
+    Use the <span class="b">member tool</span> to <topic-link name="hlp_draw_member">draw members</topic-link> as you
     create your <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The Member tool is located on the <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup> It can
-    also be accessed from the <topic-link name="hlp_menu_bar">Tools menu.</topic-link>
+    The member tool is located on the <topic-popup name="hlp_design_tools">design tools palette</topic-popup>. It can
+    also be accessed from the <topic-link name="hlp_menu_bar">tools menu.</topic-link>
   </p>
   <p>
-    When the Member tool is selected, the mouse pointer appears as a pencil
+    When the member tool is selected, the mouse pointer appears as a pencil
     <img
       alt="Notes and tips"
       src="img/help/pencil.png"
     />.
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_menu_bar">
   <h1>Menu bar</h1>
   <p>
@@ -2803,18 +2798,21 @@
   <p>
     <img src="img/help/legacygraphics.png" /> The Cloud Edition load test animation uses game-quality high speed
     graphics to let you move around the bridge while it is being tested and to see what the truck driver sees as she
-    traverses a successful bridge. Some computers do not support these advanced graphics. If nothing happens when you
-    select 3D <topic-link name="hlp_load_test3">load test animation</topic-link>, or if your computer misbehaves in some
-    other way, then you have one of these computers.
+    traverses the bridge. Some computers and browsers do not support these advanced graphics. If nothing happens when
+    you select the <topic-link name="hlp_load_test3">load test animation</topic-link>, or if your computer misbehaves in
+    some other way, then you have one of these.
   </p>
   <p>
     Fix the problem by restarting the Bridge Designer and checking the menu entry at
-    <span class="b">Tools</span>, <span class="b">Use Old-Style Graphics</span>. This causes the 3D
-    <topic-link name="hlp_load_test3">load test animation</topic-link> to be shown using basic graphics that work on
-    virtually all computers.
+    <span class="b">tools</span>, <span class="b">use old-style graphics</span>. This causes the 3D
+    <topic-link name="hlp_load_test3">load test animation</topic-link> to be shown using basic graphics that work on all
+    computers.
   </p>
   <h2 class="btop">Notes and tips</h2>
-  <p>Most newer computers support the advanced graphics features needed by the Cloud Edition.</p>
+  <p>
+    Newer computers running a Chromium-based browsers like Google Chrome or Microsoft Edge support Cloud Edition
+    graphics features. Firefox also works with some degradation of other features.
+  </p>
 </ng-template>
 <ng-template topic-name="hlp_open_existing">
   <h1>Open an existing bridge design file</h1>
@@ -3268,7 +3266,7 @@
       country, region, or municipality. There are separate, industry-standard codes governing the design of steel,
       <topic-popup name="glos_concrete">concrete</topic-popup>, and wood structures. There are regional and local
       building codes that specify design <topic-popup name="glos_loads">loads</topic-popup>, fire protection standards,
-      and many other requirements for designing buildings. Design of highway bridges in the U.S. is governed by the
+      and many other requirements for designing buildings. Design of highway bridges in the US is governed by the
       <topic-popup name="glos_aashto">AASHTO</topic-popup> Bridge Design Specification. In
       <span class="bd-emph">Bridge Designer</span>, the <topic-popup name="glos_load_test">load test</topic-popup> uses
       a standard (but slightly modified) AASHTO truck loading, and the compressive and tensile strengths of
@@ -3451,10 +3449,10 @@
     <topic-popup name="hlp_member_properties">Member properties lists.</topic-popup>
   </p>
   <p>
-    <span class="b">Member Details</span> and the Member List occupy the same screen location. If the Member List is
-    visible, you can change to Member Details by clicking its tab at the upper right corner.
+    Member details and the <topic-link name="hlp_member_list">member list</topic-link> occupy the same screen location.
+    If the member list is visible, change to member details by clicking its tab at the upper right corner.
   </p>
-  <p>The Member Details include:</p>
+  <p>Member details include:</p>
   <ol>
     <li>
       Material properties:
@@ -3476,7 +3474,7 @@
     <li>The cost per meter of a member made with the selected material, cross-section, and size.</li>
   </ol>
   <p>
-    If members are selected a separate Members tab is presented for each set of members consisting of the same material
+    If members are selected a separate members tab is presented for each set of members consisting of the same material
     and cross-section. The lengths of these members are drawn as vertical lines on the strength curve with one
     highlighted. The highlighted member can be selected with the Member: selector
     <img src="img/help/memdetmemsel.png" />. Click the arrow buttons or select a member number from the drop down list.
@@ -5504,8 +5502,9 @@
 <ng-template topic-name="glos_forces">
   <h1>Forces</h1>
   <p>
-    A force is a push or a pull. Weight is a common example of a force. Force is measured in pounds (in the U.S. system
-    of measurement) or newtons (in the SI system). In the Bridge Designer, all forces are reported in kilonewtons (kN).
+    A force is a push or a pull. Weight is a common example of a force. Force is measured in pounds in the US system of
+    measurement or newtons in the SI system. In the <span class="bd-emph">Bridge Designer</span>, all forces are
+    reported in kilonewtons (kN).
   </p>
 </ng-template>
 <ng-template topic-name="glos_joints">

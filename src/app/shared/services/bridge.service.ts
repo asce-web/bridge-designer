@@ -27,7 +27,7 @@ export class BridgeServiceSessionStateKey {
   public readonly key: string | undefined = 'bridge.service';
 }
 
-/** Injectable, mutable container for a bridge model and related site and drafting information. */
+/** Injectable, mutable container for a bridge model, related site and drafting information, and queries on these. */
 @Injectable({ providedIn: 'root' })
 export class BridgeService {
   private _bridge: BridgeModel = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS);
@@ -110,8 +110,14 @@ export class BridgeService {
     return this.bridge.members.some(member => member.hasJoint(joint));
   }
 
+  /** Get the member with given joints if it exists. */
   public getMemberWithJoints(a: Joint, b: Joint): Member | undefined {
     return this.bridge.members.find(member => member.hasJoints(a, b));
+  }
+
+  /** Gets a rectangle exactly containing all the bridge's joints. */
+  public getWorldExtent(extent: Rectangle2D = Rectangle2D.createEmpty()): Rectangle2D {
+    return extent.setToExtent(this.bridge.joints);
   }
 
   /** Returns the stock (or one of them if more than one) used for the most members in the bridge, else EMPTY if none. */

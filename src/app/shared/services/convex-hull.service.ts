@@ -13,7 +13,7 @@ export class ConvexHullService {
   }
 
   public add(x: number, y: number) {
-    this.pts.push(new Point2D(x, y));
+    this.addPoint(new Point2D(x, y));
   }
 
   public addPoint(pt: Point2DInterface) {

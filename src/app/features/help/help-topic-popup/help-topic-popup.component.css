@@ -1,5 +1,5 @@
 :host {
-  display: inline-block;
+  display: inline;
 }
 
 .popup-topic-link {
@@ -11,6 +11,7 @@
 }
 
 .popup-container {
+  display: inline;
   position: relative;
 }
 

@@ -141,6 +141,15 @@ export class StockId {
     public sizeIndex: number,
   ) {}
 
+  public toMaterialAndShape(): { material: Material; shape: Shape } | undefined {
+    return this.materialIndex < 0 || this.sectionIndex < 0 || this.sizeIndex < 0
+      ? undefined
+      : {
+          material: Inventory.MATERIALS[this.materialIndex],
+          shape: Inventory.SHAPES[this.sectionIndex][this.sizeIndex],
+        };
+  }
+
   public get key() {
     return `StockId:${this.materialIndex}.${this.sectionIndex}.${this.sizeIndex}`;
   }
@@ -193,7 +202,7 @@ export class InventoryService {
     const sizeIndex = stockId.sizeIndex < 0 ? shape.sizeIndex : stockId.sizeIndex;
     return { material: Inventory.MATERIALS[materialIndex], shape: Inventory.SHAPES[sectionIndex][sizeIndex] };
   }
-  
+
   public static compressiveStrength(material: Material, shape: Shape, length: number): number {
     const fy = material.fy;
     const area = shape.area;

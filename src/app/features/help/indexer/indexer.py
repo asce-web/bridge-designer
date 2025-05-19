@@ -3,38 +3,15 @@ import re
 import pprint
 
 DEBUG = False  # 'index'
-TRIM = False
+TRIM = True
 
-DONT_INDEX = """a
-also
-and
-are
-at
-be
-but
-by
-can
-cant
-for
-in
-is
-it
-its
-of
-on
-or
-that
-the
-to
-use
-using
-was
-will
-when
-which
-with
-you
-your"""
+
+def readStopWords():
+    with open("stop-words.txt", "r") as f:
+        return f.read()
+
+
+DONT_INDEX = readStopWords()
 
 
 def attrsToStr(attrs):
@@ -53,9 +30,7 @@ class Indexer(HTMLParser):
         self.current_title = "[none]"
         self.text = ""
         self.data = {}
-        self.ignore_regex = "|".join(
-            map(lambda w: f"\\b{w}\\b", DONT_INDEX.split("\n"))
-        )
+        self.ignore_set = set(DONT_INDEX.split())
 
     def indent(self, *args):
         print(" " * self.spaces, *args)
@@ -86,7 +61,9 @@ class Indexer(HTMLParser):
                     # remove apostophes
                     text = re.sub(r"'", "", text)
                     # ignore uninteresting words
-                    text = re.sub(self.ignore_regex, "", text)
+                    text = " ".join(
+                        word for word in text.split() if word not in self.ignore_set
+                    )
                     # collapse whitespace finally
                     text = re.sub(r"\s+", " ", text)
                 self.data[self.current_name] = (self.current_title, text.strip())
@@ -102,14 +79,14 @@ class Indexer(HTMLParser):
         # Remove HTML escapes.
         data = re.sub(r"&[^;]*;", " ", data.strip())
         if TRIM:
-            data = re.sub(r"&[^;]*;|[-:,!();]|\.$|\. ", " ", data)
+            data = re.sub(r'&[^;]*;|[-:,"?!();]|\.$|\. ', " ", data)
             data = re.sub(r"\s+", " ", data)
         if data == "":
             return
         match self.state:
             case "in-title":
                 self.current_title = data
-                self.state = 'in-text'
+                self.state = "in-text"
             case "in-text":
                 self.text += " "
                 self.text += data
@@ -142,6 +119,7 @@ class Indexer(HTMLParser):
 def quote(s):
     return f"`{s}`" if "'" in s else f"'{s}'"
 
+
 PREAMBLE = """type HelpIndexData = {
   id: string,
   title: string,
@@ -160,7 +138,9 @@ else:
     with open("index-data.ts", "w") as f:
         print(PREAMBLE, file=f)
         chunk_size = 100
-        for id, (title, text) in sorted(indexer.data.items(), key=lambda item: item[1][0].lower()):
+        for id, (title, text) in sorted(
+            indexer.data.items(), key=lambda item: item[1][0].lower()
+        ):
             text_chunks = [
                 f"{quote(text[i:i + chunk_size])}"
                 for i in range(0, len(text), chunk_size)

@@ -16,19 +16,16 @@ export class Colors {
 export type FillStyle = string | CanvasGradient | CanvasPattern;
 export type StrokeStyle = string | CanvasGradient | CanvasPattern;
 
-export interface Point2DInterface {
+/** A vector is a 2-dimensional Cartesian space. */
+export interface Vector2DInterface {
   x: number;
   y: number;
 }
 
-export interface Rectangle2DInterface {
-  x0: number;
-  y0: number;
-  width: number;
-  height: number;
-}
+/** A point is a vector plus an origin. */
+export interface Point2DInterface extends Vector2DInterface {}
 
-export class Point2D implements Point2DInterface {
+class Vector2DImpl {
   constructor(
     public x: number = 0,
     public y: number = 0,
@@ -39,12 +36,25 @@ export class Point2D implements Point2DInterface {
     this.y = y;
   }
 
+  public copyFrom(v: Vector2DInterface) {
+    this.x = v.x;
+    this.y = v.y;
+  }
+
   public clone(): Point2D {
     return new Point2D(this.x, this.y);
   }
+}
 
-  public toString(): string {
+export class Point2D extends Vector2DImpl implements Point2DInterface {
+  public override toString(): string {
     return `Point(${this.x}, ${this.y})`;
+  }
+}
+
+export class Vector2D extends Vector2DImpl implements Point2DInterface {
+  public override toString(): string {
+    return `Vector(${this.x}, ${this.y})`;
   }
 }
 
@@ -56,6 +66,13 @@ export class TaggedPoint2D<T> extends Point2D {
   ) {
     super(x, y);
   }
+}
+
+export interface Rectangle2DInterface {
+  x0: number;
+  y0: number;
+  width: number;
+  height: number;
 }
 
 const enum OutCode {
@@ -99,16 +116,8 @@ export class Rectangle2D implements Rectangle2DInterface {
     return this.x0 + this.width;
   }
 
-  public set x1(value: number) {
-    this.width = value - this.x0;
-  }
-
   public get y1(): number {
     return this.y0 + this.height;
-  }
-
-  public set y1(value: number) {
-    this.height = value - this.y0;
   }
 
   public contains(x: number, y: number): boolean {
@@ -172,6 +181,31 @@ export class Rectangle2D implements Rectangle2DInterface {
     return dst;
   }
 
+  /** Sets the this rectangle to exactly contain all the given points. */
+  public setToExtent(pts: Point2DInterface[]): Rectangle2D {
+    if (pts.length === 0) {
+      return this;
+    }
+    this.setFromDiagonal(pts[0].x, pts[0].y, pts[0].x, pts[0].y);
+    for (let i = 1; i < pts.length; ++i) {
+      const x = pts[i].x;
+      const y = pts[i].y;
+      if (x < this.x0) {
+        this.x0 = x;
+      }
+      if (x > this.x1) {
+        this.width = x - this.x0;
+      }
+      if (y < this.y0) {
+        this.y0 = y;
+      }
+      if (y > this.y1) {
+        this.height = y - this.y0;
+      }
+    }
+    return this;
+  }
+
   public setFromDiagonal(ax: number, ay: number, bx: number, by: number): Rectangle2D {
     this.x0 = ax;
     this.y0 = ay;
@@ -227,6 +261,50 @@ export class Geometry {
   public static readonly SMALL = 0.01; // A world centimeter.
   public static readonly SMALL_SQUARED = this.SMALL * this.SMALL;
 
+  public static add2D<R extends Point2DInterface, T extends Vector2DInterface>(result: R, a: R, b: T): void {
+    result.x = a.x + b.x;
+    result.y = a.y + b.y;
+  }
+
+  public static subtract2D<R extends Point2DInterface, T extends Vector2DInterface>(result: R, a: R, b: T): void;
+  public static subtract2D(result: Vector2DInterface, a: Point2DInterface, b: Point2DInterface): void {
+    result.x = a.x - b.x;
+    result.y = a.y - b.y;
+  }
+
+  public static scale2D(result: Vector2DInterface, s: number) {
+    result.x *= s;
+    result.y *= s;
+  }
+
+  public static offsetScaled2D(result: Point2DInterface, p: Point2DInterface, v: Vector2DInterface, s: number): void {
+    result.x = p.x + v.x * s;
+    result.y = p.y + v.y * s;
+  }
+
+  public static orthoOffsetScaled2D(
+    result: Point2DInterface,
+    p: Point2DInterface,
+    v: Vector2DInterface,
+    s: number,
+  ): void {
+    result.x = p.x - v.y * s;
+    result.y = p.y + v.x * s;
+  }
+
+  public static dot2D(a: Vector2DInterface, b: Vector2DInterface): number {
+    return a.x * b.x + a.y * b.y;
+  }
+
+  /** Returns the z-component of the 3D cross product [a, ?]X[b, ?]. */
+  public static cross2D(a: Vector2DInterface, b: Vector2DInterface): number {
+    return a.x * b.y - a.y * b.x;
+  }
+
+  public static length2D(v: Vector2DInterface): number {
+    return Math.sqrt(Geometry.dot2D(v, v));
+  }
+
   public static areColocated2D(a: Point2DInterface, b: Point2DInterface, toleranceSquared: number = 0): boolean {
     return this.distanceSquared2DPoints(a, b) <= toleranceSquared;
   }
@@ -272,6 +350,16 @@ export class Geometry {
       return Math.sqrt(wx * wx + wy * wy);
     }
     return Math.abs(uy * vx - ux * vy) / Math.sqrt(vDotV);
+  }
+
+  /** Return the area of a simple polygon with given array of vertex points. */
+  public static getPolygonArea(p: Point2DInterface[], n: number = p.length): number {
+    let detSum = 0;
+    let j = n - 1;
+    for (let i = 0; i < n; j = i++) {
+      detSum += p[j].x * p[i].y - p[j].y * p[i].x;
+    }
+    return 0.5 * detSum;
   }
 
   public static isInNonAxisAlignedRectangle(

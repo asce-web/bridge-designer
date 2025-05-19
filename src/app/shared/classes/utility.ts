@@ -54,6 +54,11 @@ export class Utility {
     return x;
   }
 
+  /** Normalizes the given angle to the range [-pi..pi). */
+  public static normalizeAngle(theta: number): number {
+    return theta - 2 * Math.PI * Math.round(theta * /* 1 / (2 pi) */ 0.15915494309);
+  }
+
   /** Returns [0, 1, ... n-1]. */
   public static indices(n: number): number[] {
     return Array.from({ length: n }, (_, i) => i);
@@ -118,6 +123,15 @@ export class Utility {
     tgt.length = 0;
     src.forEach(item => tgt.push(item));
     return tgt;
+  }
+
+  /** Creates an array of given size of elements from given element creation function. */
+  public static createArray<T>(createElement: () => T, size: number): Array<T> {
+    const a = new Array<T>(size);
+    for (let i = 0; i < size; ++i) {
+      a[i] = createElement();
+    }
+    return a;
   }
 
   /* TODO: Not currently used. Remove?

@@ -35,7 +35,7 @@ export class HelpSearchComponent {
   
   handleSearchTermInputInput(_event: Event): void {
     const searchTerm = this.searchTermInput.nativeElement.value;
-    if (searchTerm.length <= 2) {
+    if (searchTerm.length <= 1) {
       this.source = HelpSearchComponent.NOTHING_YET;
     } else {
       const result: Results<HelpTopic> = this.helpIndexService.search(searchTerm);

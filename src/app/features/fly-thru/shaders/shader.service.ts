@@ -1,0 +1,76 @@
+import { Utility } from '../../../shared/classes/utility';
+import * as shaderSources from './shaders';
+import { Injectable } from '@angular/core';
+
+export type ProgramSpec = { name: string; vertexShader: WebGLShader; fragmentShader: WebGLShader };
+export type Programs = { [key: string]: WebGLProgram };
+type CompileFailure = { program: string; linkLog: string | null; vertexLog: string | null; fragmentLog: string | null };
+
+@Injectable({ providedIn: 'root' })
+export class ShaderService {
+  constructor() {}
+
+  /** Compiles shaders, returning an object keyed on export name. Ignores compile errors. */
+  public compileShaders(gl: WebGL2RenderingContext): { [key: string]: WebGLShader } {
+    const result: { [key: string]: WebGLShader } = {};
+    for (const exportName in shaderSources) {
+      const shaderKind = exportName.includes('VERTEX') ? gl.VERTEX_SHADER : gl.FRAGMENT_SHADER;
+      const shader = Utility.assertNotNull(gl.createShader(shaderKind));
+      gl.shaderSource(shader, shaderSources[exportName as keyof typeof shaderSources]);
+      gl.compileShader(shader);
+      result[exportName] = shader;
+    }
+    return result;
+  }
+
+  /** Links shader programs, return an object keyd on given program name. Logs link and shader compile errors. */
+  public linkPrograms(gl: WebGL2RenderingContext, programSpecs: ProgramSpec[]): Programs | undefined {
+    const result: { [key: string]: WebGLProgram } = {};
+    const failed: CompileFailure[] = [];
+    for (const { name, vertexShader, fragmentShader } of programSpecs) {
+      const program = gl.createProgram();
+      if (program === null) {
+        continue;
+      }
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        result[name] = program;
+      } else {
+        const linkLog = gl.getProgramInfoLog(program);
+        const vertexLog = gl.getShaderInfoLog(vertexShader);
+        const fragmentLog = gl.getShaderInfoLog(fragmentShader);
+        failed.push({ program: name, linkLog, vertexLog, fragmentLog });
+        gl.detachShader(program, vertexShader);
+        gl.deleteShader(vertexShader);
+        gl.detachShader(program, fragmentShader);
+        gl.deleteShader(fragmentShader);
+        gl.deleteProgram(program);
+      }
+    }
+    if (failed.length > 0) {
+      console.error('shaders:', failed);
+      return undefined;
+    }
+    return result;
+  }
+
+  /** Cleans up shaders. For use after programs are linked. */
+  public deleteShaders(gl: WebGL2RenderingContext, programSpecs: ProgramSpec[], programs: Programs) {
+    const deleted = new Set<WebGLShader>();
+    for (const { name, vertexShader, fragmentShader } of programSpecs) {
+      const program = programs[name];
+      detachAndDeleteShader(program, vertexShader);
+      detachAndDeleteShader(program, fragmentShader);
+    }
+
+    function detachAndDeleteShader(program: WebGLProgram, vertexShader: WebGLShader) {
+      if (!deleted.has(vertexShader)) {
+        gl.detachShader(program, vertexShader);
+        gl.deleteShader(vertexShader);
+        deleted.add(vertexShader);
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ import { AllowedShapeChangeMask, InventoryService, StockId } from '../../../shar
 import { EditEffect } from '../../../shared/classes/editing';
 import { Member } from '../../../shared/classes/member.model';
 import { DesignConditionsService } from '../../../shared/services/design-conditions.service';
+import { BridgeAutoFixService } from '../../../shared/services/bridge-auto-fix.service';
 
 /**
  * Container for the state of the user's design workflow and associated logic.
@@ -21,6 +22,7 @@ export class WorkflowManagementService {
   constructor(
     analysisService: AnalysisService,
     analysisValidityService: AnalysisValidityService,
+    bridgeAutoFixServicce: BridgeAutoFixService,
     bridgeService: BridgeService,
     eventBrokerService: EventBrokerService,
     selectedElementsService: SelectedElementsService,
@@ -28,6 +30,7 @@ export class WorkflowManagementService {
     undoManagerService: UndoManagerService,
   ) {
     let showAnimation: boolean = true;
+    let autoFix: boolean = true;
 
     // Alpha order by subject.
 
@@ -55,6 +58,11 @@ export class WorkflowManagementService {
       showAnimation = eventInfo.data;
     });
 
+    // Auto-fix option to fix or not.
+    eventBrokerService.autoCorrectToggle.subscribe(eventInfo => {
+      autoFix = eventInfo.data;
+    })
+
     // Design iterations change.
     eventBrokerService.designIterationChange.subscribe(eventInfo => {
       uiStateService.disable(eventBrokerService.designIterationBackRequest, eventInfo.data.inProgressIndex <= 0);
@@ -71,6 +79,9 @@ export class WorkflowManagementService {
           eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'drafting' });
           break;
         case 1: // test
+          if (autoFix) {
+            bridgeAutoFixServicce.autoFix();
+          }
           analysisService.analyze({ populateBridgeMembers: true });
           break;
       }
