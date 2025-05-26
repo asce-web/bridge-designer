@@ -63,12 +63,28 @@
   Oops... Can't move a joint onto another joint.
 </jqxNotification>
 <jqxNotification
+  id="needWebGl2Error"
+  [template]="'error'"
+  [position]="'bottom-left'"
+  [autoCloseDelay]="autoCloseDelay"
+>
+  Oops... This browser is missing Web GL2, needed for load test animations.
+</jqxNotification>
+<jqxNotification
   id="noMembersToAddError"
   [template]="'error'"
   [position]="'bottom-left'"
   [autoCloseDelay]="autoCloseDelay"
 >
   Oops... No members to add!
+</jqxNotification>
+<jqxNotification
+  id="shaderError"
+  [template]="'error'"
+  [position]="'bottom-left'"
+  [autoCloseDelay]="autoCloseDelay"
+>
+  Oops... There's a problem with your graphics card.
 </jqxNotification>
 <jqxNotification
   id="tooManyJointsError"

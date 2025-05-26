@@ -45,15 +45,20 @@ export class ViewService {
   /** Apply a heuristic to set a reasonable view of the current bridge. */
   public resetView(): void {
     const extent = this.bridgeService.getWorldExtent();
-    this.eye[2] = 1.2 * Math.max(extent.width, 1.75 * extent.height);
-    this.eye[0] = this.center[0] = extent.x0 + 0.5 * extent.width;
-    // Direct gaze at middle of vertical extent.
-    this.center[1] = extent.y0 + 0.5 * extent.height;
+
+    const xCenter = extent.x0 + 0.5 * extent.width;
+    const zEye = 1.2 * Math.max(extent.width, 1.75 * extent.height);
     // Always put eye at height of a person on the road.
-    this.eye[1] = 1;
-    // Move eye right a bit to account for slant of river.
+    // Swivel eye right a bit to account for slant of river.
+    vec3.set(this.eye, xCenter - 0.2 * zEye, 1, zEye);
+    // Direct gaze at middle of vertical extent.
+    vec3.set(this.center, xCenter, extent.y0 + 0.5 * extent.height, 0);
     this.eye[0] -= this.eye[2] * 0.1;
-    this.center[2] = 0.0;
+
+    // TODO: Remove test setting.
+    vec3.set(this.eye, 20, -3, 20);
+    vec3.set(this.center, 0, 5, 0);
+
     this.yEyeVelocity = 0;
 
     // The angles are actually the independent values, so compute them here.

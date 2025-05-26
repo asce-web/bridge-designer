@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { RendererService } from './renderer.service';
 
 export type FrameRenderer = (clockMillis: number, elapsedMillis: number) => void;
 
@@ -18,22 +19,15 @@ export const enum AnimationState {
  */
 @Injectable({ providedIn: 'root' })
 export class AnimatorService {
-  private clockBaseMillis: number = 0;
-  private lastClockMillis: number = 0;
+  private clockBaseMillis: number | undefined;
+  private lastClockMillis: number | undefined;
   private _state: AnimationState = AnimationState.STOPPED;
-  private renderFrame: FrameRenderer = (_clock, _elapsed) => {};
+
+  constructor(private readonly renderService: RendererService) {}
 
   /** Returns the current state of animation. */
   public get state(): AnimationState {
     return this._state;
-  }
-
-  /**
-   * Registers the frame renderer, one for the service. The renderer is passed the
-   * current value of the 0-based millisecond clock and time elapsed since the last call.
-   */
-  public registerRenderer(renderFrame: FrameRenderer) {
-    this.renderFrame = renderFrame;
   }
 
   /** Starts calls to the registered renderer at the frame rate with clock at zero. */
@@ -48,13 +42,22 @@ export class AnimatorService {
       if (this._state === AnimationState.STOPPED) {
         return; // Skips scheduling next loop iteration.
       }
+      // Handle first frame.
+      if (this.lastClockMillis === undefined) {
+        this.lastClockMillis = nowMillis;
+      }
+      // Reset after unpause.
+      if (this.clockBaseMillis === undefined) {
+        this.clockBaseMillis = nowMillis - this.lastClockMillis;
+      }
       const clockMillis =
         this._state === AnimationState.PAUSED ? this.lastClockMillis : nowMillis - this.clockBaseMillis;
-      this.renderFrame(clockMillis, clockMillis - this.lastClockMillis);
+      this.renderService.renderFrame(clockMillis, clockMillis - this.lastClockMillis);
       this.lastClockMillis = clockMillis;
       // Schedule next loop iteration.
       requestAnimationFrame(render);
     };
+    this.renderService.prepareToRender();
     // Kick off the animation loop.
     requestAnimationFrame(render);
   }
@@ -74,7 +77,7 @@ export class AnimatorService {
     }
     this._state = AnimationState.RUNNING;
     // Reset base so clock will advance from the paused value.
-    this.clockBaseMillis = Date.now() - this.lastClockMillis;
+    this.clockBaseMillis = undefined;
   }
 
   /** Stops calls to the registered renderer. */

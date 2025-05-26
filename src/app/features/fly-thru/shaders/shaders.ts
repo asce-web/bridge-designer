@@ -1,104 +1,70 @@
 
-export const CUBE_VERTEX_SHADER = 
-`attribute vec4 aVertexPosition;
-attribute vec3 aVertexNormal;
-attribute vec2 aTextureCoord;
-
-uniform mat4 uNormalMatrix;
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
-
-varying highp vec2 vTextureCoord;
-varying highp vec3 vLighting;
-
-void main(void) {
-    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
-    vTextureCoord = aTextureCoord;
-
-    // Apply lighting effect
-
-    highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-    highp vec3 directionalLightColor = vec3(1, 1, 1);
-    highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
-
-    highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
-
-    highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-    vLighting = ambientLight + (directionalLightColor * directional);
-}`;
-
 export const FACET_MESH_FRAGMENT_SHADER = 
 `#version 300 es
 
 precision mediump float;
 
-struct LightConfig {
+layout(std140) uniform LightConfig {
   vec3 unitDirection;
   vec3 color;
   float ambientIntensity;
+} light;
+
+// Pack struct manually into vec4s to work around known hardware bugs.
+struct MaterialSpec {
+  #define COLOR spec.xyz
+  #define SHININESS spec.w
+  vec4 spec;
 };
 
-uniform LightConfig light;
-
-struct Material {
-  vec3 color;
-  float shininess;
-};
-
-#define MATERIAL_COUNT 10
-uniform Material materials[MATERIAL_COUNT];
+layout(std140) uniform MaterialConfig {
+  MaterialSpec specs[10];
+} material;
 
 in vec3 vertex;
 in vec3 normal;
-flat in int materialIndex;
+//flat in uint materialRef;
 out vec4 fragmentColor;
 
 void main() {
-  vec3 unitNormal = normalize(normal);
+  vec3 unitNormal = normalize(normal); // TODO: Verify not needed since not interpolating.
   float normalDotLight = dot(unitNormal, light.unitDirection);
   vec3 unitReflection = normalize(2.0 * normalDotLight * unitNormal - light.unitDirection);
   vec3 unitEye = normalize(-vertex);
-  Material materal = materials[materialIndex];
-  float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0), materal.shininess);
+  MaterialSpec materal = material.specs[0];
+  float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0), materal.SHININESS);
   vec3 specularColor = specularIntensity * light.color;
   float diffuseIntensity = clamp(normalDotLight + light.ambientIntensity, 0.0, 1.0);
-  vec3 diffuseColor = materal.color * diffuseIntensity * light.color * (1.0 - specularIntensity);
+  vec3 diffuseColor = materal.COLOR * diffuseIntensity * light.color * (1.0 - specularIntensity);
   fragmentColor = vec4(specularColor + diffuseColor, 1.0);
-}
-`;
+}`;
 
 export const FACET_MESH_VERTEX_SHADER = 
 `#version 300 es
 
-uniform mat4 modelViewProjection;
-uniform mat4 modelView;
+#define IN_POSITION_LOCATION 0
+#define IN_NORMAL_LOCATION 1
+#define IN_MATERIAL_REF_LOCATION 2
 
-layout (location = 0) in vec3 inPosition;
-layout (location = 1) in vec3 inNormal;
-layout (location = 2) in int inMaterialIndex;
+#line 4
+layout(std140) uniform Transforms {
+  mat4 modelView;
+  mat4 modelViewProjection;
+} transforms;
+
+layout(location = IN_POSITION_LOCATION) in vec3 inPosition;
+layout(location = IN_NORMAL_LOCATION) in vec3 inNormal;
+// layout(location = IN_MATERIAL_REF_LOCATION) in uint inMaterialRef;
 
 out vec3 vertex;
 out vec3 normal;
-flat out int materialIndex;
+// flat out uint materialRef;
 
 void main() {
-  vec4 inPositionHomogenious = vec4(inPosition, 1.0);
-  gl_Position = modelViewProjection * inPositionHomogenious;
-  vertex = vec3(modelView * inPositionHomogenious);
-  normal = vec3(modelView * vec4(inNormal, 0.0));
-  materialIndex = inMaterialIndex;
-}
-`;
-
-export const CUBE_FRAGMENT_SHADER = 
-`varying highp vec2 vTextureCoord;
-varying highp vec3 vLighting;
-
-uniform sampler2D uSampler;
-
-void main(void) {
-    highp vec4 texelColor = texture2D(uSampler, vTextureCoord);
-
-    gl_FragColor = vec4(texelColor.rgb * vLighting, texelColor.a);
+  vec4 inPositionHomogeneous = vec4(inPosition, 1.0f);
+  gl_Position = transforms.modelViewProjection * inPositionHomogeneous;
+  vertex = vec3(transforms.modelView * inPositionHomogeneous);
+  normal = mat3(transforms.modelView) * inNormal;
+  // materialRef = inMaterialRef;
 }
 `;

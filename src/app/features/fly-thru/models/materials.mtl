@@ -35,9 +35,9 @@ Ks 0 0 0  # Specular color
 Ns 20.0  # Shininess
 
 newmtl PaintedSteel # Bumper parts
-Kd .45, .45, .45  # Diffuse color
-Ka .45, .45, .45  # Ambient color
-Ks .45, .45, .45  # Specular color
+Kd .45 .45 .45  # Diffuse color
+Ka .45 .45 .45  # Ambient color
+Ks .45 .45 .45  # Specular color
 Ns 20  # Shininess
 
 newmtl Aluminum # Top and bottom band of cargo box; fuel tanks
@@ -47,9 +47,9 @@ Ks .8 .8 .8  # Specular color
 Ns 100.0  # Shininess
 
 newmtl CorrogatedMetal
-Kd 0.7, 0.7, 0.7  # Diffuse color
+Kd 0.7 0.7 0.7  # Diffuse color
 Ka .21 .41 .08  # Ambient color
-Ks 0.8, 0.8, 0.8  # Specular color
+Ks 0.8 0.8 0.8  # Specular color
 Ns 40.0  # Shininess
 
 newmtl TexturedSteel

@@ -988,11 +988,11 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     title: 'Menu bar',
     text: 'menu bar located top bridge design window immediately title bar menu bar provides following commands' +
           ' file new design open file save file save open sample design load template print design recently ope' +
-          'ned files exit edit select delete undo redo go back go forward go iteration view design tools animat' +
-          'ion controls member list rulers title block member numbers symmetry guides template grid resolution ' +
-          'drawing tools joint tool member tool select tool eraser tool test drawing board load test show anima' +
-          'tion use old style graphics auto correct errors report cost calculations load test results help tip ' +
-          'day'
+          'ned files exit edit select delete undo redo go back go forward go iteration increase member size dec' +
+          'rease member size remember work view design tools animation controls member list rulers title block ' +
+          'member numbers symmetry guides template grid resolution drawing tools joint tool member tool select ' +
+          'tool eraser tool test drawing board load test show animation use old style graphics auto correct err' +
+          'ors report cost calculations load test results help tip day'
   },
   {
     id: 'glos_modulus_of_elasticity',
@@ -1196,6 +1196,13 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'reinforced concrete concrete steel reinforcing rods embedded inside added strength concrete strong c' +
           'ompression comparatively weak tension reinforcing bars substantially increase ability reinforced con' +
           'crete carry tension'
+  },
+  {
+    id: 'hlp_remember_my_work',
+    title: 'Remember my work',
+    text: 'bridge designer keep track work still even refresh close restart browser enable feature check rememb' +
+          'er work entry bottom edit menu best keep checked nearly time exception using computed shared login u' +
+          'ser name others computer unchecking box leave prevents seeing design'
   },
   {
     id: 'hlp_report_cost',

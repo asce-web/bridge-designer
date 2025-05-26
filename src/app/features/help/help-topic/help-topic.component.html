@@ -1671,8 +1671,8 @@
   </p>
   <p>
     The <span class="bd-emph">Bridge Designer</span> remembers all your design iterations as long as
-    <span class="b">remember my work</span> is checked in the edit menu. When it's unchecked, iterations are lost each
-    time the browser is refreshed or restarted.
+    <topic-popup name="hlp_remember_my_work">remember my work</topic-popup> is checked in the edit menu. When it's
+    unchecked, iterations are lost each time the browser is refreshed or restarted.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_go_forward">
@@ -1701,8 +1701,8 @@
   </p>
   <p>
     The <span class="bd-emph">Bridge Designer</span> remembers all your design iterations as long as
-    <span class="b">remember my work</span> is checked in the edit menu. When it's unchecked, iterations are lost each
-    time the browser is refreshed or restarted.
+    <topic-popup name="hlp_remember_my_work">remember my work</topic-popup> is checked in the edit menu. When it's
+    unchecked, iterations are lost each time the browser is refreshed or restarted.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_go_to">
@@ -1734,8 +1734,8 @@
   </p>
   <p>
     The <span class="bd-emph">Bridge Designer</span> remembers all your design iterations as long as
-    <span class="b">remember my work</span> is checked in the edit menu. When it's unchecked, iterations are lost each
-    time the browser is refreshed or restarted.
+    <topic-popup name="hlp_remember_my_work">remember my work</topic-popup> is checked in the edit menu. When it's
+    unchecked, iterations are lost each time the browser is refreshed or restarted.
   </p>
 </ng-template>
 <ng-template
@@ -2517,7 +2517,6 @@
     />.
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_menu_bar">
   <h1>Menu bar</h1>
   <p>
@@ -2525,9 +2524,9 @@
       alt="Menu Bar"
       src="img/help/menubar.png"
     />
-    The <span class="b">Menu Bar</span> is located at the top of the
-    <topic-link name="hlp_bridge_design_window">Bridge Design Window,</topic-link> immediately below the
-    <topic-link name="hlp_title_bar">Title Bar.</topic-link> The Menu Bar provides the following commands:
+    The <span class="b">menu bar</span> is located at the top of the
+    <topic-link name="hlp_bridge_design_window">bridge design window</topic-link>, immediately below the
+    <topic-link name="hlp_title_bar">title bar</topic-link>. The Menu Bar provides the following commands:
   </p>
   <p>File</p>
   <p class="in1"><topic-popup name="hlp_new_design">New design</topic-popup></p>
@@ -2547,6 +2546,9 @@
   <p class="in1"><topic-popup name="hlp_go_back">Go back</topic-popup></p>
   <p class="in1"><topic-popup name="hlp_go_forward">Go forward</topic-popup></p>
   <p class="in1"><topic-popup name="hlp_go_to">Go to iteration</topic-popup></p>
+  <p class="in1"><topic-popup name="hlp_increase_member">Increase member size</topic-popup></p>
+  <p class="in1"><topic-popup name="hlp_decrease_member">Decrease member size</topic-popup></p>
+  <p class="in1"><topic-popup name="hlp_remember_my_work">Remember my work</topic-popup></p>
   <p>View</p>
   <p class="in1"><topic-popup name="hlp_view_tools">Design tools</topic-popup></p>
   <p class="in1"><topic-popup name="hlp_view_animation_controls">Animation controls</topic-popup></p>
@@ -2579,8 +2581,8 @@
   <h2>To move a joint with the mouse:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_select_tool">Select tool</topic-popup> on the
-      <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup>
+      Click the <topic-popup name="hlp_select_tool">select tool</topic-popup> on the
+      <topic-popup name="hlp_design_tools">design tools palette</topic-popup>.
     </li>
     <li>Position the mouse pointer over the joint you want to move.</li>
     <li>Press the left mouse button, and hold it down.</li>
@@ -2592,14 +2594,14 @@
   <h2>To move a joint with the keyboard:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_select_tool">Select tool</topic-popup> on the
-      <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup>
+      Click the <topic-popup name="hlp_select_tool">select tool</topic-popup> on the
+      <topic-popup name="hlp_design_tools">design tools palette</topic-popup>.
     </li>
     <li>Click on the joint you want to move. The selected joint will turn <span class="c2b">light blue</span>.</li>
     <li>Use the arrow keys on your keyboard to move the joint in the desired direction, in 0.25 meter increments.</li>
   </ol>
   <h2 class="btop">Notes and tips</h2>
-  <p>You must be in the <topic-link name="hlp_drawing_board">Drawing Board Mode</topic-link> to move a joint.</p>
+  <p>You must be in the <topic-link name="hlp_drawing_board">drawing board mode</topic-link> to move a joint.</p>
   <p>
     If the joint already has <topic-popup name="glos_members">members</topic-popup> attached to it, these members will
     be automatically repositioned along with the joint.
@@ -2617,8 +2619,8 @@
   <p>
     When a joint is dragged with the mouse, the joint moves in increments corresponding to the current resolution of the
     <topic-popup name="glos_drawing_grid">drawing grid</topic-popup>. When a joint is moved with the keyboard, it moves
-    in 0.25 meter increments, regardless of the current grid resolution. Thus the keyboard technique is particularly
-    effective for making small adjustments in the position of a joint.
+    in 0.25 meter increments regardless of the current grid resolution. Thus the keyboard technique is good for making
+    small adjustments in the position of a joint.
   </p>
 </ng-template>
 <ng-template topic-name="hlp_multiple_selection">
@@ -2632,61 +2634,65 @@
   <h2>Drag a box:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_select_tool">Select tool</topic-popup> on the
-      <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup>
+      Click the <topic-popup name="hlp_select_tool">select tool</topic-popup> on the
+      <topic-popup name="hlp_design_tools">design tools palette.</topic-popup>
     </li>
     <li>
       While holding down the left button of the mouse, &quot;drag a box&quot; around the
       <topic-popup name="glos_members">members</topic-popup> you want to select, then release the mouse button. All
       members that are entirely enclosed within the box will be selected.
     </li>
+    <li>
+      If you drag from left to right, only members completely inside the box are selected. If you drag from right to
+      left, members either inside the box or touching it are selected.
+    </li>
   </ol>
-  <h2>Ctrl-Click on the Drawing Board:</h2>
+  <h2>Ctrl-click on the Drawing Board:</h2>
   <ol>
     <li>
-      Click the <topic-popup name="hlp_select_tool">Select tool</topic-popup> on the
-      <topic-popup name="hlp_design_tools">Design Tools palette.</topic-popup>
+      Click the <topic-popup name="hlp_select_tool">select tool</topic-popup> on the
+      <topic-popup name="hlp_design_tools">design tools palette.</topic-popup>
     </li>
     <li>Hold down the Ctrl key on your keyboard.</li>
     <li>
-      On the <topic-link name="hlp_drawing_board">Drawing Board,</topic-link> individually click each of the members you
+      On the <topic-link name="hlp_drawing_board">drawing board,</topic-link> individually click each of the members you
       want to select.
     </li>
   </ol>
-  <h2>Ctrl-Click in the Member List:</h2>
+  <h2>Ctrl-click in the member list:</h2>
   <ol>
     <li>Hold down the Ctrl key on your keyboard.</li>
     <li>
-      In the <topic-link name="hlp_member_list">Member List,</topic-link> individually click each of the members you
+      In the <topic-link name="hlp_member_list">member list</topic-link>, individually click each of the members you
       want to select.
     </li>
   </ol>
-  <h2>Shift-Click in the Member List (block selection):</h2>
+  <h2>Shift-click in the member List (block selection):</h2>
   <ol>
-    <li>In the Member List, click one member to start a &quot;block.&quot;</li>
+    <li>In the member list, click one member to start a &quot;block.&quot;</li>
     <li>Hold down the Shift key on your keyboard.</li>
     <li>
       In the Member List, click a second member to complete the block. All members listed between the first and second
       (inclusive) will be selected.
     </li>
   </ol>
-  <h2>Click-and-Drag in the Member List (block selection):</h2>
+  <h2>Click-and-drag in the member list (block selection):</h2>
   <ol>
-    <li>In the Member List, click one member to start a &quot;block.&quot;</li>
+    <li>In the member list, click one member to start a &quot;block.&quot;</li>
     <li>Drag up or down and then release to select the desired block.</li>
   </ol>
   <h2>Select All:</h2>
   <p class="in1">
-    Click the <topic-popup name="hlp_select_all">Select All button</topic-popup> on the
-    <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> Every member in your
+    Click the <topic-popup name="hlp_select_all">select all button</topic-popup> on the
+    <topic-link name="hlp_toolbars">main toolbar.</topic-link> Every member in your
     <topic-popup name="glos_structural_model">structural model</topic-popup> will be selected.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    All selected members turn <span class="c2b">light blue</span>, both on the Drawing Board and in the Member List.
+    All selected members turn <span class="c2b">light blue</span>, both on the drawing board and in the member list.
   </p>
   <p>
-    To de-select all selected members, click anywhere on the Drawing Board <span class="i">other than</span> on a
+    To de-select all selected members, click anywhere on the drawing board <span class="i">other than</span> on a
     member.
   </p>
   <p>
@@ -2698,19 +2704,20 @@
   <h1>New design button</h1>
   <p>
     <img
-      alt="Newdesign button"
+      alt="New design button"
       src="img/help/btnnew.png"
     />
-    Click the <span class="b">New Design button</span> to
+    Click the <span class="b">new design button</span> to
     <topic-link name="hlp_start_new_design">start a new bridge design.</topic-link> When you click the button, the
-    <topic-link name="hlp_setup_wizard">Design Project Setup Wizard</topic-link> will be displayed.
+    <topic-link name="hlp_setup_wizard">project setup wizard</topic-link> will be displayed.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    The New Design button is located on the <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> It can also be
-    accessed from the <topic-link name="hlp_menu_bar">File menu.</topic-link>
+    The new design button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It can also be
+    accessed from the <topic-link name="hlp_menu_bar">file menu</topic-link>.
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_not_realistic">
   <h1>What is <em>not</em> realistic about the Bridge Designer?</h1>
   <p>
@@ -3355,10 +3362,19 @@
   <h2 class="btop">Notes and tips</h2>
   <p>
     The Redo button is located on the <topic-link name="hlp_toolbars">Main Toolbar.</topic-link> It can also be accessed
-    from the
-    <topic-link name="hlp_menu_bar">Edit menu.</topic-link>
+    from the <topic-link name="hlp_menu_bar">Edit menu.</topic-link>
   </p>
   <p>The Redo button works in conjunction with the <topic-popup name="hlp_undo">Undo button.</topic-popup></p>
+</ng-template>
+<ng-template topic-name="hlp_remember_my_work">
+  <h1>Remember my work</h1>
+  <p>
+    The <span class="bd-emph">Bridge Designer</span> can keep track of all your work so that it's still there even if
+    you refresh or close and restart your browser. To enable this feature, check the
+    <span class="b">remember my work</span> entry at the bottom of the edit menu. It's best to keep this checked nearly
+    all the time. The exception is when using a shared a login user ID with others on the same computer. Unchecking the
+    box as you leave prevents them from seeing your design.
+  </p>
 </ng-template>
 <ng-template topic-name="hlp_report_cost">
   <h1>Report cost calculations button</h1>
@@ -4579,8 +4595,8 @@
     />
   </p>
   <p class="in1"><topic-popup name="hlp_member_properties">Member properties lists</topic-popup></p>
-  <p class="in1"><topic-popup name="hlp_increase_member">Increase member Size button</topic-popup></p>
-  <p class="in1"><topic-popup name="hlp_decrease_member">Decrease member Size button</topic-popup></p>
+  <p class="in1"><topic-popup name="hlp_increase_member">Increase member size button</topic-popup></p>
+  <p class="in1"><topic-popup name="hlp_decrease_member">Decrease member size button</topic-popup></p>
   <p class="in1"><topic-popup name="hlp_member_details">Report member properties button</topic-popup></p>
   <h2>Display Toolbar</h2>
   <p>

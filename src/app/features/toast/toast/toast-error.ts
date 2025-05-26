@@ -9,7 +9,9 @@ export type ToastKind =
   | 'highPierError'
   | 'moveJointError'
   | 'noError' // silent cancellation
+  | 'needWebGl2Error'
   | 'noMembersToAddError'
+  | 'shaderError'
   | 'tooManyJointsError'
   | 'tooManyMembersError';
 

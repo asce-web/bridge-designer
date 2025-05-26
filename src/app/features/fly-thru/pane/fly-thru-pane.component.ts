@@ -21,10 +21,11 @@ import { AnimatorService } from '../rendering/animator.service';
 })
 export class FlyThruPaneComponent implements AfterViewInit {
   @HostBinding('style.display') display: string = 'none';
+  @ViewChild('wrapper') wrapper!: ElementRef<HTMLDivElement>;
   @ViewChild('flyThruCanvas') flyThruCanvas!: ElementRef<HTMLCanvasElement>;
 
-  width: number = screen.availWidth;
-  height: number = screen.availHeight;
+  width: number = screen.availWidth * devicePixelRatio;
+  height: number = screen.availHeight * devicePixelRatio;
 
   constructor(
     private readonly animatorService: AnimatorService,
@@ -37,6 +38,7 @@ export class FlyThruPaneComponent implements AfterViewInit {
     this.display = value ? 'block' : 'none';
     this.changeDetector.detectChanges();
     if (value) {
+      this.handleResize();
       this.rendererService.setDefaultView();
       this.animatorService.start();
     } else {
@@ -44,8 +46,17 @@ export class FlyThruPaneComponent implements AfterViewInit {
     }
   }
 
+  private handleResize(): void {
+    const parent = Utility.assertNotNull(this.flyThruCanvas.nativeElement.parentElement);
+    const width = parent.clientWidth * devicePixelRatio;
+    const height = parent.clientHeight * devicePixelRatio;
+    this.rendererService.setViewport(0, this.height - height, width, height);
+  }
+
   ngAfterViewInit(): void {
-    this.rendererService.gl = Utility.assertNotNull(this.flyThruCanvas.nativeElement.getContext('webgl2'));
+    new ResizeObserver(() => this.handleResize()).observe(this.wrapper.nativeElement);
+    const gl = Utility.assertNotNull(this.flyThruCanvas.nativeElement.getContext('webgl2'));
+    this.rendererService.initialize(gl);
     this.eventBrokerService.uiModeRequest.subscribe(eventInfo => {
       this.isVisible = eventInfo.data === 'animation';
     });
