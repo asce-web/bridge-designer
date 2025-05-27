@@ -21,7 +21,7 @@ layout(std140) uniform MaterialConfig {
 
 in vec3 vertex;
 in vec3 normal;
-//flat in uint materialRef;
+flat in uint materialRef;
 out vec4 fragmentColor;
 
 void main() {
@@ -29,7 +29,7 @@ void main() {
   float normalDotLight = dot(unitNormal, light.unitDirection);
   vec3 unitReflection = normalize(2.0 * normalDotLight * unitNormal - light.unitDirection);
   vec3 unitEye = normalize(-vertex);
-  MaterialSpec materal = material.specs[0];
+  MaterialSpec materal = material.specs[materialRef];
   float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0), materal.SHININESS);
   vec3 specularColor = specularIntensity * light.color;
   float diffuseIntensity = clamp(normalDotLight + light.ambientIntensity, 0.0, 1.0);

@@ -23,7 +23,7 @@ layout(std140) uniform MaterialConfig {
 
 in vec3 vertex;
 in vec3 normal;
-//flat in uint materialRef;
+flat in uint materialRef;
 out vec4 fragmentColor;
 
 void main() {
@@ -31,7 +31,7 @@ void main() {
   float normalDotLight = dot(unitNormal, light.unitDirection);
   vec3 unitReflection = normalize(2.0 * normalDotLight * unitNormal - light.unitDirection);
   vec3 unitEye = normalize(-vertex);
-  MaterialSpec materal = material.specs[0];
+  MaterialSpec materal = material.specs[materialRef];
   float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0), materal.SHININESS);
   vec3 specularColor = specularIntensity * light.color;
   float diffuseIntensity = clamp(normalDotLight + light.ambientIntensity, 0.0, 1.0);
@@ -46,6 +46,10 @@ export const FACET_MESH_VERTEX_SHADER =
 #define IN_NORMAL_LOCATION 1
 #define IN_MATERIAL_REF_LOCATION 2
 
+#define TRANSFORMS_UBO_BINDING_INDEX 0
+#define LIGHT_CONFIG_UBO_BINDING_INDEX 1
+#define MATERIAL_CONFIG_UBO_BINDING_INDEX 2
+
 #line 4
 layout(std140) uniform Transforms {
   mat4 modelView;
@@ -54,17 +58,17 @@ layout(std140) uniform Transforms {
 
 layout(location = IN_POSITION_LOCATION) in vec3 inPosition;
 layout(location = IN_NORMAL_LOCATION) in vec3 inNormal;
-// layout(location = IN_MATERIAL_REF_LOCATION) in uint inMaterialRef;
+layout(location = IN_MATERIAL_REF_LOCATION) in uint inMaterialRef;
 
 out vec3 vertex;
 out vec3 normal;
-// flat out uint materialRef;
+flat out uint materialRef;
 
 void main() {
   vec4 inPositionHomogeneous = vec4(inPosition, 1.0f);
   gl_Position = transforms.modelViewProjection * inPositionHomogeneous;
   vertex = vec3(transforms.modelView * inPositionHomogeneous);
   normal = mat3(transforms.modelView) * inNormal;
-  // materialRef = inMaterialRef;
+  materialRef = inMaterialRef;
 }
 `;

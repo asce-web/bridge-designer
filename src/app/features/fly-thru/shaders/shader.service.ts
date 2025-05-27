@@ -1,4 +1,5 @@
 import { Utility } from '../../../shared/classes/utility';
+import { ToastError } from '../../toast/toast/toast-error';
 import * as shaderSources from './shaders';
 import { Injectable } from '@angular/core';
 
@@ -8,10 +9,34 @@ type CompileFailure = { program: string; linkLog: string | null; vertexLog: stri
 
 @Injectable({ providedIn: 'root' })
 export class ShaderService {
-  constructor() {}
+  private programs: Programs | undefined;
+
+  public initialize(gl: WebGL2RenderingContext) {
+    this.programs = this.buildPrograms(gl);
+  }
+
+  public getProgram(name: string): WebGLProgram {
+    const program = this.programs?.[name];
+    if (!program) {
+      throw new ToastError('shaderError');
+    }
+    return program ;
+  }
+
+  private buildPrograms(gl: WebGL2RenderingContext): Programs | undefined {
+    const shaders = this.compileShaders(gl);
+    const programSpecs: ProgramSpec[] = [
+      {
+        name: 'facet_mesh',
+        vertexShader: shaders['FACET_MESH_VERTEX_SHADER'],
+        fragmentShader: shaders['FACET_MESH_FRAGMENT_SHADER'],
+      },
+    ];
+    return this.linkPrograms(gl, programSpecs);
+  }
 
   /** Compiles shaders, returning an object keyed on export name. Ignores compile errors. */
-  public compileShaders(gl: WebGL2RenderingContext): { [key: string]: WebGLShader } {
+  private compileShaders(gl: WebGL2RenderingContext): { [key: string]: WebGLShader } {
     const result: { [key: string]: WebGLShader } = {};
     for (const exportName in shaderSources) {
       const shaderKind = exportName.includes('VERTEX') ? gl.VERTEX_SHADER : gl.FRAGMENT_SHADER;
@@ -24,7 +49,7 @@ export class ShaderService {
   }
 
   /** Links shader programs, return an object keyd on given program name. Logs link and shader compile errors. */
-  public linkPrograms(gl: WebGL2RenderingContext, programSpecs: ProgramSpec[]): Programs | undefined {
+  private linkPrograms(gl: WebGL2RenderingContext, programSpecs: ProgramSpec[]): Programs | undefined {
     const result: { [key: string]: WebGLProgram } = {};
     const failed: CompileFailure[] = [];
     for (const { name, vertexShader, fragmentShader } of programSpecs) {
@@ -56,7 +81,7 @@ export class ShaderService {
     return result;
   }
 
-  /** Cleans up shaders. For use after programs are linked. */
+  /** Cleans up shaders. For use after programs are linked. Not currently needed.
   public deleteShaders(gl: WebGL2RenderingContext, programSpecs: ProgramSpec[], programs: Programs) {
     const deleted = new Set<WebGLShader>();
     for (const { name, vertexShader, fragmentShader } of programSpecs) {
@@ -73,4 +98,5 @@ export class ShaderService {
       }
     }
   }
+  */
 }

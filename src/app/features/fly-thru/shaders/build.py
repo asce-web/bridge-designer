@@ -60,6 +60,15 @@ def main(compress):
                 if inId in uniforms or inId in ins:
                     print(f' redefinition of "{inId}"')
                 ins[inId] = (inLocation, inType)
+    with open("constants.ts", "r") as input:
+        with open("constants.h", "w") as output:
+            for line in input.readlines():
+                if line.strip().startswith("//"):
+                    continue
+                line = re.sub(
+                    r"export\s+const\s+(\w+)\s*=\s*([^;]+);", r"#define \1 \2", line
+                )
+                print(line, end="", file=output)
 
 
 main(len(sys.argv) > 1 and sys.argv[1] == "--compress")
