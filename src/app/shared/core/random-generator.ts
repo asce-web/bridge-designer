@@ -1,3 +1,4 @@
+/** Generates usefully random numbers from a 128 bit seed. Not cryptographically secure. */
 export function make32BitRandomGenerator(a: number, b: number, c: number, d: number): () => number {
   a |= 0;
   b |= 0;
@@ -12,4 +13,9 @@ export function make32BitRandomGenerator(a: number, b: number, c: number, d: num
     c = (c + t) | 0;
     return t >>> 0;
   };
+}
+
+export function makeRandomGenerator(a: number, b: number, c: number, d: number): () => number {
+  const unsigned32BitGenerator = make32BitRandomGenerator(a, b, c, d);
+  return () => unsigned32BitGenerator() / 4294967296.0;
 }

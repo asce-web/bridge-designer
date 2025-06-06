@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { mat4, vec2, vec3 } from 'gl-matrix';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { Utility } from '../../../shared/classes/utility';
-import { TerrainService } from '../models/terrain.service';
+import { TerrainModelService } from '../models/terrain-model.service';
 import { InterpolationService } from './interpolation.service';
 import { OverlayHandlers } from './overlay-ui.service';
 import { HEAD_ICON, HOME_ICON, PAN_ICON, TRUCK_ICON, WALK_ICON } from './overlay-icons';
@@ -28,7 +28,7 @@ export class ViewService {
   private static readonly UI_RATE_TILT = (5.0 * 2.0 * Math.PI) / 100.0;
 
   private readonly up = vec3.fromValues(0, 1, 0);
-  private readonly eye = vec3.create();
+  public readonly eye = vec3.create();
   private readonly center = vec3.create();
   private readonly eyeMin = vec3.create();
   private readonly eyeMax = vec3.create();
@@ -40,14 +40,14 @@ export class ViewService {
   private yEyeVelocity: number = 0;
   private phiDriverHead: number = 0;
   private thetaDriverHead: number = 0;
-  public isIgnoringBoundaries: boolean = false;
+  public isIgnoringBoundaries: boolean = true; // TODO: Should be false.
   public isMovingLaterally: boolean = false;
   public isDriving: boolean = false;
 
   constructor(
     private readonly bridgeService: BridgeService,
     private readonly interpolationService: InterpolationService,
-    private readonly terrainService: TerrainService,
+    private readonly terrainService: TerrainModelService,
   ) {}
 
   /** Apply a heuristic to set a reasonable view of the current bridge. */
@@ -64,7 +64,7 @@ export class ViewService {
     this.eye[0] -= this.eye[2] * 0.1;
 
     // TODO: Remove these test setting.
-    vec3.set(this.eye, 20, -3, 20);
+    vec3.set(this.eye, 20, 2, 20);
     vec3.set(this.center, 0, 1, 0);
 
     this.yEyeVelocity = 0;

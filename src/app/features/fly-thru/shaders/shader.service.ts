@@ -18,9 +18,10 @@ export class ShaderService {
   public getProgram(name: string): WebGLProgram {
     const program = this.programs?.[name];
     if (!program) {
+      console.log(`Missing shader: ${name}`);
       throw new ToastError('shaderError');
     }
-    return program ;
+    return program;
   }
 
   private buildPrograms(gl: WebGL2RenderingContext): Programs | undefined {
@@ -36,11 +37,16 @@ export class ShaderService {
         vertexShader: shaders['OVERLAY_VERTEX_SHADER'],
         fragmentShader: shaders['OVERLAY_FRAGMENT_SHADER'],
       },
+      {
+        name: 'terrain',
+        vertexShader: shaders['TERRAIN_VERTEX_SHADER'],
+        fragmentShader: shaders['TERRAIN_FRAGMENT_SHADER'],
+      },
     ];
     return this.linkPrograms(gl, programSpecs);
   }
 
-  /** Compiles shaders, returning an object keyed on export name. Ignores compile errors. */
+  /** Compiles shaders.ts, returning an object keyed on export name. Ignores compile errors. */
   private compileShaders(gl: WebGL2RenderingContext): { [key: string]: WebGLShader } {
     const result: { [key: string]: WebGLShader } = {};
     for (const exportName in shaderSources) {

@@ -25,7 +25,7 @@ flat in uint materialRef;
 out vec4 fragmentColor;
 
 void main() {
-  vec3 unitNormal = normalize(normal); // TODO: Verify not needed since not interpolating.
+  vec3 unitNormal = normalize(normal);
   float normalDotLight = dot(unitNormal, light.unitDirection);
   vec3 unitReflection = normalize(2.0f * normalDotLight * unitNormal - light.unitDirection);
   vec3 unitEye = normalize(-vertex);

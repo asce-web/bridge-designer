@@ -2,6 +2,13 @@ import os
 import re
 import sys
 
+"""
+Builds shaders.ts and constants.h.
+
+Converts each .vert and .frag file content to a multiline string, processing include directives, 
+preserving line numbers of the top level file.
+"""
+
 
 def readFileWithIncludes(file_name, depth=0):
     if depth > 3:
@@ -19,6 +26,8 @@ def readFileWithIncludes(file_name, depth=0):
 
 def main(compress):
     shader_files = [f for f in os.listdir(".") if f.endswith((".vert", ".frag"))]
+    # Sort key puts vertex before fragment shaders for readability.
+    shader_files.sort(key=lambda file: file.replace(".vert", ".VERT"))
     with open("shaders.ts", "w") as output:
         file_count = 0
         for file_name in shader_files:
@@ -31,14 +40,14 @@ def main(compress):
             elif file_name.endswith(".frag"):
                 var_name += "_FRAGMENT_SHADER"
             if compress:
-                text = re.sub(r"#line.*", "", text) # no line directive
+                text = re.sub(r"#line.*", "", text)  # no line directive
                 text = re.sub(r"#ifndef[\s\S]*?#endif", "", text)
                 text = re.sub(r"//[^\n]*\n", " ", text)  # elide comments
-                text = re.sub(r"(#.*)", r"\1@", text)  # protect newlines after directives
+                text = re.sub(r"(#.*)", r"\1@", text)  # protect directive newlines
                 text = re.sub(r"\s+", " ", text)  # compress spaces including newlines
-                text = re.sub(r"\s?([=,*+\-/{}()])\s?", r"\1", text) # unneeded spaces
-                text = re.sub(r"@", r"\n", text) # unprotect directives
-                text = re.sub(r"^ ", r"", text, flags=re.MULTILINE) # leading spaces
+                text = re.sub(r"\s?([=,*+\-/{}()])\s?", r"\1", text)  # unneeded spaces
+                text = re.sub(r"@", r"\n", text)  # unprotect directives
+                text = re.sub(r"^ ", r"", text, flags=re.MULTILINE)  # leading spaces
                 text = re.sub(r"; ", ";\n", text)  # readability break after ;
                 text = re.sub(r"{", "{\n", text)  # readability break after {
             if file_count > 0:
@@ -66,11 +75,16 @@ def main(compress):
                 if inId in uniforms or inId in ins:
                     print(f' redefinition of "{inId}"')
                 ins[inId] = (inLocation, inType)
+
+    # Build constants.h from constants.ts.
     with open("constants.ts", "r") as input:
         with open("constants.h", "w") as output:
             print("// This file is generated. Edit constants.ts instead.", file=output)
             for line in input.readlines():
-                if line.strip().startswith("//"):
+                if "build_stop_translation" in line:
+                    break
+                lineStripped = line.strip()
+                if len(lineStripped) == 0 or lineStripped.startswith("//"):
                     continue
                 line = re.sub(
                     r"export\s+const\s+(\w+)\s*=\s*([^;]+);", r"#define \1 \2", line

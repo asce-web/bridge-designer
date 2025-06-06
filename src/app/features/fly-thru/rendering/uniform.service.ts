@@ -16,11 +16,13 @@ const _ = 0;
 
 @Injectable({ providedIn: 'root' })
 export class UniformService {
+  /** Homogeneous light vector (w == 0). */
   public static UNIT_LIGHT_DIRECTION = vec4.fromValues(0.0572181596, 0.68661791522, 0.72476335496, 0);
   private transformsBuffer!: WebGLBuffer;
   private lightConfigBuffer!: WebGLBuffer;
   private overlayBuffer!: WebGLBuffer;
   private modelTransformStackPointer: number = 0;
+  /** Preallocated model transform stack. (Glmatrix creation is slow.) */
   private readonly modelTransformStack = (() => {
     const stack = [];
     for (let i = 0; i < 5; ++i) {
@@ -34,16 +36,16 @@ export class UniformService {
   private readonly modelViewProjectionMatrix = new Float32Array(this.transformsUniformStore, 64, 16);
   // prettier-ignore
   private readonly lightConfig = new Float32Array([
-    1, 0, 0, // unit light direction (placeholder values)
+    0, 1, 0, // unit light direction (placeholder values)
     _,
     0.9, 0.9, 1.0, // light color
-    0.25, // ambient intensity
+    0.1, // ambient intensity
   ]);
-  public readonly overlayStore = new ArrayBuffer(16 * 4);
-  // std140 layout:
+  private readonly lightDirection = new Float32Array(this.lightConfig.buffer, 0, 4);
+  // std140 layout w/ mij = i'th row, j'th column of projection:
   // m00 m10 m20 _ m01 m11 m21 _ m02 m12 m22 __ alpha __ __ __
   //  0   1   2  3  4   5   6  7  8   9  10  11   12  13 14 15
-  public readonly overlayFloats = new Float32Array(this.overlayStore, 0, 16);
+  public readonly overlayFloats = new Float32Array(16);
 
   constructor(
     private readonly glService: GlService,
@@ -56,20 +58,29 @@ export class UniformService {
    */
   public prepareUniforms(): void {
     const gl = this.glService.gl;
-    const program = this.shaderService.getProgram('facet_mesh');
+    const facetMeshProgram = this.shaderService.getProgram('facet_mesh');
+    const overlayProgram = this.shaderService.getProgram('overlay');
+    const terrainProgram = this.shaderService.getProgram('terrain');
 
-    this.transformsBuffer = this.setUpUniformBlock(program, 'Transforms', TRANSFORMS_UBO_BINDING_INDEX);
+    this.transformsBuffer = this.setUpUniformBlock(
+      [facetMeshProgram, terrainProgram],
+      'Transforms',
+      TRANSFORMS_UBO_BINDING_INDEX,
+    );
     gl.bufferData(gl.UNIFORM_BUFFER, this.transformsUniformStore.byteLength, gl.DYNAMIC_DRAW);
 
-    this.lightConfigBuffer = this.setUpUniformBlock(program, 'LightConfig', LIGHT_CONFIG_UBO_BINDING_INDEX);
+    this.lightConfigBuffer = this.setUpUniformBlock(
+      [facetMeshProgram, terrainProgram],
+      'LightConfig',
+      LIGHT_CONFIG_UBO_BINDING_INDEX,
+    );
     gl.bufferData(gl.UNIFORM_BUFFER, this.lightConfig.buffer.byteLength, gl.STATIC_DRAW);
 
-    this.setUpUniformBlock(program, 'MaterialConfig', MATERIAL_CONFIG_UBO_BINDING_INDEX);
+    this.setUpUniformBlock([facetMeshProgram], 'MaterialConfig', MATERIAL_CONFIG_UBO_BINDING_INDEX);
     gl.bufferData(gl.UNIFORM_BUFFER, MATERIAL_CONFIG, gl.STATIC_DRAW);
 
-    const overlayProgram = this.shaderService.getProgram('overlay');
-    this.overlayBuffer = this.setUpUniformBlock(overlayProgram, 'Overlay', OVERLAY_UBO_BINDING_INDEX);
-    gl.bufferData(gl.UNIFORM_BUFFER, this.overlayStore.byteLength, gl.STREAM_DRAW);
+    this.overlayBuffer = this.setUpUniformBlock([overlayProgram], 'Overlay', OVERLAY_UBO_BINDING_INDEX);
+    gl.bufferData(gl.UNIFORM_BUFFER, this.overlayFloats.buffer.byteLength, gl.STREAM_DRAW);
   }
 
   /** The current model matrix top of stack. */
@@ -106,27 +117,28 @@ export class UniformService {
 
   /** Transforms the constant light direction with the view matrix and updates the light config uniform. */
   public updateLightDirection(viewMatrix: mat4) {
-    vec4.transformMat4(this.lightConfig, UniformService.UNIT_LIGHT_DIRECTION, viewMatrix);
+    vec4.transformMat4(this.lightDirection, UniformService.UNIT_LIGHT_DIRECTION, viewMatrix);
     const gl = this.glService.gl;
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.lightConfigBuffer);
     gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.lightConfig);
   }
 
+  /** Updates the overlay uniform block contents. */
   public updateOverlayUniform(projection: mat3, alpha: number = 1): void {
     UniformService.copyMat3ToStd140(this.overlayFloats, projection);
     this.overlayFloats[12] = alpha;
 
     const gl = this.glService.gl;
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.overlayBuffer);
-    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.overlayStore);
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.overlayFloats.buffer);
   }
 
-  private setUpUniformBlock(program: WebGLProgram, name: string, bindingIndex: number): WebGLBuffer {
+  /** Does boilerplate setup operations for a uniform block. */
+  private setUpUniformBlock(programs: WebGLProgram[], name: string, bindingIndex: number): WebGLBuffer {
     const gl = this.glService.gl;
-    const blockIndex = gl.getUniformBlockIndex(program, name);
     const buffer = Utility.assertNotNull(gl.createBuffer());
-    gl.uniformBlockBinding(program, blockIndex, bindingIndex);
     gl.bindBufferBase(gl.UNIFORM_BUFFER, bindingIndex, buffer);
+    programs.forEach(program => gl.uniformBlockBinding(program, gl.getUniformBlockIndex(program, name), bindingIndex));
     return buffer;
   }
 

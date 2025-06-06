@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RenderingService } from './rendering.service';
+import { ViewService } from './view.service';
 
 export type FrameRenderer = (clockMillis: number, elapsedMillis: number) => void;
 
@@ -25,7 +26,10 @@ export class AnimatorService {
   private frameTickMillis: number | undefined;
   private frameCount: number = 0;
 
-  constructor(private readonly renderService: RenderingService) {}
+  constructor(
+    private readonly renderService: RenderingService,
+    private readonly viewService: ViewService,
+  ) {}
 
   /** Returns the current state of animation. */
   public get state(): AnimationState {
@@ -46,7 +50,14 @@ export class AnimatorService {
         this.frameTickMillis = nowMillis;
       } else {
         if (nowMillis - this.frameTickMillis > 1000) {
-          console.log('fps: %d', this.frameCount);
+          console.log(
+            'fps:',
+            this.frameCount,
+            'eye:',
+            this.viewService.eye[0],
+            this.viewService.eye[1],
+            this.viewService.eye[2],
+          );
           this.frameTickMillis = nowMillis;
           this.frameCount = 0;
         }

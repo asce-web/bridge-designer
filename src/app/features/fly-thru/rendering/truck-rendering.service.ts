@@ -45,7 +45,7 @@ export class TruckRenderingService {
     // Right rear.
     m = this.uniformService.pushModelMatrix();
 
-    mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, 0.95));
+    mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, 1.05));
     mat4.rotateZ(m, m, -this.wheelRotation);
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
     this.meshService.renderFacetMesh(this.dualWheelMesh);
@@ -66,7 +66,7 @@ export class TruckRenderingService {
     // Left rear.
     m = this.uniformService.pushModelMatrix();
 
-    mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, -0.95));
+    mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, -1.05));
     mat4.rotateX(m, m, Math.PI);
     mat4.rotateZ(m, m, -this.wheelRotation);
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);

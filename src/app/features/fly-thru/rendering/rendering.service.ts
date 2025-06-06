@@ -13,6 +13,7 @@ import { ViewService } from './view.service';
 import { ViewportService } from './viewport.service';
 import { TOWER_MESH_DATA } from '../models/tower';
 import { TruckRenderingService } from './truck-rendering.service';
+import { TerrainModelService } from '../models/terrain-model.service';
 
 /** Rendering functionality for fly-thrus. */
 @Injectable({ providedIn: 'root' })
@@ -22,6 +23,7 @@ export class RenderingService {
   private readonly offset = vec3.create();
   private prepared: boolean = false;
   private towerMesh!: Mesh;
+  private terrainMesh!: Mesh;
   private controlsOverlay!: OverlayContext;
 
   constructor(
@@ -32,6 +34,7 @@ export class RenderingService {
     private readonly overlayUiService: OverlayUiService,
     private readonly projectionService: ProjectionService,
     private readonly shaderService: ShaderService,
+    private readonly terrainModelService: TerrainModelService,
     private readonly truckRenderingService: TruckRenderingService,
     private readonly uniformService: UniformService,
     private readonly viewService: ViewService,
@@ -59,6 +62,7 @@ export class RenderingService {
 
     // Set up meshes.
     this.towerMesh = this.meshService.prepareColoredFacetMesh(TOWER_MESH_DATA);
+    this.terrainMesh = this.meshService.prepareTerrainMesh(this.terrainModelService.mesh)
     this.truckRenderingService.prepare();
 
     // Set up overlay icons with click/drag.
@@ -97,14 +101,16 @@ export class RenderingService {
     gl.depthFunc(gl.LEQUAL);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Set light in current view space.
+    this.uniformService.updateTransformsUniform(this.viewMatrix, this.projectionMatrix);
     this.uniformService.updateLightDirection(this.viewMatrix);
 
+    this.meshService.renderTerrainMesh(this.terrainMesh);
     this.truckRenderingService.render(this.viewMatrix, this.projectionMatrix);
 
     // TODO: To PowerLineRenderingService.
-    this.uniformService.pushModelMatrix();
-    mat4.translate(this.uniformService.modelMatrix, this.uniformService.modelMatrix, vec3.set(this.offset, 4, 0, 0));
+    let m: mat4;
+    m = this.uniformService.pushModelMatrix();
+    mat4.translate(m, m, vec3.set(this.offset, 4, 0, 0));
     this.uniformService.updateTransformsUniform(this.viewMatrix, this.projectionMatrix);
     this.meshService.renderFacetMesh(this.towerMesh);
     this.uniformService.popModelMatrixStack();
