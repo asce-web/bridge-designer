@@ -44,3 +44,17 @@ export const MATERIAL_CONFIG = new Float32Array([
   .1, .2, .1, // diffuse rgb
   200.0, // shininess
 ]);
+
+export const enum Material {
+  DarkGreenPaintedMetal = 0,
+  Red = 1,
+  Orange = 2,
+  White = 3,
+  DarkGray = 4,
+  Black = 5,
+  PaintedSteel = 6,
+  Aluminum = 7,
+  CorrogatedMetal = 8,
+  TexturedSteel = 9,
+  Glass = 10,
+};

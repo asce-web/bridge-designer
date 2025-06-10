@@ -31,7 +31,7 @@ class MaterialsLibrary:
                     case ["Ts", value]:
                         self.add("ts", value)
                     case _:
-                        print(f"unknown value: {line}", file=sys.stderr, end='')
+                        print(f"unknown value: {line}", file=sys.stderr, end="")
                         continue
 
     def add(self, tag, value):
@@ -54,6 +54,10 @@ class MaterialsLibrary:
                 print(f"  {kd[0]}, {kd[1]}, {kd[2]}, // diffuse rgb", file=out_file)
                 print(f"  {ns}, // shininess", file=out_file)
             print("]);", file=out_file)
+            print("\nexport const enum Material {", file=out_file)
+            for name, material in self.materials.items():
+                print(f"  {name} = {material["index"]},", file=out_file)
+            print("};", file=out_file)
 
 
 class Processor:
@@ -125,17 +129,13 @@ class Processor:
         prefix = Path(in_file.name).stem.replace("-", "_").upper()
         print(f"export const {prefix}_MESH_DATA = {{", file=out_file)
         if populated[0]:
-            print(
-                f"  positions: new Float32Array([", file=out_file
-            )
+            print(f"  positions: new Float32Array([", file=out_file)
             for index, quad in enumerate(self.quad_index.keys()):
                 p = self.vertices[quad[0]]
                 print(f"    {p[0]}, {p[1]}, {p[2]}, // {index}", file=out_file)
             print("  ]),", file=out_file)
         if populated[1]:
-            print(
-                f"  texCoords: new Float32Array([", file=out_file
-            )
+            print(f"  texCoords: new Float32Array([", file=out_file)
             for index, quad in enumerate(self.quad_index.keys()):
                 p = self.texcoords[quad[1]]
                 print(f"    {p[0]}, {p[1]}, {p[2]}, // {index}", file=out_file)

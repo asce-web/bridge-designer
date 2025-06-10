@@ -72,7 +72,6 @@ export class OverlayRenderingService {
         const tex = Utility.assertNotNull(gl.createTexture());
         gl.bindTexture(gl.TEXTURE_2D, tex);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        // TODO: Check if needed. Probably not.
         gl.generateMipmap(gl.TEXTURE_2D);
         overlaysByUrl[url] = {
           tex,
@@ -96,6 +95,7 @@ export class OverlayRenderingService {
   public drawIconOverlays(overlayContext: OverlayContext) {
     const gl = this.glService.gl;
     gl.disable(gl.DEPTH_TEST);
+    gl.disable(gl.CULL_FACE);
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
@@ -124,8 +124,10 @@ export class OverlayRenderingService {
       this.uniformService.updateOverlayUniform(this.iconTransform, overlay.alpha);
       gl.drawArrays(gl.TRIANGLES, 0, OverlayRenderingService.ICON_TEX_COORDS.length / 2);
     }
-
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindVertexArray(null);
     gl.disable(gl.BLEND);
     gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
   }
 }

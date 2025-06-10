@@ -50,6 +50,7 @@ export class RenderingService {
   /** Prepares for rendering frames before every animation start. */
   public prepareToRender(): void {
     this.setDefaultView();
+    this.terrainModelService.initializeForBridge();
 
     // One-time setups follow.
     if (this.prepared) {
@@ -98,6 +99,7 @@ export class RenderingService {
     gl.clearColor(0.5294, 0.8078, 0.9216, 1); // sky blue
     gl.clearDepth(1);
     gl.enable(gl.DEPTH_TEST);
+    gl.enable(gl.CULL_FACE);
     gl.depthFunc(gl.LEQUAL);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
