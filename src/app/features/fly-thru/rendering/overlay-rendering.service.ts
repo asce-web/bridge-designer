@@ -9,14 +9,14 @@ import { ViewportService } from './viewport.service';
 import { UniformService } from './uniform.service';
 
 export type Overlay = {
-  tex: WebGLTexture;
-  alpha: number;
+  texture: WebGLTexture;
   x0: number;
   y0: number;
   width: number;
   height: number;
+  alpha: number;
   locationTransform?: mat3;
-  /** Handles a pointer down event, optionally using provided click location. */
+  /** Handles a pointer down event. */
   handlePointerDown?: () => void;
   /** Handles a pointer drag event, optionally using provided drag information. */
   handlePointerDrag?: (dx?: number, dy?: number) => void;
@@ -47,12 +47,12 @@ export class OverlayRenderingService {
   /**
    * Returns a context containing set of prepared overlays for the icons in the given images loader.
    * By default these will be drawn with unit alpha, native size and upper left corner at the origin
-   * in mouse coordinate space. Change this with an optional setter that edits alpha x, y, width,
-   * height of respective overlay object.
+   * in mouse coordinate space. Change this with an optional continuation. A primary use is to edit 
+   * alpha x, y, width, height of respective overlay object.
    */
-  public prepareIconOverlay(
+  public prepare(
     imagesLoader: ImagesLoader,
-    setter: (overlaysByUrl: OverlaysByUrl) => void = _overlays => {},
+    continuation: (overlaysByUrl: OverlaysByUrl) => void = _overlays => {},
   ): OverlayContext {
     const gl = this.glService.gl;
 
@@ -67,14 +67,14 @@ export class OverlayRenderingService {
 
     const overlaysByUrl: OverlaysByUrl = {};
 
-    imagesLoader.invokeAfterLoaded(images => {
-      for (const [url, image] of Object.entries(images)) {
-        const tex = Utility.assertNotNull(gl.createTexture());
-        gl.bindTexture(gl.TEXTURE_2D, tex);
+    imagesLoader.invokeAfterLoaded(imagesByUrl => {
+      for (const [url, image] of Object.entries(imagesByUrl)) {
+        const texture = Utility.assertNotNull(gl.createTexture());
+        gl.bindTexture(gl.TEXTURE_2D, texture);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         gl.generateMipmap(gl.TEXTURE_2D);
         overlaysByUrl[url] = {
-          tex,
+          texture,
           alpha: 1,
           x0: 0,
           y0: 0,
@@ -82,17 +82,15 @@ export class OverlayRenderingService {
           height: image.height,
         };
       }
-      setter(overlaysByUrl);
+      continuation(overlaysByUrl);
     });
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.bindVertexArray(null);
     const program = this.shaderService.getProgram('overlay');
     const textureUniformLocation = gl.getUniformLocation(program, 'icon')!;
     return { vertexArray, textureUniformLocation, program, overlaysByUrl };
   }
 
-  /** Draws the given set of overlays. */
-  public drawIconOverlays(overlayContext: OverlayContext) {
+  /** Renders the given set of overlays. */
+  public render(overlayContext: OverlayContext) {
     const gl = this.glService.gl;
     gl.disable(gl.DEPTH_TEST);
     gl.disable(gl.CULL_FACE);
@@ -107,10 +105,10 @@ export class OverlayRenderingService {
     gl.activeTexture(gl.TEXTURE0 + textureUnit);
     gl.bindVertexArray(overlayContext.vertexArray);
     for (const overlay of Object.values(overlayContext.overlaysByUrl)) {
-      if (!overlay.tex) {
+      if (!overlay.texture) {
         continue;
       }
-      gl.bindTexture(gl.TEXTURE_2D, overlay.tex);
+      gl.bindTexture(gl.TEXTURE_2D, overlay.texture);
       if (!overlay.locationTransform) {
         const m = mat3.create();
         // Scale then translate.

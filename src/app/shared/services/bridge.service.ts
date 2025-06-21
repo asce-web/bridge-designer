@@ -102,8 +102,14 @@ export class BridgeService {
     return undefined;
   }
 
+  /**  */
   public findMembersWithJoint(joint: Joint): Member[] {
     return this.bridge.members.filter(member => member.hasJoint(joint));
+  }
+
+  /** Returns joints adjacent via members to the one given. */
+  public findConnectedJoints(joint: Joint): Joint[] {
+    return this.findMembersWithJoint(joint).map(member => member.getOtherJoint(joint));
   }
 
   public hasAnyMembers(joint: Joint): boolean {
@@ -145,6 +151,8 @@ export class BridgeService {
   }
 
   /**
+   * Returns a stock heuristically likely to be one the user will want to use next.
+   * 
    * Three cases:
    *  - No members in the bridge: Return a stock generally useful to niave users.
    *  - Empty member index list: returns the most common stock in the bridge, else EMPTY if no members.

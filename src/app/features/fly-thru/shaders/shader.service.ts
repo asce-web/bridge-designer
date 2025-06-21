@@ -46,7 +46,12 @@ export class ShaderService {
         name: 'river',
         vertexShader: shaders['RIVER_VERTEX_SHADER'],
         fragmentShader: shaders['RIVER_FRAGMENT_SHADER'],
-      }
+      },
+      {
+        name: 'sky',
+        vertexShader: shaders['SKY_VERTEX_SHADER'],
+        fragmentShader: shaders['SKY_FRAGMENT_SHADER'],
+      },
     ];
     return this.linkPrograms(gl, programSpecs);
   }

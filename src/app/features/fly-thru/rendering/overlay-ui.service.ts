@@ -7,9 +7,7 @@ export interface OverlayHandlers {
   handlePointerDrag?: (dx: number, dy: number) => void;
 }
 
-export type OverlayHandlersByUrl = { [url: string]: OverlayHandlers };
-
-/** Manages hot element and click-drag behavior of overlays. */
+/** Container for hot element and click-drag behavior of overlays. */
 @Injectable({ providedIn: 'root' })
 export class OverlayUiService {
   private static readonly DIM_ALPHA = 0.3;
@@ -20,9 +18,8 @@ export class OverlayUiService {
   private xBase: number = 0;
   private yBase: number = 0;
 
-  constructor() {}
-
-  public registerOverlays(overlaysByUrl: OverlaysByUrl) {
+  /** Registers a set of overlays so UI events related to them can be handled by this service. */
+  public registerOverlays(overlaysByUrl: OverlaysByUrl): void {
     for (const overlay of Object.values(overlaysByUrl)) {
       overlay.alpha = OverlayUiService.DIM_ALPHA;
     }

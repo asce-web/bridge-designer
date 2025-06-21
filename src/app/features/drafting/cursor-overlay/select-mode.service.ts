@@ -70,7 +70,7 @@ export class SelectModeService {
       this.hideKeyboardJointMoveCursor();
       this.hotElementService.updateRenderedHotElement(this.ctx, event.offsetX, event.offsetY, {
         excludeFixedJoints: true,
-        considerOnly: [Joint, Member, GuideKnob, Labels]
+        considerOnly: [Joint, Member, GuideKnob, Labels],
       });
     }
     // These do nothing if the respective cursor isn't in use.
@@ -168,12 +168,7 @@ export class SelectModeService {
     this.movingJoint = this.initialHotJoint;
     this.elementSelectorService.selectJoint(this.movingJoint, EventOrigin.DRAFTING_PANEL);
     this.jointCursorService
-      .start(event.offsetX, event.offsetY, { anchorJoints: this.getConnectedJoints(this.movingJoint) })
+      .start(event.offsetX, event.offsetY, { anchorJoints: this.bridgeService.findConnectedJoints(this.movingJoint) })
       .show(this.ctx);
-  }
-
-  /** Gets the joint connected by members to the one given. */
-  private getConnectedJoints(joint: Joint) {
-    return this.bridgeService.findMembersWithJoint(joint).map(member => member.getOtherJoint(joint));
   }
 }

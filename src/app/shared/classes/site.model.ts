@@ -16,7 +16,7 @@ export class SiteModel {
   constructor(conditions: DesignConditions) {
     this.xLeftmostDeckJoint = conditions.xLeftmostDeckJoint;
     this.xRightmostDeckJoint = conditions.xRightmostDeckJoint;
-    this.yGradeLevel = DesignConditions.GAP_DEPTH - conditions.deckElevation + SiteConstants.WEAR_SURFACE_HEIGHT;
+    this.yGradeLevel = DesignConditions.GAP_DEPTH - conditions.deckElevation + SiteConstants.DECK_HEIGHT;
     this.halfCutGapWidth = 0.5 * (this.xRightmostDeckJoint - this.xLeftmostDeckJoint);
 
     // Find indices in the terrain profile point array that are hidden by the abutments.  This gives us
@@ -97,7 +97,7 @@ export class SiteConstants {
   static readonly WATER_BELOW_GRADE: number = 26.4;
   static readonly WEAR_SURFACE_X0: number = -this.ABUTMENT_INTERFACE_OFFSET;
   static readonly WEAR_SURFACE_X1: number = this.ABUTMENT_STEP_INSET;
-  static readonly WEAR_SURFACE_HEIGHT: number = 0.8;
+  static readonly DECK_HEIGHT: number = 0.8;
 
   static readonly ACCESS_LENGTH: number = this.FAR_AWAY - this.TANGENT_OFFSET;
   static readonly ACCESS_CURVE: Point2D[] = this.createAccessCurve();
@@ -152,8 +152,8 @@ export class SiteConstants {
   static readonly STANDARD_ABUTMENT_POINTS: Point2D[] = (
     [
       // #region(collapsed) TABLE
-      [this.WEAR_SURFACE_X0, this.WEAR_SURFACE_HEIGHT],
-      [this.WEAR_SURFACE_X1, this.WEAR_SURFACE_HEIGHT],
+      [this.WEAR_SURFACE_X0, this.DECK_HEIGHT],
+      [this.WEAR_SURFACE_X1, this.DECK_HEIGHT],
       [this.ABUTMENT_STEP_INSET, this.ABUTMENT_STEP_HEIGHT],
       [this.ABUTMENT_STEP_WIDTH, this.ABUTMENT_STEP_HEIGHT],
       [this.ABUTMENT_STEP_WIDTH, -5.0],
@@ -169,8 +169,8 @@ export class SiteConstants {
   static readonly ARCH_ABUTMENT_POINTS: TaggedPoint2D<PointTag | undefined>[] = (
     [
       // #region(collapsed) TABLE
-      [this.WEAR_SURFACE_X0, this.WEAR_SURFACE_HEIGHT],
-      [this.WEAR_SURFACE_X1, this.WEAR_SURFACE_HEIGHT],
+      [this.WEAR_SURFACE_X0, this.DECK_HEIGHT],
+      [this.WEAR_SURFACE_X1, this.DECK_HEIGHT],
       [this.ABUTMENT_STEP_INSET, this.ABUTMENT_STEP_HEIGHT, PointTag.HEIGHT_ADJUSTED],
       [this.ABUTMENT_STEP_WIDTH, this.ABUTMENT_STEP_HEIGHT, PointTag.HEIGHT_ADJUSTED],
       [this.ABUTMENT_STEP_WIDTH, -5.0, PointTag.HEIGHT_ADJUSTED],

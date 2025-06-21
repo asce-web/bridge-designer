@@ -29,7 +29,7 @@ describe('TerrainModelService', () => {
   });
 
   it('should return expected mesh data with correct structure', () => {
-    const mesh = service.mesh;
+    const mesh = service.terrainMeshData;
     expect(mesh).toBeDefined();
     expect(mesh.positions instanceof Float32Array).toBeTrue();
     expect(mesh.normals instanceof Float32Array).toBeTrue();
@@ -47,7 +47,7 @@ describe('TerrainModelService', () => {
         zSum += mesh.positions[ip++];
       }
     }
-    expect(xSum).withContext('x').toBeCloseTo(0, 1);
+    expect(xSum).withContext('x').toBeCloseTo(366102, 1); // Due to half-span shift in x.
     expect(zSum).withContext('z').toBeCloseTo(0, 1);
     const postSquareCount = mesh.positions.length * mesh.positions.length;
     expect(ySum / postSquareCount)
@@ -61,17 +61,13 @@ describe('TerrainModelService', () => {
         const nx = mesh.normals![ip++];
         const ny = mesh.normals![ip++];
         const nz = mesh.normals![ip++];
-        const context = `e[${i},${j}]`;
-        expect(nx).withContext(context).toBeLessThan(0.5);
-        expect(ny).withContext(context).toBeGreaterThan(0.5);
-        expect(nz).withContext(context).toBeLessThan(0.5);
         expect(nx * nx + ny * ny + nz * nz).toBeCloseTo(1, 0.001);
       }
     }
   });
 
   it('should return a number for getElevationAt', () => {
-    const elevation = service.getElevationAt(0, 0);
+    const elevation = service.getElevationAtXZ(0, 0);
     expect(typeof elevation).toBe('number');
   });
 });

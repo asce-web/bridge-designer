@@ -77,7 +77,7 @@ export class Member implements Editable {
     return this.shape.section.shortName;
   }
 
-  public get materialSize(): number {
+  public get materialSizeCm(): number {
     return this.shape.width;
   }
 

@@ -8,10 +8,22 @@ layout(std140) uniform LightConfig {
   float ambientIntensity;
 } light;
 
+layout(std140) uniform Time {
+  // Time that wraps every 32 seconds.
+  float clock;
+} time;
+
+uniform sampler2D water;
+
 in vec3 vertex;
 in vec3 normal;
+in vec2 texCoord;
 out vec4 fragmentColor;
 
+// Components must be multiples of 1/32 for smooth time wrapping.
+const vec2 WATER_VELOCITY = vec2(1.0/32.0f, 3.0/32.0);
+
+// TODO: Simplify or finish ripples with fine triangulation of river surface.
 void main() {
   vec3 unitNormal = normalize(normal);
   float normalDotLight = dot(unitNormal, light.unitDirection);
@@ -20,6 +32,8 @@ void main() {
   float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), 120.0f);
   vec3 specularColor = specularIntensity * light.color;
   float diffuseIntensity = (1.0f - light.ambientIntensity) * clamp(normalDotLight, 0.0f, 1.0f) + light.ambientIntensity;
-  vec3 diffuseColor = diffuseIntensity * vec3(0.0f, 1.0f, 1.0f) * light.color * (1.0f - specularIntensity);
+  // Use fractional parts of terms to avoid float overflow.
+  vec3 texColor = texture(water, fract(texCoord) + WATER_VELOCITY * time.clock).rgb;
+  vec3 diffuseColor = diffuseIntensity * texColor * light.color * (1.0f - specularIntensity);
   fragmentColor = vec4(specularColor + diffuseColor, 1.0f);
 }

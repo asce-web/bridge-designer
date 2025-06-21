@@ -7,6 +7,8 @@ import {
   LIGHT_CONFIG_UBO_BINDING_INDEX,
   MATERIAL_CONFIG_UBO_BINDING_INDEX,
   OVERLAY_UBO_BINDING_INDEX,
+  TIME_UBO_BINDING_INDEX,
+  SKYBOX_TRANSFORMS_UBO_BINDING_INDEX,
 } from '../shaders/constants';
 import { mat3, mat4, vec4 } from 'gl-matrix';
 import { GlService } from './gl.service';
@@ -18,9 +20,11 @@ const _ = 0;
 export class UniformService {
   /** Homogeneous light vector (w == 0). */
   public static UNIT_LIGHT_DIRECTION = vec4.fromValues(0.0572181596, 0.68661791522, 0.72476335496, 0);
-  private transformsBuffer!: WebGLBuffer;
   private lightConfigBuffer!: WebGLBuffer;
   private overlayBuffer!: WebGLBuffer;
+  private timeBuffer!: WebGLBuffer;
+  private transformsBuffer!: WebGLBuffer;
+  private skyboxTransformsBuffer!: WebGLBuffer;
   private modelTransformStackPointer: number = 0;
   /** Preallocated model transform stack. (Glmatrix creation is slow.) */
   private readonly modelTransformStack = (() => {
@@ -34,6 +38,7 @@ export class UniformService {
   private readonly transformsUniformStore = new ArrayBuffer(128); // 2 each 4x4 floats
   private readonly modelViewMatrix = new Float32Array(this.transformsUniformStore, 0, 16);
   private readonly modelViewProjectionMatrix = new Float32Array(this.transformsUniformStore, 64, 16);
+  private readonly skyboxTransformsFloats = new Float32Array(16);
   // prettier-ignore
   private readonly lightConfig = new Float32Array([
     0, 1, 0, // unit light direction (placeholder values)
@@ -46,6 +51,7 @@ export class UniformService {
   // m00 m10 m20 _ m01 m11 m21 _ m02 m12 m22 __ alpha __ __ __
   //  0   1   2  3  4   5   6  7  8   9  10  11   12  13 14 15
   public readonly overlayFloats = new Float32Array(16);
+  public readonly timeFloats = new Float32Array(4);
 
   constructor(
     private readonly glService: GlService,
@@ -61,6 +67,7 @@ export class UniformService {
     const facetMeshProgram = this.shaderService.getProgram('facet_mesh');
     const overlayProgram = this.shaderService.getProgram('overlay');
     const riverProgram = this.shaderService.getProgram('river');
+    const skyProgram = this.shaderService.getProgram('sky');
     const terrainProgram = this.shaderService.getProgram('terrain');
 
     this.transformsBuffer = this.setUpUniformBlock(
@@ -69,6 +76,13 @@ export class UniformService {
       TRANSFORMS_UBO_BINDING_INDEX,
     );
     gl.bufferData(gl.UNIFORM_BUFFER, this.transformsUniformStore.byteLength, gl.DYNAMIC_DRAW);
+
+    this.skyboxTransformsBuffer = this.setUpUniformBlock(
+      [skyProgram],
+      'SkyboxTransforms',
+      SKYBOX_TRANSFORMS_UBO_BINDING_INDEX,
+    );
+    gl.bufferData(gl.UNIFORM_BUFFER, this.skyboxTransformsFloats.buffer.byteLength, gl.DYNAMIC_DRAW);
 
     this.lightConfigBuffer = this.setUpUniformBlock(
       [facetMeshProgram, riverProgram, terrainProgram],
@@ -81,7 +95,10 @@ export class UniformService {
     gl.bufferData(gl.UNIFORM_BUFFER, MATERIAL_CONFIG, gl.STATIC_DRAW);
 
     this.overlayBuffer = this.setUpUniformBlock([overlayProgram], 'Overlay', OVERLAY_UBO_BINDING_INDEX);
-    gl.bufferData(gl.UNIFORM_BUFFER, this.overlayFloats.buffer.byteLength, gl.STREAM_DRAW);
+    gl.bufferData(gl.UNIFORM_BUFFER, this.overlayFloats.buffer.byteLength, gl.DYNAMIC_DRAW);
+
+    this.timeBuffer = this.setUpUniformBlock([riverProgram], 'Time', TIME_UBO_BINDING_INDEX);
+    gl.bufferData(gl.UNIFORM_BUFFER, this.timeFloats, gl.DYNAMIC_DRAW);
   }
 
   /** The current model matrix top of stack. */
@@ -132,6 +149,29 @@ export class UniformService {
     const gl = this.glService.gl;
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.overlayBuffer);
     gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.overlayFloats.buffer);
+  }
+
+  public updateSkyboxTransformsUniform(viewMatrix: mat4, projectionMatrix: mat4) {
+    // Use the transform buffer to hold the view rotation initially.
+    const viewRotation = this.skyboxTransformsFloats;
+    mat4.copy(viewRotation, viewMatrix);
+    // Zero out the translation component and left-multiply the projection.
+    viewRotation[12] = viewRotation[13] = viewRotation[14] = 0;
+    mat4.multiply(this.skyboxTransformsFloats, projectionMatrix, viewRotation);
+
+    const gl = this.glService.gl;
+    gl.bindBuffer(gl.UNIFORM_BUFFER, this.skyboxTransformsBuffer);
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.skyboxTransformsFloats.buffer);
+  }
+
+  /** Updates time uniform block contents. */
+  public updateTimeUniform(clockMillis: number): void {
+    // Clock cycles every 32 seconds to match uniform clock usage.
+    this.timeFloats[0] = (clockMillis % 32000) * 0.001;
+
+    const gl = this.glService.gl;
+    gl.bindBuffer(gl.UNIFORM_BUFFER, this.timeBuffer);
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.timeFloats.buffer);
   }
 
   /** Does boilerplate setup operations for a uniform block. */

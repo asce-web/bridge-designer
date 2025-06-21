@@ -8,6 +8,7 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { RIVER_AXIS } from './river';
 import { Geometry } from '../../../shared/classes/graphics';
 import { BitVector } from '../../../shared/core/bitvector';
+import { Material } from './materials';
 
 type CenterlinePost = {
   elevation: number;
@@ -23,21 +24,20 @@ export class TerrainModelService {
   public static readonly GAP_HALF_WIDTH = 24.0;
   public static readonly HALF_GRID_COUNT = 64;
   public static readonly RIVER_BANK_SLOPE = 2.0;
-  public static readonly roadCutSlope = 1;
-  public static readonly stoneTextureSize = 0.3;
+  public static readonly ROAD_CUT_SLOPE = 1;
   public static readonly TERRAIN_HALF_SIZE = 192;
   public static readonly WATER_LEVEL = -26.0;
 
   public static readonly GRID_COUNT = 2 * TerrainModelService.HALF_GRID_COUNT;
   public static readonly POST_COUNT = TerrainModelService.GRID_COUNT + 1;
   public static readonly METERS_PER_GRID = TerrainModelService.TERRAIN_HALF_SIZE / TerrainModelService.HALF_GRID_COUNT;
-  public static readonly blufSetback = TerrainModelService.GAP_HALF_WIDTH * 0.2;
+  public static readonly BLUF_SETBACK = TerrainModelService.GAP_HALF_WIDTH * 0.2;
   public static readonly BLUF_TO_RIVER_CENTER_DISTANCE =
-    TerrainModelService.GAP_HALF_WIDTH + TerrainModelService.blufSetback;
-  public static readonly tInflection = TerrainModelService.GAP_HALF_WIDTH - TerrainModelService.blufSetback;
-  public static readonly blufCoeff =
+    TerrainModelService.GAP_HALF_WIDTH + TerrainModelService.BLUF_SETBACK;
+  public static readonly T_INFLECTION = TerrainModelService.GAP_HALF_WIDTH - TerrainModelService.BLUF_SETBACK;
+  public static readonly BLUF_COEFF =
     (-0.5 * TerrainModelService.RIVER_BANK_SLOPE) /
-    (TerrainModelService.tInflection - (TerrainModelService.blufSetback + TerrainModelService.GAP_HALF_WIDTH));
+    (TerrainModelService.T_INFLECTION - (TerrainModelService.BLUF_SETBACK + TerrainModelService.GAP_HALF_WIDTH));
   public static readonly GORGE_BOTTOM_HEIGHT =
     -TerrainModelService.GAP_HALF_WIDTH * TerrainModelService.RIVER_BANK_SLOPE;
   public static readonly RIVER_EDGE_TO_CENTER_DISTANCE =
@@ -46,22 +46,32 @@ export class TerrainModelService {
   private readonly random0to1 = makeRandomGenerator(2093415, 3205892098, 239837, 13987483);
 
   public readonly fractalElevations: Float32Array[];
-  public roadCenterLine!: CenterlinePost[];
+  public roadCenterLine: CenterlinePost[];
+  public terrainMeshData: MeshData;
 
   constructor(private readonly bridgeService: BridgeService) {
     this.fractalElevations = this.buildFractalTerrain(TerrainModelService.POST_COUNT);
+    this.roadCenterLine = this.buildRoadCenterLine();
+    this.terrainMeshData = this.buildTerrainMeshData();
   }
 
   // Sets up terrain geometry for current bridge.
   public initializeForBridge(): void {
     this.roadCenterLine = this.buildRoadCenterLine();
+    this.terrainMeshData = this.buildTerrainMeshData();
+  }
+
+  /** Resets the terrain with a new random component. */
+  public refreshFractalTerrain() {
+    this.buildFractalTerrain(this.fractalElevations);
+    this.terrainMeshData = this.buildTerrainMeshData();
   }
 
   /**
    * Creates or re-fills a square array of elevation posts with random fractal terrain
    * using the diamond/square algorithm.
    */
-  public buildFractalTerrain(arg: number | Float32Array[]): Float32Array[] {
+  private buildFractalTerrain(arg: number | Float32Array[]): Float32Array[] {
     // Make the first random() zero so the center of terrain isn't a crazy elevation.
     let randomCount = 0;
     const random = () => (randomCount++ === 0 ? 0 : 2 * this.random0to1() - 1);
@@ -123,21 +133,20 @@ export class TerrainModelService {
     return y;
   }
 
-  /** Rebuilds the random part of terrain without re-seeding the RNG. */
-  public rebuildFractalTerrain() {
-    this.buildFractalTerrain(this.fractalElevations);
-  }
-
-  public buildRoadCenterLine(): CenterlinePost[] {
+  /**
+   * Builds the y-axis profile of the road centerline. It's two straight ramps with
+   * parabolic blending to he bridge deck wear surface.
+   */
+  private buildRoadCenterLine(): CenterlinePost[] {
     const conditions = this.bridgeService.designConditions;
     const halfSpanLength = 0.5 * conditions.spanLength;
-    const gradeHeight = DesignConditions.GAP_DEPTH - conditions.deckElevation;
-    const wearSurfaceHeight = gradeHeight + SiteConstants.WEAR_SURFACE_HEIGHT;
+    const yDeckJoints = DesignConditions.GAP_DEPTH - conditions.deckElevation;
+    const yWearSurface = yDeckJoints + SiteConstants.DECK_HEIGHT;
     const centerLine: CenterlinePost[] = [];
     const iMax = TerrainModelService.POST_COUNT - 1;
-    if (gradeHeight === 0) {
+    if (yDeckJoints === 0) {
       for (let i = 0; i <= iMax; ++i) {
-        centerLine.push({ elevation: gradeHeight, xNormal: 0, yNormal: 1 });
+        centerLine.push({ elevation: yWearSurface, xNormal: 0, yNormal: 1 });
       }
     } else {
       const A = SiteConstants.ACCESS_SLOPE / (2 * SiteConstants.TANGENT_OFFSET);
@@ -148,7 +157,7 @@ export class TerrainModelService {
       // y1 is elevation over edge of deck at end of parabolic transition.
       const y1 = A * SiteConstants.TANGENT_OFFSET * SiteConstants.TANGENT_OFFSET;
       // x2 is end of linear ramp, start of upper parabolic transition.
-      const x2 = halfSpanLength + wearSurfaceHeight / SiteConstants.ACCESS_SLOPE;
+      const x2 = halfSpanLength + yWearSurface / SiteConstants.ACCESS_SLOPE;
       // x3 is end of upper parabolic transition, start of level roadway.
       const x3 = x2 + SiteConstants.TANGENT_OFFSET;
       // Loop from span middle, stepping outward in both directions.
@@ -159,18 +168,18 @@ export class TerrainModelService {
       ) {
         let y = 0;
         if (x <= halfSpanLength) {
-          y = SiteConstants.WEAR_SURFACE_HEIGHT;
+          y = SiteConstants.DECK_HEIGHT;
         } else if (x <= x1) {
           const xp = x - x0;
-          y = A * xp * xp + SiteConstants.WEAR_SURFACE_HEIGHT;
+          y = A * xp * xp + SiteConstants.DECK_HEIGHT;
         } else if (x <= x2) {
           const xp = x - x1;
-          y = y1 + xp * SiteConstants.ACCESS_SLOPE + SiteConstants.WEAR_SURFACE_HEIGHT;
+          y = y1 + xp * SiteConstants.ACCESS_SLOPE + SiteConstants.DECK_HEIGHT;
         } else if (x <= x3) {
           const xp = x - x3;
-          y = gradeHeight - A * xp * xp;
+          y = yWearSurface - A * xp * xp;
         } else {
-          y = gradeHeight;
+          y = yWearSurface;
         }
         centerLine[i] = { elevation: y, xNormal: 0, yNormal: 0 };
         centerLine[j] = { elevation: y, xNormal: 0, yNormal: 0 };
@@ -212,21 +221,21 @@ export class TerrainModelService {
   }
 
   /**
-   * Synthesizes one elevation by combining random terrain, river, and bridge excavation models.
+   * Synthesizes one terrain elevation by combining models: random, river, and bridge excavation.
+   * Includes a flag saying whether the post elevation is under the river surface.
    *
    * @param i post row grid coordinate
    * @param j post column grid coordinate
-   * @param grade grade level
-   * @return elevation of this post
+   * @param rtn a reference to a container for return values
    */
-  public synthesizeElevation(i: number, j: number, rtn: { elevation: number; isVisible: boolean }): void {
+  private synthesizeElevation(i: number, j: number, rtn?: { elevation: number; isVisible: boolean }): number {
     const conditions = this.bridgeService.designConditions;
     const halfGridCount = TerrainModelService.HALF_GRID_COUNT;
     const metersPerGrid = TerrainModelService.METERS_PER_GRID;
     const x = (j - halfGridCount) * metersPerGrid;
     const z = (i - halfGridCount) * metersPerGrid;
     // Mark the roadway excluding the area between abutments invisible.
-    rtn.isVisible = Math.abs(z) > SiteConstants.DECK_HALF_WIDTH || Math.abs(x) < 0.5 * conditions.spanLength;
+    let isVisible = Math.abs(z) > SiteConstants.DECK_HALF_WIDTH || Math.abs(x) < 0.5 * conditions.spanLength;
     // Distance to river center line.
     const tWater = getDistanceToRiver(x, z);
     // Distance to center of road.
@@ -242,12 +251,12 @@ export class TerrainModelService {
     // If we're close to the water, we roll off in a parabolic section.
     const tBluf = TerrainModelService.BLUF_TO_RIVER_CENTER_DISTANCE + 0.3 * tFractalB;
     if (tWater <= tBluf) {
-      y -= TerrainModelService.blufCoeff * Utility.sqr(tWater - tBluf);
+      y -= TerrainModelService.BLUF_COEFF * Utility.sqr(tWater - tBluf);
     }
-    // Clamp underwater portion.
+    // Clamp underwater portion. Assumes only the river valley is lower than water level.
     if (y < TerrainModelService.WATER_LEVEL) {
       y = TerrainModelService.WATER_LEVEL - 5;
-      rtn.isVisible = false;
+      isVisible = false;
     }
     // Raise to grade.
     y += DesignConditions.GAP_DEPTH - conditions.deckElevation;
@@ -256,7 +265,7 @@ export class TerrainModelService {
     const tCut = Math.abs(z);
     const yRoad = this.roadCenterLine[j].elevation - TerrainModelService.EPS_PAINT;
     // TODO: Replace deck width with actual abutment width.
-    const yRise = (tCut - SiteConstants.DECK_HALF_WIDTH - metersPerGrid) * TerrainModelService.roadCutSlope;
+    const yRise = (tCut - SiteConstants.DECK_HALF_WIDTH - metersPerGrid) * TerrainModelService.ROAD_CUT_SLOPE;
 
     // Try cut first.
     const yCut = yRise >= 0 ? yRoad + yRise : yRoad;
@@ -300,8 +309,13 @@ export class TerrainModelService {
         }
       }
     }
-      */
-    rtn.elevation = y;
+    */
+    if (rtn) {
+      rtn.isVisible = isVisible;
+      rtn.elevation = y;
+    }
+    return y;
+
     function getDistanceToRiver(x: number, z: number): number {
       let distance = Number.POSITIVE_INFINITY;
       for (let i = 2; i < RIVER_AXIS.length; i += 2) {
@@ -318,8 +332,8 @@ export class TerrainModelService {
     }
   }
 
-  /** Returns a mesh for the current terrain. */
-  public get mesh(): MeshData {
+  /** Returns mesh data for the current terrain. */
+  private buildTerrainMeshData(): MeshData {
     const postCount = TerrainModelService.POST_COUNT;
     const gridFloatCount = 3 * postCount * postCount;
     const positions = new Float32Array(gridFloatCount);
@@ -327,18 +341,18 @@ export class TerrainModelService {
     const gridSquareCount = TerrainModelService.GRID_COUNT * TerrainModelService.GRID_COUNT;
     const indices = new Uint16Array(gridSquareCount * 2 * 3); // Two triangles per grid square.
     // Most negative x- and z-coordinate.
-    const xz0 = -TerrainModelService.HALF_GRID_COUNT * TerrainModelService.METERS_PER_GRID;
+    const z0 = -TerrainModelService.HALF_GRID_COUNT * TerrainModelService.METERS_PER_GRID;
+    const x0 = z0 + 0.5 * this.bridgeService.designConditions.spanLength;
     const mPerGrid = TerrainModelService.METERS_PER_GRID;
 
     // Positions from grid x-z and terrain y in column/x-major order.
-    // TODO: Have synthesizeElevation return a visibility tag to skip triangles e.g. roadways and river.
     const ijMax = postCount - 1;
     let ip = 0;
     let ibv = 0;
     const post = { elevation: 0, isVisible: true };
     const visibleBits = new BitVector(postCount * postCount);
-    for (let j = 0, x = xz0; j <= ijMax; ++j, x += mPerGrid) {
-      for (let i = 0, z = xz0; i <= ijMax; ++i, z += mPerGrid) {
+    for (let j = 0, x = x0; j <= ijMax; ++j, x += mPerGrid) {
+      for (let i = 0, z = z0; i <= ijMax; ++i, z += mPerGrid) {
         this.synthesizeElevation(i, j, post);
         positions[ip++] = x;
         positions[ip++] = post.elevation;
@@ -441,7 +455,118 @@ export class TerrainModelService {
     return { positions, normals, indices };
   }
 
-  public getElevationAt(_x: number, _z: number): number {
-    return -10;
+  private getElevationAtIJ(i: number, j: number): number {
+    i = Utility.clamp(i, 0, TerrainModelService.GRID_COUNT);
+    j = Utility.clamp(j, 0, TerrainModelService.GRID_COUNT);
+    const xyzIndex = j * TerrainModelService.POST_COUNT + i;
+    return this.terrainMeshData.positions[xyzIndex * 3 + 1]; // y-coordinate
   }
+
+  /** Returns the terrain model elevation at the given x-z point. */
+  public getElevationAtXZ(x: number, z: number): number {
+    const conditions = this.bridgeService.designConditions;
+    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
+    const terrainHalfSize = TerrainModelService.TERRAIN_HALF_SIZE;
+    const i0f = (z + terrainHalfSize) / metersPerGrid;
+    const i0 = Math.trunc(i0f);
+    const ti = i0f - i0;
+    const j0f = (x - 0.5 * conditions.spanLength + terrainHalfSize) / metersPerGrid;
+    const j0 = Math.trunc(j0f);
+    const tj = j0f - j0;
+    const e00 = this.getElevationAtIJ(i0, j0);
+    const e01 = this.getElevationAtIJ(i0, j0 + 1);
+    const et0 = e00 * (1 - tj) + e01 * tj;
+    const e10 = this.getElevationAtIJ(i0 + 1, j0);
+    const e11 = this.getElevationAtIJ(i0 + 1, j0 + 1);
+    const et1 = e10 * (1 - tj) + e11 * tj;
+    const yWater = TerrainModelService.WATER_LEVEL + DesignConditions.GAP_DEPTH - conditions.deckElevation;
+    return Math.max(yWater, et0 * (1 - ti) + et1 * ti);
+  }
+
+  /** Returns a faceted mesh for the roadway sections to the bridge. */
+  public get roadwayMeshData(): MeshData {
+    const abutmentStepInset = SiteConstants.ABUTMENT_STEP_INSET;
+    const deckHalfWidth = SiteConstants.DECK_HALF_WIDTH;
+    const gridCount = TerrainModelService.GRID_COUNT;
+    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
+    const wearSurfaceHeight = SiteConstants.DECK_HEIGHT;
+    const positionsList = [];
+    // Left positions.
+    for (let j = 0, x = this.gridColumnToWorldX(j); ; ++j, x += metersPerGrid) {
+      const centerlinePost = this.roadCenterLine[j];
+      if (x >= abutmentStepInset) {
+        positionsList.push(abutmentStepInset, wearSurfaceHeight, -deckHalfWidth);
+        positionsList.push(abutmentStepInset, wearSurfaceHeight, +deckHalfWidth);
+        break;
+      } else {
+        positionsList.push(x, centerlinePost.elevation, -deckHalfWidth);
+        positionsList.push(x, centerlinePost.elevation, +deckHalfWidth);
+      }
+    }
+    const leftLength = positionsList.length;
+    // Right positions.
+    const xDeckRight = this.bridgeService.designConditions.spanLength - abutmentStepInset;
+    for (let j = gridCount, x = this.gridColumnToWorldX(j); ; --j, x -= metersPerGrid) {
+      const centerlinePost = this.roadCenterLine[j];
+      if (x <= xDeckRight) {
+        positionsList.push(xDeckRight, wearSurfaceHeight, -deckHalfWidth);
+        positionsList.push(xDeckRight, wearSurfaceHeight, +deckHalfWidth);
+        break;
+      } else {
+        positionsList.push(x, centerlinePost.elevation, -deckHalfWidth);
+        positionsList.push(x, centerlinePost.elevation, +deckHalfWidth);
+      }
+    }
+    const positions = new Float32Array(positionsList);
+    // Left and right normals.
+    const normals = new Float32Array(positions.length);
+    for (let j = 0, i = 0; i < leftLength; ++j, i += 6) {
+      const centerlinePost = this.roadCenterLine[j];
+      normals[i] = normals[i + 3] = centerlinePost.xNormal;
+      normals[i + 1] = normals[i + 4] = centerlinePost.yNormal;
+    }
+    for (let j = gridCount, i = leftLength; i < normals.length; --j, i += 6) {
+      const centerlinePost = this.roadCenterLine[j];
+      normals[i] = normals[i + 3] = centerlinePost.xNormal;
+      normals[i + 1] = normals[i + 4] = centerlinePost.yNormal;
+    }
+    // Materials: all identical.
+    const materialRefs = new Uint16Array(positions.length / 3).fill(Material.DarkGray);
+    // Indices: two disconnected strips of triangles.
+    const quadCount = positions.length / 6 - 2;
+    const indices = new Uint16Array(6 * quadCount);
+    let ip = 0;
+    const leftIndexCount = leftLength - 6;
+    for (let i = 0; ip < leftIndexCount; i += 2) {
+      indices[ip++] = i + 3;
+      indices[ip++] = i;
+      indices[ip++] = i + 1;
+      indices[ip++] = i;
+      indices[ip++] = i + 3;
+      indices[ip++] = i + 2;
+    }
+    for (let i = leftLength / 3; ip < indices.length; i += 2) {
+      indices[ip++] = i + 1;
+      indices[ip++] = i;
+      indices[ip++] = i + 3;
+      indices[ip++] = i + 2;
+      indices[ip++] = i + 3;
+      indices[ip++] = i;
+    }
+    return { positions, normals, materialRefs, indices };
+  }
+
+  private gridColumnToWorldX(j: number): number {
+    const halfGridCount = TerrainModelService.HALF_GRID_COUNT;
+    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
+    const halfSpanLength = 0.5 * this.bridgeService.designConditions.spanLength;
+    return (j - halfGridCount) * metersPerGrid + halfSpanLength;
+  }
+
+  /* TODO: Remove if unused.
+  private gridRowToWorldZ(i: number) {
+    const halfGridCount = TerrainModelService.HALF_GRID_COUNT;
+    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
+    return (i - halfGridCount) * metersPerGrid;
+  }*/
 }

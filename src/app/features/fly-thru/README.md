@@ -2,6 +2,19 @@
 
 This document describes how data flows through shaders.
 
+## Overall organization
+
+- **Pane.** The UI component that contains the scene and receives user interactions.
+- **Models.** Raw data for items in the scene. Some are static (from OBJ files), others computed on the fly.
+- **Rendering.** Logic for rendering models, including.
+  - **Meshes.** Converting model data into triangle meshes understood by WebGL shaders.
+  - **Projections.** Model, view and projection, transformations that orient objects in the scene and the scene for
+    viewing, then map it to the pane.
+  - **Uniforms.** Management of WebGL uniform (global) data blocks, which are communicate to shaders.
+- **Shaders.** GLSL vertex and fragment manipulators.
+
+## Coordinate systems
+
 ## Objects in the animation
 
 The animation scene consists of the following:
@@ -68,7 +81,7 @@ Orient so camera points down the negative z-axis.
 ### Projection matrix
 
 Apply perspective to foreshorten objects by distance from camera and clip, including near/far. Scale to clip boundaries
-xyz \in [-1..1].
+xyz&nbsp;∈&nbsp;[-1..1].
 
 ### Viewport transform
 

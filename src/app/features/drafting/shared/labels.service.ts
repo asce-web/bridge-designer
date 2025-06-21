@@ -52,9 +52,9 @@ export class LabelsService implements DraggableService {
     const roadLabelMetrics = ctx.measureText(LabelsService.ROAD_LABEL_TEXT);
 
     // Slab geometry calclulations matching design-site-rendering.service.
-    const ySlabTop = this.viewportTransform.worldToViewportY(SiteConstants.WEAR_SURFACE_HEIGHT);
+    const ySlabTop = this.viewportTransform.worldToViewportY(SiteConstants.DECK_HEIGHT);
     const ySlabBottom = this.viewportTransform.worldToViewportY(
-      SiteConstants.WEAR_SURFACE_HEIGHT - conditions.deckThickness,
+      SiteConstants.DECK_HEIGHT - conditions.deckThickness,
     );
     const yBeamTop = 2 + ySlabBottom;
     const yText = this.viewportTransform.worldToViewportY(this.bridgeService.draftingPanelState.yLabels);

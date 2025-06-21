@@ -136,12 +136,14 @@ void main() {
 export const RIVER_VERTEX_SHADER = 
 `#version 300 es
 
+precision mediump float;
+
 // This file is generated. Edit constants.ts instead.
 #define IN_POSITION_LOCATION 0
 #define IN_NORMAL_LOCATION 1
 #define IN_MATERIAL_REF_LOCATION 2
 #define IN_TEX_COORD_LOCATION 3
-#line 4
+#line 6
 
 layout(std140) uniform Transforms {
   mat4 modelView;
@@ -157,13 +159,17 @@ layout(location = IN_POSITION_LOCATION) in vec2 inPosition;
 
 out vec3 vertex;
 out vec3 normal;
+out vec2 texCoord;
+
+// Smaller scale makes texture appear larger.
+const float TEX_SCALE = 0.2;
 
 void main() {
-  // TODO: Add ripples.
   vec4 inPositionHomogeneous = vec4(inPosition.x, 0.0f, inPosition.y, 1.0f);
   gl_Position = transforms.modelViewProjection * inPositionHomogeneous;
   vertex = vec3(transforms.modelView * inPositionHomogeneous);
   normal = mat3(transforms.modelView) * vec3(0.0f, 1.0f, 0.0f);
+  texCoord = TEX_SCALE * inPosition;
 }
 `;
 
@@ -178,10 +184,22 @@ layout(std140) uniform LightConfig {
   float ambientIntensity;
 } light;
 
+layout(std140) uniform Time {
+  // Time that wraps every 32 seconds.
+  float clock;
+} time;
+
+uniform sampler2D water;
+
 in vec3 vertex;
 in vec3 normal;
+in vec2 texCoord;
 out vec4 fragmentColor;
 
+// Components must be multiples of 1/32 for smooth time wrapping.
+const vec2 WATER_VELOCITY = vec2(1.0/32.0f, 3.0/32.0);
+
+// TODO: Simplify or finish ripples with fine triangulation of river surface.
 void main() {
   vec3 unitNormal = normalize(normal);
   float normalDotLight = dot(unitNormal, light.unitDirection);
@@ -190,8 +208,57 @@ void main() {
   float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), 120.0f);
   vec3 specularColor = specularIntensity * light.color;
   float diffuseIntensity = (1.0f - light.ambientIntensity) * clamp(normalDotLight, 0.0f, 1.0f) + light.ambientIntensity;
-  vec3 diffuseColor = diffuseIntensity * vec3(0.0f, 1.0f, 1.0f) * light.color * (1.0f - specularIntensity);
+  // Use fractional parts of terms to avoid float overflow.
+  vec3 texColor = texture(water, fract(texCoord) + WATER_VELOCITY * time.clock).rgb;
+  vec3 diffuseColor = diffuseIntensity * texColor * light.color * (1.0f - specularIntensity);
   fragmentColor = vec4(specularColor + diffuseColor, 1.0f);
+}
+`;
+
+export const SKY_VERTEX_SHADER = 
+`#version 300 es
+
+precision mediump float;
+
+// This file is generated. Edit constants.ts instead.
+#define IN_POSITION_LOCATION 0
+#define IN_NORMAL_LOCATION 1
+#define IN_MATERIAL_REF_LOCATION 2
+#define IN_TEX_COORD_LOCATION 3
+#line 6
+
+layout(std140) uniform SkyboxTransforms {
+  mat4 viewRotationProjection;
+} transforms;
+
+// Make VScode happy.
+#ifndef IN_POSITION_LOCATION
+#define IN_POSITION_LOCATION 0
+#endif
+
+layout(location = IN_POSITION_LOCATION) in vec3 inPosition;
+
+out vec3 texCoord;
+
+void main() {
+  vec4 homogenousPosition = transforms.viewRotationProjection * vec4(inPosition, 1);
+  gl_Position = homogenousPosition.xyww; // Clamp z to 1 after perspective division.
+  texCoord = inPosition;
+}`;
+
+export const SKY_FRAGMENT_SHADER = 
+`#version 300 es
+
+precision mediump float;
+
+// TODO: Maybe add ambient light for brightness control.
+uniform samplerCube skybox;
+
+in vec3 texCoord;
+out vec4 fragmentColor;
+
+void main() {
+  fragmentColor = texture(skybox, texCoord);
 }
 `;
 

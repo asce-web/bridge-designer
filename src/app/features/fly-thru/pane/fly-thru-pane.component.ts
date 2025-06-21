@@ -47,10 +47,12 @@ export class FlyThruPaneComponent implements AfterViewInit {
     }
   }
 
+  /** Delegates pointer move to UI handler. */
   handlePointerMove(event: PointerEvent): void {
     this.overlayUiService.handlePointerMove(event.offsetX, event.offsetY);
   }
 
+  /** Delegates left button up to UI handler. */
   handlePointerUp(event: PointerEvent): void {
     if (event.button === 0) {
       this.flyThruCanvas.nativeElement.releasePointerCapture(event.pointerId)

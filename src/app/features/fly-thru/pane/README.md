@@ -75,9 +75,9 @@ Maxes:
 Rough worst case per model:
 
 - triangles: `50 * (32 + 16*2 + 24) + 120 * 8 + 11 * 12 + 12 * 12 = 5636`
-- lines: 120 \* 2 = 240
+- lines: `120 * 2 = 240`
 
 To load one model per deck joint:
 
-- triangles: 12 * 5636 = 67,632
-- lines: 12 * 240 = 2,880
+- triangles: `12 * 5636 = 67,632`
+- lines: `12 * 240 = 2,880`

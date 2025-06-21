@@ -40,16 +40,16 @@ def main(compress):
             elif file_name.endswith(".frag"):
                 var_name += "_FRAGMENT_SHADER"
             if compress:
-                text = re.sub(r"#line.*", "", text)  # no line directive
-                text = re.sub(r"#ifndef[\s\S]*?#endif", "", text)
+                text = re.sub(r"#line.*", "", text)  # elide line directive
+                text = re.sub(r"#ifndef[\s\S]*?#endif", "", text) # assume #ifndefs are false
                 text = re.sub(r"//[^\n]*\n", " ", text)  # elide comments
                 text = re.sub(r"(#.*)", r"\1@", text)  # protect directive newlines
                 text = re.sub(r"\s+", " ", text)  # compress spaces including newlines
                 text = re.sub(r"\s?([=,*+\-/{}()])\s?", r"\1", text)  # unneeded spaces
                 text = re.sub(r"@", r"\n", text)  # unprotect directives
-                text = re.sub(r"^ ", r"", text, flags=re.MULTILINE)  # leading spaces
-                text = re.sub(r"; ", ";\n", text)  # readability break after ;
-                text = re.sub(r"{", "{\n", text)  # readability break after {
+                text = re.sub(r"^ ", r"", text, flags=re.MULTILINE)  # elide leading spaces
+                text = re.sub(r"; ", ";\n", text)  # add readability break after ;
+                text = re.sub(r"{", "{\n", text)  # add readability break after {
             if file_count > 0:
                 print(file=output)
             print(f"export const {var_name} = ", file=output)

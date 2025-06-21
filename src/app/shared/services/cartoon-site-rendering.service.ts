@@ -54,7 +54,7 @@ export class CartoonSiteRenderingService {
 
     const conditions = this.bridgeService.designConditions;
     const viewportTransform = this.viewportTransform;
-    const ySlabTop = viewportTransform.worldToViewportY(SiteConstants.WEAR_SURFACE_HEIGHT);
+    const ySlabTop = viewportTransform.worldToViewportY(SiteConstants.DECK_HEIGHT);
     const ySlabBottom = ySlabTop + 2;
     const yBeamBottom = ySlabBottom + 5; //viewportTransform.worldToViewportDistance(beamHeight);
     const xSlabLeft = viewportTransform.worldToViewportX(conditions.xLeftmostDeckJoint - SiteConstants.DECK_CANTILEVER);

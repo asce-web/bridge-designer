@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ImageService {
+  
   /**
    * Returns an images loader. The loader creates images from given URLs, which the browser fetches via
    * multiple threads. Any function accepting a url to image map can be called any number of times via

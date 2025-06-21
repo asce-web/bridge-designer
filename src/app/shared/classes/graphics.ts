@@ -10,6 +10,8 @@ export class Colors {
   public static readonly SKY = 'rgb(192, 255, 255)';
   public static readonly STEEL = 'gray';
   public static readonly WATER = 'blue';
+  public static readonly GL_WATER = new Uint8Array([11, 104, 158, 255]);
+  public static readonly GL_SKY = new Uint8Array([135, 206, 235, 255]);
 }
 
 /** Acceptable values for lineStule and fillStyle in canvas drawing congtext. */
@@ -142,7 +144,7 @@ export class Rectangle2D implements Rectangle2DInterface {
     return code;
   }
 
-  /** Returns whether this rectangle (which must be canonical)- touches a given line segment. */
+  /** Returns whether this rectangle (which must be canonical) touches a given line segment. */
   public touchesLineSegment(a: Point2DInterface, b: Point2DInterface): boolean {
     const codeA = this.getOutCode(a);
     const codeB = this.getOutCode(b);
@@ -362,6 +364,7 @@ export class Geometry {
     return 0.5 * detSum;
   }
 
+  /** Returns whether the given point P is in the rectangle with centerline segment A-B of given width. */
   public static isInNonAxisAlignedRectangle(
     px: number,
     py: number,
@@ -433,6 +436,7 @@ export class Geometry {
     return dst.setFromDiagonal(x0, y0, x1, y1).makeCanonical();
   }
 
+  /** Minimally expands the given rectangle to include the given point; returns the rectangle in canonical form. */
   public static addToExtent2D(dst: Rectangle2D, p: Point2DInterface): Rectangle2D {
     let x0 = dst.x0;
     let y0 = dst.y0;
@@ -462,6 +466,40 @@ export class Geometry {
       ((a.y <= p.y && p.y <= b.y) || (b.y <= p.y && p.y <= a.y)) &&
       Math.abs((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x)) < Geometry.SMALL_SQUARED
     );
+  }
+
+  /** Sets p to the intersection of segments A-B and C-D and returns true if one exists; else returns false. */
+  public static getSegmentsIntersection(
+    p: Point2DInterface,
+    ax: number,
+    ay: number,
+    bx: number,
+    by: number,
+    cx: number,
+    cy: number,
+    dx: number,
+    dy: number,
+  ): boolean {
+    const dxab = bx - ax;
+    const dyab = by - ay;
+    const dxcd = dx - cx;
+    const dycd = dy - cy;
+    const d = dycd * dxab - dxcd * dyab;
+    if (d === 0) {
+      return false;
+    }
+    const dxca = ax - cx;
+    const dyca = ay - cy;
+    const uan = dxcd * dyca - dycd * dxca;
+    const ubn = dxab * dyca - dyab * dxca;
+    const ua = uan / d;
+    const ub = ubn / d;
+    if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+      return false;
+    }
+    p.x = ax + ua * dxab;
+    p.y = ay + ua * dyab;
+    return true;
   }
 
   public static isPointInCanonicalRectangle(x: number, y: number, rect: Rectangle2DInterface) {

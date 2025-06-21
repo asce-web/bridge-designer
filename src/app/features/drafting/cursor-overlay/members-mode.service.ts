@@ -24,8 +24,7 @@ export class MembersModeService {
     private readonly memberCursorService: MemberCursorService,
   ) {}
 
-  public initialize(ctx: CanvasRenderingContext2D, 
-    addMemberRequest: EventEmitter<Member>): MembersModeService {
+  public initialize(ctx: CanvasRenderingContext2D, addMemberRequest: EventEmitter<Member>): MembersModeService {
     this._ctx = ctx;
     this.addMemberRequest = addMemberRequest;
     return this;
@@ -43,9 +42,8 @@ export class MembersModeService {
     if (hotElement instanceof Joint) {
       this.existingMemberJointIndices.clear();
       this.bridgeService
-        .findMembersWithJoint(hotElement)
-        .map(member => member.getOtherJoint(hotElement).index)
-        .forEach(i => this.existingMemberJointIndices.add(i));
+        .findConnectedJoints(hotElement)
+        .forEach(joint => this.existingMemberJointIndices.add(joint.index));
       this.memberCursorService.start(this.ctx, event.offsetX, event.offsetY, hotElement);
     }
   }
@@ -67,21 +65,19 @@ export class MembersModeService {
     }
     const anchor = this.memberCursorService.end();
     if (!anchor) {
-      return; 
+      return;
     }
     this.existingMemberJointIndices.clear();
     const hotElement = this.hotElementService.hotElement;
     if (anchor === hotElement || !(hotElement instanceof Joint)) {
       return;
     }
-    const material =  this.inventorySelectionService.material;
+    const material = this.inventorySelectionService.material;
     const shape = this.inventorySelectionService.shape;
     if (!material || !shape) {
       throw new Error('No material selected for new member');
     }
-    this.addMemberRequest?.emit(
-      new Member(-1, anchor, hotElement, material, shape),
-    );
+    this.addMemberRequest?.emit(new Member(-1, anchor, hotElement, material, shape));
     this.hotElementService.invalidate(this.ctx);
   }
 }

@@ -12,6 +12,7 @@ export const enum ViewMode {
   DRIVING,
 }
 
+/** Container for the fly-thru view transform and associated update logic. */
 @Injectable({ providedIn: 'root' })
 export class ViewService {
   /** Max radians of look up-down angle. */
@@ -40,7 +41,7 @@ export class ViewService {
   private yEyeVelocity: number = 0;
   private phiDriverHead: number = 0;
   private thetaDriverHead: number = 0;
-  public isIgnoringBoundaries: boolean = true; // TODO: Should be false.
+  public isIgnoringBoundaries: boolean = false;
   public isMovingLaterally: boolean = false;
   public isDriving: boolean = false;
 
@@ -132,7 +133,7 @@ export class ViewService {
           this.eyeMax[2],
         );
       }
-      this.eyeMin[1] = this.terrainService.getElevationAt(this.eye[0], this.eye[2]) + 1.8;
+      this.eyeMin[1] = this.terrainService.getElevationAtXZ(this.eye[0], this.eye[2]) + 1.8;
       this.eye[1] = Utility.clamp(this.eye[1] + this.yEyeVelocity * elapsedSecs, this.eyeMin[1], this.eyeMax[1]);
     }
     this.center[0] = this.eye[0] + dx;
