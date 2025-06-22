@@ -45,37 +45,21 @@ TODO: This could all be done lazily to save graphic card resources if the animat
 
 The transformations were a bit hard to visualize, so some notes.
 
-The sky box is defined around the origin with triangles visible from the inside. The view needs to have the eye is at
-the origin with the frustum angle indentical to the rest of the scene. Hence the viewer sees the swatch of the box
-included in the frustum. The size of the box doesn't matter because the z-coordinate (after perspective division) is
-artificially forced to 1 so that the swatch is always visible.
+The sky box is defined around the origin. If culling, its triangles must be visible from the inside.
 
-To get the transform the normal `P * V` becomes `P * detrans(V)`. Where `detrans` removes the translation performed by
-`V`, so we're left with a rotation only. I.e. the eye is at the origin as desired. (The model transform here is always
-the identity.)
+The usually unstated trick is that we ignore the usual MVP transform while drawing the box and use a different one. This
+has the eye at the origin, but with the same view direction and perspective frustum angle as the rest of the scene.
+Hence the viewer sees the swatch of the box included in the frustum. The size of the box doesn't matter because we force
+the z-coordinate after perspective division to 1 by copying w of the final vertex coord to z (depth).
+
+Online discussions don't tell the story above. They just show as an afterthought that you can magically get the required
+view by coercing the usual 4x4 look-at matrix to 3x3 and then back to 4x4. Libraries just just happen to do the right
+thing: removing the translation component (along with any perspective-like tapering if there were any). Rather than rely
+on library tricks, it's more robust to set `V[0,3]=V[1,3]=V[2,3]=0` to turn `V` into `detrans(V)`; i.e., zero out the
+translation component. Call this new matrix `detrans(V)`, then the correct matrix to draw the skybox is `P * detrans(V)`
+where P is the same perspective transform as used for the scene.
 
 So how to implement `detrans`? The obvious way is to compute `P * detrans(V)` on the host side and move it to a
-dedicated uniform. This is what most impls seem to do.
-
-**In the end, using the approach below seems too fragile.**
-
-Could we save all that boilerplate? What structure does the "detransed" PV matrix have?
-
-```
-    X  0  X  0       X  X  X tx
-P = 0  X  X  0   V = X  X  X ty
-    0  0  G  X       X  X  X tz
-    0  0 -1  0       0  0  0  1
-```
-
-Here tx, ty, tz are the translation part of the view. Setting them zero affects only the last column of PV.
-
-```
-              X  X  X  0
-detrans(PV) = X  X  X  0
-              X  X  X  @ - G tz
-              X  X  X  @ + tz
-```
-
-Here `@` is the normal PV value. So we could patch the last column of normal PV in the vertex shader. There are only 36
-vertices being processed. Note we can even ignore the `@ - G tx` patch because the z-coord of the result is never used.
+dedicated uniform. This is what most impls do. I looked at maybe tweaking the normal PV matrix in the shader instead.
+This saves the boilerplate of setting up a new uniform. It entails copying the existing PV uniform and changing 3
+elements: two get zero'ed out and the last is more complex. I finally decided the math magic was fragile.

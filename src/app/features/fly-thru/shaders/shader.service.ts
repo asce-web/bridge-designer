@@ -33,6 +33,11 @@ export class ShaderService {
         fragmentShader: shaders['FACET_MESH_FRAGMENT_SHADER'],
       },
       {
+        name: 'facet_mesh_instances',
+        vertexShader: shaders['FACET_MESH_INSTANCES_VERTEX_SHADER'],
+        fragmentShader: shaders['FACET_MESH_FRAGMENT_SHADER'],
+      },
+      {
         name: 'overlay',
         vertexShader: shaders['OVERLAY_VERTEX_SHADER'],
         fragmentShader: shaders['OVERLAY_FRAGMENT_SHADER'],

@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Utility } from '../../../shared/classes/utility';
-import { IN_POSITION_LOCATION, IN_NORMAL_LOCATION, IN_MATERIAL_REF_LOCATION } from '../shaders/constants';
+import {
+  IN_POSITION_LOCATION,
+  IN_NORMAL_LOCATION,
+  IN_MATERIAL_REF_LOCATION,
+  IN_INSTANCE_MODEL_TRANSFORMS as IN_INSTANCE_MODEL_TRANSFORMS_LOCATION,
+} from '../shaders/constants';
 import { ShaderService } from '../shaders/shader.service';
 import { GlService } from './gl.service';
 import { ImageService } from '../../../shared/core/image.service';
 import { Colors } from '../../../shared/classes/graphics';
+import { WATER_TEXTURE_UNIT } from './constants';
 
 export type Mesh = {
   vertexArray: WebGLVertexArrayObject;
@@ -12,6 +18,8 @@ export type Mesh = {
   textureUniformLocation?: WebGLUniformLocation;
   indexBuffer: WebGLBuffer;
   elementCount: number;
+  // Instance count inferred from mesh data instanceModelTransforms, if any.
+  instanceCount?: number;
   // For delete-able meshes.
   positionBuffer?: WebGLBuffer;
   normalBuffer?: WebGLBuffer;
@@ -24,6 +32,8 @@ export type MeshData = {
   texCoords?: Float32Array;
   materialRefs?: Uint16Array;
   indices: Uint16Array;
+  // For instanced drawing, one mat4 per instance.
+  instanceModelTransforms?: Float32Array;
 };
 
 /** Container for the WebGL details of rendering meshes: one-time preparation and per-frame drawing. */
@@ -64,21 +74,39 @@ export class MeshRenderingService {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, meshData.indices, gl.STATIC_DRAW);
 
+    if (meshData.instanceModelTransforms) {
+      const instanceModelTransformsBuffer = Utility.assertNotNull(gl.createBuffer());
+      gl.bindBuffer(gl.ARRAY_BUFFER, instanceModelTransformsBuffer);
+      gl.bufferData(gl.ARRAY_BUFFER, meshData.instanceModelTransforms!, gl.STATIC_DRAW);
+      // Vertex attributes are limited to 4 floats. This trick sends a columns of 4x4. They're
+      // assembled magically by the shader.
+      for (let i = 0; i < 4; ++i) {
+        gl.enableVertexAttribArray(IN_INSTANCE_MODEL_TRANSFORMS_LOCATION + i);
+        gl.vertexAttribPointer(IN_INSTANCE_MODEL_TRANSFORMS_LOCATION + i, 4, gl.FLOAT, false, 64, i * 16);
+        gl.vertexAttribDivisor(IN_INSTANCE_MODEL_TRANSFORMS_LOCATION + i, 1);
+      }
+    }
+
     const elementCount = meshData.indices.length;
+    const instanceCount = meshData.instanceModelTransforms ? meshData.instanceModelTransforms.length / 16 : 0;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
 
-    return { vertexArray, indexBuffer, elementCount };
+    return { vertexArray, indexBuffer, elementCount, instanceCount };
   }
 
   /** Renders a previously prepared facet mesh.  */
   public renderFacetMesh(mesh: Mesh) {
     const gl = this.glService.gl;
-    gl.useProgram(this.shaderService.getProgram('facet_mesh'));
+    gl.useProgram(this.shaderService.getProgram(mesh.instanceCount ? 'facet_mesh_instances' : 'facet_mesh'));
     gl.bindVertexArray(mesh.vertexArray);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
-    gl.drawElements(gl.TRIANGLES, mesh.elementCount, gl.UNSIGNED_SHORT, 0);
+    if (mesh.instanceCount) {
+      gl.drawElementsInstanced(gl.TRIANGLES, mesh.elementCount, gl.UNSIGNED_SHORT, 0, mesh.instanceCount);
+    } else {
+      gl.drawElements(gl.TRIANGLES, mesh.elementCount, gl.UNSIGNED_SHORT, 0);
+    }
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
   }
@@ -166,9 +194,8 @@ export class MeshRenderingService {
   public renderRiverMesh(mesh: Mesh) {
     const gl = this.glService.gl;
     gl.useProgram(this.shaderService.getProgram('river'));
-    const textureUnit = 1;
-    gl.uniform1i(Utility.assertNotUndefined(mesh.textureUniformLocation), textureUnit);
-    gl.activeTexture(gl.TEXTURE0 + textureUnit);
+    gl.uniform1i(Utility.assertNotUndefined(mesh.textureUniformLocation), WATER_TEXTURE_UNIT);
+    gl.activeTexture(gl.TEXTURE0 + WATER_TEXTURE_UNIT);
     gl.bindTexture(gl.TEXTURE_2D, Utility.assertNotUndefined(mesh.texture));
     gl.bindVertexArray(mesh.vertexArray);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);

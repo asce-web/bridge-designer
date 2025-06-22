@@ -6,6 +6,7 @@ import { ImageService } from '../../../shared/core/image.service';
 import { UniformService } from './uniform.service';
 import { mat4 } from 'gl-matrix';
 import { ShaderService } from '../shaders/shader.service';
+import { SKYBOX_TEXTURE_UNIT } from './constants';
 
 /** Container for sky box rendering logic. */
 @Injectable({ providedIn: 'root' })
@@ -110,15 +111,14 @@ export class SkyRenderingService {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
   }
 
+  /** Renders the sky box. Best done last to maximize gain from depth tests. */
   public render(viewMatrix: mat4, projectionMatrix: mat4) {
     this.uniformService.updateSkyboxTransformsUniform(viewMatrix, projectionMatrix);
     const gl = this.glService.gl;
     gl.useProgram(this.shaderService.getProgram('sky'));
-    const textureUnit = 2;
-    // I believe this is needed to prevent depth test fail against the z=1 boundary.
     gl.depthFunc(gl.LEQUAL);
-    gl.uniform1i(this.skyBoxUniformLocation, textureUnit);
-    gl.activeTexture(gl.TEXTURE0 + textureUnit);
+    gl.uniform1i(this.skyBoxUniformLocation, SKYBOX_TEXTURE_UNIT);
+    gl.activeTexture(gl.TEXTURE0 + SKYBOX_TEXTURE_UNIT);
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.skyBoxTexture);
     gl.bindVertexArray(this.vertexArray);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);

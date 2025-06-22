@@ -65,13 +65,14 @@ export class UniformService {
   public prepareUniforms(): void {
     const gl = this.glService.gl;
     const facetMeshProgram = this.shaderService.getProgram('facet_mesh');
+    const facetMeshInstancesProgram = this.shaderService.getProgram('facet_mesh_instances');
     const overlayProgram = this.shaderService.getProgram('overlay');
     const riverProgram = this.shaderService.getProgram('river');
     const skyProgram = this.shaderService.getProgram('sky');
     const terrainProgram = this.shaderService.getProgram('terrain');
 
     this.transformsBuffer = this.setUpUniformBlock(
-      [facetMeshProgram, riverProgram, terrainProgram],
+      [facetMeshProgram, facetMeshInstancesProgram, riverProgram, terrainProgram],
       'Transforms',
       TRANSFORMS_UBO_BINDING_INDEX,
     );
@@ -85,13 +86,13 @@ export class UniformService {
     gl.bufferData(gl.UNIFORM_BUFFER, this.skyboxTransformsFloats.buffer.byteLength, gl.DYNAMIC_DRAW);
 
     this.lightConfigBuffer = this.setUpUniformBlock(
-      [facetMeshProgram, riverProgram, terrainProgram],
+      [facetMeshProgram, facetMeshInstancesProgram, riverProgram, terrainProgram],
       'LightConfig',
       LIGHT_CONFIG_UBO_BINDING_INDEX,
     );
     gl.bufferData(gl.UNIFORM_BUFFER, this.lightConfig.buffer.byteLength, gl.STATIC_DRAW);
 
-    this.setUpUniformBlock([facetMeshProgram], 'MaterialConfig', MATERIAL_CONFIG_UBO_BINDING_INDEX);
+    this.setUpUniformBlock([facetMeshProgram, facetMeshInstancesProgram], 'MaterialConfig', MATERIAL_CONFIG_UBO_BINDING_INDEX);
     gl.bufferData(gl.UNIFORM_BUFFER, MATERIAL_CONFIG, gl.STATIC_DRAW);
 
     this.overlayBuffer = this.setUpUniformBlock([overlayProgram], 'Overlay', OVERLAY_UBO_BINDING_INDEX);

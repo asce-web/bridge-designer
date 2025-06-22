@@ -25,10 +25,29 @@ def readFileWithIncludes(file_name, depth=0):
 
 
 def main(compress):
+    # Build constants.h from constants.ts. First so shader includes see any changes.
+    with open("constants.ts", "r") as input:
+        with open("constants.h", "w") as output:
+            print("// This file is generated. Edit constants.ts instead.", file=output)
+            for line in input.readlines():
+                if "build_stop_translation" in line:
+                    break
+                lineStripped = line.strip()
+                if len(lineStripped) == 0 or lineStripped.startswith("//"):
+                    continue
+                line = re.sub(
+                    r"export\s+const\s+(\w+)\s*=\s*([^;]+);", r"#define \1 \2", line
+                )
+                print(line, end="", file=output)
+
     shader_files = [f for f in os.listdir(".") if f.endswith((".vert", ".frag"))]
     # Sort key puts vertex before fragment shaders for readability.
     shader_files.sort(key=lambda file: file.replace(".vert", ".VERT"))
     with open("shaders.ts", "w") as output:
+        print(
+            "// This file is generated. Edit .vert and .frag files instead.",
+            file=output,
+        )
         file_count = 0
         for file_name in shader_files:
             print(f"{file_name}:")
@@ -41,16 +60,16 @@ def main(compress):
                 var_name += "_FRAGMENT_SHADER"
             if compress:
                 text = re.sub(r"#line.*", "", text)  # elide line directive
-                text = re.sub(r"#ifndef[\s\S]*?#endif", "", text) # assume #ifndefs are false
+                text = re.sub(r"#ifndef[\s\S]*?#endif", "", text)  # assume ifndef false
                 text = re.sub(r"//[^\n]*\n", " ", text)  # elide comments
                 text = re.sub(r"(#.*)", r"\1@", text)  # protect directive newlines
                 text = re.sub(r"\s+", " ", text)  # compress spaces including newlines
                 text = re.sub(r"\s?([=,*+\-/{}()])\s?", r"\1", text)  # unneeded spaces
                 text = re.sub(r"@", r"\n", text)  # unprotect directives
-                text = re.sub(r"^ ", r"", text, flags=re.MULTILINE)  # elide leading spaces
+                text = re.sub(r"^ ", r"", text, flags=re.MULTILINE)  # elide lead space
                 text = re.sub(r"; ", ";\n", text)  # add readability break after ;
                 text = re.sub(r"{", "{\n", text)  # add readability break after {
-            if file_count > 0:
+            if file_count > 1:
                 print(file=output)
             print(f"export const {var_name} = ", file=output)
             print(f"`{text}`;", file=output)
@@ -75,21 +94,6 @@ def main(compress):
                 if inId in uniforms or inId in ins:
                     print(f' redefinition of "{inId}"')
                 ins[inId] = (inLocation, inType)
-
-    # Build constants.h from constants.ts.
-    with open("constants.ts", "r") as input:
-        with open("constants.h", "w") as output:
-            print("// This file is generated. Edit constants.ts instead.", file=output)
-            for line in input.readlines():
-                if "build_stop_translation" in line:
-                    break
-                lineStripped = line.strip()
-                if len(lineStripped) == 0 or lineStripped.startswith("//"):
-                    continue
-                line = re.sub(
-                    r"export\s+const\s+(\w+)\s*=\s*([^;]+);", r"#define \1 \2", line
-                )
-                print(line, end="", file=output)
 
 
 main(len(sys.argv) > 1 and sys.argv[1] == "--compress")

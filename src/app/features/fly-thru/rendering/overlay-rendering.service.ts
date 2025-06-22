@@ -7,6 +7,7 @@ import { mat3 } from 'gl-matrix';
 import { GlService } from './gl.service';
 import { ViewportService } from './viewport.service';
 import { UniformService } from './uniform.service';
+import { OVERLAY_TEXTURE_UNIT } from './constants';
 
 export type Overlay = {
   texture: WebGLTexture;
@@ -99,10 +100,8 @@ export class OverlayRenderingService {
 
     gl.useProgram(this.shaderService.getProgram('overlay'));
     gl.bindVertexArray(overlayContext.vertexArray);
-    // TODO: Probably move texture unit management to UniformService after we understand it.
-    const textureUnit = 0;
-    gl.uniform1i(overlayContext.textureUniformLocation, textureUnit);
-    gl.activeTexture(gl.TEXTURE0 + textureUnit);
+    gl.uniform1i(overlayContext.textureUniformLocation, OVERLAY_TEXTURE_UNIT);
+    gl.activeTexture(gl.TEXTURE0 + OVERLAY_TEXTURE_UNIT);
     gl.bindVertexArray(overlayContext.vertexArray);
     for (const overlay of Object.values(overlayContext.overlaysByUrl)) {
       if (!overlay.texture) {
