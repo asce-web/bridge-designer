@@ -57,6 +57,16 @@ export class ShaderService {
         vertexShader: shaders['SKY_VERTEX_SHADER'],
         fragmentShader: shaders['SKY_FRAGMENT_SHADER'],
       },
+      {
+        name: 'wire',
+        vertexShader: shaders['WIRE_VERTEX_SHADER'],
+        fragmentShader: shaders['WIRE_FRAGMENT_SHADER'],
+      },
+      {
+        name: 'wire_instances',
+        vertexShader: shaders['WIRE_INSTANCES_VERTEX_SHADER'],
+        fragmentShader: shaders['WIRE_FRAGMENT_SHADER'],
+      }
     ];
     return this.linkPrograms(gl, programSpecs);
   }

@@ -12,6 +12,16 @@ import { ImageService } from '../../../shared/core/image.service';
 import { Colors } from '../../../shared/classes/graphics';
 import { WATER_TEXTURE_UNIT } from './constants';
 
+export type MeshData = {
+  positions: Float32Array;
+  normals?: Float32Array;
+  texCoords?: Float32Array;
+  materialRefs?: Uint16Array;
+  indices: Uint16Array;
+  // For instanced drawing, one mat4 per instance.
+  instanceModelTransforms?: Float32Array;
+};
+
 export type Mesh = {
   vertexArray: WebGLVertexArrayObject;
   texture?: WebGLTexture;
@@ -26,16 +36,6 @@ export type Mesh = {
   materialRefBuffer?: WebGLBuffer;
   texCoordBuffer?: WebGLBuffer;
   instanceModelTransformBuffer?: WebGLBuffer;
-};
-
-export type MeshData = {
-  positions: Float32Array;
-  normals?: Float32Array;
-  texCoords?: Float32Array;
-  materialRefs?: Uint16Array;
-  indices: Uint16Array;
-  // For instanced drawing, one mat4 per instance.
-  instanceModelTransforms?: Float32Array;
 };
 
 /** Container for the WebGL details of rendering meshes: one-time preparation and per-frame drawing. */
@@ -80,8 +80,8 @@ export class MeshRenderingService {
     if (meshData.instanceModelTransforms) {
       instanceModelTransformBuffer = Utility.assertNotNull(gl.createBuffer());
       gl.bindBuffer(gl.ARRAY_BUFFER, instanceModelTransformBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, meshData.instanceModelTransforms!, gl.STATIC_DRAW);
-      // Vertex attributes are limited to 4 floats. This trick sends a columns of 4x4. They're
+      gl.bufferData(gl.ARRAY_BUFFER, meshData.instanceModelTransforms, gl.STATIC_DRAW);
+      // Vertex attributes are limited to 4 floats. This trick sends columns of 4x4. They're
       // assembled magically by the shader.
       for (let i = 0; i < 4; ++i) {
         gl.enableVertexAttribArray(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i);

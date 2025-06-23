@@ -1,0 +1,28 @@
+#version 300 es
+
+// build_include "constants.h"
+
+layout(std140) uniform Transforms {
+  mat4 modelView;
+  mat4 modelViewProjection;
+} transforms;
+
+// Make VScode happy.
+#ifndef IN_POSITION_LOCATION
+#define IN_POSITION_LOCATION 0
+#define IN_DIRECTION_LOCATION 1
+#define IN_MATERIAL_REF_LOCATION 2
+#endif
+
+layout(location = IN_POSITION_LOCATION) in vec3 inPosition;
+layout(location = IN_DIRECTION_LOCATION) in vec3 inDirection;
+
+out vec3 vertex;
+out vec3 direction;
+
+void main() {
+  vec4 inPositionHomogeneous = vec4(inPosition, 1.0f);
+  gl_Position = transforms.modelViewProjection * inPositionHomogeneous;
+  vertex = vec3(transforms.modelView * inPositionHomogeneous);
+  direction = mat3(transforms.modelView) * inDirection;
+}

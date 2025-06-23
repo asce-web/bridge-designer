@@ -150,8 +150,7 @@ export class ViewService {
     if (this.isDriving) {
       this.interpolationService.getLoadPt(this.loadPt);
       this.interpolationService.getLoadLookDir(this.loadLookDir);
-      mat4.identity(m);
-      mat4.rotateX(m, m, -this.phiDriverHead);
+      mat4.fromXRotation(m, -this.phiDriverHead);
       mat4.rotateY(m, m, this.thetaDriverHead);
       vec3.set(
         this.eyeDriver,
