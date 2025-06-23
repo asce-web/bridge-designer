@@ -68,3 +68,16 @@ So how to implement? The obvious way is to compute `P * detrans(V)` in host side
 shader. This is what most impls do. I looked at an alternative: tweaking the normal PV matrix in the shader. This saves
 the boilerplate of setting up a new uniform. It entails copying the existing PV uniform and changing 3 elements: setting
 two to zero and a more elaborate tweak to the third. I finally decided this is too fragile and messy.
+
+# Wire rendering
+
+Diffuse and specular light reflected from wires are via a rough approximation. Each wire segment is modeled as a 1
+pixel-wide facet at the wire's centerline, facing the viewer. Mathematically the facet normal is the projection of the
+eye vector onto the plane having the wire's direction vector as a normal. Happily, this is a cheap calculation.
+
+```
+vec3 unitNormal = unitEye - dot(unitEye, unitDirection) * unitDirection
+```
+
+Then the usual Phong specular+diffuse+ambient model gives the fragment color. It works reasonably well. Shininess of 20
+gives a pleasant effect.

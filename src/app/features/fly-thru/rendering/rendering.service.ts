@@ -54,14 +54,14 @@ export class RenderingService {
   /** Prepares for rendering frames before every animation start. */
   public prepareToRender(): void {
     this.setDefaultView();
-    // Rebuild the whole terrain model every time. Recomputing y-values alone
-    // would be risky due to elision of roadway and underwater vertices.
+    // Rebuild the terrain model every time. Updating would be fragile.
     // TODO: Save some garbage by rebuilding only when design conditions change.
     this.terrainModelService.initializeForBridge();
     this.meshRenderingService.deleteExistingMesh(this.terrainMesh);
     this.meshRenderingService.deleteExistingMesh(this.roadwayMesh);
     this.terrainMesh = this.meshRenderingService.prepareTerrainMesh(this.terrainModelService.terrainMeshData);
     this.roadwayMesh = this.meshRenderingService.prepareColoredFacetMesh(this.terrainModelService.roadwayMeshData);
+    this.utilityLineRenderingService.prepare();
 
     // One-time setups follow.
     if (this.prepared) {
@@ -76,7 +76,6 @@ export class RenderingService {
     this.riverRenderingService.prepare();
     this.skyRenderingService.prepare();
     this.truckRenderingService.prepare();
-    this.utilityLineRenderingService.prepare();
 
     // Set up overlay icons with click/drag.
     const iconsLoader = this.imageService.createImagesLoader(OVERLAY_ICONS);

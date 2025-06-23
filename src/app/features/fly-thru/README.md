@@ -57,18 +57,28 @@ Static models don't change during the animation. Dynamic ones change geometry or
 
 A fairly standard pipeline.
 
-### Local coordinate systems.
+### Cordinate systems.
 
-| Object                  | Origin                   | Orientation                                    |
-| ----------------------- | ------------------------ | ---------------------------------------------- |
-| Terrain and roadway     | Front left               | y = function(x-z)                              |
-| River                   | Front left               | x-z                                            |
-| Transmission line tower | Bottom center of base    | Along y-axis                                   |
-| Transmission line wire  | Left end                 | X axis, sag in y                               |
-| Bridge abutments & pier | Supported joint          | Left abutment of bridge extending along x axis |
-| Bridge structure        | Leftmost deck joint      | Extending along x-axis                         |
-| Truck body              | Axle level bottom middle | Chasis center line on x-axis, facing right     |
-| Wheels                  | Center                   | Tire in x-y plane. Axle on z-axis.             |
+The "global" world coordinate system has
+
+- Origin at the bridge's leftmost deck joint, center of roadway.
+- Roadway running along the x-axis.
+- Y-axis vertical.
+- Right-handed Z. When origin is on left bank, axis is pointing toward viewer.
+
+Various model-specific coordinate systems are handy. Model transformations are applied to reconcile to global world
+coordinates.
+
+| Object                  | Origin                        | Orientation                                    |
+| ----------------------- | ----------------------------- | ---------------------------------------------- |
+| Terrain and roadway     | Center post, natural y        | Same as global.                                |
+| River                   | Front left                    | Same as global with y constant.                |
+| Transmission line tower | Bottom center of base         | Vertical is y-axis. Arms are along x.          |
+| Transmission line wire  | Global base of leftmost tower | In global coords (so N/A).                     |
+| Bridge abutments & pier | Supported joint               | Left abutment of bridge extending along x axis |
+| Bridge structure        | Leftmost deck joint           | Extending along x-axis                         |
+| Truck body              | Axle level bottom middle      | Chasis center line on x-axis, facing right.    |
+| Wheels                  | Center                        | Tire in x-y plane. Axle on z-axis.             |
 
 ### Model matrix
 

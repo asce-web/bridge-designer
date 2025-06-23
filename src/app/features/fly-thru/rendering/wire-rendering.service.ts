@@ -23,6 +23,7 @@ export type Wire = {
   instanceCount?: number;
   positionBuffer: WebGLBuffer;
   directionBuffer: WebGLBuffer;
+  instanceModelTransformBuffer?: WebGLBuffer;
 };
 
 @Injectable({ providedIn: 'root' })
@@ -70,7 +71,15 @@ export class WireRenderingService {
     const elementCount = wireData.indices.length;
     const instanceCount = wireData.instanceModelTransforms ? wireData.instanceModelTransforms.length / 16 : 0;
 
-    return { vertexArray, positionBuffer, directionBuffer, indexBuffer, elementCount, instanceCount };
+    return {
+      vertexArray,
+      positionBuffer,
+      directionBuffer,
+      indexBuffer,
+      elementCount,
+      instanceCount,
+      instanceModelTransformBuffer,
+    };
   }
 
   public renderWire(wire: Wire) {
@@ -85,5 +94,19 @@ export class WireRenderingService {
     }
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
+  }
+
+  public deleteExistingWire(wire: Wire | undefined): void {
+    if (!wire) {
+      return;
+    }
+    const gl = this.glService.gl;
+    gl.deleteVertexArray(wire.vertexArray);
+    gl.deleteBuffer(wire.indexBuffer);
+    gl.deleteBuffer(wire.directionBuffer);
+    gl.deleteBuffer(wire.positionBuffer);
+    if (wire.instanceModelTransformBuffer) {
+      gl.deleteBuffer(wire.instanceModelTransformBuffer);
+    }
   }
 }

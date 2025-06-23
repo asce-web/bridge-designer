@@ -19,10 +19,9 @@ export class UtilityLineRenderingService {
   ) {}
 
   public prepare(): void {
-    // TODO: Remove this restriction so we can rebuild the terrain model.
-    if (this.towerMesh) {
-      throw new Error('Only one prepare() allowed');
-    }
+    // TODO: This is some overkill. We need only update the tower and wire transforms.
+    this.meshRenderingService.deleteExistingMesh(this.towerMesh);
+    this.wireRenderingService.deleteExistingWire(this.lineWireInstances);
     const [instanceModelTransforms, wireData] = this.utilityLineModelService.buildModel();
     const meshData = { instanceModelTransforms, ...TOWER_MESH_DATA };
     this.towerMesh = this.meshRenderingService.prepareColoredFacetMesh(meshData);

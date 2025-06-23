@@ -41,7 +41,7 @@ export class ViewService {
   private yEyeVelocity: number = 0;
   private phiDriverHead: number = 0;
   private thetaDriverHead: number = 0;
-  public isIgnoringBoundaries: boolean = true;
+  public isIgnoringBoundaries: boolean = false;
   public isMovingLaterally: boolean = false;
   public isDriving: boolean = false;
 
@@ -57,23 +57,19 @@ export class ViewService {
 
     const xCenter = extent.x0 + 0.5 * extent.width;
     const zEye = 1.2 * Math.max(extent.width, 1.75 * extent.height);
+    
     // Always put eye at height of a person on the road.
     // Swivel eye right a bit to account for slant of river.
     vec3.set(this.eye, xCenter - 0.2 * zEye, 1, zEye);
+
     // Direct gaze at middle of vertical extent.
     vec3.set(this.center, xCenter, extent.y0 + 0.5 * extent.height, 0);
     this.eye[0] -= this.eye[2] * 0.1;
-
-    // TODO: Remove these test setting.
-    vec3.set(this.eye, 20, 2, 20);
-    vec3.set(this.center, 0, 1, 0);
-
     this.yEyeVelocity = 0;
 
     // The angles are actually the independent values, so compute them here.
     this.thetaEye = Math.atan2(this.center[0] - this.eye[0], this.eye[2] - this.center[2]);
     this.thetaEyeRate = 0;
-
     this.phiEye = Math.atan2(this.center[1] - this.eye[1], this.eye[2] - this.center[2]);
     this.phiEyeRate = 0;
   }
@@ -176,6 +172,7 @@ export class ViewService {
         return {
           handlePointerDown: () => {
             this.isMovingLaterally = false;
+            this.isDriving = false;
           },
           handlePointerDrag: (dx: number, dy: number) => {
             this.xzEyeVelocity = dy * ViewService.UI_RATE_LINEAR;
@@ -186,6 +183,7 @@ export class ViewService {
         return {
           handlePointerDown: () => {
             this.isMovingLaterally = true;
+            this.isDriving = false;
           },
           handlePointerDrag: (dx: number, dy: number) => {
             this.xzEyeVelocity = dx * ViewService.UI_RATE_LINEAR;
@@ -196,6 +194,7 @@ export class ViewService {
         return {
           handlePointerDown: () => {
             this.isMovingLaterally = false;
+            this.isDriving = false;
           },
           handlePointerDrag: (dx: number, dy: number) => {
             this.phiEyeRate = dy * ViewService.UI_RATE_ROTATIONAL;
@@ -204,10 +203,16 @@ export class ViewService {
         };
       case HOME_ICON:
         return {
-          handlePointerDown: () => this.resetView(),
+          handlePointerDown: () => {
+            this.isDriving = false;
+            this.resetView();
+          },
         };
       case TRUCK_ICON:
         return {
+          handlePointerDown: () => {
+            this.isDriving = true;
+          },
           handlePointerDrag: (dx: number, dy: number) => {
             this.phiDriverHead = Utility.clamp(dy * ViewService.UI_RATE_TILT, -45, 20);
             this.thetaDriverHead = Utility.clamp(1.5 * dx * ViewService.UI_RATE_TILT, -100, 100);

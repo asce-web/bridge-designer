@@ -23,8 +23,10 @@ def readFileWithIncludes(file_name, depth=0):
                 )
         return "".join(lines)
 
+def buildDefines(text):
+    lines = "\n".split(text);
 
-def main(compress):
+def main(noCompress):
     # Build constants.h from constants.ts. First so shader includes see any changes.
     with open("constants.ts", "r") as input:
         with open("constants.h", "w") as output:
@@ -58,7 +60,7 @@ def main(compress):
                 var_name += "_VERTEX_SHADER"
             elif file_name.endswith(".frag"):
                 var_name += "_FRAGMENT_SHADER"
-            if compress:
+            if not noCompress:
                 text = re.sub(r"#line.*", "", text)  # elide line directive
                 text = re.sub(r"#ifndef[\s\S]*?#endif", "", text)  # assume ifndef false
                 text = re.sub(r"//[^\n]*\n", " ", text)  # elide comments
@@ -96,4 +98,4 @@ def main(compress):
                 ins[inId] = (inLocation, inType)
 
 
-main(len(sys.argv) > 1 and sys.argv[1] == "--compress")
+main("--no-compress" in sys.argv)
