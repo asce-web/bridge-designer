@@ -330,6 +330,10 @@ export class Geometry {
     return Math.sqrt(this.distanceSquared2D(ax, ay, bx, by));
   }
 
+  public static vectorLength2D(dx: number, dy: number): number {
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
   public static pointSegmentDistance2DPoints(p: Point2DInterface, a: Point2DInterface, b: Point2DInterface): number {
     return this.pointSegmentDistance2D(p.x, p.y, a.x, a.y, b.x, b.y);
   }

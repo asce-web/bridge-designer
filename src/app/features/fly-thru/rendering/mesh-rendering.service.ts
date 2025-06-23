@@ -4,7 +4,7 @@ import {
   IN_POSITION_LOCATION,
   IN_NORMAL_LOCATION,
   IN_MATERIAL_REF_LOCATION,
-  IN_INSTANCE_MODEL_TRANSFORMS as IN_INSTANCE_MODEL_TRANSFORMS_LOCATION,
+  IN_INSTANCE_MODEL_TRANSFORM_LOCATION,
 } from '../shaders/constants';
 import { ShaderService } from '../shaders/shader.service';
 import { GlService } from './gl.service';
@@ -23,7 +23,9 @@ export type Mesh = {
   // For delete-able meshes.
   positionBuffer?: WebGLBuffer;
   normalBuffer?: WebGLBuffer;
+  materialRefBuffer?: WebGLBuffer;
   texCoordBuffer?: WebGLBuffer;
+  instanceModelTransformBuffer?: WebGLBuffer;
 };
 
 export type MeshData = {
@@ -45,7 +47,7 @@ export class MeshRenderingService {
     private readonly shaderService: ShaderService,
   ) {}
 
-  /** Prepares a static colored-facet mesh for drawing. */
+  /** Prepares a deletable colored-facet mesh for drawing. */
   public prepareColoredFacetMesh(meshData: MeshData): Mesh {
     const gl = this.glService.gl;
 
@@ -74,16 +76,17 @@ export class MeshRenderingService {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, meshData.indices, gl.STATIC_DRAW);
 
+    let instanceModelTransformBuffer;
     if (meshData.instanceModelTransforms) {
-      const instanceModelTransformsBuffer = Utility.assertNotNull(gl.createBuffer());
-      gl.bindBuffer(gl.ARRAY_BUFFER, instanceModelTransformsBuffer);
+      instanceModelTransformBuffer = Utility.assertNotNull(gl.createBuffer());
+      gl.bindBuffer(gl.ARRAY_BUFFER, instanceModelTransformBuffer);
       gl.bufferData(gl.ARRAY_BUFFER, meshData.instanceModelTransforms!, gl.STATIC_DRAW);
       // Vertex attributes are limited to 4 floats. This trick sends a columns of 4x4. They're
       // assembled magically by the shader.
       for (let i = 0; i < 4; ++i) {
-        gl.enableVertexAttribArray(IN_INSTANCE_MODEL_TRANSFORMS_LOCATION + i);
-        gl.vertexAttribPointer(IN_INSTANCE_MODEL_TRANSFORMS_LOCATION + i, 4, gl.FLOAT, false, 64, i * 16);
-        gl.vertexAttribDivisor(IN_INSTANCE_MODEL_TRANSFORMS_LOCATION + i, 1);
+        gl.enableVertexAttribArray(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i);
+        gl.vertexAttribPointer(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 4, gl.FLOAT, false, 64, i * 16);
+        gl.vertexAttribDivisor(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 1);
       }
     }
 
@@ -93,7 +96,16 @@ export class MeshRenderingService {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
 
-    return { vertexArray, indexBuffer, elementCount, instanceCount };
+    return {
+      vertexArray,
+      indexBuffer,
+      elementCount,
+      instanceCount,
+      positionBuffer,
+      normalBuffer,
+      materialRefBuffer,
+      instanceModelTransformBuffer,
+    };
   }
 
   /** Renders a previously prepared facet mesh.  */
@@ -111,6 +123,7 @@ export class MeshRenderingService {
     gl.bindVertexArray(null);
   }
 
+  /** Prepares a terrain mesh. */
   public prepareTerrainMesh(meshData: MeshData): Mesh {
     const gl = this.glService.gl;
 
@@ -152,6 +165,7 @@ export class MeshRenderingService {
     gl.bindVertexArray(null);
   }
 
+  /** Prepares mesh for the river. */
   public prepareRiverMesh(meshData: MeshData): Mesh {
     const gl = this.glService.gl;
 
@@ -187,7 +201,7 @@ export class MeshRenderingService {
 
     const elementCount = meshData.indices.length;
 
-    return { vertexArray, indexBuffer, elementCount, texture, textureUniformLocation };
+    return { vertexArray, indexBuffer, elementCount, texture, textureUniformLocation, positionBuffer };
   }
 
   /** Renders the already prepared river mesh. */
@@ -219,6 +233,12 @@ export class MeshRenderingService {
     }
     if (mesh.positionBuffer) {
       gl.deleteBuffer(mesh.positionBuffer);
+    }
+    if (mesh.instanceModelTransformBuffer) {
+      gl.deleteBuffer(mesh.instanceModelTransformBuffer);
+    }
+    if (mesh.texture) {
+      gl.deleteTexture(mesh.texture);
     }
   }
 }

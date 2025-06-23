@@ -59,6 +59,7 @@ export class RenderingService {
     // TODO: Save some garbage by rebuilding only when design conditions change.
     this.terrainModelService.initializeForBridge();
     this.meshRenderingService.deleteExistingMesh(this.terrainMesh);
+    this.meshRenderingService.deleteExistingMesh(this.roadwayMesh);
     this.terrainMesh = this.meshRenderingService.prepareTerrainMesh(this.terrainModelService.terrainMeshData);
     this.roadwayMesh = this.meshRenderingService.prepareColoredFacetMesh(this.terrainModelService.roadwayMeshData);
 

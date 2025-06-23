@@ -45,21 +45,26 @@ TODO: This could all be done lazily to save graphic card resources if the animat
 
 The transformations were a bit hard to visualize, so some notes.
 
-The sky box is defined around the origin. If culling, its triangles must be visible from the inside.
+The sky box is defined around the origin. For visibility when culling, its triangles must be CCW from the inside.
 
-The usually unstated trick is that we ignore the usual MVP transform while drawing the box and use a different one. This
-has the eye at the origin, but with the same view direction and perspective frustum angle as the rest of the scene.
-Hence the viewer sees the swatch of the box included in the frustum. The size of the box doesn't matter because we force
-the z-coordinate after perspective division to 1 by copying w of the final vertex coord to z (depth).
+The trick is that we replace the normal MVP transform while drawing the box. We want the sky box to appear infinitely
+far away. I.e., the visible swatch of the box's inside depends only on view _direction_. Viewing position has no effect.
+If we just translate the normal MVP view frustum apex to the origin, the swatch will be correct. As the viewer turns
+their head, the frustum swivels, and the swatch changes accordingly. As they translate, the swatch stays the same.
 
-Online discussions don't tell the story above. They just show as an afterthought that you can magically get the required
-view by coercing the usual 4x4 look-at matrix to 3x3 and then back to 4x4. Libraries just just happen to do the right
-thing: removing the translation component (along with any perspective-like tapering if there were any). Rather than rely
-on library tricks, it's more robust to set `V[0,3]=V[1,3]=V[2,3]=0` to turn `V` into `detrans(V)`; i.e., zero out the
-translation component. Call this new matrix `detrans(V)`, then the correct matrix to draw the skybox is `P * detrans(V)`
-where P is the same perspective transform as used for the scene.
+With this view frustum, the size of the box doesn't matter because:
 
-So how to implement `detrans`? The obvious way is to compute `P * detrans(V)` on the host side and move it to a
-dedicated uniform. This is what most impls do. I looked at maybe tweaking the normal PV matrix in the shader instead.
-This saves the boilerplate of setting up a new uniform. It entails copying the existing PV uniform and changing 3
-elements: two get zero'ed out and the last is more complex. I finally decided the math magic was fragile.
+- Scaling with respect to the origin, where the eye is, causes no change to the perspective view, and
+- The depth check is forced to pass by ensuring the z-coordinate after perspective division is one. This entails copying
+  w of the final vertex position to z (depth).
+
+Online discussions don't tell the story above. They just show as an afterthought that you magically get the required
+view by coercing the normal V to a 3x3 and then back to 4x4. Libraries happen to give the right result. It's more robust
+to set `V[0,3]=V[1,3]=V[2,3]=0`. This turns `V` into the desired view matrix, call it `detrans(V)`. I.e., we zero out
+the translation component. Then the correct matrix to draw the skybox is `P * detrans(V)` where P is the same
+perspective transform used for the scene.
+
+So how to implement? The obvious way is to compute `P * detrans(V)` in host side set up of uniforms for the sky box
+shader. This is what most impls do. I looked at an alternative: tweaking the normal PV matrix in the shader. This saves
+the boilerplate of setting up a new uniform. It entails copying the existing PV uniform and changing 3 elements: setting
+two to zero and a more elaborate tweak to the third. I finally decided this is too fragile and messy.
