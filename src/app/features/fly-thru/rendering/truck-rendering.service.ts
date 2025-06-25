@@ -29,8 +29,13 @@ export class TruckRenderingService {
   }
 
   public render(viewMatrix: mat4, projectionMatrix: mat4): void {
-    const wheelbaseOffset = -4;
     let m: mat4;
+
+    // TODO: Temporary. Remove for animation. Don't forget the pop.
+    m = this.uniformService.pushModelMatrix();
+    mat4.translate(m, m, vec3.set(this.offset, 8, 0, 0));
+
+    const wheelbaseOffset = -4;
 
     // Right front.
     m = this.uniformService.pushModelMatrix();
@@ -77,5 +82,7 @@ export class TruckRenderingService {
     // Body.
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
     this.meshRenderingService.renderColoredMesh(this.bodyMesh);
+
+    this.uniformService.popModelMatrix();
   }
 }

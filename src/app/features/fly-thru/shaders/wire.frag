@@ -12,7 +12,7 @@ in vec3 vertex;
 in vec3 direction;
 out vec4 fragmentColor;
 
-const vec3 WIRE_COLOR = vec3(0.5f, 0.3f, 0.3f);
+const vec3 WIRE_COLOR = vec3(0.3f, 0.2f, 0.2f); // coppery
 const float WIRE_SHININESS = 30.0;
 
 void main() {
