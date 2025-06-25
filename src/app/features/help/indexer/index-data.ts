@@ -103,7 +103,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_auto_correct_errors',
-    title: 'Auto correct errors check box',
+    title: 'Auto-correct errors check box',
     text: 'checking menu entry tools auto correct errors causes bridge designer attempt repairs common minor er' +
           'rors automatically load test notes tips usually best enable auto correction feature cant harm undesi' +
           'red changes makes removed undo analysis complete'
@@ -284,14 +284,14 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_crossxsection',
-    title: 'Cross section',
+    title: 'Cross-section',
     text: 'cross section shape formed cutting member perpendicular axis cross section solid bar square measurin' +
           'g w side cross section hollow tube open square measuring w side wall thickness cross sectional area ' +
           'member surface area cross section picture light blue shaded region'
   },
   {
     id: 'hlp_deck_truss',
-    title: 'Cross section',
+    title: 'Cross-section',
     text: 'deck truss deck truss one deck located level top chord. vehicles crossing deck truss bridge supporte' +
           'd trusses'
   },
@@ -1436,7 +1436,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_bars_or_tubes',
-    title: 'Solid bar or hollow tube ',
+    title: 'Solid bar or hollow tube?',
     text: 'optimize member properties design one important decisions make selection cross section type solid ba' +
           'r hollow tube member structural model making decision consider effect different cross sections membe' +
           'r strength tension compression compression members given material hollow tubes somewhat expensive so' +
@@ -1698,7 +1698,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_old_style_graphics',
-    title: 'Use old style graphics check box',
+    title: 'Use old-style graphics check box',
     text: 'cloud edition load test animation uses game quality high speed graphics let move around bridge teste' +
           'd see truck driver sees traverses bridge computers browsers support advanced graphics nothing happen' +
           's select load test animation computer misbehaves way one fix problem restarting bridge designer chec' +
@@ -1795,41 +1795,41 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_not_realistic',
-    title: 'What is',
-    text: 'realistic bridge designer one purposes bridge designer provide realistic hands experience help under' +
-          'stand civil engineers design real structures many aspects software accurately reflect structural des' +
-          'ign process however number significant compromises made keep program getting complex bridge designer' +
-          ' intended introduction engineering design emphasis design process rather detailed technical aspects ' +
-          'structural design bottom line aspects bridge designer realistic important understand difference foll' +
-          'owing aspects bridge designer accurately reflect process practicing civil engineers use design real ' +
-          'bridges designing actual bridge engineers must developed detailed designs cost estimates abutments p' +
-          'iers roadway deck complete three dimensional structural system including main trusses connections co' +
-          'ncrete deck supporting steel framing many secondary members engineers would also need consider envir' +
-          'onmental impact bridge effects water ice river channel integral part design bridge designer design m' +
-          'ain trusses make preliminary decisions configurations roadway supports design strictly two dimension' +
-          'al thus account three dimensional stability designing actual bridge engineers must consider effects ' +
-          'fatigue tendency structural material fail prematurely result repetitive loading caused vehicular tra' +
-          'ffic bridge designer consider fatigue designing actual bridge engineers must consider many different' +
-          ' types loading include several different forms vehicular loads self weight wind snow collision vehic' +
-          'les ships earthquakes must consider longitudinal lateral position vehicular loads bridge deck must a' +
-          'lso consider numerous load combinations eleven 1994 aashto bridge design specification bridge design' +
-          'er considers two types vehicular loading self weight bridge considers longitudinal position vehicula' +
-          'r loading lateral position designing actual bridge engineers must consider limitations deflections a' +
-          'mount bending occurs vehicle crosses bridge bridge designer calculates deflections displays load tes' +
-          't use design criterion designing actual bridge engineers must consider many additional member failur' +
-          'e modes considered bridge designer bridge designer load test aashto truck loading represents two lan' +
-          'es highway traffic loading moved across bridge one direction left right aashto loading heavy rear ax' +
-          'le lighter front axle loading asymmetrical optimally designed bridge might asymmetrical well however' +
-          ' design real bridges must consider movement aashto loading directions left right right left result o' +
-          'ptimally designed real world bridges generally symmetrical though bridge designer attempts accuratel' +
-          'y demonstrate cost tradeoffs inherent engineering design actual costs structural materials component' +
-          's used software intended accurate designing actual bridge engineers must consider esthetics bridge d' +
-          'esigner include esthetics design criterion though certainly set personal goal design good looking br' +
-          'idges important recognize limitations exist equally important understand realistic bridge designer'
+    title: 'What is  not  realistic about the Bridge Designer?',
+    text: 'one purposes bridge designer provide realistic hands experience help understand civil engineers desi' +
+          'gn real structures many aspects software accurately reflect structural design process however number' +
+          ' significant compromises made keep program getting complex bridge designer intended introduction eng' +
+          'ineering design emphasis design process rather detailed technical aspects structural design bottom l' +
+          'ine aspects bridge designer realistic important understand difference following aspects bridge desig' +
+          'ner accurately reflect process practicing civil engineers use design real bridges designing actual b' +
+          'ridge engineers must develop detailed designs cost estimates abutments piers roadway deck complete t' +
+          'hree dimensional structural system including main trusses connections concrete deck supporting steel' +
+          ' framing many secondary members engineers would also need consider environmental impact bridge effec' +
+          'ts water ice river channel integral part design bridge designer design main trusses make preliminary' +
+          ' decisions configurations roadway supports design strictly two dimensional thus account three dimens' +
+          'ional stability designing actual bridge engineers must consider effects fatigue tendency structural ' +
+          'material fail prematurely result repetitive loading caused vehicular traffic bridge designer conside' +
+          'r fatigue designing actual bridge engineers must consider many different types loading include sever' +
+          'al different forms vehicular loads self weight wind snow collision vehicles ships earthquakes must c' +
+          'onsider longitudinal lateral position vehicular loads bridge deck must also consider numerous load c' +
+          'ombinations eleven 1994 aashto bridge design specification bridge designer considers two types vehic' +
+          'ular loading self weight bridge considers longitudinal position vehicular loading lateral position d' +
+          'esigning actual bridge engineers must consider limitations deflections amount bending occurs vehicle' +
+          ' crosses bridge bridge designer calculates deflections displays load test use design criterion desig' +
+          'ning actual bridge engineers must consider many additional member failure modes considered bridge de' +
+          'signer bridge designer load test aashto truck loading represents two lanes highway traffic loading m' +
+          'oved across bridge one direction left right aashto loading heavy rear axle lighter front axle loadin' +
+          'g asymmetrical optimally bridge bridge designer might asymmetrical well however design real bridges ' +
+          'must consider movement aashto loading directions left right right left result optimally designed rea' +
+          'l world bridges generally symmetrical though bridge designer attempts accurately demonstrate cost tr' +
+          'adeoffs inherent engineering design actual costs structural materials components used software inten' +
+          'ded accurate designing actual bridge engineers must consider esthetics bridge designer include esthe' +
+          'tics design criterion though certainly set personal goal design good looking bridges important recog' +
+          'nize limitations exist equally important understand realistic bridge designer'
   },
   {
     id: 'hlp_design_iteration',
-    title: 'What is a design iteration ',
+    title: 'What is a design iteration?',
     text: 'anytime make one changes structural model run load test performed one design iteration bridge design' +
           'er saves design iterations created current session provides capability revert previous iterations ti' +
           'me session notes tips revert previous design iteration click go back button go iteration button curr' +
@@ -1847,7 +1847,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_realistic',
-    title: 'What is realistic about the bridge designer ',
+    title: 'What is realistic about the Bridge Designer?',
     text: 'one purposes bridge designer provide realistic hands experience help understand civil engineers desi' +
           'gn real structures many aspects software accurately reflect structural design process however number' +
           ' significant compromises made keep program getting complex bridge designer intended introduction eng' +
@@ -1888,11 +1888,11 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'sonable authenticity modern structural engineering practice structural analysis generally performed ' +
           'using computer based method called matrix structural analysis specifically direct stiffness method b' +
           'ridge designer uses method compute member forces load test thats good news also important recognize ' +
-          'bad news realistic bd'
+          'bad news whats realistic bridge designer'
   },
   {
     id: 'hlp_whats_new',
-    title: `What's new in the cloud edition `,
+    title: `What's new in the cloud edition?`,
     text: 'welcome welcome cloud edition bridge designer millions users since 2002 bridge designer one successf' +
           'ul educational software technologies world new edition update designed enable bridge designer learni' +
           'ng anyone access web browser get started right introductory engineering experience working alone tea' +
@@ -1909,7 +1909,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_undo_vs_go_back',
-    title: `What's the difference between undo and go back `,
+    title: `What's the difference between undo and go back?`,
     text: 'first glance go back button undo button might appear performing function practice two functions clos' +
           'ely related important distinctions two use undo correct mistakes make working current design iterati' +
           'on use go back revert previous design iteration go back function normally used part optimization pro' +

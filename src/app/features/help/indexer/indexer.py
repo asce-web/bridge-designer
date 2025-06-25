@@ -43,9 +43,8 @@ class Indexer(HTMLParser):
             case "ng-template":
                 self.current_name = dict(attrs).get("topic-name")
             case "h1":
+                self.current_title = ""
                 self.state = "in-title"
-            case "p" | "span" | "li" | "topic-link" | "topic-popup":
-                self.state = "in-text"
 
     def handle_endtag(self, tag):
         if DEBUG == True:
@@ -66,8 +65,10 @@ class Indexer(HTMLParser):
                     )
                     # collapse whitespace finally
                     text = re.sub(r"\s+", " ", text)
-                self.data[self.current_name] = (self.current_title, text.strip())
+                self.data[self.current_name] = (self.current_title.strip(), text.strip())
                 self.text = ""
+            case "h1":
+                self.state = "in-text"
 
     def handle_startendtag(self, tag, attrs):
         if DEBUG == True:
@@ -76,18 +77,18 @@ class Indexer(HTMLParser):
     def handle_data(self, data):
         if DEBUG == True:
             self.indent("data:", data)
-        # Remove HTML escapes.
-        data = re.sub(r"&[^;]*;", " ", data.strip())
-        if TRIM:
-            data = re.sub(r'&[^;]*;|[-:,"?!();]|\.$|\. ', " ", data)
-            data = re.sub(r"\s+", " ", data)
-        if data == "":
-            return
         match self.state:
             case "in-title":
-                self.current_title = data
-                self.state = "in-text"
+                self.current_title += " "
+                self.current_title += data
             case "in-text":
+                # Remove HTML escapes.
+                data = re.sub(r"&[^;]*;", " ", data.strip())
+                if TRIM:
+                    data = re.sub(r'&[^;]*;|[-:,"?!();]|\.$|\. ', " ", data)
+                    data = re.sub(r"\s+", " ", data)
+                if data == "":
+                    return
                 self.text += " "
                 self.text += data
 
