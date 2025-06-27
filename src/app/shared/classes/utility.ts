@@ -124,21 +124,18 @@ export class Utility {
     return diff;
   }
 
+  /**
+   * Returns the intersection of sets, honoring the iteration order of the first.
+   * The run time will be proportional to O(|a| log |b|). If you care about run
+   * time but not ordering, pass the smallest set as the first argument.
+   */
   public static setIntersection<T>(a: Set<T>, b: Set<T>): Set<T> {
     const intersection = new Set<T>();
-    if (a.size < b.size) {
-      a.forEach(item => {
-        if (b.has(item)) {
-          intersection.add(item);
-        }
-      });
-    } else {
-      b.forEach(item => {
-        if (a.has(item)) {
-          intersection.add(item);
-        }
-      });
-    }
+    a.forEach(item => {
+      if (b.has(item)) {
+        intersection.add(item);
+      }
+    });
     return intersection;
   }
 
