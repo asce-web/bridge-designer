@@ -1,6 +1,7 @@
 import { BridgeModel } from '../classes/bridge.model';
 import { Point2DInterface } from '../classes/graphics';
 import { Joint } from '../classes/joint.model';
+import { Utility } from '../classes/utility';
 
 declare global {
   namespace jasmine {
@@ -15,15 +16,16 @@ declare global {
  * specified precision. Object prototype differences are ignored. Comparisons of number with bigint are exact.
  * Successful matches return undefined.
  */
-export function getReasonNotDeeplyEqual(
+export function getReasonsNotDeeplyEqual(
+  reasons: string[],
   a: any,
   b: any,
   precision: number = 0,
   path: string[] = ['TOP'],
-): string | undefined {
+): void {
   // Short circuit for equal primitive types, two undefined or null values, identical objects.
   if (a === b) {
-    return undefined;
+    return;
   }
   function comparisonTypeOf(x: any): string {
     return x === null ? 'null' : Array.isArray(x) ? 'array' : typeof x;
@@ -44,63 +46,68 @@ export function getReasonNotDeeplyEqual(
   const bType = comparisonTypeOf(b);
   // Short circuit number vs. bigint comparisons, a special case.
   if ((aType === 'bigint' && bType === 'number') || (aType === 'number' && bType === 'bigint')) {
-    return a == b ? undefined : `bigint and number unequal @${path.join('')}: ${a} != ${b}`;
+    if (a != b) {
+      reasons.push(`bigint and number unequal @${path.join('')}: ${a} != ${b}`);
+    }
+    return;
   }
   // Short circuit for any other kind of type mismatch.
   if (aType !== bType) {
-    return `type missmatch @${path.join('')}: ${aType} != ${bType} (${safeToString(a)} != ${safeToString(b)})`;
+    reasons.push(`type missmatch @${path.join('')}: ${aType} != ${bType} (${safeToString(a)} != ${safeToString(b)})`);
+    return;
   }
   // Short circuit numbers for an imprecise match for numbers.
   if (aType === 'number') {
     const epsilon = Math.max(Math.abs(a), Math.abs(b)) * precision;
-    return Math.abs(a - b) < epsilon
-      ? undefined
-      : `numerically unequal with eps=${epsilon} @${path.join('')}: ${a} !~ ${b}`;
+    if (Math.abs(a - b) > epsilon) {
+      reasons.push(`numerically unequal with eps=${epsilon} @${path.join('')}: ${a} !~ ${b}`);
+    }
+    return;
   }
   // Short circuit with recurrence for array elements.
   if (aType === 'array') {
     if (a.length !== b.length) {
-      return `array length mismatch @${path.join('')}: ${a.length} != ${b.length})`;
+      reasons.push(`array length mismatch @${path.join('')}: ${a.length} != ${b.length})`);
     }
-    for (let i = 0; i < a.length; i++) {
-      const msg = getReasonNotDeeplyEqual(a[i], b[i], precision, path.concat(`[${i}]`));
-      if (msg) {
-        return msg;
-      }
+    const commonLength = Math.min(a.length, b.length);
+    for (let i = 0; i < commonLength; i++) {
+      getReasonsNotDeeplyEqual(reasons, a[i], b[i], precision, path.concat(`[${i}]`));
     }
-    // The arrays are equal.
-    return undefined;
+    return;
   }
   // Short circuit with recurrence for object fields.
   if (aType === 'object') {
     // Fields comparison. Reject any dissimilarity.
-    const keysA = Object.keys(a);
-    const keysB = Object.keys(b);
-    const aNotB = chop(keysA.filter(key => !keysB.includes(key)));
-    const bNotA = chop(keysB.filter(key => !keysA.includes(key)));
+    const keysA = new Set(Object.keys(a));
+    const keysB = new Set(Object.keys(b));
+    const aNotB = chop([...Utility.setDifference(keysA, keysB)]);
+    const bNotA = chop([...Utility.setDifference(keysB, keysA)]);
+    const both = Utility.setIntersection(keysA, keysB);
     if (aNotB.length > 0 || bNotA.length > 0) {
-      return `field mismatch @${path.join('')}: only in ${a.constructor.name} are {${aNotB}}; only in ${b.constructor.name} are {${bNotA}}`;
+      reasons.push(
+        `field mismatch @${path.join('')}: only in ${a.constructor.name} are {${aNotB}}; only in ${b.constructor.name} are {${bNotA}}`,
+      );
     }
-    for (let key of keysA) {
-      const msg = getReasonNotDeeplyEqual(a[key], b[key], precision, path.concat(`.${key}`));
-      if (msg) {
-        return msg;
-      }
+    for (let key of both) {
+      getReasonsNotDeeplyEqual(reasons, a[key], b[key], precision, path.concat(`.${key}`));
     }
-    return undefined;
+    return;
   }
-  // A pair with the same stringifiable primitive types.
-  return a === b ? undefined : `value mismatch @${path.join('')}: ${safeToString(a)} != ${safeToString(b)}`;
+  // A pair with the same primitive types.
+  if (a !== b) {
+    reasons.push(`value mismatch @${path.join('')}: ${safeToString(a)} != ${safeToString(b)}`);
+  }
 }
 
 export const projectLocalMatchers: jasmine.CustomMatcherFactories = {
   toNearlyEqual: (_matchersUtil: jasmine.MatchersUtil): jasmine.CustomMatcher => {
     return {
       compare: (actual: any, expected: any, precision: number = 1e-9): jasmine.CustomMatcherResult => {
-        const message = getReasonNotDeeplyEqual(actual, expected, precision);
-        return message === undefined
+        const reasons: string[] = [];
+        getReasonsNotDeeplyEqual(reasons, actual, expected, precision);
+        return reasons.length === 0
           ? { pass: true, message: `equal with numeric precision ${precision}` }
-          : { pass: false, message };
+          : { pass: false, message: reasons.join('\n') };
       },
     };
   },
@@ -166,4 +173,4 @@ export function validateConvexHull(hull: Point2DInterface[]): number[] {
     }
   }
   return bad;
-} 
+}

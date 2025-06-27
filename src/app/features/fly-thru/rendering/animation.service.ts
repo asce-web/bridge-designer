@@ -19,12 +19,13 @@ export const enum AnimationState {
  *                     '--------'<------'
  */
 @Injectable({ providedIn: 'root' })
-export class AnimatorService {
+export class AnimationService {
   private clockBaseMillis: number | undefined;
   private lastClockMillis: number | undefined;
   private _state: AnimationState = AnimationState.STOPPED;
   private frameTickMillis: number | undefined;
   private frameCount: number = 0;
+  private totalRenderMillis: number = 0;
 
   constructor(
     private readonly renderService: RenderingService,
@@ -54,12 +55,15 @@ export class AnimatorService {
             'fps:',
             this.frameCount,
             'eye:',
-            this.viewService.eye[0],
-            this.viewService.eye[1],
-            this.viewService.eye[2],
+            this.viewService.eye[0].toFixed(1),
+            this.viewService.eye[1].toFixed(1),
+            this.viewService.eye[2].toFixed(1),
+            'render %:',
+            Math.round(this.totalRenderMillis * 0.1) // /1000*100
           );
           this.frameTickMillis = nowMillis;
           this.frameCount = 0;
+          this.totalRenderMillis = 0;
         }
       }
       if (this._state === AnimationState.STOPPED) {
@@ -75,7 +79,9 @@ export class AnimatorService {
       }
       const clockMillis =
         this._state === AnimationState.PAUSED ? this.lastClockMillis : nowMillis - this.clockBaseMillis;
+      const frameStartMillis = window.performance.now();
       this.renderService.renderFrame(clockMillis, clockMillis - this.lastClockMillis);
+      this.totalRenderMillis +=  performance.now() - frameStartMillis;
       this.lastClockMillis = clockMillis;
       // Schedule next loop iteration.
       requestAnimationFrame(render);

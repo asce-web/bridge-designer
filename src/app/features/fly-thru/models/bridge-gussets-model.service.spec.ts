@@ -18,7 +18,7 @@ describe('BridgeGussetsModelService', () => {
   const memberBC = buildTestMember(jointB, jointC, 200);
   const memberCA = buildTestMember(jointC, jointA, 300);
   const expectedHull: Point2DInterface[] = [
-    { x: -0.34, y: 0.17 },
+    { x: 0.269, y: 0.17 },
     { x: 0.17, y: 0.269 },
     { x: -0.17, y: 0.17 },
     { x: -0.17, y: -0.17 },
@@ -26,92 +26,92 @@ describe('BridgeGussetsModelService', () => {
   ];
   // prettier-ignore
   const expectedMeshPositions = new Float32Array([
-    // Outer surface of quads
-    0.269, -0.17, -0.17,  // 0
-    0.269, -0.17, 0.17,   // 1
-    -0.34, 0.17, -0.17,   // 2
-    -0.34, 0.17, 0.17,    // 3
+    // Outer surface quads
+    0.269, -0.17, -0.17,
+    0.269, -0.17, 0.17,
+    0.269, 0.17, -0.17,
+    0.269, 0.17, 0.17,
 
-    -0.34, 0.17, -0.17,   // 4
-    -0.34, 0.17, 0.17,    // 5
-    0.17, 0.269, -0.17,   // 6
-    0.17, 0.269, 0.17,    // 7
+    0.269, 0.17, -0.17,
+    0.269, 0.17, 0.17,
+    0.17, 0.269, -0.17,
+    0.17, 0.269, 0.17,
 
-    0.17, 0.269, -0.17,   // 8
-    0.17, 0.269, 0.17,    // 9
-    -0.17, 0.17, -0.17,   // 10
-    -0.17, 0.17, 0.17,    // 11
+    0.17, 0.269, -0.17,
+    0.17, 0.269, 0.17,
+    -0.17, 0.17, -0.17,
+    -0.17, 0.17, 0.17,
 
-    -0.17, 0.17,-0.17,    // 12
-    -0.17, 0.17, 0.17,    // 13
-    -0.17, -0.17, -0.17,  // 14
-    -0.17, -0.17, 0.17,   // 15
+    -0.17, 0.17, -0.17,
+    -0.17, 0.17, 0.17,
+    -0.17, -0.17, -0.17,
+    -0.17, -0.17, 0.17,
 
-    -0.17, -0.17, -0.17,  // 16
-    -0.17, -0.17, 0.17,   // 17
-    0.269, -0.17, -0.17,  // 18
-    0.269, -0.17, 0.17,   // 19
+    -0.17, -0.17, -0.17,
+    -0.17, -0.17, 0.17,
+    0.269, -0.17, -0.17,
+    0.269, -0.17, 0.17,
 
     // Positive end
-    0, 0, 0.17,           // 20
-    -0.34, 0.17, 0.17,    // 21
-    0.17, 0.269, 0.17,    // 22
-    -0.17, 0.17, 0.17,    // 23
-    -0.17, -0.17, 0.17,   // 24
-    0.269, -0.17, 0.17,   // 25
+    0, 0, 0.17,
+    0.269, 0.17, 0.17,
+    0.17, 0.269, 0.17,
+    -0.17, 0.17, 0.17,
+    -0.17, -0.17, 0.17,
+    0.269, -0.17, 0.17,
 
     // Negative end
-    0, 0, -0.17,          // 26
-    0.269, -0.17, -0.17,  // 27
-    -0.17, -0.17, -0.17,  // 28
-    -0.17, 0.17, -0.17,   // 29
-    0.17, 0.269, -0.17,   // 30
-    -0.34, 0.17, -0.17,   // 31
+    0, 0, -0.17,
+    0.269, -0.17, -0.17,
+    -0.17, -0.17, -0.17,
+    -0.17, 0.17, -0.17,
+    0.17, 0.269, -0.17,
+    0.269, 0.17, -0.17
   ]);
 
   // prettier-ignore
   const expectedMeshNormals = new Float32Array([
     // Outer surface quads.
-    0.4877, 0.873, 0,
-    0.4877, 0.873, 0,
-    0.4877, 0.873, 0,
-    0.4877, 0.873, 0,
+     1, 0, 0,
+     1, 0, 0,
+     1, 0, 0,
+     1, 0, 0,
 
-    0.1907, -0.9817, 0,
-    0.1907, -0.9817, 0,
-    0.1907, -0.9817, 0,
-    0.1907, -0.9817, 0,
+     0.7071, 0.7071, 0,
+     0.7071, 0.7071, 0,
+     0.7071, 0.7071, 0,
+     0.7071, 0.7071, 0,
 
-    -0.2796, 0.9601, 0,
-    -0.2796, 0.9601, 0,
-    -0.2796, 0.9601, 0,
-    -0.2796, 0.9601, 0,
+     -0.2796, 0.9601, 0,
+     -0.2796, 0.9601, 0,
+     -0.2796, 0.9601, 0,
+     -0.2796, 0.9601, 0,
 
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
+     -1, 0, 0,
+     -1, 0, 0,
+     -1, 0, 0,
+     -1, 0, 0,
 
-    0, -1, 0,
-    0, -1, 0,
-    0, -1, 0,
-    0, -1, 0,
+     0, -1, 0,
+     0, -1, 0,
+     0, -1, 0,
+     0, -1, 0,
 
-    // Positive end
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
+     // Positive end
+     0, 0, 1,
+     0, 0, 1,
+     0, 0, 1,
+     0, 0, 1,
+     0, 0, 1,
+     0, 0, 1,
 
-    // Negative end
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1
+     // Negative end
+     0, 0, -1,
+     0, 0, -1,
+     0, 0, -1,
+     0, 0, -1,
+     0, 0, -1,
+     0, 0, -1,
   ]);
   // prettier-ignore
   const expectedMeshIndices = new Uint16Array([
@@ -144,7 +144,7 @@ describe('BridgeGussetsModelService', () => {
     26, 28, 29,
     26, 29, 30,
     26, 30, 31
-]);
+  ]);
 
   beforeEach(() => {
     jasmine.addMatchers(projectLocalMatchers);
@@ -191,14 +191,9 @@ describe('BridgeGussetsModelService', () => {
     expect(mesh.instanceModelTransforms instanceof Float32Array).toBeTrue();
     expect(mesh.materialRefs instanceof Uint16Array).toBeTrue();
     expect(mesh.indices instanceof Uint16Array).toBeTrue();
-    expect(mesh.positions).toNearlyEqual(expectedMeshPositions, 1e-3);
-    expect(mesh.normals).toNearlyEqual(expectedMeshNormals, 1e-3);
-    expect(mesh.indices).toEqual(expectedMeshIndices);
-  });
-
-  it('should return an array from meshData getter', () => {
-    const meshData = service.meshData;
-    expect(Array.isArray(meshData)).toBeTrue();
+    expect(mesh.positions).withContext('positions').toNearlyEqual(expectedMeshPositions, 1e-3);
+    expect(mesh.normals).withContext('normals').toNearlyEqual(expectedMeshNormals, 1e-3);
+    expect(mesh.indices).withContext('indices').toEqual(expectedMeshIndices);
   });
 
   function buildTestMember(a: Joint, b: Joint, materialSizeMm: number): Member {

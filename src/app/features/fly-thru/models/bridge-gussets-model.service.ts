@@ -74,6 +74,7 @@ export class BridgeGussetsModelService {
   ) {}
 
   // visible-for-testing
+  /** Builds one gusset per joint in the current bridge. */
   get gussets(): Gusset[] {
     // Make one gusset per joint.
     const gussets: Gusset[] = this.bridgeService.bridge.joints.map(joint => {

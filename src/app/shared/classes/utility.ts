@@ -114,6 +114,34 @@ export class Utility {
     });
   }
 
+  public static setDifference<T>(a: Set<T>, b: Set<T>): Set<T> {
+    const diff = new Set<T>();
+    a.forEach(item => {
+      if (!b.has(item)) {
+        diff.add(item);
+      }
+    });
+    return diff;
+  }
+
+  public static setIntersection<T>(a: Set<T>, b: Set<T>): Set<T> {
+    const intersection = new Set<T>();
+    if (a.size < b.size) {
+      a.forEach(item => {
+        if (b.has(item)) {
+          intersection.add(item);
+        }
+      });
+    } else {
+      b.forEach(item => {
+        if (a.has(item)) {
+          intersection.add(item);
+        }
+      });
+    }
+    return intersection;
+  }
+
   /** Returns an array of Float64Arrays. */
   public static create2dFloat64Array(arrayCount: number, arrayLength: number) {
     return Array.from({ length: arrayCount }, () => new Float64Array(arrayLength));

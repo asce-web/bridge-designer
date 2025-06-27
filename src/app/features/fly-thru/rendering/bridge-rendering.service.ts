@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { mat4 } from 'gl-matrix';
-import { Mesh, MeshData, MeshRenderingService, Wire } from './mesh-rendering.service';
+import { Mesh, MeshRenderingService, Wire } from './mesh-rendering.service';
 import { BridgeModelService } from '../models/bridge-model.service';
 import { UniformService } from './uniform.service';
 import { BridgeGussetsModelService } from '../models/bridge-gussets-model.service';
@@ -10,7 +10,6 @@ export class BridgeRenderingService {
   private membersMesh!: Mesh;
   private stiffeningWire!: Wire;
   private gussetMeshes!: Mesh[];
-  private gussetsMeshData!: MeshData[];
 
   constructor(
     private readonly bridgeGussetsModelService: BridgeGussetsModelService,
@@ -25,9 +24,6 @@ export class BridgeRenderingService {
     this.membersMesh = this.meshRenderingService.prepareColoredMesh(bridgeMeshData.memberMeshData);
     this.stiffeningWire = this.meshRenderingService.prepareWire(bridgeMeshData.stiffeningWireData);
     const gussetMeshData = this.bridgeGussetsModelService.meshData;
-    // DEBUG: Remove to free memory.
-    this.gussetsMeshData = gussetMeshData;
-    console.log(this.gussetsMeshData.length);
     this.gussetMeshes = gussetMeshData.map(meshData => this.meshRenderingService.prepareColoredMesh(meshData));
   }
 

@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 import { Utility } from '../../../shared/classes/utility';
-import { AnimatorService } from '../rendering/animator.service';
+import { AnimationService } from '../rendering/animation.service';
 import { GlService } from '../rendering/gl.service';
 import { ViewportService } from '../rendering/viewport.service';
 import { OverlayUiService } from '../rendering/overlay-ui.service';
@@ -31,7 +31,7 @@ export class FlyThruPaneComponent implements AfterViewInit {
   height: number = screen.availHeight;
 
   constructor(
-    private readonly animatorService: AnimatorService,
+    private readonly animationService: AnimationService,
     private readonly changeDetector: ChangeDetectorRef,
     private readonly eventBrokerService: EventBrokerService,
     private readonly glService: GlService,
@@ -69,9 +69,9 @@ export class FlyThruPaneComponent implements AfterViewInit {
     this.display = value ? 'block' : 'none';
     this.changeDetector.detectChanges();
     if (value) {
-      this.animatorService.start();
+      this.animationService.start();
     } else {
-      this.animatorService.stop();
+      this.animationService.stop();
     }
   }
   
