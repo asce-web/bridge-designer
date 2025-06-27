@@ -4,8 +4,8 @@ import { UniformService } from './uniform.service';
 import { Mesh, MeshRenderingService } from './mesh-rendering.service';
 import { RIVER_MESH_DATA } from '../models/river';
 import { BridgeService } from '../../../shared/services/bridge.service';
-import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { TerrainModelService } from '../models/terrain-model.service';
+import { SiteConstants } from '../../../shared/classes/site.model';
 
 /** Container for the singleton river mesh and rendering context. */
 @Injectable({ providedIn: 'root' })
@@ -29,7 +29,7 @@ export class RiverRenderingService {
     // TODO: Could listen for bridge loads and compute these only then.
     const x0 = 0.5 * this.bridgeService.designConditions.spanLength;
     const y0 =
-      TerrainModelService.WATER_LEVEL + DesignConditions.GAP_DEPTH - this.bridgeService.designConditions.deckElevation;
+      TerrainModelService.WATER_LEVEL + SiteConstants.GAP_DEPTH - this.bridgeService.designConditions.deckElevation;
     mat4.translate(m, m, vec3.set(this.offset, x0, y0, 0));
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
     this.meshRenderingService.renderRiverMesh(this.surfaceMesh);

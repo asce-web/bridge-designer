@@ -26,5 +26,5 @@ void main() {
   vec4 position = inModelTransform * vec4(inPosition, 1.0f);
   gl_Position = transforms.modelViewProjection * position;
   vertex = vec3(transforms.modelView * position);
-  direction = mat3(transforms.modelView) * inDirection;
+  direction = mat3(transforms.modelView) * mat3(inModelTransform) * inDirection;
 }

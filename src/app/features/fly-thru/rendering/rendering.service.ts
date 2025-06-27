@@ -17,6 +17,7 @@ import { UtilityLineRenderingService } from './utility-line-rendering.service';
 import { RiverRenderingService } from './river-rendering.service';
 import { SkyRenderingService } from './sky-rendering.service';
 import { AbutmentRenderingService } from './abutment-rendering.service';
+import { BridgeRenderingService } from './bridge-rendering.service';
 
 /** Rendering functionality for fly-thrus. */
 @Injectable({ providedIn: 'root' })
@@ -30,6 +31,7 @@ export class RenderingService {
 
   constructor(
     private readonly abutmentRenderingService: AbutmentRenderingService,
+    private readonly bridgeRenderingService: BridgeRenderingService,
     private readonly glService: GlService,
     private readonly imageService: ImageService,
     private readonly meshRenderingService: MeshRenderingService,
@@ -70,6 +72,7 @@ export class RenderingService {
     this.terrainMesh = this.meshRenderingService.prepareTerrainMesh(this.terrainModelService.terrainMeshData);
     this.roadwayMesh = this.meshRenderingService.prepareColoredMesh(this.terrainModelService.roadwayMeshData);
     this.abutmentRenderingService.prepare();
+    this.bridgeRenderingService.prepare();
     this.utilityLineRenderingService.prepare();
 
     // Other on-time setups follow.
@@ -126,6 +129,7 @@ export class RenderingService {
     this.abutmentRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.truckRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.utilityLineRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    this.bridgeRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.skyRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.overlayService.render(this.controlsOverlay);
   }

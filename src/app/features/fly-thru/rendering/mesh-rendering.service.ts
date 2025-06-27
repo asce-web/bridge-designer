@@ -6,6 +6,7 @@ import {
   IN_MATERIAL_REF_LOCATION,
   IN_INSTANCE_MODEL_TRANSFORM_LOCATION,
   IN_TEX_COORD_LOCATION,
+  IN_DIRECTION_LOCATION,
 } from '../shaders/constants';
 import { ShaderService } from '../shaders/shader.service';
 import { GlService } from './gl.service';
@@ -18,6 +19,7 @@ export type MeshData = {
   normals?: Float32Array;
   texCoords?: Float32Array;
   materialRefs?: Uint16Array;
+  colors?: Float32Array;
   indices: Uint16Array;
   // For instanced drawing, one mat4 per instance.
   instanceModelTransforms?: Float32Array;
@@ -35,7 +37,26 @@ export type Mesh = {
   positionBuffer?: WebGLBuffer;
   normalBuffer?: WebGLBuffer;
   materialRefBuffer?: WebGLBuffer;
+  // TODO: Add color buffer when needed!
   texCoordBuffer?: WebGLBuffer;
+  instanceModelTransformBuffer?: WebGLBuffer;
+};
+
+export type WireData = {
+  positions: Float32Array;
+  directions: Float32Array;
+  indices: Uint16Array;
+  // For instanced drawing, one mat4 per instance.
+  instanceModelTransforms?: Float32Array;
+};
+
+export type Wire = {
+  vertexArray: WebGLVertexArrayObject;
+  indexBuffer: WebGLBuffer;
+  elementCount: number;
+  instanceCount?: number;
+  positionBuffer: WebGLBuffer;
+  directionBuffer: WebGLBuffer;
   instanceModelTransformBuffer?: WebGLBuffer;
 };
 
@@ -48,52 +69,22 @@ export class MeshRenderingService {
     private readonly shaderService: ShaderService,
   ) {}
 
-  // TODO: Factor out some common sub-functions to reduce code size. See textured and colored.
-  // TODO: After above, move WireRenderingService here to use the sub-functions.
-
   /** Prepares a colored mesh for drawing. */
   public prepareColoredMesh(meshData: MeshData): Mesh {
     const gl = this.glService.gl;
 
     const vertexArray = Utility.assertNotNull(gl.createVertexArray());
     gl.bindVertexArray(vertexArray);
-
-    const positionBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.positions, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_POSITION_LOCATION);
-    gl.vertexAttribPointer(IN_POSITION_LOCATION, 3, gl.FLOAT, false, 0, 0);
-
-    const normalBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.normals!, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_NORMAL_LOCATION);
-    gl.vertexAttribPointer(IN_NORMAL_LOCATION, 3, gl.FLOAT, false, 0, 0);
-
-    const materialRefBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, materialRefBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.materialRefs!, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_MATERIAL_REF_LOCATION);
-    gl.vertexAttribIPointer(IN_MATERIAL_REF_LOCATION, 1, gl.UNSIGNED_SHORT, 2, 0);
-
-    const indexBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, meshData.indices, gl.STATIC_DRAW);
-
-    let instanceModelTransformBuffer;
-    if (meshData.instanceModelTransforms) {
-      instanceModelTransformBuffer = Utility.assertNotNull(gl.createBuffer());
-      gl.bindBuffer(gl.ARRAY_BUFFER, instanceModelTransformBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, meshData.instanceModelTransforms, gl.STATIC_DRAW);
-      // Vertex attributes are limited to 4 floats. This trick sends columns of 4x4. They're
-      // assembled magically by the shader.
-      for (let i = 0; i < 4; ++i) {
-        gl.enableVertexAttribArray(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i);
-        gl.vertexAttribPointer(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 4, gl.FLOAT, false, 64, i * 16);
-        gl.vertexAttribDivisor(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 1);
-      }
-    }
-
+    const positionBuffer = this.prepareBuffer(IN_POSITION_LOCATION, meshData.positions);
+    const normalBuffer = this.prepareBuffer(IN_NORMAL_LOCATION, meshData.normals!);
+    const materialRefBuffer = this.prepareBuffer(
+      IN_MATERIAL_REF_LOCATION,
+      meshData.materialRefs!,
+      1,
+      gl.UNSIGNED_SHORT,
+    );
+    const indexBuffer = this.prepareIndexBuffer(meshData.indices);
+    const instanceModelTransformBuffer = this.prepareInstanceModelTransformBuffer(meshData.instanceModelTransforms);
     const elementCount = meshData.indices.length;
     const instanceCount = meshData.instanceModelTransforms ? meshData.instanceModelTransforms.length / 16 : 0;
 
@@ -132,62 +123,24 @@ export class MeshRenderingService {
 
     const vertexArray = Utility.assertNotNull(gl.createVertexArray());
     gl.bindVertexArray(vertexArray);
+    const positionBuffer = this.prepareBuffer(IN_POSITION_LOCATION, meshData.positions);
+    const normalBuffer = this.prepareBuffer(IN_NORMAL_LOCATION, meshData.normals!);
+    const texCoordBuffer = this.prepareBuffer(IN_TEX_COORD_LOCATION, meshData.texCoords!, 2);
+    const indexBuffer = this.prepareIndexBuffer(meshData.indices);
+    const instanceModelTransformBuffer = this.prepareInstanceModelTransformBuffer(meshData.instanceModelTransforms);
+    const texture = this.prepareTexture(textureUrl, preloadColor);
 
-    const positionBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.positions, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_POSITION_LOCATION);
-    gl.vertexAttribPointer(IN_POSITION_LOCATION, 3, gl.FLOAT, false, 0, 0);
-
-    const normalBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.normals!, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_NORMAL_LOCATION);
-    gl.vertexAttribPointer(IN_NORMAL_LOCATION, 3, gl.FLOAT, false, 0, 0);
-
-    const texCoordBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.texCoords!, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_TEX_COORD_LOCATION);
-    gl.vertexAttribPointer(IN_TEX_COORD_LOCATION, 2, gl.FLOAT, false, 0, 0);
-
-    const indexBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, meshData.indices, gl.STATIC_DRAW);
-
-    const texture = Utility.assertNotNull(gl.createTexture());
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    // Use a solid color texture of 1 pixel until the texture image loads.
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, preloadColor);
-    this.imageService.createImagesLoader([textureUrl]).invokeAfterLoaded(imagesByUrl => {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imagesByUrl[textureUrl]);
-      gl.generateMipmap(gl.TEXTURE_2D);
-    });
-    gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-
-    let instanceModelTransformBuffer;
     let programName = 'textured_mesh';
     let instanceCount = 0;
     if (meshData.instanceModelTransforms) {
       programName = 'textured_mesh_instances';
       instanceCount = meshData.instanceModelTransforms.length / 16;
-      instanceModelTransformBuffer = Utility.assertNotNull(gl.createBuffer());
-      gl.bindBuffer(gl.ARRAY_BUFFER, instanceModelTransformBuffer);
-      gl.bufferData(gl.ARRAY_BUFFER, meshData.instanceModelTransforms, gl.STATIC_DRAW);
-      // Vertex attributes are limited to 4 floats. This trick sends columns of 4x4. They're
-      // assembled magically by the shader.
-      for (let i = 0; i < 4; ++i) {
-        gl.enableVertexAttribArray(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i);
-        gl.vertexAttribPointer(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 4, gl.FLOAT, false, 64, i * 16);
-        gl.vertexAttribDivisor(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 1);
-      }
     }
     const program = this.shaderService.getProgram(programName);
     const textureUniformLocation = gl.getUniformLocation(program, 'meshTexture')!;
-
     const elementCount = meshData.indices.length;
+
+    // Not clearing texture and vertex array bindings because I don't understand semantics re async image load.
 
     return {
       vertexArray,
@@ -199,6 +152,7 @@ export class MeshRenderingService {
       positionBuffer,
       normalBuffer,
       texCoordBuffer,
+      instanceModelTransformBuffer,
     };
   }
 
@@ -207,6 +161,7 @@ export class MeshRenderingService {
     gl.useProgram(this.shaderService.getProgram(mesh.instanceCount ? 'textured_mesh_instances' : 'textured_mesh'));
     gl.bindVertexArray(mesh.vertexArray);
     // TODO: Experiment with doing this once, not once per frame. Possible because we have fewer textures than units?
+    // Then no texture location would be needed in the mesh data.
     gl.uniform1i(Utility.assertNotUndefined(mesh.textureUniformLocation), FACIA_TEXTURE_UNIT);
     gl.activeTexture(gl.TEXTURE0 + FACIA_TEXTURE_UNIT);
     gl.bindTexture(gl.TEXTURE_2D, Utility.assertNotUndefined(mesh.texture));
@@ -226,23 +181,9 @@ export class MeshRenderingService {
 
     const vertexArray = Utility.assertNotNull(gl.createVertexArray());
     gl.bindVertexArray(vertexArray);
-
-    const positionBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.positions, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_POSITION_LOCATION);
-    gl.vertexAttribPointer(IN_POSITION_LOCATION, 3, gl.FLOAT, false, 0, 0);
-
-    const normalBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, normalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.normals!, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_NORMAL_LOCATION);
-    gl.vertexAttribPointer(IN_NORMAL_LOCATION, 3, gl.FLOAT, false, 0, 0);
-
-    const indexBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, meshData.indices, gl.STATIC_DRAW);
-
+    const positionBuffer = this.prepareBuffer(IN_POSITION_LOCATION, meshData.positions);
+    const normalBuffer = this.prepareBuffer(IN_NORMAL_LOCATION, meshData.normals!);
+    const indexBuffer = this.prepareIndexBuffer(meshData.indices);
     const elementCount = meshData.indices.length;
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
@@ -269,33 +210,12 @@ export class MeshRenderingService {
     const vertexArray = Utility.assertNotNull(gl.createVertexArray());
     gl.bindVertexArray(vertexArray);
 
-    const positionBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, meshData.positions, gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(IN_POSITION_LOCATION);
-    // Note x-z coordinates only. y=0 is assumed.
-    gl.vertexAttribPointer(IN_POSITION_LOCATION, 2, gl.FLOAT, false, 0, 0);
-
-    const indexBuffer = Utility.assertNotNull(gl.createBuffer());
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, meshData.indices, gl.STATIC_DRAW);
-
-    const texture = Utility.assertNotNull(gl.createTexture());
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    // Use a solid color texture of 1 pixel until the water image loads.
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, Colors.GL_WATER);
-    const waterUrl = 'img/water.jpg';
-    this.imageService.createImagesLoader([waterUrl]).invokeAfterLoaded(imagesByUrl => {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imagesByUrl[waterUrl]);
-      gl.generateMipmap(gl.TEXTURE_2D);
-    });
-    gl.generateMipmap(gl.TEXTURE_2D);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    const positionBuffer = this.prepareBuffer(IN_POSITION_LOCATION, meshData.positions, 2);
+    const indexBuffer = this.prepareIndexBuffer(meshData.indices);
+    const texture = this.prepareTexture( 'img/water.jpg', Colors.GL_WATER);
 
     const program = this.shaderService.getProgram('river');
     const textureUniformLocation = gl.getUniformLocation(program, 'water')!;
-
     const elementCount = meshData.indices.length;
 
     return { vertexArray, indexBuffer, elementCount, texture, textureUniformLocation, positionBuffer };
@@ -316,6 +236,121 @@ export class MeshRenderingService {
     gl.bindVertexArray(null);
   }
 
+  /** Prepares a wire from given raw data. */
+  public prepareWire(wireData: WireData): Wire {
+    const gl = this.glService.gl;
+
+    const vertexArray = Utility.assertNotNull(gl.createVertexArray());
+    gl.bindVertexArray(vertexArray);
+
+    const positionBuffer = this.prepareBuffer(IN_POSITION_LOCATION, wireData.positions);
+    const directionBuffer = this.prepareBuffer(IN_DIRECTION_LOCATION, wireData.directions);
+    const indexBuffer = this.prepareIndexBuffer(wireData.indices);
+    const instanceModelTransformBuffer = this.prepareInstanceModelTransformBuffer(wireData.instanceModelTransforms);
+    const elementCount = wireData.indices.length;
+    const instanceCount = wireData.instanceModelTransforms ? wireData.instanceModelTransforms.length / 16 : 0;
+
+    return {
+      vertexArray,
+      positionBuffer,
+      directionBuffer,
+      indexBuffer,
+      elementCount,
+      instanceCount,
+      instanceModelTransformBuffer,
+    };
+  }
+
+  /** Renders the already prepared wire. */
+  public renderWire(wire: Wire) {
+    const gl = this.glService.gl;
+    gl.useProgram(this.shaderService.getProgram(wire.instanceCount ? 'wire_instances' : 'wire'));
+    gl.bindVertexArray(wire.vertexArray);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, wire.indexBuffer);
+    if (wire.instanceCount) {
+      gl.drawElementsInstanced(gl.LINES, wire.elementCount, gl.UNSIGNED_SHORT, 0, wire.instanceCount);
+    } else {
+      gl.drawElements(gl.LINES, wire.elementCount, gl.UNSIGNED_SHORT, 0);
+    }
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    gl.bindVertexArray(null);
+  }
+
+  /** Deletes OpenGl resources of a previously prepared wire. */
+  public deleteExistingWire(wire: Wire | undefined): void {
+    if (!wire) {
+      return;
+    }
+    const gl = this.glService.gl;
+    gl.deleteVertexArray(wire.vertexArray);
+    gl.deleteBuffer(wire.indexBuffer);
+    gl.deleteBuffer(wire.directionBuffer);
+    gl.deleteBuffer(wire.positionBuffer);
+    if (wire.instanceModelTransformBuffer) {
+      gl.deleteBuffer(wire.instanceModelTransformBuffer);
+    }
+  }
+
+  private prepareTexture(url: string, preloadColor: Uint8Array): WebGLTexture {
+    const gl = this.glService.gl;
+    const texture = Utility.assertNotNull(gl.createTexture());
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    // Use a solid color texture of 1 pixel until the water image loads.
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, preloadColor);
+    this.imageService.createImagesLoader([url]).invokeAfterLoaded(imagesByUrl => {
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imagesByUrl[url]);
+      gl.generateMipmap(gl.TEXTURE_2D);
+    });
+    gl.generateMipmap(gl.TEXTURE_2D);
+    return texture;
+  }
+
+  private prepareBuffer(
+    location: number,
+    data: ArrayBufferView,
+    size: number = 3,
+    type: number = this.glService.gl.FLOAT,
+  ): WebGLBuffer {
+    const gl = this.glService.gl;
+    const buffer = Utility.assertNotNull(gl.createBuffer());
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(location);
+    if (this.glService.isIntType(type)) {
+      gl.vertexAttribIPointer(location, size, type, 0, 0);
+    } else {
+      gl.vertexAttribPointer(location, size, type, false, 0, 0);
+    }
+    return buffer;
+  }
+
+  private prepareInstanceModelTransformBuffer(data: Float32Array | undefined): WebGLBuffer | undefined {
+    if (data === undefined) {
+      return undefined;
+    }
+    const gl = this.glService.gl;
+    const buffer = Utility.assertNotNull(gl.createBuffer());
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    // Vertex attributes are limited to 4 floats. This trick sends columns of 4x4.
+    // They're assembled magically by the shader.
+    for (let i = 0; i < 4; ++i) {
+      gl.enableVertexAttribArray(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i);
+      gl.vertexAttribPointer(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 4, gl.FLOAT, false, 64, i * 16);
+      gl.vertexAttribDivisor(IN_INSTANCE_MODEL_TRANSFORM_LOCATION + i, 1);
+    }
+    return buffer;
+  }
+
+  private prepareIndexBuffer(data: Uint16Array): WebGLBuffer {
+    const gl = this.glService.gl;
+    const buffer = Utility.assertNotNull(gl.createBuffer());
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, data, gl.STATIC_DRAW);
+    return buffer;
+  }
+
   public deleteExistingMesh(mesh: Mesh | undefined): void {
     if (!mesh) {
       return;
@@ -323,14 +358,14 @@ export class MeshRenderingService {
     const gl = this.glService.gl;
     gl.deleteVertexArray(mesh.vertexArray);
     gl.deleteBuffer(mesh.indexBuffer);
+    if (mesh.positionBuffer) {
+      gl.deleteBuffer(mesh.positionBuffer);
+    }
     if (mesh.normalBuffer) {
       gl.deleteBuffer(mesh.normalBuffer);
     }
     if (mesh.texCoordBuffer) {
       gl.deleteBuffer(mesh.texCoordBuffer);
-    }
-    if (mesh.positionBuffer) {
-      gl.deleteBuffer(mesh.positionBuffer);
     }
     if (mesh.instanceModelTransformBuffer) {
       gl.deleteBuffer(mesh.instanceModelTransformBuffer);

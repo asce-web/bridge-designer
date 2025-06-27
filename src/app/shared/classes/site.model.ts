@@ -16,14 +16,14 @@ export class SiteModel {
   constructor(conditions: DesignConditions) {
     this.xLeftmostDeckJoint = conditions.xLeftmostDeckJoint;
     this.xRightmostDeckJoint = conditions.xRightmostDeckJoint;
-    this.yGradeLevel = DesignConditions.GAP_DEPTH - conditions.deckElevation + SiteConstants.DECK_HEIGHT;
+    this.yGradeLevel = SiteConstants.GAP_DEPTH - conditions.deckElevation + SiteConstants.DECK_HEIGHT;
     this.halfCutGapWidth = 0.5 * (this.xRightmostDeckJoint - this.xLeftmostDeckJoint);
 
     // Find indices in the terrain profile point array that are hidden by the abutments.  This gives us
     // a way to separate excavation area from remaining bank material.  Note: x coords of the elevation terrain
     // curve are descending (CCW order for the polygon).
     this.leftAbutmentInterfaceTerrainIndex = SiteConstants.ELEVATION_TERRAIN_POINTS.length - 1;
-    const leftLimit = this.xLeftmostDeckJoint - SiteConstants.ABUTMENT_INTERFACE_OFFSET;
+    const leftLimit = this.xLeftmostDeckJoint - SiteConstants.ABUTMENT_INTERFACE_SETBACK;
     while (
       SiteConstants.ELEVATION_TERRAIN_POINTS[this.leftAbutmentInterfaceTerrainIndex].x + this.halfCutGapWidth <
       leftLimit
@@ -31,7 +31,7 @@ export class SiteModel {
       this.leftAbutmentInterfaceTerrainIndex--;
     }
     this.rightAbutmentInterfaceTerrainIndex = 0;
-    const rightLimit = this.xRightmostDeckJoint + SiteConstants.ABUTMENT_INTERFACE_OFFSET;
+    const rightLimit = this.xRightmostDeckJoint + SiteConstants.ABUTMENT_INTERFACE_SETBACK;
     while (
       SiteConstants.ELEVATION_TERRAIN_POINTS[this.rightAbutmentInterfaceTerrainIndex].x + this.halfCutGapWidth >
       rightLimit
@@ -48,24 +48,24 @@ export class SiteModel {
     this.drawingWindow.x0 = this.spanExtent.x0 - SiteConstants.DRAWING_X_MARGIN;
     this.drawingWindow.width = this.spanExtent.width + 2 * SiteConstants.DRAWING_X_MARGIN;
     if (conditions.isLeftAnchorage) {
-      this.drawingWindow.x0 -= DesignConditions.ANCHOR_OFFSET;
-      this.drawingWindow.width += DesignConditions.ANCHOR_OFFSET;
+      this.drawingWindow.x0 -= SiteConstants.ANCHOR_OFFSET;
+      this.drawingWindow.width += SiteConstants.ANCHOR_OFFSET;
     }
     if (conditions.isRightAnchorage) {
-      this.drawingWindow.width += DesignConditions.ANCHOR_OFFSET;
+      this.drawingWindow.width += SiteConstants.ANCHOR_OFFSET;
     }
     // Extra 4 shows bottom of lowest abutment position.
     this.drawingWindow.y0 = this.yGradeLevel - SiteConstants.WATER_BELOW_GRADE - 4;
     this.drawingWindow.height = this.yGradeLevel + SiteConstants.OVERHEAD_CLEARANCE + 1.5 - this.drawingWindow.y0;
     this.designConditions = conditions;
-  } 
+  }
 
   public get leftBankX() {
-    return this.halfCutGapWidth - SiteConstants.HALF_NATURAL_GAP_WIDTH;
+    return this.halfCutGapWidth - SiteConstants.GAP_NATURAL_HALF_WIDTH;
   }
 
   public get rightBankX() {
-    return this.halfCutGapWidth + SiteConstants.HALF_NATURAL_GAP_WIDTH;
+    return this.halfCutGapWidth + SiteConstants.GAP_NATURAL_HALF_WIDTH;
   }
 }
 
@@ -75,20 +75,26 @@ export const enum PointTag {
 
 /** Constants describing site geometry and its 2D drawing. */
 export class SiteConstants {
-  /** Coordinate value "off the drawing," where reasonable views are certainly clipped. */
+  /** Directed distance from joint to abutment face. Also the x-coordinate. */
   static readonly ABUTMENT_FACE_X: number = 0.25;
-  static readonly ABUTMENT_INTERFACE_OFFSET: number = 1.0;
+  /** Setback from joint to beginning of road in 2d drawings. */
+  static readonly ABUTMENT_INTERFACE_SETBACK: number = 1.0;
+  /** Directed height of abutment pillow step. */
   static readonly ABUTMENT_STEP_HEIGHT: number = -0.35;
-  static readonly ABUTMENT_STEP_INSET: number = -0.45;
+  /** Directed distance from joint to step vertical. Also the x-coordinate. */
+  static readonly ABUTMENT_STEP_X: number = -0.45;
   static readonly ACCESS_SLOPE: number = 1.0 / 6.0;
+  static readonly ANCHOR_OFFSET = 8;
   static readonly BEAM_HEIGHT: number = 0.9;
   static readonly DECK_CANTILEVER: number = 0.32;
   static readonly DECK_HALF_WIDTH: number = 5.0;
   static readonly DECK_HEIGHT: number = 0.8;
   static readonly DRAWING_X_MARGIN: number = 3;
+  /** Coordinate value "off the drawing," where reasonable views are certainly clipped. */
   static readonly FAR_AWAY: number = 100.0;
+  static readonly GAP_DEPTH = 24;
   static readonly GUSSET_THICKNESS = 0.02;
-  static readonly HALF_NATURAL_GAP_WIDTH: number = 22.0;
+  static readonly GAP_NATURAL_HALF_WIDTH: number = 22.0;
   static readonly INDEX_LEFT_SHORE: number = 25;
   static readonly INDEX_RIGHT_SHORE: number = 16;
   static readonly LEFT_SHORE_INDEX: number = 25;
@@ -96,10 +102,11 @@ export class SiteConstants {
   static readonly RIGHT_SHORE_INDEX: number = 16;
   static readonly TANGENT_OFFSET: number = 8.0;
   static readonly TERRAIN_DASH: number[] = [4, 3];
+  static readonly MIN_ROADWAY_CLEARANCE = 4.5;
   static readonly WATER_BELOW_GRADE: number = 26.4;
 
-  static readonly WEAR_SURFACE_X0: number = -this.ABUTMENT_INTERFACE_OFFSET;
-  static readonly WEAR_SURFACE_X1: number = this.ABUTMENT_STEP_INSET;
+  static readonly WEAR_SURFACE_X0: number = -this.ABUTMENT_INTERFACE_SETBACK;
+  static readonly WEAR_SURFACE_X1: number = this.ABUTMENT_STEP_X;
   static readonly ACCESS_LENGTH: number = this.FAR_AWAY - this.TANGENT_OFFSET;
   static readonly ACCESS_CURVE: Point2D[] = this.createAccessCurve();
   /** Terrain cross-section clockwisepolygon. Between WATER_BELOW_GRADE points is the water cross-section. */
@@ -155,14 +162,14 @@ export class SiteConstants {
       // #region(collapsed) TABLE
       [this.WEAR_SURFACE_X0, this.DECK_HEIGHT],
       [this.WEAR_SURFACE_X1, this.DECK_HEIGHT],
-      [this.ABUTMENT_STEP_INSET, this.ABUTMENT_STEP_HEIGHT],
+      [this.ABUTMENT_STEP_X, this.ABUTMENT_STEP_HEIGHT],
       [this.ABUTMENT_FACE_X, this.ABUTMENT_STEP_HEIGHT],
       [this.ABUTMENT_FACE_X, -5.0],
       [0.75, -5.0],
       [0.75, -5.5],
       [-2.0, -5.5],
       [-2.0, -5.0],
-      [-this.ABUTMENT_INTERFACE_OFFSET, -5.0],
+      [-this.ABUTMENT_INTERFACE_SETBACK, -5.0],
       // #endregion
     ] as [number, number][]
   ).map(pair => new Point2D(...pair));
@@ -172,14 +179,14 @@ export class SiteConstants {
       // #region(collapsed) TABLE
       [this.WEAR_SURFACE_X0, this.DECK_HEIGHT],
       [this.WEAR_SURFACE_X1, this.DECK_HEIGHT],
-      [this.ABUTMENT_STEP_INSET, this.ABUTMENT_STEP_HEIGHT, PointTag.HEIGHT_ADJUSTED],
+      [this.ABUTMENT_STEP_X, this.ABUTMENT_STEP_HEIGHT, PointTag.HEIGHT_ADJUSTED],
       [this.ABUTMENT_FACE_X, this.ABUTMENT_STEP_HEIGHT, PointTag.HEIGHT_ADJUSTED],
       [this.ABUTMENT_FACE_X, -5.0, PointTag.HEIGHT_ADJUSTED],
       [0.75, -5.0, PointTag.HEIGHT_ADJUSTED],
       [0.75, -5.5, PointTag.HEIGHT_ADJUSTED],
       [-2.0, -5.5, PointTag.HEIGHT_ADJUSTED],
       [-2.0, -5.0, PointTag.HEIGHT_ADJUSTED],
-      [-this.ABUTMENT_INTERFACE_OFFSET, -5.0, PointTag.HEIGHT_ADJUSTED],
+      [-this.ABUTMENT_INTERFACE_SETBACK, -5.0, PointTag.HEIGHT_ADJUSTED],
       // #endregion
     ] as [number, number, PointTag | undefined][]
   ).map(triple => new TaggedPoint2D<PointTag | undefined>(...triple));

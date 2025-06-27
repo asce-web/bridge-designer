@@ -4,19 +4,150 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { ConvexHullService } from '../../../shared/services/convex-hull.service';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
+import { Point2DInterface } from '../../../shared/classes/graphics';
+import { projectLocalMatchers } from '../../../shared/test/validation';
 
 describe('BridgeGussetsModelService', () => {
   let service: BridgeGussetsModelService;
   let bridgeServiceSpy: jasmine.SpyObj<BridgeService>;
 
-  beforeEach(() => {
-    const jointA = { x: 0, y: 0, index: 0 } as Joint;
-    const jointB = { x: 1, y: 1, index: 1 } as Joint;
-    const jointC = { x: 2, y: 0, index: 2 } as Joint;
-    const memberAB = buildMember(jointA, jointB, 10);
-    const memberBC = buildMember(jointB, jointC, 20);
-    const memberCA = buildMember(jointC, jointA, 30);
+  const jointA = { x: 0, y: 0, index: 0 } as Joint;
+  const jointB = { x: 1, y: 1, index: 1 } as Joint;
+  const jointC = { x: 2, y: 0, index: 2 } as Joint;
+  const memberAB = buildTestMember(jointA, jointB, 100);
+  const memberBC = buildTestMember(jointB, jointC, 200);
+  const memberCA = buildTestMember(jointC, jointA, 300);
+  const expectedHull: Point2DInterface[] = [
+    { x: -0.34, y: 0.17 },
+    { x: 0.17, y: 0.269 },
+    { x: -0.17, y: 0.17 },
+    { x: -0.17, y: -0.17 },
+    { x: 0.269, y: -0.17 },
+  ];
+  // prettier-ignore
+  const expectedMeshPositions = new Float32Array([
+    // Outer surface of quads
+    0.269, -0.17, -0.17,  // 0
+    0.269, -0.17, 0.17,   // 1
+    -0.34, 0.17, -0.17,   // 2
+    -0.34, 0.17, 0.17,    // 3
 
+    -0.34, 0.17, -0.17,   // 4
+    -0.34, 0.17, 0.17,    // 5
+    0.17, 0.269, -0.17,   // 6
+    0.17, 0.269, 0.17,    // 7
+
+    0.17, 0.269, -0.17,   // 8
+    0.17, 0.269, 0.17,    // 9
+    -0.17, 0.17, -0.17,   // 10
+    -0.17, 0.17, 0.17,    // 11
+
+    -0.17, 0.17,-0.17,    // 12
+    -0.17, 0.17, 0.17,    // 13
+    -0.17, -0.17, -0.17,  // 14
+    -0.17, -0.17, 0.17,   // 15
+
+    -0.17, -0.17, -0.17,  // 16
+    -0.17, -0.17, 0.17,   // 17
+    0.269, -0.17, -0.17,  // 18
+    0.269, -0.17, 0.17,   // 19
+
+    // Positive end
+    0, 0, 0.17,           // 20
+    -0.34, 0.17, 0.17,    // 21
+    0.17, 0.269, 0.17,    // 22
+    -0.17, 0.17, 0.17,    // 23
+    -0.17, -0.17, 0.17,   // 24
+    0.269, -0.17, 0.17,   // 25
+
+    // Negative end
+    0, 0, -0.17,          // 26
+    0.269, -0.17, -0.17,  // 27
+    -0.17, -0.17, -0.17,  // 28
+    -0.17, 0.17, -0.17,   // 29
+    0.17, 0.269, -0.17,   // 30
+    -0.34, 0.17, -0.17,   // 31
+  ]);
+
+  // prettier-ignore
+  const expectedMeshNormals = new Float32Array([
+    // Outer surface quads.
+    0.4877, 0.873, 0,
+    0.4877, 0.873, 0,
+    0.4877, 0.873, 0,
+    0.4877, 0.873, 0,
+
+    0.1907, -0.9817, 0,
+    0.1907, -0.9817, 0,
+    0.1907, -0.9817, 0,
+    0.1907, -0.9817, 0,
+
+    -0.2796, 0.9601, 0,
+    -0.2796, 0.9601, 0,
+    -0.2796, 0.9601, 0,
+    -0.2796, 0.9601, 0,
+
+    -1, 0, 0,
+    -1, 0, 0,
+    -1, 0, 0,
+    -1, 0, 0,
+
+    0, -1, 0,
+    0, -1, 0,
+    0, -1, 0,
+    0, -1, 0,
+
+    // Positive end
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+    0, 0, 1,
+
+    // Negative end
+    0, 0, -1,
+    0, 0, -1,
+    0, 0, -1,
+    0, 0, -1,
+    0, 0, -1,
+    0, 0, -1
+  ]);
+  // prettier-ignore
+  const expectedMeshIndices = new Uint16Array([
+    // Outer surface quads
+    0, 3, 1,
+    3, 0, 2,
+
+    4, 7, 5,
+    7, 4, 6,
+
+    8, 11, 9,
+    11, 8, 10,
+
+    12, 15, 13,
+    15, 12, 14,
+
+    16, 19, 17,
+    19, 16, 18,
+
+    // Positive end
+    20, 25, 21,
+    20, 21, 22,
+    20, 22, 23,
+    20, 23, 24,
+    20, 24, 25,
+
+    // Negative end
+    26, 31, 27,
+    26, 27, 28,
+    26, 28, 29,
+    26, 29, 30,
+    26, 30, 31
+]);
+
+  beforeEach(() => {
+    jasmine.addMatchers(projectLocalMatchers);
     bridgeServiceSpy = jasmine.createSpyObj('BridgeService', [], {
       bridge: {
         joints: [jointA, jointB, jointC],
@@ -40,9 +171,29 @@ describe('BridgeGussetsModelService', () => {
     gussets.forEach((gusset, idx) => {
       expect(gusset.joint.index).toBe(idx);
       expect(Array.isArray(gusset.hull)).toBeTrue();
-      expect(gusset.halfDepthM).toBeGreaterThan(0.10);
+      expect(gusset.halfDepthM).toBeGreaterThan(0.1);
       expect(gusset.hull.length).toBeGreaterThan(0);
     });
+  });
+
+  it('should produce expected gusset contents', () => {
+    const gusset = service.gussets[0];
+    expect(gusset.joint).toEqual(jointA);
+    expect(gusset.halfDepthM).toBeCloseTo(0.17);
+    expect(gusset.hull).toNearlyEqual(expectedHull, 1e-3);
+  });
+
+  it('should produce expected mesh for gusset', () => {
+    const gusset = service.gussets[0];
+    const mesh = service.buildMeshDataForGusset(gusset);
+    expect(mesh.positions instanceof Float32Array).toBeTrue();
+    expect(mesh.normals instanceof Float32Array).toBeTrue();
+    expect(mesh.instanceModelTransforms instanceof Float32Array).toBeTrue();
+    expect(mesh.materialRefs instanceof Uint16Array).toBeTrue();
+    expect(mesh.indices instanceof Uint16Array).toBeTrue();
+    expect(mesh.positions).toNearlyEqual(expectedMeshPositions, 1e-3);
+    expect(mesh.normals).toNearlyEqual(expectedMeshNormals, 1e-3);
+    expect(mesh.indices).toEqual(expectedMeshIndices);
   });
 
   it('should return an array from meshData getter', () => {
@@ -50,7 +201,7 @@ describe('BridgeGussetsModelService', () => {
     expect(Array.isArray(meshData)).toBeTrue();
   });
 
-  function buildMember(a: Joint, b: Joint, materialSizeCm: number): Member {
+  function buildTestMember(a: Joint, b: Joint, materialSizeMm: number): Member {
     return { a, b, materialSizeMm, getOtherJoint: (j: Joint) => (j === a ? b : a) } as Member;
   }
 });

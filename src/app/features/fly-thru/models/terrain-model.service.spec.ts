@@ -25,7 +25,7 @@ describe('TerrainModelService', () => {
   });
 
   it('should rebuild fractal terrain without errors', () => {
-    expect(() => service.rebuildFractalTerrain()).not.toThrow();
+    expect(() => service.refreshFractalTerrain()).not.toThrow();
   });
 
   it('should return expected mesh data with correct structure', () => {

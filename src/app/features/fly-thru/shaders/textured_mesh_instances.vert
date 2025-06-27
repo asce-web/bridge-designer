@@ -26,6 +26,6 @@ out vec2 texCoord;
 void main() {
   vec4 position = inModelTransform * vec4(inPosition, 1.0f);
   gl_Position = transforms.modelViewProjection * position;
-  normal = mat3(transforms.modelView) * inNormal;
+  normal = mat3(transforms.modelView) * mat3(inModelTransform) * inNormal;
   texCoord = inTexCoord;
 }

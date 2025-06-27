@@ -22,8 +22,10 @@ export class ConvexHullService {
 
   public createHull(hull: Point2DInterface[] = []): Point2DInterface[] {
     this.orderedPts.clear();
+    hull.length = 0;
     if (this.pts.length <= 2) {
-      return this.pts;
+      hull.push(...this.pts);
+      return hull;
     }
     this.pts.sort((a, b) => a.x - b.x || a.y - b.y);
     const leftmost = this.pts[0];
@@ -44,23 +46,20 @@ export class ConvexHullService {
       }
     }
     for (const p0 of this.orderedPts) {
-      var last: number = hull.length - 1;
       makeHullConvex(p0);
       hull.push(p0);
-      ++last;
     }
     makeHullConvex(this.orderedPts.peekLeft()!);
     return hull;
 
     function makeHullConvex(p0: Point2DInterface) {
-      while (last >= 1) {
-        const p1 = hull[last];
-        const p2 = hull[last - 1];
+      while (hull.length >= 2) {
+        const p1 = hull[hull.length - 1];
+        const p2 = hull[hull.length - 2];
         if ((p1.x - p2.x) * (p0.y - p1.y) - (p1.y - p2.y) * (p0.x - p1.x) > 0) {
           break;
         }
         hull.pop();
-        --last;
       }
     }
   }

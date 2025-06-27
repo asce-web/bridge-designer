@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Joint } from '../classes/joint.model';
 import { Utility } from '../classes/utility';
+import { SiteConstants } from '../classes/site.model';
 
 export const enum LoadType {
   NONE = -1,
@@ -58,8 +59,6 @@ export type SiteCostsModel = {
 };
 
 export class DesignConditions {
-  public static readonly ANCHOR_OFFSET = 8;
-  public static readonly GAP_DEPTH = 24;
   public static readonly MAX_JOINT_COUNT = 50;
   public static readonly MAX_MEMBER_COUNT = 120;
   public static readonly PANEL_SIZE_WORLD = 4;
@@ -151,7 +150,7 @@ export class DesignConditions {
       this.deckElevation = 4 * (this.panelCount - 5);
       this.archHeight = -1;
     }
-    this.overMargin = DesignConditions.GAP_DEPTH + DesignConditions.MIN_OVERHEAD - this.deckElevation;
+    this.overMargin = SiteConstants.GAP_DEPTH + DesignConditions.MIN_OVERHEAD - this.deckElevation;
     this.pierHeight = this.isHiPier ? this.deckElevation : this.isPier ? this.deckElevation - this.underClearance : -1;
 
     // Prescribed joint information.
@@ -220,12 +219,12 @@ export class DesignConditions {
       this.jointRestraintCount += 4 - 3;
     }
     if (isLeftCable) {
-      this.prescribedJoints[i] = new Joint(i, this.xLeftmostDeckJoint - DesignConditions.ANCHOR_OFFSET, 0, true);
+      this.prescribedJoints[i] = new Joint(i, this.xLeftmostDeckJoint - SiteConstants.ANCHOR_OFFSET, 0, true);
       i++;
       this.jointRestraintCount += 2;
     }
     if (isRightCable) {
-      this.prescribedJoints[i] = new Joint(i, this.xRightmostDeckJoint + DesignConditions.ANCHOR_OFFSET, 0, true);
+      this.prescribedJoints[i] = new Joint(i, this.xRightmostDeckJoint + SiteConstants.ANCHOR_OFFSET, 0, true);
       i++;
       this.jointRestraintCount += 2;
     }
@@ -357,7 +356,7 @@ export class DesignConditions {
   }
 
   public get isAtGrade() {
-    return this.deckElevation === DesignConditions.GAP_DEPTH;
+    return this.deckElevation === SiteConstants.GAP_DEPTH;
   }
 
   public get isFromKeyCode() {
@@ -468,14 +467,14 @@ export class DesignConditions {
     // 2. Constrain deck elevation to 0 meters (24 meters below grade) through 24 meters (at grade).  These are as
     // measured in the Wizard.
     const deckElev = arch ? 4 * (nPanels - 5) + under : 4 * (nPanels - 5);
-    if (deckElev < 0 || deckElev > this.GAP_DEPTH) {
+    if (deckElev < 0 || deckElev > SiteConstants.GAP_DEPTH) {
       return CodeError.INFEASIBLE_DECK_ELEVATION;
     }
 
     // 3. Restrict upper design space height (above deck level) so that DeckElevation + UpperDesignSpaceHeight <= 32.
     // This is consistent with the power line height specified in the scenario and prevents graphical messes in the
     // drafting view of the bridge.
-    if (deckElev + over > this.GAP_DEPTH + this.MIN_OVERHEAD) {
+    if (deckElev + over > SiteConstants.GAP_DEPTH + this.MIN_OVERHEAD) {
       return CodeError.INFEASIBLE_UPPER_HEIGHT;
     }
 

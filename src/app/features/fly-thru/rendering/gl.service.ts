@@ -5,16 +5,28 @@ import { ToastError } from '../../toast/toast/toast-error';
 @Injectable({ providedIn: 'root' })
 export class GlService {
   private _gl: WebGL2RenderingContext | null | undefined;
+  private intTypes: Set<number> | undefined;
 
-  initialize (canvas: HTMLCanvasElement): void {
-    this._gl = canvas.getContext("webgl2");
+  initialize(canvas: HTMLCanvasElement): void {
+    const gl = canvas.getContext('webgl2');
+    this._gl = gl;
+    if (gl) {
+      this.intTypes = new Set<number>([
+        gl.BYTE,
+        gl.UNSIGNED_BYTE,
+        gl.SHORT,
+        gl.UNSIGNED_SHORT,
+        gl.INT,
+        gl.UNSIGNED_INT,
+      ]);
+    }
   }
 
   public get isWebGL2Supported(): boolean | undefined {
     if (this._gl === undefined) {
       return undefined;
     }
-    return this._gl !== null; 
+    return this._gl !== null;
   }
 
   public get gl(): WebGL2RenderingContext {
@@ -22,5 +34,13 @@ export class GlService {
       throw new ToastError('needWebGl2Error');
     }
     return this._gl;
+  }
+
+  /** 
+   * Returns true if the service is initialized, GL2 support exists, 
+   * and the given type is an integer type.
+   */
+  public isIntType(glType: number): boolean {
+    return this.intTypes !== undefined && this.intTypes.has(glType);
   }
 }

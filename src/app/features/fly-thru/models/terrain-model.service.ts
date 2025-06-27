@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { makeRandomGenerator } from '../../../shared/core/random-generator';
 import { Utility } from '../../../shared/classes/utility';
 import { MeshData } from '../rendering/mesh-rendering.service';
-import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { SiteConstants } from '../../../shared/classes/site.model';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { RIVER_AXIS } from './river';
@@ -21,7 +20,6 @@ type CenterlinePost = {
 export class TerrainModelService {
   /** Separation that ought to allow one polygon to mask another. */
   public static readonly EPS_PAINT = 0.05;
-  public static readonly GAP_HALF_WIDTH = 24.0;
   public static readonly HALF_GRID_COUNT = 64;
   public static readonly RIVER_BANK_SLOPE = 2.0;
   public static readonly ROAD_CUT_SLOPE = 1;
@@ -31,6 +29,8 @@ export class TerrainModelService {
   public static readonly GRID_COUNT = 2 * TerrainModelService.HALF_GRID_COUNT;
   public static readonly POST_COUNT = TerrainModelService.GRID_COUNT + 1;
   public static readonly METERS_PER_GRID = TerrainModelService.TERRAIN_HALF_SIZE / TerrainModelService.HALF_GRID_COUNT;
+  /** A terrain generation parameter. Use SiteConstants.GAP_NATURAL_HALF_WIDTH for the actual value. */
+  private static readonly GAP_HALF_WIDTH = 24.0;
   public static readonly BLUF_SETBACK = TerrainModelService.GAP_HALF_WIDTH * 0.2;
   public static readonly BLUF_TO_RIVER_CENTER_DISTANCE =
     TerrainModelService.GAP_HALF_WIDTH + TerrainModelService.BLUF_SETBACK;
@@ -142,7 +142,7 @@ export class TerrainModelService {
   private buildRoadCenterLine(): CenterlinePost[] {
     const conditions = this.bridgeService.designConditions;
     const halfSpanLength = 0.5 * conditions.spanLength;
-    const yDeckJoints = DesignConditions.GAP_DEPTH - conditions.deckElevation;
+    const yDeckJoints = SiteConstants.GAP_DEPTH - conditions.deckElevation;
     const yWearSurface = yDeckJoints + SiteConstants.DECK_HEIGHT;
     const centerLine: CenterlinePost[] = [];
     const iMax = TerrainModelService.POST_COUNT - 1;
@@ -261,7 +261,7 @@ export class TerrainModelService {
       isVisible = false;
     }
     // Raise to grade.
-    y += DesignConditions.GAP_DEPTH - conditions.deckElevation;
+    y += SiteConstants.GAP_DEPTH - conditions.deckElevation;
 
     // Cut or fill for the roadway.
     const tCut = Math.abs(z);
@@ -285,17 +285,24 @@ export class TerrainModelService {
         }
       }
     }
-    /* TODO: Finish me!
-    // Make depressions around the anchorages.
+    // Depress the terrain around the anchorages so they don't appear to be buried.
+    const yAnchorDepression = (x: number, z: number, xAnchor: number, zAnchor: number): number  => {
+      const mPerGrid = TerrainModelService.METERS_PER_GRID;
+      const stepHeight = SiteConstants.ABUTMENT_STEP_HEIGHT;
+      return stepHeight + Math.max(0, Math.abs(x - xAnchor) - mPerGrid, Math.abs(z - zAnchor) - mPerGrid);
+    };
+    const trussCenterOffset = this.bridgeService.trussCenterlineOffset;
+    const anchorOffset = SiteConstants.ANCHOR_OFFSET;
+    const halfSpanLength = 0.5 * conditions.spanLength;
     if (this.bridgeService.designConditions.isLeftAnchorage) {
       if (z < -trussCenterOffset) {
-        const yAnchorNW = yAnchor(x, z, -anchorOffset - halfSpanLength, -trussCenterOffset);
+        const yAnchorNW = yAnchorDepression(x, z, -anchorOffset - halfSpanLength, -trussCenterOffset);
         if (yAnchorNW < y) {
           y = yAnchorNW;
         }
       }
       if (z > trussCenterOffset) {
-        const yAnchorSW = yAnchor(x, z, -anchorOffset - halfSpanLength, trussCenterOffset);
+        const yAnchorSW = yAnchorDepression(x, z, -anchorOffset - halfSpanLength, trussCenterOffset);
         if (yAnchorSW < y) {
           y = yAnchorSW;
         }
@@ -303,19 +310,18 @@ export class TerrainModelService {
     }
     if (this.bridgeService.designConditions.isRightAnchorage) {
       if (z < -trussCenterOffset) {
-        const yAnchorNE = yAnchor(x, z, +anchorOffset + halfSpanLength, -trussCenterOffset);
+        const yAnchorNE = yAnchorDepression(x, z, +anchorOffset + halfSpanLength, -trussCenterOffset);
         if (yAnchorNE < y) {
           y = yAnchorNE;
         }
       }
       if (z > trussCenterOffset) {
-        const yAnchorSE = yAnchor(x, z, +anchorOffset + halfSpanLength, trussCenterOffset);
+        const yAnchorSE = yAnchorDepression(x, z, +anchorOffset + halfSpanLength, trussCenterOffset);
         if (yAnchorSE < y) {
           y = yAnchorSE;
         }
       }
     }
-    */
     if (rtn) {
       rtn.isVisible = isVisible;
       rtn.elevation = y;
@@ -501,13 +507,13 @@ export class TerrainModelService {
     const e10 = this.getElevationAtIJ(i0 + 1, j0);
     const e11 = this.getElevationAtIJ(i0 + 1, j0 + 1);
     const et1 = e10 * (1 - tj) + e11 * tj;
-    const yWater = TerrainModelService.WATER_LEVEL + DesignConditions.GAP_DEPTH - conditions.deckElevation;
+    const yWater = TerrainModelService.WATER_LEVEL + SiteConstants.GAP_DEPTH - conditions.deckElevation;
     return Math.max(yWater, et0 * (1 - ti) + et1 * ti);
   }
 
   /** Returns a faceted mesh for the roadway sections to the bridge. */
   public get roadwayMeshData(): MeshData {
-    const abutmentStepInset = SiteConstants.ABUTMENT_STEP_INSET;
+    const abutmentStepInset = SiteConstants.ABUTMENT_STEP_X;
     const deckHalfWidth = SiteConstants.DECK_HALF_WIDTH;
     const gridCount = TerrainModelService.GRID_COUNT;
     const metersPerGrid = TerrainModelService.METERS_PER_GRID;

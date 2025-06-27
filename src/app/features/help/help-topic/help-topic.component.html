@@ -2800,28 +2800,29 @@
     <topic-link name="hlp_realistic">what is realistic about the Bridge Designer.</topic-link>
   </p>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_old_style_graphics">
   <h1>Use old-style graphics check box</h1>
   <p>
-    <img src="img/help/legacygraphics.png" /> The Cloud Edition load test animation uses game-quality high speed
-    graphics to let you move around the bridge while it is being tested and to see what the truck driver sees as she
-    traverses the bridge. Some computers and browsers do not support these advanced graphics. If nothing happens when
-    you select the <topic-link name="hlp_load_test3">load test animation</topic-link>, or if your computer misbehaves in
-    some other way, then you have one of these.
+    <img src="img/help/legacygraphics.png" /> The Cloud Edition load test animation uses a web brower technology called
+    WebGL2 to let you move around the bridge while it is being tested and to see what the truck driver sees as she
+    traverses the bridge. Some computers and browsers may not support WebGL2. If you seen an error message or nothing
+    happens when you select the <topic-link name="hlp_load_test3">load test animation</topic-link>, or if your computer
+    misbehaves in some other way, then you probably have one of these.
   </p>
   <p>
-    Fix the problem by restarting the Bridge Designer and checking the menu entry at
+    Fix the problem by using your browser's reload button to restart the Bridge Designer, then check the menu entry at
     <span class="b">tools</span>, <span class="b">use old-style graphics</span>. This causes the 3D
-    <topic-link name="hlp_load_test3">load test animation</topic-link> to be shown using basic graphics that work on all
-    computers.
+    <topic-link name="hlp_load_test3">load test animation</topic-link> to be shown using basic graphics that should work
+    on all computers. The down side is that you get only one view of your bridge. Fly around and through it isn't
+    possible.
   </p>
   <h2 class="btop">Notes and tips</h2>
   <p>
-    Newer computers running a Chromium-based browsers like Google Chrome or Microsoft Edge support Cloud Edition
-    graphics features. Firefox also works with some degradation of other features.
+    Newer computers running a Chromium-based browser like Google Chrome or Microsoft Edge support WebGL2 on most
+    computers. Firefox also works with some minor degradation of features.
   </p>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_open_existing">
   <h1>Open an existing bridge design file</h1>
   <h2>To open an existing bridge design file:</h2>

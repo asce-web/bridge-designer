@@ -11,6 +11,7 @@ import { SelectedSet } from '../../features/drafting/shared/selected-elements-se
 import { DraftingPanelState, PersistenceService, SaveSet } from './persistence.service';
 import { SessionStateService } from './session-state.service';
 import { BridgeSketchService } from './bridge-sketch.service';
+import { BitVector } from '../core/bitvector';
 
 /**
  * Injectable accessor of the bridge service in the root injector. Useful in components that
@@ -300,15 +301,11 @@ export class BridgeService {
     return true;
   }
 
-  /**
-   * Return roadway width including the widest members that transsect the deck.
-   * Useful for peirs and abutments.
-   */
-  public get bridgeHalfWidth(): number {
-    let maxDeckMemberSizeMm = 0;
+  private get maxDeckMemberSizeMm(): number {
+    let max = 0;
     for (const member of this.bridge.members) {
       // prettier-ignore
-      if ((member.materialSizeMm <= maxDeckMemberSizeMm) || 
+      if ((member.materialSizeMm <= max) || 
         // Ignore the member if it doesn't transsect the deck.
         (member.a.y > 0 && member.b.y > 0) ||
         (member.a.y < 0 && member.b.y < 0) ||
@@ -318,9 +315,36 @@ export class BridgeService {
         (member.b.index === this.designConditions.rightAnchorageJointIndex)) {
         continue;
       }
-      maxDeckMemberSizeMm = member.materialSizeMm;
+      max = member.materialSizeMm;
     }
-    return SiteConstants.DECK_HALF_WIDTH + maxDeckMemberSizeMm * 0.001 + 2 * SiteConstants.GUSSET_THICKNESS;
+    return max;
+  }
+
+  /**
+   * Return bridge half-width, including the widest members that transsect the deck.
+   * Useful for piers and abutments.
+   */
+  public get bridgeHalfWidth(): number {
+    return SiteConstants.DECK_HALF_WIDTH + this.maxDeckMemberSizeMm * 0.001 + 2 * SiteConstants.GUSSET_THICKNESS;
+  }
+
+  /**
+   * Return the offset from the roadway centerline to the center plane of the truss.
+   * Useful for drawing the truss in three dimensions. 
+   */
+  public get trussCenterlineOffset(): number {
+    return SiteConstants.DECK_HALF_WIDTH + this.maxDeckMemberSizeMm * 0.0005 + SiteConstants.GUSSET_THICKNESS;
+  }
+
+  public get membersNotTransectingRoadwayClearance(): BitVector {
+    const bits = new BitVector(this.bridge.members.length);
+    const minClearance = SiteConstants.MIN_ROADWAY_CLEARANCE;
+    for (const member of this.bridge.members) {
+      if (member.a.y >= minClearance && member.b.y >= minClearance || member.a.y <= 0 && member.b.y <= 0) {
+        bits.setBit(member.index);
+      }
+    }
+    return bits;
   }
 
   public get saveSet(): SaveSet {

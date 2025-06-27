@@ -56,7 +56,7 @@ export class SiteRenderingHelper2D {
     let y: number = 0;
     // Trace left access from right to left.
     const xBaseLeft =
-      siteInfo.xLeftmostDeckJoint - SiteConstants.ABUTMENT_INTERFACE_OFFSET;
+      siteInfo.xLeftmostDeckJoint - SiteConstants.ABUTMENT_INTERFACE_SETBACK;
     if (siteInfo.designConditions.isAtGrade) {
       x = viewportTransform.worldToViewportX(xBaseLeft);
       y = viewportTransform.worldToViewportY(SiteConstants.DECK_HEIGHT);
@@ -84,7 +84,7 @@ export class SiteRenderingHelper2D {
     earthProfile.lineTo(x, y);
     // Now to far right of right access.
     const xBaseRight =
-      siteInfo.xRightmostDeckJoint + SiteConstants.ABUTMENT_INTERFACE_OFFSET;
+      siteInfo.xRightmostDeckJoint + SiteConstants.ABUTMENT_INTERFACE_SETBACK;
     x = viewportTransform.worldToViewportX(
       xBaseRight + SiteConstants.TANGENT_OFFSET + SiteConstants.ACCESS_LENGTH
     );
@@ -130,7 +130,7 @@ export class SiteRenderingHelper2D {
     }
     // Short segment left so final edge of polygon is vertical and certain to lie behind abutment.
     x = viewportTransform.worldToViewportX(
-      siteInfo.xLeftmostDeckJoint - SiteConstants.ABUTMENT_INTERFACE_OFFSET
+      siteInfo.xLeftmostDeckJoint - SiteConstants.ABUTMENT_INTERFACE_SETBACK
     );
     earthProfile.lineTo(x, y);
     earthProfile.closePath();

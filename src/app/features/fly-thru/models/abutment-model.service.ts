@@ -53,7 +53,7 @@ export class AbutmentModelService {
     const rearFaceTexOriginS = -frontFaceTexOriginS;
     const [leftX, leftIndex] = this.terrainModelService.leftAbutmentEndX;
     const faceX = SiteConstants.ABUTMENT_FACE_X;
-    const insetX = SiteConstants.ABUTMENT_STEP_INSET;
+    const insetX = SiteConstants.ABUTMENT_STEP_X;
     const deckY = SiteConstants.DECK_HEIGHT;
     const halfGridCount = TerrainModelService.HALF_GRID_COUNT;
     const waterY = this.terrainModelService.getElevationAtIJ(halfGridCount, halfGridCount);

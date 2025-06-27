@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { mat4, vec3 } from 'gl-matrix';
-import { WireData } from '../rendering/wire-rendering.service';
 import { TerrainModelService } from './terrain-model.service';
 import { Geometry } from '../../../shared/classes/graphics';
+import { WireData } from '../rendering/mesh-rendering.service';
 
 @Injectable({ providedIn: 'root' })
 export class UtilityLineModelService {

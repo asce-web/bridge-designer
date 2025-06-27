@@ -3,9 +3,12 @@ import { ConvexHullService } from '../../../shared/services/convex-hull.service'
 import { MeshData } from '../rendering/mesh-rendering.service';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { Joint } from '../../../shared/classes/joint.model';
-import { Geometry, Point2D, Point2DInterface } from '../../../shared/classes/graphics';
+import { Geometry, Point2DInterface } from '../../../shared/classes/graphics';
 import { Member } from '../../../shared/classes/member.model';
 import { SiteConstants } from '../../../shared/classes/site.model';
+import { Material } from './materials';
+import { mat4, vec3 } from 'gl-matrix';
+import { validateConvexHull } from '../../../shared/test/validation';
 
 /**
  * Geometry of one member adjacent to a given gusset. The coordinate origin as at the
@@ -37,7 +40,7 @@ function buildMemberGeometry(gussetJoint: Joint, member: Member): MemberGeometry
   const otherJoint = member.getOtherJoint(gussetJoint);
   const vx = otherJoint.x - gussetJoint.x;
   const vy = otherJoint.y - gussetJoint.y;
-  const halfSizeM = 0.005 * member.materialSizeMm + SiteConstants.GUSSET_THICKNESS;
+  const halfSizeM = 0.0005 * member.materialSizeMm + SiteConstants.GUSSET_THICKNESS;
   const vScale = halfSizeM / Math.sqrt(vx * vx + vy * vy);
   const ux = vx * vScale;
   const uy = vy * vScale;
@@ -54,7 +57,8 @@ function buildMemberGeometry(gussetJoint: Joint, member: Member): MemberGeometry
 
 type Gusset = {
   joint: Joint;
-  memberGeometries?: MemberGeometry[];  // Temporary accumulator deleted after gusset is complete.
+  memberGeometries?: MemberGeometry[]; // Temporary accumulator deleted after gusset is complete.
+  /** Convex hull with origin at the joint. */
   hull: Point2DInterface[];
   halfDepthM: number;
 };
@@ -62,25 +66,29 @@ type Gusset = {
 /** Container for logic that builds gussets for the current bridge and converts them to meshes. */
 @Injectable({ providedIn: 'root' })
 export class BridgeGussetsModelService {
+  private readonly offset = vec3.create();
+
   constructor(
     private readonly bridgeService: BridgeService,
     private readonly convexHullService: ConvexHullService,
   ) {}
 
-  public get gussets(): Gusset[] {
+  // visible-for-testing
+  get gussets(): Gusset[] {
     // Make one gusset per joint.
-    const gussets: Gusset[] = this.bridgeService.bridge.joints.map(joint => ({
-      joint,
-      memberGeometries: [],
-      hull: [],
-      halfDepthM: 0,
-    }));
+    const gussets: Gusset[] = this.bridgeService.bridge.joints.map(joint => {
+      return {
+        joint,
+        memberGeometries: [],
+        hull: [],
+        halfDepthM: 0,
+      };
+    });
     // Add member geometries to each gusset.
     for (const member of this.bridgeService.bridge.members) {
       gussets[member.a.index].memberGeometries!.push(buildMemberGeometry(member.a, member));
       gussets[member.b.index].memberGeometries!.push(buildMemberGeometry(member.b, member));
     }
-    const intersection = new Point2D();
     for (const gusset of gussets) {
       this.convexHullService.clear();
       for (const geometry of gusset.memberGeometries!) {
@@ -98,19 +106,17 @@ export class BridgeGussetsModelService {
           if (geometry === altGeometry) {
             continue;
           }
-          if (
-            Geometry.getSegmentsIntersection(
-              intersection,
-              geometry.x0 + geometry.upx,
-              geometry.y0 + geometry.upy,
-              geometry.x2 + geometry.upx,
-              geometry.y2 + geometry.upy,
-              altGeometry.x0 - altGeometry.upx,
-              altGeometry.y0 - altGeometry.upy,
-              altGeometry.x2 - altGeometry.upx,
-              altGeometry.y2 - altGeometry.upy,
-            )
-          ) {
+          const intersection = Geometry.getSegmentsIntersection(
+            geometry.x0 + geometry.upx,
+            geometry.y0 + geometry.upy,
+            geometry.x2 + geometry.upx,
+            geometry.y2 + geometry.upy,
+            altGeometry.x0 - altGeometry.upx,
+            altGeometry.y0 - altGeometry.upy,
+            altGeometry.x2 - altGeometry.upx,
+            altGeometry.y2 - altGeometry.upy,
+          );
+          if (intersection) {
             this.convexHullService.addPoint(intersection);
             this.convexHullService.add(intersection.x - geometry.upx * 2, intersection.y - geometry.upy * 2);
             this.convexHullService.add(intersection.x + altGeometry.upx * 2, intersection.y + altGeometry.upy * 2);
@@ -119,13 +125,130 @@ export class BridgeGussetsModelService {
       }
       // Create the hull and delete temporary member geometry.
       this.convexHullService.createHull(gusset.hull);
+      const bad = validateConvexHull(gusset.hull);
+      if (bad.length > 0) {
+        console.log('bad 1:', bad);
+      }
       delete gusset.memberGeometries;
+    }
+    this.convexHullService.clear();
+    const bad = validateConvexHull(gussets[0].hull);
+    if (bad.length > 0) {
+      console.log('bad 2:', bad);
     }
     return gussets;
   }
 
+  /** Builds colored mesh data with two instance positioning matrices, back and front. */
+  // visible-for-testing
+  buildMeshDataForGusset(gusset: Gusset): MeshData {
+    const hullLength = gusset.hull.length;
+    const positionCount = 6 * hullLength + 2;
+    const positions = new Float32Array(positionCount * 3);
+    const normals = new Float32Array(positions.length);
+    const materialRefs = new Uint16Array(positionCount).fill(Material.PaintedSteel);
+    const instanceModelTransforms = new Float32Array(32);
+    // For each outer facet, two triangles there and two in the end cap.
+    const triangleCount = 4 * hullLength;
+    const indices = new Uint16Array(triangleCount * 3);
+    let ip = 0;
+    // Outer surface. Each facet has its own normal, so points are repeated.
+    // p is the lead pointer, q is the trail.
+    for (let q = hullLength - 1, p = 0; p < hullLength; q = p++) {
+      const pq = gusset.hull[q];
+      const pp = gusset.hull[p];
+      // Negative perp of hull edge vector.
+      let dx = pp.y - pq.y;
+      let dy = pq.x - pp.x;
+      const s = 1 / Math.sqrt(dx * dx + dy * dy);
+      dx *= s;
+      dy *= s;
+      // Quad between previous and current hull point.
+      positions[ip] = pq.x;
+      positions[ip + 1] = pq.y;
+      positions[ip + 2] = -gusset.halfDepthM;
+      normals[ip] = dx;
+      normals[ip + 1] = dy;
+
+      positions[ip + 3] = pq.x;
+      positions[ip + 4] = pq.y;
+      positions[ip + 5] = gusset.halfDepthM;
+      normals[ip + 3] = dx;
+      normals[ip + 4] = dy;
+
+      positions[ip + 6] = pp.x;
+      positions[ip + 7] = pp.y;
+      positions[ip + 8] = -gusset.halfDepthM;
+      normals[ip + 6] = dx;
+      normals[ip + 7] = dy;
+
+      positions[ip + 9] = pp.x;
+      positions[ip + 10] = pp.y;
+      positions[ip + 11] = gusset.halfDepthM;
+      normals[ip + 9] = dx;
+      normals[ip + 10] = dy;
+
+      ip += 12;
+    }
+    // Positive z end. Start with center.
+    const positiveZCenterIndex = ip / 3;
+    positions[ip + 2] = gusset.halfDepthM;
+    normals[ip + 2] = 1;
+    ip += 3;
+    for (const point of gusset.hull) {
+      positions[ip] = point.x;
+      positions[ip + 1] = point.y;
+      positions[ip + 2] = gusset.halfDepthM;
+      normals[ip + 2] = 1;
+      ip += 3;
+    }
+    // Negative z end. Start with center.
+    const negativeZCenterIndex = ip / 3;
+    positions[ip + 2] = -gusset.halfDepthM;
+    normals[ip + 2] = -1;
+    ip += 3;
+    for (let i = hullLength - 1; i >= 0; --i) {
+      const point = gusset.hull[i];
+      positions[ip] = point.x;
+      positions[ip + 1] = point.y;
+      positions[ip + 2] = -gusset.halfDepthM;
+      normals[ip + 2] = -1;
+      ip += 3;
+    }
+    let ii = 0;
+    // Outer surface triangles.
+    for (let i = 0, p = 0; i < hullLength; ++i, p += 4) {
+      indices[ii++] = p;
+      indices[ii++] = p + 3;
+      indices[ii++] = p + 1;
+      indices[ii++] = p + 3;
+      indices[ii++] = p;
+      indices[ii++] = p + 2;
+    }
+    // Triangle fan for posiitive z end.
+    for (let i = 0, q = hullLength, p = 1; i < hullLength; ++i, q = p++) {
+      indices[ii++] = positiveZCenterIndex;
+      indices[ii++] = positiveZCenterIndex + q;
+      indices[ii++] = positiveZCenterIndex + p;
+    }
+    // Triangle fan for negative z end.
+    for (let i = 0, q = hullLength, p = 1; i < hullLength; ++i, q = p++) {
+      indices[ii++] = negativeZCenterIndex;
+      indices[ii++] = negativeZCenterIndex + q;
+      indices[ii++] = negativeZCenterIndex + p;
+    }
+    // Instance matrices.
+    const centerOffset = this.bridgeService.trussCenterlineOffset;
+    const mNegativeZ = instanceModelTransforms.subarray(0, 16);
+    mat4.fromTranslation(mNegativeZ, vec3.set(this.offset, gusset.joint.x, gusset.joint.y, -centerOffset));
+    const mPositiveZ = instanceModelTransforms.subarray(16, 32);
+    mat4.fromTranslation(mPositiveZ, vec3.set(this.offset, gusset.joint.x, gusset.joint.y, centerOffset));
+
+    return { positions, normals, materialRefs, instanceModelTransforms, indices };
+  }
+
   /** Returns mesh data for gussets of the current bridge. Also some metadata. */
   public get meshData(): MeshData[] {
-    return [];
+    return this.gussets.map(gusset => this.buildMeshDataForGusset(gusset));
   }
 }

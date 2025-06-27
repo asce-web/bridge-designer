@@ -5,13 +5,27 @@ This document describes how data flows through shaders.
 ## Overall organization
 
 - **Pane.** The UI component that contains the scene and receives user interactions.
-- **Models.** Raw data for items in the scene. Some are static (from OBJ files), others computed.
-- **Rendering.** Logic for rendering models, including.
-  - **Meshes.** Converting model data into triangle meshes understood by WebGL shaders.
-  - **Projections.** Model, view and projection, transformations that orient objects in the scene and the scene for
+- **Models.** Raw data for items in the scene. Some are static, others computed. See the `/models` directory.
+  - Static models are either declared as arrays in respective model files or generated from OBJ files by the Python
+    build script.
+  - Computed models are produced by services.
+- **Rendering.** Logic for rendering models, including interaction with OpenGL.
+  - **Meshes.** Converting model data into triangle meshes understood by WebGL shaders. There are three categories.
+    These are a little blurry due to the option of using either instancing or uniforms for model transformations. With
+    the former, only uniforms need per-frame updates. The mesh is fully static. With the latter, the mesh is static
+    except that instance transformations are updated once per frame.
+    - **Static.** Created and pushed to the GPA the first time a test animation starts. They don't change. Examples:
+      Truck, river, sky box.
+    - **Per-design conditions.** Created and pushed to the GPA every time the design conditions for the bridge change.
+      Examples: terrain including utility line, abutments and pier.
+    - **Per frame.** Created and pushed (at least partially) to the GPA for every frame. The sole example is the bridge
+      structure. The approach here is to use a canonical cube model of a member with a 4x4 model transform matrix per
+      instance to size and position them. Only these need per-frame updates. The cube is pushed only once.
+  - **Projections.** Model, view, and projection transformations that orient objects in the scene and the scene for
     viewing, then map it to the pane.
   - **Uniforms.** Management of WebGL uniform (global) data blocks, which are communicate to shaders.
 - **Shaders.** GLSL vertex and fragment manipulators.
+
 
 ## Coordinate systems
 

@@ -60,7 +60,7 @@ void main(){
 vec4 position=inModelTransform*vec4(inPosition,1.0f);
 gl_Position=transforms.modelViewProjection*position;
 vertex=vec3(transforms.modelView*position);
-normal=mat3(transforms.modelView)*inNormal;
+normal=mat3(transforms.modelView)*mat3(inModelTransform)*inNormal;
 materialRef=inMaterialRef;}`;
 
 export const OVERLAY_VERTEX_SHADER = 
@@ -239,7 +239,7 @@ out vec2 texCoord;
 void main(){
 vec4 position=inModelTransform*vec4(inPosition,1.0f);
 gl_Position=transforms.modelViewProjection*position;
-normal=mat3(transforms.modelView)*inNormal;
+normal=mat3(transforms.modelView)*mat3(inModelTransform)*inNormal;
 texCoord=inTexCoord;}`;
 
 export const WIRE_VERTEX_SHADER = 
@@ -295,4 +295,4 @@ void main(){
 vec4 position=inModelTransform*vec4(inPosition,1.0f);
 gl_Position=transforms.modelViewProjection*position;
 vertex=vec3(transforms.modelView*position);
-direction=mat3(transforms.modelView)*inDirection;}`;
+direction=mat3(transforms.modelView)*mat3(inModelTransform)*inDirection;}`;
