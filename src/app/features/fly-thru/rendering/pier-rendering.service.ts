@@ -28,13 +28,11 @@ export class PierRenderingService {
     this.meshRenderingService.deleteExistingMesh(this.pillowMesh);
 
     // Build new ones.
-    // const { texturedMeshData, coloredMeshData }
-    const pierMeshData = this.pierModelService.buildMeshDataForPier();
-    // TODO: Cache textures! We use this one twice.
+    const { texturedMeshData, coloredMeshData } = this.pierModelService.buildMeshDataForPier();
+    // TODO: Cache textures as optimization. We use this one twice.
     const url = 'img/bricktile.png';
-    this.pierMesh = this.meshRenderingService.prepareTexturedMesh(pierMeshData, url, Colors.GL_CONCRETE);
-    //this.pillowMesh = this.meshRenderingService.prepareColoredMesh(coloredMeshData);
-
+    this.pierMesh = this.meshRenderingService.prepareTexturedMesh(texturedMeshData, url, Colors.GL_CONCRETE);
+    this.pillowMesh = this.meshRenderingService.prepareColoredMesh(coloredMeshData);
     const pierJoint = this.bridgeService.bridge.joints[this.bridgeService.designConditions.pierJointIndex];
     vec3.set(this.offset, pierJoint.x, pierJoint.y, 0);
   }
@@ -47,7 +45,7 @@ export class PierRenderingService {
     mat4.translate(m, m, this.offset);
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
     this.meshRenderingService.renderTexturedMesh(this.pierMesh);
-    //this.meshRenderingService.renderColoredMesh(this.pillowMesh);
+    this.meshRenderingService.renderColoredMesh(this.pillowMesh);
     this.uniformService.popModelMatrix();
   }
 }

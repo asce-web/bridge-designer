@@ -9,29 +9,6 @@ import { mat4, vec3 } from 'gl-matrix';
 /** A container for the singleton abutment model. */
 @Injectable({ providedIn: 'root' })
 export class AbutmentModelService {
-  /*
-  private static readonly abutmentStepHeight = BridgeView.abutmentStepHeight;
-  private static readonly abutmentStepInset = BridgeView.abutmentStepInset;
-  private static readonly abutmentStepWidth = BridgeView.abutmentStepWidth;
-  private static readonly accessSlope = BridgeView.accessSlope;
-  private static readonly anchorOffset = DesignConditions.anchorOffset;
-  private static readonly bankSlope = 2.0;
-  private static readonly blufCoeff = (-0.5 * bankSlope) / (tInflection - (blufSetback + halfGapWidth));
-  private static readonly blufSetback = TerrainModelService.GAP_HALF_WIDTH * 0.2;
-  private static readonly deckHalfWidth = Animation.deckHalfWidth;
-  private static readonly epsPaint = 0.05;
-  private static readonly halfGapWidth = 24.0;
-  private static readonly halfTerrainSize = 192;
-  private static readonly roadCutSlope = 1;
-  private static readonly stoneTextureSize = 0.3;
-  private static readonly tangentOffset = BridgeView.tangentOffset;
-  private static readonly tBlufAtBridge = halfGapWidth + blufSetback;
-  private static readonly tInflection = halfGapWidth - blufSetback;
-  private static readonly tWaterEdge = (waterLevel - yGorgeBottom) / bankSlope;
-  private static readonly waterLevel = -26.0;
-  private static readonly wearSurfaceHeight = BridgeView.wearSurfaceHeight;
-  private static readonly yGorgeBottom = -halfGapWidth * bankSlope;
-*/
   private readonly offset = vec3.create();
 
   constructor(
@@ -45,11 +22,11 @@ export class AbutmentModelService {
 
     const conditions = this.bridgeService.designConditions;
     const archHeight = conditions.isArch ? conditions.underClearance : 0;
-    const halfWidth = this.bridgeService.bridgeHalfWidth;
+    const halfDepth = this.bridgeService.bridgeHalfWidth;
     const shelfY = SiteConstants.ABUTMENT_STEP_HEIGHT - archHeight;
     // S tex coord values of the edges facing the gap. The coordinates start in the
     // middle of the gap face and wrap in S around each side.
-    const frontFaceTexOriginS = halfWidth + SiteConstants.ABUTMENT_FACE_X;
+    const frontFaceTexOriginS = halfDepth + SiteConstants.ABUTMENT_FACE_X;
     const rearFaceTexOriginS = -frontFaceTexOriginS;
     const [leftX, leftIndex] = this.terrainModelService.leftAbutmentEndX;
     const faceX = SiteConstants.ABUTMENT_FACE_X;
@@ -77,7 +54,7 @@ export class AbutmentModelService {
 
       // Rear face.
       const addRearFacePoint = (x: number, y: number): void => {
-        positions.push(x, y, -halfWidth);
+        positions.push(x, y, -halfDepth);
         normals.push(0, 0, -1);
         texCoords.push(texScale * (rearFaceTexOriginS + x), texScale * y);
       };
@@ -107,7 +84,7 @@ export class AbutmentModelService {
       const rearFaceLength = positions.length;
       // Front face.
       const addFrontFacePoint = (x: number, y: number): void => {
-        positions.push(x, y, halfWidth);
+        positions.push(x, y, halfDepth);
         normals.push(0, 0, 1);
         texCoords.push(texScale * (frontFaceTexOriginS - x), texScale * y);
       };
@@ -122,10 +99,10 @@ export class AbutmentModelService {
         indices.push(positionCount1, positionCount1 + i, positionCount1 + i + 1);
       }
       const addRightFacePointPair = (x: number, y: number) => {
-        positions.push(x, y, -halfWidth, x, y, halfWidth);
+        positions.push(x, y, -halfDepth, x, y, halfDepth);
         normals.push(1, 0, 0, 1, 0, 0);
         const texT = texScale * y;
-        texCoords.push(texScale * -halfWidth, texT, texScale * halfWidth, texT);
+        texCoords.push(texScale * -halfDepth, texT, texScale * halfDepth, texT);
       };
       // Lower right face.
       const positionCount2 = positions.length / 3;
@@ -143,10 +120,10 @@ export class AbutmentModelService {
 
       // Visible part of shelf.
       const addShelfFacePointPair = (x: number) => {
-        positions.push(x, shelfY, -halfWidth, x, shelfY, halfWidth);
+        positions.push(x, shelfY, -halfDepth, x, shelfY, halfDepth);
         normals.push(0, 1, 0, 0, 1, 0);
         const texT = texScale * (shelfY + x - insetX);
-        texCoords.push(texScale * -halfWidth, texT, texScale * halfWidth, texT);
+        texCoords.push(texScale * -halfDepth, texT, texScale * halfDepth, texT);
       };
 
       const positionCount4 = positions.length / 3;
@@ -169,10 +146,10 @@ export class AbutmentModelService {
       const positions: number[] = [];
       const normals: number[] = [];
       const materialRefs: number[] = [];
-      const materialRef = Material.Aluminum; // Concrete-ish.
+      const materialRef = Material.PaintedSteel; // Concrete-ish.
 
       const addPointPair = (x: number, y: number, nx: number, ny: number): void => {
-        positions.push(x, y, -halfWidth, x, y, halfWidth);
+        positions.push(x, y, -halfDepth, x, y, halfDepth);
         normals.push(nx, ny, 0, nx, ny, 0);
         materialRefs.push(materialRef, materialRef);
       };
@@ -205,18 +182,18 @@ export class AbutmentModelService {
 
       // Front cap triangle.
       const positionCount3 = positions.length / 3;
-      positions.push(-faceX, shelfY, halfWidth);
-      positions.push(faceX, shelfY, halfWidth);
-      positions.push(0, -archHeight, halfWidth);
+      positions.push(-faceX, shelfY, halfDepth);
+      positions.push(faceX, shelfY, halfDepth);
+      positions.push(0, -archHeight, halfDepth);
       normals.push(0, 0, 1, 0, 0, 1, 0, 0, 1);
       materialRefs.push(materialRef, materialRef, materialRef);
       indices.push(positionCount3, positionCount3 + 1, positionCount3 + 2);
 
       // Rear cap triangle.
       const positionCount4 = positions.length / 3;
-      positions.push(-faceX, shelfY, -halfWidth);
-      positions.push(0, -archHeight, -halfWidth);
-      positions.push(faceX, shelfY, -halfWidth);
+      positions.push(-faceX, shelfY, -halfDepth);
+      positions.push(0, -archHeight, -halfDepth);
+      positions.push(faceX, shelfY, -halfDepth);
       normals.push(0, 0, -1, 0, 0, -1, 0, 0, -1);
       materialRefs.push(materialRef, materialRef, materialRef);
       indices.push(positionCount4, positionCount4 + 1, positionCount4 + 2);
