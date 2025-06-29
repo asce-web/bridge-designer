@@ -18,6 +18,7 @@ import { RiverRenderingService } from './river-rendering.service';
 import { SkyRenderingService } from './sky-rendering.service';
 import { AbutmentRenderingService } from './abutment-rendering.service';
 import { BridgeRenderingService } from './bridge-rendering.service';
+import { PierRenderingService } from './pier-rendering.service';
 
 /** Rendering functionality for fly-thrus. */
 @Injectable({ providedIn: 'root' })
@@ -37,6 +38,7 @@ export class RenderingService {
     private readonly meshRenderingService: MeshRenderingService,
     private readonly overlayService: OverlayRenderingService,
     private readonly overlayUiService: OverlayUiService,
+    private readonly pierRenderingService: PierRenderingService,
     private readonly projectionService: ProjectionService,
     private readonly riverRenderingService: RiverRenderingService,
     private readonly shaderService: ShaderService,
@@ -73,6 +75,7 @@ export class RenderingService {
     this.roadwayMesh = this.meshRenderingService.prepareColoredMesh(this.terrainModelService.roadwayMeshData);
     this.abutmentRenderingService.prepare();
     this.bridgeRenderingService.prepare();
+    this.pierRenderingService.prepare();
     this.utilityLineRenderingService.prepare();
 
     // Other on-time setups follow.
@@ -120,13 +123,17 @@ export class RenderingService {
     gl.depthFunc(gl.LEQUAL);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    this.uniformService.updateTransformsUniform(this.viewMatrix, this.projectionMatrix);
     this.uniformService.updateTimeUniform(clockMillis);
     this.uniformService.updateLightDirection(this.viewMatrix);
+
+    // Render. The renderers can make no assumption about what's in the transforms uniform.
+    this.uniformService.updateTransformsUniform(this.viewMatrix, this.projectionMatrix);
     this.meshRenderingService.renderTerrainMesh(this.terrainMesh);
     this.meshRenderingService.renderColoredMesh(this.roadwayMesh);
+
     this.riverRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.abutmentRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    this.pierRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.truckRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.utilityLineRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.bridgeRenderingService.render(this.viewMatrix, this.projectionMatrix);

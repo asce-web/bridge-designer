@@ -24,7 +24,7 @@ export class TerrainModelService {
   public static readonly RIVER_BANK_SLOPE = 2.0;
   public static readonly ROAD_CUT_SLOPE = 1;
   public static readonly TERRAIN_HALF_SIZE = 192;
-  public static readonly WATER_LEVEL = -26.0;
+  public static readonly WATER_LEVEL = -24.0;
 
   public static readonly GRID_COUNT = 2 * TerrainModelService.HALF_GRID_COUNT;
   public static readonly POST_COUNT = TerrainModelService.GRID_COUNT + 1;
@@ -257,7 +257,7 @@ export class TerrainModelService {
     }
     // Clamp underwater portion. Assumes only the river valley is lower than water level.
     if (y < TerrainModelService.WATER_LEVEL) {
-      y = TerrainModelService.WATER_LEVEL - 5;
+      y = TerrainModelService.WATER_LEVEL;
       isVisible = false;
     }
     // Raise to grade.
