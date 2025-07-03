@@ -74,7 +74,7 @@ class Processor:
     def get_material(self, name):
         return self.material_lib and self.material_lib.get(name)
 
-    def process(self, in_file, out_file):
+    def process(self, in_file, out_file, ignore_tex_coords=True):
         print(f"{in_file.name} -> {out_file.name}:")
         material = {}
         for line in in_file:
@@ -88,7 +88,8 @@ class Processor:
                 case "vn":
                     self.normals.append(tuple(float(x) for x in parts[1:]))
                 case "vt":
-                    self.texcoords.append(tuple(float(x) for x in parts[1:]))
+                    if not ignore_tex_coords:
+                         self.texcoords.append(tuple(float(x) for x in parts[1:]))
                 case "f":
                     face = []
                     for vertex_spec in parts[1:]:
@@ -132,19 +133,19 @@ class Processor:
             print(f"  positions: new Float32Array([", file=out_file)
             for index, quad in enumerate(self.quad_index.keys()):
                 p = self.vertices[quad[0]]
-                print(f"    {p[0]}, {p[1]}, {p[2]}, // {index}", file=out_file)
+                print(f"    {p[0]:.3g}, {p[1]:.3g}, {p[2]:.3g}, // {index}", file=out_file)
             print("  ]),", file=out_file)
-        if populated[1]:
+        if populated[1] and not ignore_tex_coords:
             print(f"  texCoords: new Float32Array([", file=out_file)
             for index, quad in enumerate(self.quad_index.keys()):
                 p = self.texcoords[quad[1]]
-                print(f"    {p[0]}, {p[1]}, {p[2]}, // {index}", file=out_file)
+                print(f"    {p[0]:.4g}, {p[1]:.4g}, // {index}", file=out_file)
             print("  ]),", file=out_file)
         if populated[2]:
             print(f"  normals: new Float32Array([", file=out_file)
             for index, quad in enumerate(self.quad_index.keys()):
                 p = self.normals[quad[2]]
-                print(f"    {p[0]}, {p[1]}, {p[2]}, // {index}", file=out_file)
+                print(f"    {p[0]:.4g}, {p[1]:.4g}, {p[2]:.4g}, // {index}", file=out_file)
             print("  ]),", file=out_file)
         if populated[3]:
             print(

@@ -182,12 +182,6 @@ export class PierModelService {
         }
       };
       // Stack the two prisms.
-      /*
-      const conditions = this.bridgeService.designConditions;
-      const yWater = TerrainModelService.WATER_LEVEL + SiteConstants.GAP_DEPTH - conditions.deckElevation;
-      const yPierTop = conditions.isHiPier ? 0 : -conditions.underClearance;
-      const pierHeight = yPierTop - yWater;
-      */
       const halfDepth = this.bridgeService.bridgeHalfWidth;
       const pierHeight = this.bridgeService.designConditions.pierHeight - SiteConstants.GAP_DEPTH - TerrainModelService.WATER_LEVEL;
       addPrism(

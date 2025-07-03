@@ -63,4 +63,3 @@ Kd .1 .2 .1  # Diffuse color
 Ka 0 0 0  # Ambient color
 Ks .9 .9 .9  # Specular color
 Ns 200.0  # Shininess
-Tr .2

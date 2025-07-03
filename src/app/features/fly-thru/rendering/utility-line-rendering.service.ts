@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { TOWER_MESH_DATA } from '../models/tower';
+import { UTILITY_TOWER_MESH_DATA } from '../models/utility-tower';
 import { Mesh, MeshRenderingService, Wire } from './mesh-rendering.service';
 import { mat4 } from 'gl-matrix';
 import { UniformService } from './uniform.service';
@@ -21,7 +21,7 @@ export class UtilityLineRenderingService {
     this.meshRenderingService.deleteExistingMesh(this.towerMesh);
     this.meshRenderingService.deleteExistingWire(this.lineWireInstances);
     const [instanceModelTransforms, wireData] = this.utilityLineModelService.buildModel();
-    const meshData = { instanceModelTransforms, ...TOWER_MESH_DATA };
+    const meshData = { instanceModelTransforms, ...UTILITY_TOWER_MESH_DATA };
     this.towerMesh = this.meshRenderingService.prepareColoredMesh(meshData);
     this.lineWireInstances = this.meshRenderingService.prepareWire(wireData);
   }

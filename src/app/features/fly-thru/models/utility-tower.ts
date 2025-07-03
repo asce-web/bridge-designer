@@ -1,6 +1,6 @@
 // Source: tower.obj
 // prettier-ignore
-export const TOWER_MESH_DATA = {
+export const UTILITY_TOWER_MESH_DATA = {
   positions: new Float32Array([
     0.1, 15.0, 0.17321, // 0
     0.2, 15.0, -0.0, // 1

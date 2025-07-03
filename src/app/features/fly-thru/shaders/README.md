@@ -4,8 +4,8 @@ This directory contains shader code, a simple build system, and a service to pro
 
 ## Shader code
 
-Add a file with suffix `.vert` or `.frag` for a vertex or fragment shader respectively. The build script will find it
-and add it to `shaders.ts`.
+Just add a file with suffix `.vert` or `.frag` for a vertex or fragment shader respectively. The build script will find
+it and add it to `shaders.ts`.
 
 ## Builder
 
@@ -30,7 +30,7 @@ keyed by the original shader source file name stem.
 Vertex/fragment shader pairs are linked into programs by `linkPrograms()` based on a data table defined there.
 
 The public method `buildPrograms()` performs the compile and link steps and caches the results, after which a call to
-`getProgram(name)` will work. Otherwise a toast error is thrown.
+`getProgram(name)` will work. Otherwise an error is thrown.
 
 TODO: This could all be done lazily to save graphic card resources if the animation is never run.
 
@@ -53,18 +53,18 @@ OpenGL cube map lookups.
 
 The second part of the trick is that when drawing the box, we can't use the normal MVP transform. We want the sky box to
 appear infinitely far away. I.e., the visible swatch of the box's inside surface depends only on view _direction_. Eye
-_position_ should have no effect. We get this by translating the normal MVP view frustum apex to the origin. The swatch
-is the cube surface inside this frustum. As the viewer turns their head, the frustum swivels around the origin, and the
-swatch changes accordingly. As they translate, the swatch stays the same.
+_position_ should have no effect. We get this by translating the normal view frustum apex to the origin. The swatch is
+the part of the cube surface inside this frustum. As the viewer turns their head, the frustum swivels around the origin,
+and the swatch changes accordingly. As they translate, the swatch stays the same.
 
-With the frustom apex at the origin, the size of the box doesn't matter:
+With the frustom apex at the origin, the size of the box doesn't matter because...
 
 - Scaling with respect to the origin causes no change to the perspective view, and
 - We are required to fool the depth check anyway. Either we turn it off completely and draw the sky box first, or we
-  fake out the checker by ensuring the z-coordinate of every sky box fragment after perspective division is one, i.e. as
-  deep as possible without clipping. This entails copying w of the final vertex position to z (depth). We took the
-  latter approach because it allows drawing the box last, when most of it is hidden by other stuff, so the depth check
-  saves a lot of work.
+  fake out the checker by replacing the z-coordinate of every sky box fragment after perspective division with a one,
+  i.e. as deep as possible without clipping. This entails copying w of the final vertex position to z (depth). We took
+  the latter approach because it allows drawing the box last, when most of it is hidden by other stuff, so the depth
+  check saves a lot of work.
 
 How to build this different version of MVP? Firstly, M is always the identity, so it's really VP. Since the frustum
 angle is the same as usual, P is also the same as for the rest of the scene. This leaves modifying the view matrix V to

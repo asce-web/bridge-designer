@@ -21,6 +21,7 @@ export class UtilityLineModelService {
   private static readonly TOWER_COUNT = 4;
   private static readonly WIRE_POST_COUNT_PER_TOWER = 20;
   private static readonly DROOP_SLOPE = -1 / 10;
+  private static readonly INSULATOR_LENGTH = 0.30;
   // prettier-ignore
   /** X-Y offsets of tower support arms from base center. Must match tower.obj. */
   public static readonly SUPPORT_ARM_OFFSETS = new Float32Array([
@@ -64,6 +65,14 @@ export class UtilityLineModelService {
       // identical and harder. Coordinates are wrt bottom center of tower.
       // An instance is translated to the end of each support arm.
       if (iTower > 0) {
+        // Insulator segment.
+        positions[ip] = x0!;
+        positions[ip + 1] = y0!;
+        positions[ip + 2] = z0!;
+        directions[ip] = 0;
+        directions[ip + 1] = -1;
+        directions[ip + 2] = 0;
+        ip += 3;
         const dx = x1 - x0!;
         const dy = y1 - y0!;
         const dz = z1 - z0!;
@@ -78,7 +87,7 @@ export class UtilityLineModelService {
           const t = iWire / UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER;
           const u = du * t;
           positions[ip] = x0! + dx * t;
-          positions[ip + 1] = y0! + (a * u + m) * u;
+          positions[ip + 1] = y0! + (a * u + m) * u - UtilityLineModelService.INSULATOR_LENGTH;
           positions[ip + 2] = z0! + dz * t;
           // Wire directions. Current direction is at previous position.
           if (iWire > 0) {
@@ -122,12 +131,12 @@ export class UtilityLineModelService {
       z0 = z1;
     }
     // Wire line indices.
-    // Each wire section between towers has countPerTower+1 vertices.
+    // Each wire section between towers has countPerTower+2 vertices including the insulator segment.
     // Each wire segment gets two indices.
     const wireSpanCount = UtilityLineModelService.TOWER_COUNT - 1;
     for (let iTower = 0; iTower < wireSpanCount; ++iTower) {
-      for (let iWire = 0; iWire < UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER; iWire++) {
-        const segStartVertexIndex = iTower * (UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER + 1) + iWire;
+      for (let iWire = 0; iWire <= UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER; iWire++) {
+        const segStartVertexIndex = iTower * (UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER + 2) + iWire;
         indices[ii++] = segStartVertexIndex;
         indices[ii++] = segStartVertexIndex + 1;
       }
@@ -153,8 +162,8 @@ export class UtilityLineModelService {
 
   private static createWireData(): WireData {
     const positionCount =
-      (UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER + 1) * (UtilityLineModelService.TOWER_COUNT - 1);
-    const lineCount = UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER * (UtilityLineModelService.TOWER_COUNT - 1);
+      (UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER + 2) * (UtilityLineModelService.TOWER_COUNT - 1);
+    const lineCount = (UtilityLineModelService.WIRE_POST_COUNT_PER_TOWER + 1) * (UtilityLineModelService.TOWER_COUNT - 1);
     return {
       positions: new Float32Array(positionCount * 3),
       directions: new Float32Array(positionCount * 3),
