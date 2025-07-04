@@ -8,8 +8,10 @@ import { BridgeGussetsModelService } from '../models/bridge-gussets-model.servic
 @Injectable({ providedIn: 'root' })
 export class BridgeRenderingService {
   private membersMesh!: Mesh;
+  private deckBeamMesh!: Mesh;
   private stiffeningWire!: Wire;
   private gussetMeshes!: Mesh[];
+  private pinMesh!: Mesh;
 
   constructor(
     private readonly bridgeGussetsModelService: BridgeGussetsModelService,
@@ -22,15 +24,19 @@ export class BridgeRenderingService {
     this.meshRenderingService.deleteExistingMesh(this.membersMesh);
     const bridgeMeshData = this.bridgeModelService.buildForCurrentAnalysis();
     this.membersMesh = this.meshRenderingService.prepareColoredMesh(bridgeMeshData.memberMeshData);
+    this.deckBeamMesh = this.meshRenderingService.prepareColoredMesh(bridgeMeshData.deckBeamMeshData);
     this.stiffeningWire = this.meshRenderingService.prepareWire(bridgeMeshData.stiffeningWireData);
-    const gussetMeshData = this.bridgeGussetsModelService.meshData;
+    const {gussetMeshData, pinMeshData } = this.bridgeGussetsModelService.meshData;
     this.gussetMeshes = gussetMeshData.map(meshData => this.meshRenderingService.prepareColoredMesh(meshData));
+    this.pinMesh = this.meshRenderingService.prepareColoredMesh(pinMeshData);
   }
 
   public render(viewMatrix: mat4, projectionMatrix: mat4): void {
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
     this.meshRenderingService.renderColoredMesh(this.membersMesh);
+    this.meshRenderingService.renderColoredMesh(this.deckBeamMesh);
     this.meshRenderingService.renderWire(this.stiffeningWire);
     this.gussetMeshes.forEach(mesh => this.meshRenderingService.renderColoredMesh(mesh));
+    this.meshRenderingService.renderColoredMesh(this.pinMesh);
   }
 }

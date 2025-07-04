@@ -33,7 +33,7 @@ export class TruckRenderingService {
 
     // TODO: Temporary. Remove for animation. Don't forget the pop.
     m = this.uniformService.pushModelMatrix();
-    mat4.translate(m, m, vec3.set(this.offset, 8, 0, 0));
+    mat4.translate(m, m, vec3.set(this.offset, 8, 0.8, 0));
 
     const wheelbaseOffset = -4;
 

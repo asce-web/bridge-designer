@@ -5,9 +5,12 @@ import { mat4, vec3 } from 'gl-matrix';
 import { Geometry } from '../../../shared/classes/graphics';
 import { Material } from './materials';
 import { BitVector } from '../../../shared/core/bitvector';
+import { SiteConstants } from '../../../shared/classes/site.model';
+import { DECK_BEAM_MESH_DATA } from './deck-beam';
 
 export type BridgeMeshData = {
   memberMeshData: MeshData;
+  deckBeamMeshData: MeshData;
   stiffeningWireData: WireData;
   trussCenterlineOffset: number;
   membersNotTransectingRoadwayClearance: BitVector;
@@ -16,6 +19,8 @@ export type BridgeMeshData = {
 /** Container for the graphical model of the current bridge and its creation logic. */
 @Injectable({ providedIn: 'root' })
 export class BridgeModelService {
+  private static readonly DECK_BEAM_HALF_WIDTH = 0.1;
+
   // Canonical member model.
   // prettier-ignore
   private static readonly MEMBER_POSITIONS = new Float32Array([
@@ -117,7 +122,7 @@ export class BridgeModelService {
     const materialRefs = new Uint16Array(this.bridgeService.bridge.members.length);
     materialRefs.fill(Material.CorrogatedMetal);
     const trussOffset = this.bridgeService.trussCenterlineOffset;
-    const okMembers = this.bridgeService.membersNotTransectingRoadwayClearance;
+    const okForCrossBraceMembers = this.bridgeService.membersNotTransectingRoadwayClearance;
     return {
       memberMeshData: {
         positions: BridgeModelService.MEMBER_POSITIONS,
@@ -126,14 +131,18 @@ export class BridgeModelService {
         materialRefs,
         instanceModelTransforms: this.getMemberInstanceModelTransforms(trussOffset),
       },
+      deckBeamMeshData: {
+        instanceModelTransforms: this.getDeckBeamInstanceModelTransforms(),
+        ...DECK_BEAM_MESH_DATA,
+      },
       stiffeningWireData: {
         positions: BridgeModelService.WIRE_POSITIONS,
         directions: BridgeModelService.WIRE_DIRECTIONS,
         indices: BridgeModelService.WIRE_INDICES,
-        instanceModelTransforms: this.getWireInstanceModelTransforms(trussOffset, okMembers),
+        instanceModelTransforms: this.getWireInstanceModelTransforms(trussOffset, okForCrossBraceMembers),
       },
       trussCenterlineOffset: trussOffset,
-      membersNotTransectingRoadwayClearance: okMembers,
+      membersNotTransectingRoadwayClearance: okForCrossBraceMembers,
     };
   }
 
@@ -169,6 +178,24 @@ export class BridgeModelService {
       const mRear = modelTransforms.subarray(offset + 16, offset + 32);
       mat4.copy(mRear, this.mTmp);
       mRear[14] -= trussCenterlineOffset;
+    }
+    return modelTransforms;
+  }
+
+  private getDeckBeamInstanceModelTransforms(): Float32Array {
+    const joints = this.bridgeService.bridge.joints;
+    const deckJointCount = this.bridgeService.designConditions.loadedJointCount;
+    const modelTransforms = new Float32Array(deckJointCount * 16);
+    const beamHeight = SiteConstants.DECK_TOP_HEIGHT - SiteConstants.DECK_THICKNESS;
+    for (let i = 0, offset = 0; i < deckJointCount; ++i, offset += 16) {
+      const joint = joints[i];
+      const m = modelTransforms.subarray(offset, offset + 16);
+      mat4.fromTranslation(m, vec3.set(this.vTmp, joint.x, joint.y, 0));
+      mat4.scale(
+        m,
+        m,
+        vec3.set(this.vTmp, BridgeModelService.DECK_BEAM_HALF_WIDTH, beamHeight, SiteConstants.DECK_HALF_WIDTH),
+      );
     }
     return modelTransforms;
   }

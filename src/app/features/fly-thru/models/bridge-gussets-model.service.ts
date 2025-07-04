@@ -9,6 +9,7 @@ import { SiteConstants } from '../../../shared/classes/site.model';
 import { Material } from './materials';
 import { mat4, vec3 } from 'gl-matrix';
 import { validateConvexHull } from '../../../shared/test/validation';
+import { TRUSS_PIN_MESH_DATA } from './truss-pin';
 
 /**
  * Geometry of one member adjacent to a given gusset. The coordinate origin as at the
@@ -63,18 +64,20 @@ type Gusset = {
   halfDepthM: number;
 };
 
-/** Container for logic that builds gussets for the current bridge and converts them to meshes. */
+/** Container for logic that builds gussets and pins for the current bridge and converts them to meshes. */
 @Injectable({ providedIn: 'root' })
 export class BridgeGussetsModelService {
-  private readonly offset = vec3.create();
+  private static readonly PIN_PROTRUSION = 0.08;
+
+  private readonly vTmp = vec3.create();
 
   constructor(
     private readonly bridgeService: BridgeService,
     private readonly convexHullService: ConvexHullService,
   ) {}
 
-  // visible-for-testing
   /** Builds one gusset per joint in the current bridge. */
+  // visible-for-testing
   get gussets(): Gusset[] {
     // Make one gusset per joint.
     const gussets: Gusset[] = this.bridgeService.bridge.joints.map(joint => {
@@ -138,6 +141,20 @@ export class BridgeGussetsModelService {
       console.log('bad 2:', bad);
     }
     return gussets;
+  }
+
+  private buildMeshDataForPins(gussets: Gusset[]): MeshData {
+    const centerOffset = this.bridgeService.trussCenterlineOffset;
+    const joints = this.bridgeService.bridge.joints;
+    const modelTransforms = new Float32Array(joints.length * 16);
+    for (let i = 0, offset = 0; i < joints.length; ++i, offset += 16) {
+      const gusset = gussets[i];
+      const halfLength = centerOffset + gusset.halfDepthM + BridgeGussetsModelService.PIN_PROTRUSION;
+      const m = modelTransforms.subarray(offset, offset + 16);
+      mat4.fromTranslation(m, vec3.set(this.vTmp, gusset.joint.x, gusset.joint.y, 0));
+      mat4.scale(m, m, vec3.set(this.vTmp, 1, 1, halfLength));
+    }
+    return { instanceModelTransforms: modelTransforms, ...TRUSS_PIN_MESH_DATA };
   }
 
   /** Builds colored mesh data with two instance positioning matrices, back and front. */
@@ -241,15 +258,18 @@ export class BridgeGussetsModelService {
     // Instance matrices.
     const centerOffset = this.bridgeService.trussCenterlineOffset;
     const mNegativeZ = instanceModelTransforms.subarray(0, 16);
-    mat4.fromTranslation(mNegativeZ, vec3.set(this.offset, gusset.joint.x, gusset.joint.y, -centerOffset));
+    mat4.fromTranslation(mNegativeZ, vec3.set(this.vTmp, gusset.joint.x, gusset.joint.y, -centerOffset));
     const mPositiveZ = instanceModelTransforms.subarray(16, 32);
-    mat4.fromTranslation(mPositiveZ, vec3.set(this.offset, gusset.joint.x, gusset.joint.y, centerOffset));
+    mat4.fromTranslation(mPositiveZ, vec3.set(this.vTmp, gusset.joint.x, gusset.joint.y, centerOffset));
 
     return { positions, normals, materialRefs, instanceModelTransforms, indices };
   }
 
-  /** Returns mesh data for gussets of the current bridge. Also some metadata. */
-  public get meshData(): MeshData[] {
-    return this.gussets.map(gusset => this.buildMeshDataForGusset(gusset));
+  /** Returns mesh data for gussets and pins of the current bridge. */
+  public get meshData(): { gussetMeshData: MeshData[]; pinMeshData: MeshData } {
+    const gussets = this.gussets;
+    const gussetMeshData = gussets.map(gusset => this.buildMeshDataForGusset(gusset));
+    const pinMeshData = this.buildMeshDataForPins(gussets);
+    return { gussetMeshData, pinMeshData };
   }
 }

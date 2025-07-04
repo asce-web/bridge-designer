@@ -59,7 +59,7 @@ export class SiteRenderingHelper2D {
       siteInfo.xLeftmostDeckJoint - SiteConstants.ABUTMENT_INTERFACE_SETBACK;
     if (siteInfo.designConditions.isAtGrade) {
       x = viewportTransform.worldToViewportX(xBaseLeft);
-      y = viewportTransform.worldToViewportY(SiteConstants.DECK_HEIGHT);
+      y = viewportTransform.worldToViewportY(SiteConstants.DECK_TOP_HEIGHT);
       const pt0 = new Point2D(x, y);
       x = viewportTransform.worldToViewportX(
         xBaseLeft - SiteConstants.TANGENT_OFFSET - SiteConstants.ACCESS_LENGTH
@@ -72,7 +72,7 @@ export class SiteRenderingHelper2D {
       for (const curvePt of SiteConstants.ACCESS_CURVE) {
         x = viewportTransform.worldToViewportX(xBaseLeft - curvePt.x);
         y = viewportTransform.worldToViewportY(
-          SiteConstants.DECK_HEIGHT + curvePt.y
+          SiteConstants.DECK_TOP_HEIGHT + curvePt.y
         );
         const pt = new Point2D(x, y);
         leftAccess.push(pt);
@@ -91,7 +91,7 @@ export class SiteRenderingHelper2D {
     earthProfile.lineTo(x, y);
     // Now the right access curve from right to left.
     if (siteInfo.designConditions.isAtGrade) {
-      y = viewportTransform.worldToViewportY(SiteConstants.DECK_HEIGHT);
+      y = viewportTransform.worldToViewportY(SiteConstants.DECK_TOP_HEIGHT);
       const pt0 = new Point2D(x, y);
       x = viewportTransform.worldToViewportX(xBaseRight);
       const pt1 = new Point2D(x, y);
@@ -103,7 +103,7 @@ export class SiteRenderingHelper2D {
         const curvePt: Point2D = SiteConstants.ACCESS_CURVE[i];
         x = viewportTransform.worldToViewportX(xBaseRight + curvePt.x);
         y = viewportTransform.worldToViewportY(
-          SiteConstants.DECK_HEIGHT + curvePt.y
+          SiteConstants.DECK_TOP_HEIGHT + curvePt.y
         );
         const pt = new Point2D(x, y);
         rightAccess.push(pt);
@@ -279,7 +279,7 @@ export class SiteRenderingHelper2D {
     const x0 = viewportTransform.worldToViewportX(location.x + x0Mirrored);
     const x1 = viewportTransform.worldToViewportX(location.x + x1Mirrored);
     const y = viewportTransform.worldToViewportY(
-      location.y + SiteConstants.DECK_HEIGHT
+      location.y + SiteConstants.DECK_TOP_HEIGHT
     );
     // Call the concrete renderer.
     if (x0 < x1) {

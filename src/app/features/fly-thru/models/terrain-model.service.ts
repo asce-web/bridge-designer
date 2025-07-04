@@ -143,7 +143,7 @@ export class TerrainModelService {
     const conditions = this.bridgeService.designConditions;
     const halfSpanLength = 0.5 * conditions.spanLength;
     const yDeckJoints = SiteConstants.GAP_DEPTH - conditions.deckElevation;
-    const yWearSurface = yDeckJoints + SiteConstants.DECK_HEIGHT;
+    const yWearSurface = yDeckJoints + SiteConstants.DECK_TOP_HEIGHT;
     const centerLine: CenterlinePost[] = [];
     const iMax = TerrainModelService.POST_COUNT - 1;
     if (yDeckJoints === 0) {
@@ -170,13 +170,13 @@ export class TerrainModelService {
       ) {
         let y = 0;
         if (x <= halfSpanLength) {
-          y = SiteConstants.DECK_HEIGHT;
+          y = SiteConstants.DECK_TOP_HEIGHT;
         } else if (x <= x1) {
           const xp = x - x0;
-          y = A * xp * xp + SiteConstants.DECK_HEIGHT;
+          y = A * xp * xp + SiteConstants.DECK_TOP_HEIGHT;
         } else if (x <= x2) {
           const xp = x - x1;
-          y = y1 + xp * SiteConstants.ACCESS_SLOPE + SiteConstants.DECK_HEIGHT;
+          y = y1 + xp * SiteConstants.ACCESS_SLOPE + SiteConstants.DECK_TOP_HEIGHT;
         } else if (x <= x3) {
           const xp = x - x3;
           y = yWearSurface - A * xp * xp;
@@ -517,7 +517,7 @@ export class TerrainModelService {
     const deckHalfWidth = SiteConstants.DECK_HALF_WIDTH;
     const gridCount = TerrainModelService.GRID_COUNT;
     const metersPerGrid = TerrainModelService.METERS_PER_GRID;
-    const wearSurfaceHeight = SiteConstants.DECK_HEIGHT;
+    const wearSurfaceHeight = SiteConstants.DECK_TOP_HEIGHT;
     const positionsList = [];
     // Left positions.
     for (let j = 0, x = this.gridColumnToWorldX(j); ; ++j, x += metersPerGrid) {

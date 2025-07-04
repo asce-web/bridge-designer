@@ -9,7 +9,7 @@ import { TerrainModelService } from '../../features/fly-thru/models/terrain-mode
 @Injectable({ providedIn: 'root' })
 export class WindTurbineRenderingService {
   private static readonly MILLIS_PER_ROTATION = 3000;
-  private readonly towerBasePosition = vec3.fromValues(100, 0, -100);
+  private readonly towerBasePosition = vec3.fromValues(100, 0, -80);
   private readonly rotorOffset = vec3.fromValues(0, 70, 7);
 
   private rotorMesh!: Mesh;

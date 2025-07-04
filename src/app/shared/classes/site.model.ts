@@ -16,7 +16,7 @@ export class SiteModel {
   constructor(conditions: DesignConditions) {
     this.xLeftmostDeckJoint = conditions.xLeftmostDeckJoint;
     this.xRightmostDeckJoint = conditions.xRightmostDeckJoint;
-    this.yGradeLevel = SiteConstants.GAP_DEPTH - conditions.deckElevation + SiteConstants.DECK_HEIGHT;
+    this.yGradeLevel = SiteConstants.GAP_DEPTH - conditions.deckElevation + SiteConstants.DECK_TOP_HEIGHT;
     this.halfCutGapWidth = 0.5 * (this.xRightmostDeckJoint - this.xLeftmostDeckJoint);
 
     // Find indices in the terrain profile point array that are hidden by the abutments.  This gives us
@@ -88,7 +88,8 @@ export class SiteConstants {
   static readonly BEAM_HEIGHT: number = 0.9;
   static readonly DECK_CANTILEVER: number = 0.32;
   static readonly DECK_HALF_WIDTH: number = 5.0;
-  static readonly DECK_HEIGHT: number = 0.8;
+  static readonly DECK_TOP_HEIGHT: number = 0.8;
+  static readonly DECK_THICKNESS: number = 0.3;
   static readonly DRAWING_X_MARGIN: number = 3;
   /** Coordinate value "off the drawing," where reasonable views are certainly clipped. */
   static readonly FAR_AWAY: number = 100.0;
@@ -160,8 +161,8 @@ export class SiteConstants {
   static readonly STANDARD_ABUTMENT_POINTS: Point2D[] = (
     [
       // #region(collapsed) TABLE
-      [this.WEAR_SURFACE_X0, this.DECK_HEIGHT],
-      [this.WEAR_SURFACE_X1, this.DECK_HEIGHT],
+      [this.WEAR_SURFACE_X0, this.DECK_TOP_HEIGHT],
+      [this.WEAR_SURFACE_X1, this.DECK_TOP_HEIGHT],
       [this.ABUTMENT_STEP_X, this.ABUTMENT_STEP_HEIGHT],
       [this.ABUTMENT_FACE_X, this.ABUTMENT_STEP_HEIGHT],
       [this.ABUTMENT_FACE_X, -5.0],
@@ -177,8 +178,8 @@ export class SiteConstants {
   static readonly ARCH_ABUTMENT_POINTS: TaggedPoint2D<PointTag | undefined>[] = (
     [
       // #region(collapsed) TABLE
-      [this.WEAR_SURFACE_X0, this.DECK_HEIGHT],
-      [this.WEAR_SURFACE_X1, this.DECK_HEIGHT],
+      [this.WEAR_SURFACE_X0, this.DECK_TOP_HEIGHT],
+      [this.WEAR_SURFACE_X1, this.DECK_TOP_HEIGHT],
       [this.ABUTMENT_STEP_X, this.ABUTMENT_STEP_HEIGHT, PointTag.HEIGHT_ADJUSTED],
       [this.ABUTMENT_FACE_X, this.ABUTMENT_STEP_HEIGHT, PointTag.HEIGHT_ADJUSTED],
       [this.ABUTMENT_FACE_X, -5.0, PointTag.HEIGHT_ADJUSTED],
