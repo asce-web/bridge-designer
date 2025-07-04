@@ -19,6 +19,7 @@ import { SkyRenderingService } from './sky-rendering.service';
 import { AbutmentRenderingService } from './abutment-rendering.service';
 import { BridgeRenderingService } from './bridge-rendering.service';
 import { PierRenderingService } from './pier-rendering.service';
+import { WindTurbineRenderingService } from '../../../shared/services/wind-turbine-rendering.service';
 
 /** Rendering functionality for fly-thrus. */
 @Injectable({ providedIn: 'root' })
@@ -49,6 +50,7 @@ export class RenderingService {
     private readonly utilityLineRenderingService: UtilityLineRenderingService,
     private readonly viewService: ViewService,
     private readonly viewportService: ViewportService,
+    private readonly windTurbineRenderingService: WindTurbineRenderingService,
   ) {}
 
   /** Sets the rendered view to default. Includes movement limits for the eye. */
@@ -67,7 +69,7 @@ export class RenderingService {
 
     // Per-design conditions setups.
     this.setDefaultView();
-    // TODO: Most of these can be done only on design conditions changes.
+    // TODO: Most of these can be done only on design conditions changes to save some GC.
     this.terrainModelService.initializeForBridge();
     this.meshRenderingService.deleteExistingMesh(this.terrainMesh);
     this.meshRenderingService.deleteExistingMesh(this.roadwayMesh);
@@ -77,13 +79,14 @@ export class RenderingService {
     this.bridgeRenderingService.prepare();
     this.pierRenderingService.prepare();
     this.utilityLineRenderingService.prepare();
+    this.windTurbineRenderingService.prepare();
 
     // Other on-time setups follow.
     if (this.prepared) {
       return;
     }
 
-    // Set up meshes.
+    // Set up meshes that remain constant.
     this.riverRenderingService.prepare();
     this.skyRenderingService.prepare();
     this.truckRenderingService.prepare();
@@ -130,12 +133,12 @@ export class RenderingService {
     this.uniformService.updateTransformsUniform(this.viewMatrix, this.projectionMatrix);
     this.meshRenderingService.renderTerrainMesh(this.terrainMesh);
     this.meshRenderingService.renderColoredMesh(this.roadwayMesh);
-
     this.riverRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.abutmentRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.pierRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.truckRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.utilityLineRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    this.windTurbineRenderingService.render(this.viewMatrix, this.projectionMatrix, clockMillis);
     this.bridgeRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.skyRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.overlayService.render(this.controlsOverlay);
