@@ -1,4 +1,4 @@
-import { Utility } from "../classes/utility";
+import { Utility } from '../classes/utility';
 
 declare global {
   namespace jasmine {
@@ -10,8 +10,9 @@ declare global {
 
 /**
  * Returns failure reasons for a deep comparison of equality excepting that numbers must match only to
- * specified precision. Object prototype differences are ignored. Comparisons of number with bigint are exact.
- * Successful matches return undefined.
+ * specified positive relative precision. If precision is given as negative, it's interpreted as absolute
+ * accuracy instead. Object prototype differences are ignored. Comparisons of number with bigint are exact.
+ * Successful matches return an empty reasons list.
  */
 export function getReasonsNotDeeplyEqual(
   reasons: string[],
@@ -31,6 +32,9 @@ export function getReasonsNotDeeplyEqual(
   function safeToString(x: any) {
     const comparisonType = comparisonTypeOf(x);
     return ['array', 'object', 'symbol'].includes(comparisonType) ? `<${comparisonType}>` : x;
+  }
+  function safeArrayToString(a: any[], indexBase: number = 0) {
+    return a.map((item, index) => `${indexBase + index}: ${safeToString(item)}`).join(',');
   }
   function chop(x: any[], maxLen: number = 50): any[] {
     if (x.length >= maxLen) {
@@ -55,7 +59,7 @@ export function getReasonsNotDeeplyEqual(
   }
   // Short circuit numbers for an imprecise match for numbers.
   if (aType === 'number') {
-    const epsilon = Math.max(Math.abs(a), Math.abs(b)) * precision;
+    const epsilon = precision < 0 ? -precision : Math.max(Math.abs(a), Math.abs(b)) * precision;
     if (Math.abs(a - b) > epsilon) {
       reasons.push(`numerically unequal with eps=${epsilon} @${path.join('')}: ${a} !~ ${b}`);
     }
@@ -63,10 +67,13 @@ export function getReasonsNotDeeplyEqual(
   }
   // Short circuit with recurrence for array elements.
   if (aType === 'array') {
+    const commonLength = Math.min(a.length, b.length);
     if (a.length !== b.length) {
       reasons.push(`array length mismatch @${path.join('')}: ${a.length} != ${b.length})`);
+      const diff = a.length > b.length ? a.slice(b.length) : b.slice(a.length);
+      reasons.push(`excess: [${safeArrayToString(diff, commonLength)}]`);
     }
-    const commonLength = Math.min(a.length, b.length);
+    // Look for more differences at the common indices.
     for (let i = 0; i < commonLength; i++) {
       getReasonsNotDeeplyEqual(reasons, a[i], b[i], precision, path.concat(`[${i}]`));
     }
@@ -99,7 +106,7 @@ export function getReasonsNotDeeplyEqual(
 export const projectLocalMatchers: jasmine.CustomMatcherFactories = {
   toNearlyEqual: (_matchersUtil: jasmine.MatchersUtil): jasmine.CustomMatcher => {
     return {
-      compare: (actual: any, expected: any, precision: number = 1e-9): jasmine.CustomMatcherResult => {
+      compare: (actual: any, expected: any, precision: number = Number.EPSILON): jasmine.CustomMatcherResult => {
         const reasons: string[] = [];
         getReasonsNotDeeplyEqual(reasons, actual, expected, precision);
         return reasons.length === 0

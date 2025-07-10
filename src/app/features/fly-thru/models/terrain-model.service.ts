@@ -9,7 +9,7 @@ import { Geometry } from '../../../shared/classes/graphics';
 import { BitVector } from '../../../shared/core/bitvector';
 import { Material } from './materials';
 
-type CenterlinePost = {
+export type CenterlinePost = {
   elevation: number;
   xNormal: number;
   yNormal: number;
@@ -44,12 +44,13 @@ export class TerrainModelService {
     (TerrainModelService.WATER_LEVEL - TerrainModelService.GORGE_BOTTOM_HEIGHT) / TerrainModelService.RIVER_BANK_SLOPE;
   /** Distance from gap center to line where terrain along the roadway ends, and abutment begins. */
   public static readonly TERRAIN_GAP_SETBACK = TerrainModelService.GAP_HALF_WIDTH;
+  /** Cached copy of most recent mesh for elevation queries. */
+  public terrainMeshData: MeshData;
 
   private readonly random0to1 = makeRandomGenerator(2093415, 3205892098, 239837, 13987483);
-
-  public readonly fractalElevations: Float32Array[];
-  public roadCenterLine: CenterlinePost[];
-  public terrainMeshData: MeshData;
+  private roadCenterLine: CenterlinePost[];
+  // visible-for-testing
+  readonly fractalElevations: Float32Array[];
 
   constructor(private readonly bridgeService: BridgeService) {
     this.fractalElevations = this.buildFractalTerrain(TerrainModelService.POST_COUNT);
@@ -67,6 +68,155 @@ export class TerrainModelService {
   public refreshFractalTerrain() {
     this.buildFractalTerrain(this.fractalElevations);
     this.terrainMeshData = this.buildTerrainMeshData();
+  }
+
+  public getElevationAtIJ(i: number, j: number): number {
+    i = Utility.clamp(i, 0, TerrainModelService.GRID_COUNT);
+    j = Utility.clamp(j, 0, TerrainModelService.GRID_COUNT);
+    const xyzIndex = j * TerrainModelService.POST_COUNT + i;
+    return this.terrainMeshData.positions[xyzIndex * 3 + 1]; // y-coordinate
+  }
+
+  /** Returns the terrain model elevation at the given x-z point. */
+  public getElevationAtXZ(x: number, z: number): number {
+    const conditions = this.bridgeService.designConditions;
+    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
+    const terrainHalfSize = TerrainModelService.TERRAIN_HALF_SIZE;
+    const i0f = (z + terrainHalfSize) / metersPerGrid;
+    const i0 = Math.trunc(i0f);
+    const ti = i0f - i0;
+    const j0f = (x - 0.5 * conditions.spanLength + terrainHalfSize) / metersPerGrid;
+    const j0 = Math.trunc(j0f);
+    const tj = j0f - j0;
+    const e00 = this.getElevationAtIJ(i0, j0);
+    const e01 = this.getElevationAtIJ(i0, j0 + 1);
+    const et0 = e00 * (1 - tj) + e01 * tj;
+    const e10 = this.getElevationAtIJ(i0 + 1, j0);
+    const e11 = this.getElevationAtIJ(i0 + 1, j0 + 1);
+    const et1 = e10 * (1 - tj) + e11 * tj;
+    const yWater = TerrainModelService.WATER_LEVEL + SiteConstants.GAP_DEPTH - conditions.deckElevation;
+    return Math.max(yWater, et0 * (1 - ti) + et1 * ti);
+  }
+
+  /** Safely returns the road centerline post for the given grid column, clamping at edges. */
+  public getRoadCenterlinePostAtJ(j: number): CenterlinePost {
+    return this.roadCenterLine[Utility.clamp(j, 0, TerrainModelService.GRID_COUNT)];
+  }
+
+  /**
+   * Returns an interpolated post for the road centerline point with given x-coordinate. Differs
+   * from terrain elevation in floating slightly above approach terrain and following abutments
+   * rather than river bank. The post includes normal information.
+   */
+  public getRoadCenterlinePostAtX(post: CenterlinePost, x: number): CenterlinePost {
+    const conditions = this.bridgeService.designConditions;
+    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
+    const terrainHalfSize = TerrainModelService.TERRAIN_HALF_SIZE;
+    const j0f = (x - 0.5 * conditions.spanLength + terrainHalfSize) / metersPerGrid;
+    const j0 = Math.trunc(j0f);
+    const tj = j0f - j0;
+    const p0 = this.getRoadCenterlinePostAtJ(j0);
+    const p1 = this.getRoadCenterlinePostAtJ(j0 + 1);
+    post.elevation = p0.elevation + tj * (p1.elevation - p0.elevation);
+    const nx = p0.xNormal + tj * (p1.xNormal - p0.xNormal);
+    const ny = p0.yNormal + tj * (p1.yNormal - p0.yNormal);
+    const s = 1 / Math.hypot(nx, ny);
+    post.xNormal = nx * s;
+    post.yNormal = ny * s;
+    return post;
+  }
+
+  /**
+   * Returns an appropirate x-coordinate for the left side of the left abutment, i.e. the rightmost
+   * grid x-coordinate on the left river bank where the roadway is at terrain level.
+   */
+  public get leftAbutmentEndX(): [number, number] {
+    // Search from gap center left along road to find post where road rises to terrain.
+    let j = TerrainModelService.HALF_GRID_COUNT;
+    for (; j > 0; --j) {
+      if (
+        // Fuzzy check because road floats EPS_PAINT above terrain.
+        Utility.areNearlyEqual(
+          this.roadCenterLine[j].elevation,
+          this.getElevationAtIJ(TerrainModelService.HALF_GRID_COUNT, j),
+          TerrainModelService.EPS_PAINT + 0.001,
+        )
+      ) {
+        break;
+      }
+    }
+    return [this.gridColumnToWorldX(j), j];
+  }
+
+  /** Returns a faceted mesh for the roadway sections to the bridge. */
+  public get roadwayMeshData(): MeshData {
+    const abutmentStepInset = SiteConstants.ABUTMENT_STEP_X;
+    const deckHalfWidth = SiteConstants.DECK_HALF_WIDTH;
+    const gridCount = TerrainModelService.GRID_COUNT;
+    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
+    const wearSurfaceHeight = SiteConstants.DECK_TOP_HEIGHT;
+    const positionsList = [];
+    // Left positions.
+    for (let j = 0, x = this.gridColumnToWorldX(j); ; ++j, x += metersPerGrid) {
+      const centerlinePost = this.roadCenterLine[j];
+      if (x >= abutmentStepInset) {
+        positionsList.push(abutmentStepInset, wearSurfaceHeight, -deckHalfWidth);
+        positionsList.push(abutmentStepInset, wearSurfaceHeight, +deckHalfWidth);
+        break;
+      }
+      positionsList.push(x, centerlinePost.elevation, -deckHalfWidth);
+      positionsList.push(x, centerlinePost.elevation, +deckHalfWidth);
+    }
+    const leftLength = positionsList.length;
+    // Right positions.
+    const xDeckRight = this.bridgeService.designConditions.spanLength - abutmentStepInset;
+    for (let j = gridCount, x = this.gridColumnToWorldX(j); ; --j, x -= metersPerGrid) {
+      const centerlinePost = this.roadCenterLine[j];
+      if (x <= xDeckRight) {
+        positionsList.push(xDeckRight, wearSurfaceHeight, -deckHalfWidth);
+        positionsList.push(xDeckRight, wearSurfaceHeight, +deckHalfWidth);
+        break;
+      }
+      positionsList.push(x, centerlinePost.elevation, -deckHalfWidth);
+      positionsList.push(x, centerlinePost.elevation, +deckHalfWidth);
+    }
+    const positions = new Float32Array(positionsList);
+    // Left and right normals.
+    const normals = new Float32Array(positions.length);
+    for (let j = 0, i = 0; i < leftLength; ++j, i += 6) {
+      const centerlinePost = this.roadCenterLine[j];
+      normals[i] = normals[i + 3] = centerlinePost.xNormal;
+      normals[i + 1] = normals[i + 4] = centerlinePost.yNormal;
+    }
+    for (let j = gridCount, i = leftLength; i < normals.length; --j, i += 6) {
+      const centerlinePost = this.roadCenterLine[j];
+      normals[i] = normals[i + 3] = centerlinePost.xNormal;
+      normals[i + 1] = normals[i + 4] = centerlinePost.yNormal;
+    }
+    // Materials: all identical.
+    const materialRefs = new Uint16Array(positions.length / 3).fill(Material.DarkGray);
+    // Indices: two disconnected strips of triangles.
+    const quadCount = positions.length / 6 - 2;
+    const indices = new Uint16Array(6 * quadCount);
+    let ip = 0;
+    const leftIndexCount = leftLength - 6;
+    for (let i = 0; ip < leftIndexCount; i += 2) {
+      indices[ip++] = i + 3;
+      indices[ip++] = i;
+      indices[ip++] = i + 1;
+      indices[ip++] = i;
+      indices[ip++] = i + 3;
+      indices[ip++] = i + 2;
+    }
+    for (let i = leftLength / 3; ip < indices.length; i += 2) {
+      indices[ip++] = i + 1;
+      indices[ip++] = i;
+      indices[ip++] = i + 3;
+      indices[ip++] = i + 2;
+      indices[ip++] = i + 3;
+      indices[ip++] = i;
+    }
+    return { positions, normals, materialRefs, indices };
   }
 
   /**
@@ -188,7 +338,7 @@ export class TerrainModelService {
         x += TerrainModelService.METERS_PER_GRID;
       }
       // Reset normals, which are 2d. Average unit normals of segments
-      // west and east of each post.
+      // left and right of each post.
       for (let i = 1; i < iMax - 1; i++) {
         // Unit vectors along centerline.
         const e0 = centerLine[i].elevation;
@@ -287,7 +437,7 @@ export class TerrainModelService {
     }
     // Depress the terrain around the anchorages so they don't appear to be buried.
     // TODO: These don't look good. The anchorage is still buried, and the slopes expose the road edge.
-    const yAnchorDepression = (x: number, z: number, xAnchor: number, zAnchor: number): number  => {
+    const yAnchorDepression = (x: number, z: number, xAnchor: number, zAnchor: number): number => {
       const mPerGrid = TerrainModelService.METERS_PER_GRID;
       const dyBottom = SiteConstants.ABUTMENT_STEP_HEIGHT - 0.1;
       return dyBottom + 2 * Math.max(0, Math.abs(x - xAnchor) - mPerGrid, Math.abs(z - zAnchor) - mPerGrid);
@@ -416,7 +566,7 @@ export class TerrainModelService {
         bcy *= bcScale;
         bcz *= bcScale;
 
-        const cdScale = 1 / Math.hypot(cdx,mPerGrid, cdz);
+        const cdScale = 1 / Math.hypot(cdx, mPerGrid, cdz);
         cdx *= cdScale;
         cdy *= cdScale;
         cdz *= cdScale;
@@ -460,129 +610,6 @@ export class TerrainModelService {
       }
     }
     return { positions, normals, indices };
-  }
-
-  public getElevationAtIJ(i: number, j: number): number {
-    i = Utility.clamp(i, 0, TerrainModelService.GRID_COUNT);
-    j = Utility.clamp(j, 0, TerrainModelService.GRID_COUNT);
-    const xyzIndex = j * TerrainModelService.POST_COUNT + i;
-    return this.terrainMeshData.positions[xyzIndex * 3 + 1]; // y-coordinate
-  }
-
-  /**
-   * Starting at gap center, moving left, finds the first post where the
-   * road centerline joins the terrain and returns the x-coordinate.
-   */
-  public get leftAbutmentEndX(): [number, number] {
-    // Search from gap center left along road to find post where road rises to terrain.
-    let j = TerrainModelService.HALF_GRID_COUNT;
-    for (; j > 0; --j) {
-      if (
-        // Fuzzy check because road floats EPS_PAINT above terrain.
-        Utility.areNearlyEqual(
-          this.roadCenterLine[j].elevation,
-          this.getElevationAtIJ(TerrainModelService.HALF_GRID_COUNT, j),
-          TerrainModelService.EPS_PAINT + 0.001,
-        )
-      ) {
-        break;
-      }
-    }
-    return [this.gridColumnToWorldX(j), j];
-  }
-
-  /** Returns the terrain model elevation at the given x-z point. */
-  public getElevationAtXZ(x: number, z: number): number {
-    const conditions = this.bridgeService.designConditions;
-    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
-    const terrainHalfSize = TerrainModelService.TERRAIN_HALF_SIZE;
-    const i0f = (z + terrainHalfSize) / metersPerGrid;
-    const i0 = Math.trunc(i0f);
-    const ti = i0f - i0;
-    const j0f = (x - 0.5 * conditions.spanLength + terrainHalfSize) / metersPerGrid;
-    const j0 = Math.trunc(j0f);
-    const tj = j0f - j0;
-    const e00 = this.getElevationAtIJ(i0, j0);
-    const e01 = this.getElevationAtIJ(i0, j0 + 1);
-    const et0 = e00 * (1 - tj) + e01 * tj;
-    const e10 = this.getElevationAtIJ(i0 + 1, j0);
-    const e11 = this.getElevationAtIJ(i0 + 1, j0 + 1);
-    const et1 = e10 * (1 - tj) + e11 * tj;
-    const yWater = TerrainModelService.WATER_LEVEL + SiteConstants.GAP_DEPTH - conditions.deckElevation;
-    return Math.max(yWater, et0 * (1 - ti) + et1 * ti);
-  }
-
-  /** Returns a faceted mesh for the roadway sections to the bridge. */
-  public get roadwayMeshData(): MeshData {
-    const abutmentStepInset = SiteConstants.ABUTMENT_STEP_X;
-    const deckHalfWidth = SiteConstants.DECK_HALF_WIDTH;
-    const gridCount = TerrainModelService.GRID_COUNT;
-    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
-    const wearSurfaceHeight = SiteConstants.DECK_TOP_HEIGHT;
-    const positionsList = [];
-    // Left positions.
-    for (let j = 0, x = this.gridColumnToWorldX(j); ; ++j, x += metersPerGrid) {
-      const centerlinePost = this.roadCenterLine[j];
-      if (x >= abutmentStepInset) {
-        positionsList.push(abutmentStepInset, wearSurfaceHeight, -deckHalfWidth);
-        positionsList.push(abutmentStepInset, wearSurfaceHeight, +deckHalfWidth);
-        break;
-      } else {
-        positionsList.push(x, centerlinePost.elevation, -deckHalfWidth);
-        positionsList.push(x, centerlinePost.elevation, +deckHalfWidth);
-      }
-    }
-    const leftLength = positionsList.length;
-    // Right positions.
-    const xDeckRight = this.bridgeService.designConditions.spanLength - abutmentStepInset;
-    for (let j = gridCount, x = this.gridColumnToWorldX(j); ; --j, x -= metersPerGrid) {
-      const centerlinePost = this.roadCenterLine[j];
-      if (x <= xDeckRight) {
-        positionsList.push(xDeckRight, wearSurfaceHeight, -deckHalfWidth);
-        positionsList.push(xDeckRight, wearSurfaceHeight, +deckHalfWidth);
-        break;
-      } else {
-        positionsList.push(x, centerlinePost.elevation, -deckHalfWidth);
-        positionsList.push(x, centerlinePost.elevation, +deckHalfWidth);
-      }
-    }
-    const positions = new Float32Array(positionsList);
-    // Left and right normals.
-    const normals = new Float32Array(positions.length);
-    for (let j = 0, i = 0; i < leftLength; ++j, i += 6) {
-      const centerlinePost = this.roadCenterLine[j];
-      normals[i] = normals[i + 3] = centerlinePost.xNormal;
-      normals[i + 1] = normals[i + 4] = centerlinePost.yNormal;
-    }
-    for (let j = gridCount, i = leftLength; i < normals.length; --j, i += 6) {
-      const centerlinePost = this.roadCenterLine[j];
-      normals[i] = normals[i + 3] = centerlinePost.xNormal;
-      normals[i + 1] = normals[i + 4] = centerlinePost.yNormal;
-    }
-    // Materials: all identical.
-    const materialRefs = new Uint16Array(positions.length / 3).fill(Material.DarkGray);
-    // Indices: two disconnected strips of triangles.
-    const quadCount = positions.length / 6 - 2;
-    const indices = new Uint16Array(6 * quadCount);
-    let ip = 0;
-    const leftIndexCount = leftLength - 6;
-    for (let i = 0; ip < leftIndexCount; i += 2) {
-      indices[ip++] = i + 3;
-      indices[ip++] = i;
-      indices[ip++] = i + 1;
-      indices[ip++] = i;
-      indices[ip++] = i + 3;
-      indices[ip++] = i + 2;
-    }
-    for (let i = leftLength / 3; ip < indices.length; i += 2) {
-      indices[ip++] = i + 1;
-      indices[ip++] = i;
-      indices[ip++] = i + 3;
-      indices[ip++] = i + 2;
-      indices[ip++] = i + 3;
-      indices[ip++] = i;
-    }
-    return { positions, normals, materialRefs, indices };
   }
 
   private gridColumnToWorldX(j: number): number {

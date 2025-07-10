@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { mat4, vec2, vec3 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { Utility } from '../../../shared/classes/utility';
 import { TerrainModelService } from '../models/terrain-model.service';
-import { InterpolationService } from './interpolation.service';
 import { OverlayHandlers } from './overlay-ui.service';
 import { HEAD_ICON, HOME_ICON, PAN_ICON, TRUCK_ICON, WALK_ICON } from './overlay-icons';
+import { SimulationStateService } from './simulation-state.service';
 
 export const enum ViewMode {
   FLYING,
@@ -47,7 +47,7 @@ export class ViewService {
 
   constructor(
     private readonly bridgeService: BridgeService,
-    private readonly interpolationService: InterpolationService,
+    private readonly simulationStateService: SimulationStateService,
     private readonly terrainService: TerrainModelService,
   ) {}
 
@@ -117,27 +117,25 @@ export class ViewService {
     this.center[2] = this.eye[2] + dz;
   }
 
-  private loadPt = vec2.create();
-  private loadLookDir = vec2.create();
   private eyeDriver = vec3.create();
   private centerDriver = vec3.create();
 
   public getLookAtMatrix(m: mat4 = mat4.create()): mat4 {
     if (this.isDriving) {
-      this.interpolationService.getLoadPt(this.loadPt);
-      this.interpolationService.getLoadLookDir(this.loadLookDir);
+      const loadPt = this.simulationStateService.wayPoint;
+      const loadLookDir = this.simulationStateService.rotation;
       mat4.fromXRotation(m, -this.phiDriverHead);
       mat4.rotateY(m, m, this.thetaDriverHead);
       vec3.set(
         this.eyeDriver,
-        this.loadPt[0] + ViewService.DRIVER_EYE_LEAD,
-        this.loadPt[1] + ViewService.DRIVER_EYE_HEIGHT,
+        loadPt[0] + ViewService.DRIVER_EYE_LEAD,
+        loadPt[1] + ViewService.DRIVER_EYE_HEIGHT,
         0,
       );
       vec3.set(
         this.centerDriver,
-        this.loadPt[0] + this.loadLookDir[0],
-        this.loadPt[1] + this.loadLookDir[1] + ViewService.DRIVER_EYE_HEIGHT,
+        loadPt[0] + loadLookDir[0],
+        loadPt[1] + loadLookDir[1] + ViewService.DRIVER_EYE_HEIGHT,
         0,
       );
       return mat4.lookAt(m, this.eyeDriver, this.centerDriver, this.up);
@@ -194,8 +192,8 @@ export class ViewService {
             this.isDriving = true;
           },
           handlePointerDrag: (dx: number, dy: number) => {
-            this.phiDriverHead = Utility.clamp(dy * ViewService.UI_RATE_TILT, -45, 20);
-            this.thetaDriverHead = Utility.clamp(1.5 * dx * ViewService.UI_RATE_TILT, -100, 100);
+            this.phiDriverHead = Utility.clamp(dy * ViewService.UI_RATE_TILT, -Math.PI * 0.25, Math.PI * 0.1);
+            this.thetaDriverHead = Utility.clamp(1.5 * dx * ViewService.UI_RATE_TILT, -Math.PI * 0.3, Math.PI * 0.3);
           },
         };
     }

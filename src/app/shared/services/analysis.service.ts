@@ -5,6 +5,7 @@ import { Utility } from '../classes/utility';
 import { BitVector } from '../core/bitvector';
 import { BridgeService } from './bridge.service';
 import { EventBrokerService, EventOrigin } from './event-broker.service';
+import { vec2 } from 'gl-matrix';
 
 export type ForceStrengthRatios = { compression: number; tension: number };
 
@@ -22,8 +23,16 @@ export const enum AnalysisStatus {
   PASSES,
 }
 
+/** Source of information used for interpolation, etc. Implemented by the analysis service and others. */
+export interface InterpolationSource {
+  getJointDisplacement(out: vec2, loadCase: number, jointIndex: number): vec2;
+  getJointDisplacementX(loadCase: number, jointIndex: number): number;
+  getJointDisplacementY(loadCase: number, jointIndex: number): number;
+  getMemberForce(loadCase: number, memberIndex: number): number;
+}
+
 @Injectable({ providedIn: 'root' })
-export class AnalysisService {
+export class AnalysisService implements InterpolationSource {
   constructor(
     private readonly bridgeService: BridgeService,
     private readonly eventBrokerService: EventBrokerService,
@@ -76,26 +85,25 @@ export class AnalysisService {
   }
 
   /**
-   * Return the x-component of the displacement of a given joint and load case.  It is the caller's responsibility
+   * Get the vector displacement of a given joint and load case.  It is the caller's responsibility
    * to ensure the analysis is valid and indices are in range.
    *
+   * @param value provided result buffer
    * @param ilc load case index
    * @param ij joint index
-   * @return x-component of displacement
    */
-  public getXJointDisplacement(ilc: number, ij: number): number {
+  public getJointDisplacement(value: vec2, ilc: number, ij: number): vec2 {
+    const iBase = 2 * ij;
+    value[0] = this.jointDisplacement[ilc][iBase];
+    value[1] = this.jointDisplacement[ilc][iBase + 1];
+    return value;
+  }
+
+  public getJointDisplacementX(ilc: number, ij: number): number {
     return this.jointDisplacement[ilc][2 * ij];
   }
 
-  /**
-   * Return the y-component of the displacement of a given joint and load case. It is the caller's responsibility
-   * to ensure the analysis is valid and indices are in range.
-   *
-   * @param ilc load case index
-   * @param ij joint index
-   * @return y-component of displacement
-   */
-  public getYJointDisplacement(ilc: number, ij: number): number {
+  public getJointDisplacementY(ilc: number, ij: number): number {
     return this.jointDisplacement[ilc][2 * ij + 1];
   }
 
@@ -327,6 +335,8 @@ export class AnalysisService {
     this.memberForce = Utility.create2dFloat64Array(nLoadInstances, nMembers);
     this.memberFails = Utility.create2dBitArray(nLoadInstances, nMembers);
     this.jointDisplacement = Utility.create2dFloat64Array(nLoadInstances, nEquations);
+    const displacementA = vec2.create();
+    const displacementB = vec2.create();
     for (let ilc = 0; ilc < nLoadInstances; ilc++) {
       for (let ie = 0; ie < nEquations; ie++) {
         let tmp = 0;
@@ -337,17 +347,16 @@ export class AnalysisService {
       }
       // Compute member forces.
       for (let im = 0; im < nMembers; im++) {
-        let e = members[im].material.e;
+        const member = members[im];
+        let e = member.material.e;
         if (options?.degradeMembersMask?.getBit(im)) {
           e *= AnalysisService.failedMemberDegradation;
         }
-        const aeOverL = (members[im].shape.area * e) / length[im];
-        const ija = members[im].a.index;
-        const ijb = members[im].b.index;
+        this.getJointDisplacement(displacementA, ilc, member.a.index);
+        this.getJointDisplacement(displacementB, ilc, member.b.index);
         this.memberForce[ilc][im] =
-          aeOverL *
-          (cosX[im] * (this.getXJointDisplacement(ilc, ijb) - this.getXJointDisplacement(ilc, ija)) +
-            cosY[im] * (this.getYJointDisplacement(ilc, ijb) - this.getYJointDisplacement(ilc, ija)));
+          ((member.shape.area * e) / length[im]) *
+          (cosX[im] * (displacementB[0] - displacementA[0]) + cosY[im] * (displacementB[1] - displacementA[1]));
       }
     }
 

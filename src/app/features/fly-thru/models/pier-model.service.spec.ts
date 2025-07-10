@@ -27,11 +27,11 @@ describe('PierModelService', () => {
 
   it('should return expected mesh', () => {
     const mesh = service.buildMeshDataForPier();
-    const lastIndex = mesh.positions.length - 1;
+    const lastIndex = mesh.texturedMeshData.positions.length - 1;
     // The last position should be populated with non-zero.
-    expect(mesh.positions[lastIndex]).withContext('positions').not.toBe(0);
+    expect(mesh.texturedMeshData.positions[lastIndex]).withContext('positions').not.toBe(0);
     // The last normals is parallel to the x-axis.
-    expect(mesh.normals![lastIndex - 2])
+    expect(mesh.texturedMeshData.normals![lastIndex - 2])
       .withContext('normals')
       .not.toBe(0);
   });

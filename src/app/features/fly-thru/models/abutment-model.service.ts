@@ -66,7 +66,7 @@ export class AbutmentModelService {
           addRearFacePoint(insetX, deckY);
           break;
         }
-        const roadElevation = this.terrainModelService.roadCenterLine[j].elevation;
+        const roadElevation = this.terrainModelService.getRoadCenterlinePostAtJ(j).elevation;
         addRearFacePoint(x, roadElevation - TerrainModelService.EPS_PAINT);
       }
       // Left corner of shelf.
@@ -160,7 +160,7 @@ export class AbutmentModelService {
           addPointPair(insetX, deckY, 0, 1);
           break;
         }
-        const roadPost = this.terrainModelService.roadCenterLine[j];
+        const roadPost = this.terrainModelService.getRoadCenterlinePostAtJ(j);
         addPointPair(x, roadPost.elevation - TerrainModelService.EPS_PAINT, roadPost.xNormal, roadPost.yNormal);
       }
       // Triangle pairs, one per quad

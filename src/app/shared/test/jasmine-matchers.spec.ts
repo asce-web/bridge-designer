@@ -63,9 +63,9 @@ describe('getReasonNotDeeplyEqual', () => {
   });
 
   it('reports array inequality correctly', () => {
-    expect(getTestValue([], [null])).toEqual(['array length mismatch @<top>: 0 != 1)']);
+    expect(getTestValue([], [null])).toEqual(['array length mismatch @<top>: 0 != 1)', 'excess: [0: null]' ]);
     const s = Symbol('foo');
-    expect(getTestValue(['a', 0], ['a', 0, s])).toEqual(['array length mismatch @<top>: 2 != 3)']);
+    expect(getTestValue(['a', 0], ['a', 0, s])).toEqual(['array length mismatch @<top>: 2 != 3)', 'excess: [2: <symbol>]']);
     expect(getTestValue(['a', 0, [s]], ['a', 0, s])).toEqual([
       'type missmatch @<top>[2]: array != symbol (<array> != <symbol>)',
     ]);
@@ -102,6 +102,7 @@ describe('getReasonNotDeeplyEqual', () => {
     ).toEqual([
       'numerically unequal with eps=0 @<top>.a: 42 !~ 41',
       'array length mismatch @<top>.b.c: 4 != 3)',
+      'excess: [3: extra]' ,
       'value mismatch @<top>.b.c[0]: bar != baz',
       'type missmatch @<top>.b.c[2]: string != symbol (foo != <symbol>)',
     ]);
