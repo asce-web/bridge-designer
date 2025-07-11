@@ -20,6 +20,7 @@ import { AbutmentRenderingService } from './abutment-rendering.service';
 import { BridgeRenderingService } from './bridge-rendering.service';
 import { PierRenderingService } from './pier-rendering.service';
 import { WindTurbineRenderingService } from '../../../shared/services/wind-turbine-rendering.service';
+import { SimulationStateService } from './simulation-state.service';
 
 /** Rendering functionality for fly-thrus. */
 @Injectable({ providedIn: 'root' })
@@ -43,6 +44,7 @@ export class RenderingService {
     private readonly projectionService: ProjectionService,
     private readonly riverRenderingService: RiverRenderingService,
     private readonly shaderService: ShaderService,
+    private readonly simulationStateService: SimulationStateService,
     private readonly skyRenderingService: SkyRenderingService,
     private readonly terrainModelService: TerrainModelService,
     private readonly truckRenderingService: TruckRenderingService,
@@ -80,6 +82,7 @@ export class RenderingService {
     this.pierRenderingService.prepare();
     this.utilityLineRenderingService.prepare();
     this.windTurbineRenderingService.prepare();
+    this.simulationStateService.start();
 
     // Other on-time setups follow.
     if (this.prepared) {
@@ -113,6 +116,9 @@ export class RenderingService {
     if (!this.glService.isWebGL2Supported) {
       return;
     }
+    // Advance clock-based state.
+    this.simulationStateService.advance(clockMillis);
+
     // TODO: Maybe call this getter once every time viewport is set.
     this.projectionService.getPerspectiveProjection(this.projectionMatrix);
     this.viewService.updateView(elapsedMillis * 0.001);

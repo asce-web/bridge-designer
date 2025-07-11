@@ -5,6 +5,8 @@ import { DUAL_WHEEL_MESH_DATA } from '../models/dual-wheel';
 import { TRUCK_MESH_DATA } from '../models/truck';
 import { WHEEL_MESH_DATA } from '../models/wheel';
 import { UniformService } from './uniform.service';
+import { SimulationStateService } from './simulation-state.service';
+import { Geometry } from '../../../shared/classes/graphics';
 
 @Injectable({ providedIn: 'root' })
 export class TruckRenderingService {
@@ -19,6 +21,7 @@ export class TruckRenderingService {
 
   constructor(
     private readonly meshRenderingService: MeshRenderingService,
+    private readonly simlulationStateService: SimulationStateService,
     private readonly uniformService: UniformService,
   ) {}
 
@@ -31,9 +34,11 @@ export class TruckRenderingService {
   public render(viewMatrix: mat4, projectionMatrix: mat4): void {
     let m: mat4;
 
-    // TODO: Temporary. Remove for animation. Don't forget the pop.
     m = this.uniformService.pushModelMatrix();
-    mat4.translate(m, m, vec3.set(this.offset, 8, 0.8, 0));
+    const position = this.simlulationStateService.wayPoint;
+    const rotation = this.simlulationStateService.rotation;
+    mat4.translate(m, m, vec3.set(this.offset, position[0], position[1], 0));
+    Geometry.rotateZ(m, m, rotation[1], rotation[0]);
 
     const wheelbaseOffset = -4;
 

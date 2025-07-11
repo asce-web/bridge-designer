@@ -6,6 +6,7 @@ import { DesignConditions } from '../../../shared/services/design-conditions.ser
 import { Geometry } from '../../../shared/classes/graphics';
 import { InterpolationSource } from '../../../shared/services/analysis.service';
 import { SimulationParametersService } from './simulation-parameters.service';
+import { SiteConstants } from '../../../shared/classes/site.model';
 
 /** Internal holder for calculations common to several interpolator methods. */
 type InterpolatorContext = {
@@ -24,6 +25,7 @@ export class Interpolator {
   private readonly tmpJointB = vec2.create();
   private readonly tmpDisplacementA = vec2.create();
   private readonly tmpDisplacementB = vec2.create();
+  private readonly tmpDiff = vec2.create();
   private readonly tmpContext: InterpolatorContext = {} as InterpolatorContext;
 
   private readonly ctx: InterpolatorContext = {} as InterpolatorContext;
@@ -34,8 +36,15 @@ export class Interpolator {
   ) {}
 
   public withParameter(t: number): Interpolator {
-    this.getContext(this.ctx, t);
-    return this;
+    return this.getContext(this.ctx, t);
+  }
+
+  public refreshContext(t: number): Interpolator {
+    return this.getContext(this.ctx, t);
+  }
+
+  public get parameter(): number {
+    return this.ctx.t;
   }
 
   public getWayPoint(out: vec2, ctx: InterpolatorContext = this.ctx): vec2 {
@@ -46,6 +55,12 @@ export class Interpolator {
       this.getDisplacedJointLocation(this.tmpJointA, ctx.leftLoadCase, ctx);
       this.getDisplacedJointLocation(this.tmpJointB, ctx.leftLoadCase + 1, ctx);
       intepolateVec2(out, this.tmpJointA, this.tmpJointB, ctx.tPanel);
+      // Offset result by deck height along the member perpendicular.
+      const diff = this.tmpDiff;
+      vec2.sub(diff, this.tmpJointB, this.tmpJointA);
+      const s = SiteConstants.DECK_TOP_HEIGHT / vec2.length(diff);
+      out[0] -= diff[1] * s;
+      out[1] += diff[0] * s;
     }
     return out;
   }
@@ -119,7 +134,7 @@ export class Interpolator {
   }
 
   /** Fills a wrapper for calculations common to several methods. */
-  private getContext(ctx: InterpolatorContext, t: number): InterpolatorContext {
+  getContext(ctx: InterpolatorContext, t: number): Interpolator {
     const leftmostJointX = this.getDisplacedJointXForDeadLoadOnly(0);
     const panelIndexMax = this.service.bridgeService.designConditions.loadedJointCount - 1;
     const rightmostJointX = this.getDisplacedJointXForDeadLoadOnly(panelIndexMax);
@@ -138,7 +153,7 @@ export class Interpolator {
     ctx.tPanel = tPanel;
     ctx.leftLoadCase = leftLoadCase;
     ctx.rightLoadCase = rightLoadCase;
-    return ctx;
+    return this;
   }
 
   /** Gets a displaced joint's x-coordinate for the dead load only case. */
@@ -228,8 +243,8 @@ export class InterpolationService {
     // Monkey patch the interpolator's parameter setter to operate on the bi-source.
     interpolator.withParameter = tSource => {
       biSource.withParameter(tSource);
-      // Bridge deck limits were probably affected by underlying source change. Refresh the interpolator's context.
-      return interpolator.withParameter(t);
+      // Bridge deck limits were probably affected by underlying source change.
+      return interpolator.refreshContext(t);
     };
     return interpolator;
   }
