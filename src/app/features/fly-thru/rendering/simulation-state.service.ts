@@ -6,6 +6,7 @@ import { COLLAPSE_ANALYSIS } from '../pane/constants';
 import { SimulationParametersService } from './simulation-parameters.service';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
+import { Utility } from '../../../shared/classes/utility';
 
 const enum SimulationPhase {
   UNSTARTED,
@@ -60,7 +61,7 @@ export class SimulationStateService {
       return this.deadLoadingInterpolator;
     }
     if (this.phase === SimulationPhase.COLLAPSING) {
-      return this.collapsingInterpolator!;
+      return Utility.assertNotUndefined(this.collapsingInterpolator, 'collapsing interpolator');
     }
     return this.traversingInterpolator;
   }
@@ -84,15 +85,21 @@ export class SimulationStateService {
    *                                                       v                                                                   /
    * UNSTARTED --start--> DEAD_LOADING --time expiry--> FADING_IN --time expiry--> TRAVERSING --endpint reached--> FADING_OUT -
    *                             \                                                     \
-   *                              -->---------------------------------------------------+-->-test fail--> COLLAPSING --
-   *                                                                                                          ^         \
-   *                                                                                                           \        /
-   *                                                                                                            --------
+   *                              -->-test fail------------------------------------------+-->-test fail--> COLLAPSING
    */
   public advance(clockMillis: number): void {
+    // Lazily initialize the phase clock first time around.
     if (this.phaseStartClockMillis === undefined) {
       this.phaseStartClockMillis = clockMillis;
     }
+    // Advance to the collapsing phase after setting up the collapse analysis.
+    const startCollapsing = (failedInterpolator: Interpolator): void => {
+      this.collapseAnalysisService.analyze({ degradeMembersMask: failedInterpolator.failedMemberMask });
+      this.collapsingInterpolator = this.interpolationService.createCollapseInterpolator(failedInterpolator);
+      this.phase = SimulationPhase.COLLAPSING;
+      this.phaseStartClockMillis = clockMillis;
+      this.advance(clockMillis);
+    };
     switch (this.phase) {
       case SimulationPhase.DEAD_LOADING:
         const tDeadLoading =
@@ -104,9 +111,8 @@ export class SimulationStateService {
         }
         this.deadLoadingInterpolator.withParameter(tDeadLoading);
         if (this.deadLoadingInterpolator.isTestFailed) {
-          this.collapseAnalysisService.analyze({ degradeMembersMask: this.deadLoadingInterpolator.failedMemberMask });
-          this.phase = SimulationPhase.COLLAPSING;
-          return this.advance(clockMillis);
+          startCollapsing(this.deadLoadingInterpolator);
+          return;
         }
         break;
       case SimulationPhase.FADING_IN:
@@ -131,13 +137,8 @@ export class SimulationStateService {
           }
           this.advanceLoad(clockMillis);
           if (this.traversingInterpolator.isTestFailed) {
-            this.collapseAnalysisService.analyze({ degradeMembersMask: this.traversingInterpolator.failedMemberMask });
-            this.collapsingInterpolator = this.interpolationService.createCollapseInterpolator(
-              this.traversingInterpolator,
-            );
-            this.phase = SimulationPhase.COLLAPSING;
-            this.phaseStartClockMillis = clockMillis;
-            return this.advance(clockMillis);
+            startCollapsing(this.traversingInterpolator);
+            return;
           }
         }
         break;
@@ -146,7 +147,6 @@ export class SimulationStateService {
           const remainingTraverseMillis =
             (this.endParameter - this.traversingInterpolator.parameter) * this.parameterService.elapsedMillisPerMeter;
           if (remainingTraverseMillis < 0) {
-            this.loadAlpha = 0;
             this.phaseStartClockMillis = clockMillis;
             this.phase = SimulationPhase.FADING_IN;
             return this.advance(clockMillis);

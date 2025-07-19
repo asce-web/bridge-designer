@@ -102,7 +102,7 @@ class Processor:
                         quad = tuple(
                             int(i) if len(i) > 0 else None
                             for i in vertex_spec.split("/")
-                        ) + (material and material["index"],)
+                        ) + (bool(material) and material["index"],)
                         face.append(quad)
                         if len(quad) != 4:
                             print(f"triangles required: {line}")

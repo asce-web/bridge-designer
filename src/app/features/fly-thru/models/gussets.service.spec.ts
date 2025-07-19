@@ -7,7 +7,7 @@ import { Member } from '../../../shared/classes/member.model';
 import { Point2DInterface } from '../../../shared/classes/graphics';
 import { projectLocalMatchers } from '../../../shared/test/jasmine-matchers';
 
-describe('GussetsModelService', () => {
+describe('GussetsService', () => {
   let service: GussetsService;
   let bridgeServiceSpy: jasmine.SpyObj<BridgeService>;
 
@@ -24,6 +24,7 @@ describe('GussetsModelService', () => {
     { x: -0.17, y: -0.17 },
     { x: 0.269, y: -0.17 },
   ];
+  /* TODO: Move to BridgeModelService test.
   // prettier-ignore
   const expectedMeshPositions = new Float32Array([
     // Outer surface quads
@@ -145,6 +146,7 @@ describe('GussetsModelService', () => {
     26, 29, 30,
     26, 30, 31
   ]);
+  */
 
   beforeEach(() => {
     jasmine.addMatchers(projectLocalMatchers);
@@ -183,6 +185,7 @@ describe('GussetsModelService', () => {
     expect(gusset.hull).toNearlyEqual(expectedHull, 1e-3);
   });
 
+  /* TODO: Move to BridgeModelService test.
   it('should produce expected mesh for gusset', () => {
     const gusset = service.gussets[0];
     const mesh = service.buildMeshDataForGusset(gusset);
@@ -194,7 +197,7 @@ describe('GussetsModelService', () => {
     expect(mesh.positions).withContext('positions').toNearlyEqual(expectedMeshPositions, 1e-3);
     expect(mesh.normals).withContext('normals').toNearlyEqual(expectedMeshNormals, 1e-3);
     expect(mesh.indices).withContext('indices').toEqual(expectedMeshIndices);
-  });
+  });*/
 
   function buildTestMember(a: Joint, b: Joint, materialSizeMm: number): Member {
     return { a, b, materialSizeMm, getOtherJoint: (j: Joint) => (j === a ? b : a) } as Member;

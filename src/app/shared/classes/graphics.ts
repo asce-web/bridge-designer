@@ -505,6 +505,30 @@ export class Geometry {
     return rect.x0 <= x && x <= rect.x0 + rect.width && rect.y0 <= y && y <= rect.y0 + rect.height;
   }
 
+  public static fromZRotation(out: mat4, sinTheta: number, cosTheta: number): mat4 {
+    const scale = 1 / Math.hypot(cosTheta, sinTheta);
+    const c = scale * cosTheta;
+    const s = scale * sinTheta;
+    // Perform axis-specific matrix multiplication
+    out[0] = c;
+    out[1] = s;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = -s;
+    out[5] = c;
+    out[6] = 0;
+    out[7] = 0;
+    out[8] = 0;
+    out[9] = 0;
+    out[10] = 1;
+    out[11] = 0;
+    out[12] = 0;
+    out[13] = 0;
+    out[14] = 0;
+    out[15] = 1;
+    return out;
+  }
+
   /** Glmatrix operation adapted to accept direction vector rather than angle. */
   public static rotateX(out: mat4, a: ReadonlyMat4, sinTheta: number, cosTheta: number): mat4 {
     const scale = 1 / Math.hypot(cosTheta, sinTheta);

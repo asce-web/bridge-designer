@@ -10,10 +10,13 @@ import { SiteConstants } from '../../../shared/classes/site.model';
 describe('InterpolationService', () => {
   let bridgeService: jasmine.SpyObj<BridgeService>;
   let analysisService: jasmine.SpyObj<AnalysisService>;
+  let collapseAnalysisService: jasmine.SpyObj<AnalysisService>;
   let parametersService: jasmine.SpyObj<SimulationParametersService>;
   let terrainModelService: jasmine.SpyObj<TerrainModelService>;
   let service: InterpolationService;
   let interpolator: Interpolator;
+  const load = vec2.create();
+  const rotation = vec2.create();
 
   beforeEach(() => {
     jasmine.addMatchers(projectLocalMatchers);
@@ -26,10 +29,20 @@ describe('InterpolationService', () => {
           { x: 8, y: 0 },
           { x: 12, y: 0 },
         ],
+        members: [{}, {}, {}, {}, {}, {}],
       },
     });
 
-    analysisService = jasmine.createSpyObj('AnalysisService', ['getJointDisplacement', 'getJointDisplacementX']);
+    analysisService = jasmine.createSpyObj('AnalysisService', [
+      'getJointDisplacement',
+      'getJointDisplacementX',
+      'getMemberForce',
+      'getMemberTensileStrength',
+    ]);
+    collapseAnalysisService = jasmine.createSpyObj('AnalysisService', [
+      'getJointDisplacement',
+      'getJointDisplacementX',
+    ]);
     parametersService = { exaggeration: 1 } as SimulationParametersService;
     terrainModelService = jasmine.createSpyObj('TerrainModelService', ['getRoadCenterlinePostAtX']);
 
@@ -46,6 +59,10 @@ describe('InterpolationService', () => {
       return out;
     });
 
+    analysisService.getMemberForce.and.callFake((ilc: number, im: number): number => ilc * 10 + im);
+
+    analysisService.getMemberTensileStrength.and.callFake((im: number): number => im * 100);
+
     analysisService.getJointDisplacementX.and.callFake((loadCase: number, index: number) => {
       return analysisService.getJointDisplacement(vec2.create(), loadCase, index)[1];
     });
@@ -55,129 +72,144 @@ describe('InterpolationService', () => {
       return post;
     });
 
-    service = new InterpolationService(bridgeService, parametersService, terrainModelService);
-
-    interpolator = service.createAnalysisInterpolator(analysisService);
+    service = new InterpolationService(
+      analysisService,
+      collapseAnalysisService,
+      bridgeService,
+      parametersService,
+      terrainModelService,
+    );
+    interpolator = service.createAnalysisInterpolator();
   });
 
   it('should return roadway coords if left of the bridge', () => {
-    expect(interpolator.withParameter(-4).getWayPoint(vec2.create())).toNearlyEqual(vec2.fromValues(-4, 4.8));
-    expect(interpolator.withParameter(-2).getWayPoint(vec2.create())).toNearlyEqual(vec2.fromValues(-2, 2.8));
+    interpolator.withParameter(-4).getLoadPosition(load, rotation);
+
+    expect(load).toNearlyEqual(vec2.fromValues(-4, 4.8));
+    expect(vec2.normalize(rotation, rotation)).toNearlyEqual(vec2.fromValues(0.7071, -0.7071), 1e-3);
+
+    interpolator.withParameter(-2).getLoadPosition(load, rotation);
+
+    expect(load).toNearlyEqual(vec2.fromValues(-2, 2.8));
+    expect(vec2.normalize(rotation, rotation)).toNearlyEqual(vec2.fromValues(0.7071, -0.7071), 1e-3);
   });
 
   it('should return roadway coords if right of the bridge', () => {
-    expect(interpolator.withParameter(14).getWayPoint(vec2.create())).toNearlyEqual(vec2.fromValues(14, 2.8));
-    expect(interpolator.withParameter(16).getWayPoint(vec2.create())).toNearlyEqual(vec2.fromValues(16, 4.8));
+    interpolator.withParameter(14).getLoadPosition(load, rotation);
+
+    expect(load).toNearlyEqual(vec2.fromValues(14, 2.8));
+    // Rear tire still on the bridge.
+    expect(vec2.normalize(rotation, rotation)).toNearlyEqual(vec2.fromValues(0.9683, 0.2503), 1e-3);
+
+    interpolator.withParameter(16).getLoadPosition(load, rotation);
+
+    expect(load).toNearlyEqual(vec2.fromValues(16, 4.8));
+    expect(vec2.normalize(rotation, rotation)).toNearlyEqual(vec2.fromValues(0.7071, 0.7071), 1e-3);
   });
 
   it('should honor exaggeration for load case zero', () => {
-    // Zero force location of joint 0 is (0, 0), so checking exaggeration is simplest here.
-    const unExaggeratedJointLocation = interpolator.withParameter(-4).getDisplacedJointLocation([0, 0], 0);
+    const actualLocations = interpolator.withParameter(-4).getAllDisplacedJointLocations(new Float32Array(8));
     parametersService.exaggeration = 2;
-    const exaggeratedJointLocation = interpolator.withParameter(-4).getDisplacedJointLocation([0, 0], 0);
-    expect(exaggeratedJointLocation[0]).toBe(2 * unExaggeratedJointLocation[0]);
-    expect(exaggeratedJointLocation[1]).toBe(2 * unExaggeratedJointLocation[1]);
+    const exaggeratedLocations = interpolator.withParameter(-4).getAllDisplacedJointLocations(new Float32Array(8));
+    expect(exaggeratedLocations[0]).toBe(2 * actualLocations[0]);
   });
 
   it('should honor exaggeration for load case on bridge', () => {
-    const zeroForceInterpolator = service.createAnalysisInterpolator(InterpolationService.ZERO_FORCE_INTERPOLATION_SOURCE);
-    const zeroForceJointLocation = zeroForceInterpolator.withParameter(6).getDisplacedJointLocation([0, 0], 1);
-    const unExaggeratedJointLocation = interpolator.withParameter(6).getDisplacedJointLocation([0, 0], 1);
+    const zeroForceInterpolator = service.createDeadLoadingInterpolator(0);
+    const zeroForceLocations = zeroForceInterpolator
+      .withParameter(6)
+      .getAllDisplacedJointLocations(new Float32Array(8));
+
+    const actualLocations = interpolator.withParameter(6).getAllDisplacedJointLocations(new Float32Array(8));
+
     parametersService.exaggeration = 2;
-    const exaggeratedJointLocation = interpolator.withParameter(6).getDisplacedJointLocation([0, 0], 1);
-    const unExaggeratedDisplacement = vec2.sub([0, 0], unExaggeratedJointLocation, zeroForceJointLocation);
-    const exaggeratedDisplacement = vec2.sub([0, 0], exaggeratedJointLocation, zeroForceJointLocation);
+    const exaggeratedLocations = interpolator.withParameter(6).getAllDisplacedJointLocations(new Float32Array(8));
+
+    const actualDisplacement = vec2.sub([0, 0], actualLocations.slice(2, 2), zeroForceLocations.slice(2, 2));
+    const exaggeratedDisplacement = vec2.sub([0, 0], exaggeratedLocations.slice(2, 2), zeroForceLocations.slice(2, 2));
     // Won't be exactly 2 because the parameter space is distorted by exaggeration.
-    expect(exaggeratedDisplacement).toNearlyEqual(vec2.scale([0, 0], unExaggeratedDisplacement, 2), 0.2);
+    expect(exaggeratedDisplacement).toNearlyEqual(vec2.scale([0, 0], actualDisplacement, 2), 0.2);
   });
 
   it('should make a fairly smooth path onto, through, and off the bridge', () => {
     const locations = [];
-    for (let x = -1; x <= 14; x += 0.5) {
-      locations.push(interpolator.withParameter(x).getWayPoint([0, 0]));
-    }
-    const expectedPath: [number, number][] = [
-      [-1, 1.8], // 0
-      [-0.5, 1.3], // 1
-      [0, 0.8], // 2
-      [1.358, 1.216], // 3
-      [1.74, 1.07], // 4
-      [2.121, 0.8944], // 5
-      [2.502, 0.6903], // 6
-      [2.881, 0.4573], // 7
-      [3.259, 0.1954], // 8
-      [3.636, -0.09533], // 9
-      [4.012, -0.4148], // 10
-      [4.387, -0.763], // 11
-      [3.906, -0.5819], // 12
-      [4.401, -0.2465], // 13
-      [4.897, 0.06005], // 14
-      [5.394, 0.3376], // 15
-      [5.891, 0.5862], // 16
-      [6.389, 0.8058], // 17
-      [6.887, 0.9963], // 18
-      [7.386, 1.158], // 19
-      [8.127, 1.335], // 20
-      [8.746, 1.433], // 21
-      [9.365, 1.501], // 22
-      [9.984, 1.54], // 23
-      [10.6, 1.55], // 24
-      [11.22, 1.53], // 25
-      [11.84, 1.481], // 26
-      [12.46, 1.403], // 27
-      [13, 1.8], // 28
-      [13.5, 2.3], // 29
-      [14, 2.8], // 30
-    ];
-    expect(locations).toNearlyEqual(expectedPath, 1e-3);
-  });
-
-  it('should have load rotations that make sense', () => {
     const rotations = [];
-    for (let x = 0; x <= 18; x += 0.5) {
-      const rotation: vec2 = [0, 0];
-      interpolator.withParameter(x).getLoadPosition([0, 0], rotation);
-      rotations.push(rotation);
+    for (let x = -1; x <= 14; x += 0.5) {
+      const location = vec2.create();
+      const rotation = vec2.create();
+      interpolator.withParameter(x).getLoadPosition(location, rotation);
+      locations.push(location[0], location[1]);
+      rotations.push(rotation[0], rotation[1]);
     }
-    const expectedRotations: [number, number][] = [
-      [0.7071, -0.7071], // 0
-      [0.8929, -0.4502], // 1
-      [0.9123, -0.4095], // 2
-      [0.9277, -0.3732], // 3
-      [0.9398, -0.3418], // 4
-      [0.9493, -0.3144], // 5
-      [0.9564, -0.2921], // 6
-      [0.961, -0.2764], // 7
-      [0.9527, -0.3039], // 8
-      [0.9278, -0.3731], // 9
-      [0.9383, -0.3458], // 10
-      [0.9659, -0.2591], // 11
-      [0.9861, -0.1659], // 12
-      [0.978, -0.2086], // 13
-      [0.9947, -0.1024], // 14
-      [0.9999, 0.01212], // 15
-      [0.9898, 0.1425], // 16
-      [0.9543, 0.2988], // 17
-      [0.9213, 0.3889], // 18
-      [0.9433, 0.332], // 19
-      [0.9616, 0.2745], // 20
-      [0.9762, 0.2169], // 21
-      [0.9872, 0.1597], // 22
-      [0.9946, 0.1038], // 23
-      [0.9989, 0.0472], // 24
-      [1, 0.003199], // 25
-      [0.9965, 0.08355], // 26
-      [0.9807, 0.1956], // 27
-      [0.9497, 0.313], // 28
-      [0.8981, 0.4398], // 29
-      [0.8175, 0.576], // 30
-      [0.6735, 0.7392], // 31
-      [0.7071, 0.7071], // 32
-      [0.7071, 0.7071], // 33
-      [0.7071, 0.7071], // 34
-      [0.7071, 0.7071], // 35
-      [0.7071, 0.7071], // 36
+    // prettier-ignore
+    const expectedLocations: number[] = [
+      -1, 1.8, // 0, 1
+      -0.5, 1.3, // 2, 3
+      0, 0.8, // 4, 5
+      1.358, 1.216, // 6, 7
+      1.74, 1.07, // 8, 9
+      2.121, 0.8944, // 10, 11
+      2.502, 0.6903, // 12, 13
+      2.881, 0.4573, // 14, 15
+      3.259, 0.1954, // 16, 17
+      3.636, -0.09533, // 18, 19
+      4.012, -0.4148, // 20, 21
+      4.387, -0.763, // 22, 23
+      3.906, -0.5819, // 24, 25
+      4.401, -0.2465, // 26, 27
+      4.897, 0.06005, // 28, 29
+      5.394, 0.3376, // 30, 31
+      5.891, 0.5862, // 32, 33
+      6.389, 0.8058, // 34, 35
+      6.887, 0.9963, // 36, 37
+      7.386, 1.158, // 38, 39
+      8.124, 1.336, // 40, 41
+      8.733, 1.444, // 42, 43
+      9.343, 1.539, // 44, 45
+      9.952, 1.619, // 46, 47
+      10.562, 1.684, // 48, 49
+      11.171, 1.735, // 50, 51
+      11.78, 1.771, // 52, 53
+      12.39, 1.793, // 54, 55
+      13, 1.8, // 56, 57
+      13.5, 2.3, // 58, 59
+      14, 2.8, // 60, 61
     ];
-    expect(rotations).toNearlyEqual(expectedRotations, -1e-3);
+    // prettier-ignore
+    const expectedRotations = [
+      2.828, -2.828, // 0, 1
+      2.828, -2.828, // 2, 3
+      2.828, -2.828, // 4, 5
+      3.577, -1.803, // 6, 7
+      3.646, -1.637, // 8, 9
+      3.715, -1.499, // 10, 11
+      3.752, -1.36, // 12, 13
+      3.803, -1.265, // 14, 15
+      3.821, -1.167, // 16, 17
+      3.839, -1.098, // 18, 19
+      3.809, -1.215, // 20, 21
+      3.887, -1.563, // 22, 23
+      3.75, -1.382, // 24, 25
+      3.901, -1.046, // 26, 27
+      4.397, -0.7399, // 28, 29
+      3.808, -1.222, // 30, 31
+      3.943, -0.7072, // 32, 33
+      3.999, -0.1793, // 34, 35
+      3.988, 0.3489, // 36, 37
+      3.911, 0.8731, // 38, 39
+      3.773, 1.346, // 40, 41
+      3.807, 1.218, // 42, 43
+      3.856, 1.065, // 44, 45
+      3.905, 0.8793, // 46, 47
+      3.954, 0.6624, // 48, 49
+      3.973, 0.4004, // 50, 51
+      3.8, 0.0912, // 52, 53
+      3.994, 0.04792, // 54, 55
+      3.994, 0, // 56, 57
+      3.969, 0.5, // 58, 59
+      3.869, 1, // 60, 61
+    ];
+    expect(locations).withContext('locations').toNearlyEqual(expectedLocations, -1e-3);
+    expect(rotations).withContext('rotations').toNearlyEqual(expectedRotations, -1e-3);
   });
 });

@@ -6,8 +6,8 @@ import { TRUCK_MESH_DATA } from '../models/truck';
 import { WHEEL_MESH_DATA } from '../models/wheel';
 import { UniformService } from './uniform.service';
 import { SimulationStateService } from './simulation-state.service';
-import { Geometry } from '../../../shared/classes/graphics';
 import { GlService } from './gl.service';
+import { Geometry } from '../../../shared/classes/graphics';
 
 @Injectable({ providedIn: 'root' })
 export class TruckRenderingService {
@@ -35,6 +35,10 @@ export class TruckRenderingService {
     // Blend for fade in/out effect if needed.
     const gl = this.glService.gl;
     const alpha = this.simulationStateService.loadAlpha;
+    // No need to draw anything for small alpha values.
+    if (alpha < 0.01) {
+      return;
+    }
     if (alpha < 1) {
       gl.enable(gl.BLEND);
       gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);

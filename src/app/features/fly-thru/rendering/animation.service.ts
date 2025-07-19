@@ -87,8 +87,8 @@ export class AnimationService {
       requestAnimationFrame(render);
     };
     this.renderService.prepareToRender();
-    // Kick off the animation loop.
-    // TODO: Look for a better way to draw first frame after the viewport and projection are set.
+    // Kick off the animation loop. Scheduled so the resize handler can 
+    // set viewport and projection before first frame is rendered.
     setTimeout(() => requestAnimationFrame(render));
   }
 

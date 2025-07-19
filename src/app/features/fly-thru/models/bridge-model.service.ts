@@ -72,9 +72,6 @@ export class BridgeModelService {
   ) {}
 
   public createForCurrentAnalysis(): BridgeMeshData {
-    // TODO: Temporary for testing as colored mesh. Revise instance shader so color refs are per instance.
-    const materialRefs = new Uint16Array(this.bridgeService.bridge.members.length);
-    materialRefs.fill(Material.CorrogatedMetal);
     const trussOffset = this.bridgeService.trussCenterlineOffset;
     const okForCrossBraces = this.bridgeService.membersNotTransectingRoadwayClearance;
     const jointLocations = this.simlulationStateService.interpolator.getAllDisplacedJointLocations(
@@ -123,7 +120,7 @@ export class BridgeModelService {
   }
 
   /** Update the model transforms in the given bridge mesh data for current joint positions. */
-  public updateForCurrentJointLocations(bridgeMeshData: BridgeMeshData) {
+  public updateForCurrentJointLocations(bridgeMeshData: BridgeMeshData): void {
     const jointLocations = this.simlulationStateService.interpolator.getAllDisplacedJointLocations(
       this.jointLocationsTmp,
     );
@@ -187,10 +184,29 @@ export class BridgeModelService {
     const halfWidth = BridgeModelService.DECK_BEAM_HALF_WIDTH;
     const height = SiteConstants.DECK_TOP_HEIGHT - this.bridgeService.designConditions.deckThickness;
     for (let i = 0, i2 = 0, offset = 0; i < deckJointCount; ++i, i2 += 2, offset += 16) {
+      // Average deck panel axis vectors for z-rotation. 
       const jointX = jointLocations[i2];
       const jointY = jointLocations[i2 + 1];
       const m = out.subarray(offset, offset + 16);
+      let rotationDx = 0;
+      let rotationDy = 0;
+      if (i > 0) {
+        const dx = jointX - jointLocations[i2 - 2];
+        const dy = jointY - jointLocations[i2 - 1];
+        const s = 1 / Math.hypot(dx, dy);
+        rotationDx += dx * s;
+        rotationDy += dy * s;
+      }
+      if (i < deckJointCount - 1) {
+        const dx = jointLocations[i2 + 2] - jointX;
+        const dy = jointLocations[i2 + 3] - jointY;
+        const s = 1 / Math.hypot(dx, dy);
+        rotationDx += dx * s;
+        rotationDy += dy * s;
+      }
+      // Scale, rotate about joint to deck perpendicular, translate.
       mat4.fromTranslation(m, vec3.set(this.vTmp, jointX, jointY, 0));
+      Geometry.rotateZ(m, m, rotationDy, rotationDx);
       mat4.scale(m, m, vec3.set(this.vTmp, halfWidth, height, SiteConstants.DECK_HALF_WIDTH));
     }
     return out;
@@ -212,12 +228,10 @@ export class BridgeModelService {
       const memberLength = Math.hypot(dx, dy);
       const m = out.subarray(offset, offset + 16);
       const length = i === 0 || i === maxSlabIndex ? memberLength + SiteConstants.DECK_CANTILEVER : memberLength;
-      mat4.fromTranslation(m, vec3.set(this.vTmp, jointAX, jointAY + heightAboveJoint, 0));
+      // Scale, translate up by deck height and left for first panel cantilever, rotate, translate to joint location.
+      mat4.fromTranslation(m, vec3.set(this.vTmp, jointAX, jointAY, 0));
       Geometry.rotateZ(m, m, dy, dx);
-      // Extra shift left for first slab so that extra cantilever rotates around the left joint
-      if (i === 0) {
-        mat4.translate(m, m, vec3.set(this.vTmp, -SiteConstants.DECK_CANTILEVER, 0, 0));
-      }
+      mat4.translate(m, m, vec3.set(this.vTmp, i === 0 ? -SiteConstants.DECK_CANTILEVER : 0, heightAboveJoint, 0));
       mat4.scale(m, m, vec3.set(this.vTmp, length, thickness, SiteConstants.DECK_HALF_WIDTH));
     }
     return out;

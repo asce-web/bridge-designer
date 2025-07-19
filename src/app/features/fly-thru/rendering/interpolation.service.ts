@@ -19,13 +19,21 @@ interface InterpolatorSource {
 
 /** Interpolator between various analysis states to drive the animation. */
 export interface Interpolator {
-  readonly memberForceStrengthRatios: Float32Array;
-  readonly isTestFailed: boolean;
+  /** Interpolation parameter: roughly meters right from the left abutment. */
   readonly parameter: number;
+  /** Whether any member failed during the last parameter advance. */
+  readonly isTestFailed: boolean;
+  /** Which members failed during the last parameter advance. */
   readonly failedMemberMask: BitVector;
+  /** Member force/strength ratios after the last parameter advance. */
+  readonly memberForceStrengthRatios: Float32Array;
+  /** Returns the interpolator advanced to a new parameter value. */
   withParameter(t: number): Interpolator;
+  /** Gets front tire contact and load rotation as a unit vector at current parameter. */
   getLoadPosition(frontOut: vec2, rotationOut: vec2): void;
+  /** Gets the displaced (with exaggeration) joint locations at current parameter. */
   getAllDisplacedJointLocations(out: Float32Array): Float32Array;
+  /** Gets interpolated force on given member at current parameter. Source for cached member status. */
   getMemberForce(index: number): number;
 }
 
@@ -50,7 +58,7 @@ type InterpolatorContext = {
 };
 
 /** Wrapper for interpolation logic that refers to a given source. */
-class AnalysisInterpolator implements Interpolator {
+class SourceInterpolator implements Interpolator {
   // Result buffers.
   private readonly post: CenterlinePost = { elevation: 0, xNormal: 0, yNormal: 1 };
   private readonly tmpJointA = vec2.create();
@@ -58,7 +66,7 @@ class AnalysisInterpolator implements Interpolator {
   private readonly tmpDiff = vec2.create();
   private readonly tmpContext: InterpolatorContext = {} as InterpolatorContext;
 
-  // Member status info is cached here while advancing the parameter to save redundant
+  // Member status info is cached here upon advancing the parameter to save redundant
   // computation across simulation state machine and frame rendering.
   public readonly memberForceStrengthRatios = new Float32Array(DesignConditions.MAX_MEMBER_COUNT);
   public readonly failedMemberMask = new BitVector(DesignConditions.MAX_MEMBER_COUNT);
@@ -76,33 +84,21 @@ class AnalysisInterpolator implements Interpolator {
     return this.setContextForParameter(this.ctx, t).updateMemberFailureStatus();
   }
 
+  /** Returns the current parameter value. */
   public get parameter(): number {
     return this.ctx.t;
   }
 
-  public getWayPoint(out: vec2, ctx: InterpolatorContext = this.ctx): vec2 {
-    if (isNaN(ctx.tBridge)) {
-      out[0] = ctx.t;
-      out[1] = this.service.terrainModelService.getRoadCenterlinePostAtX(this.post, ctx.t).elevation;
-    } else {
-      this.getExaggeratedDisplacedJointLocation(this.tmpJointA, ctx.leftLoadCase, ctx);
-      this.getExaggeratedDisplacedJointLocation(this.tmpJointB, ctx.leftLoadCase + 1, ctx);
-      vec2.lerp(out, this.tmpJointA, this.tmpJointB, ctx.tPanel);
-      // Offset result by deck height along the member perpendicular.
-      const diff = this.tmpDiff;
-      vec2.sub(diff, this.tmpJointB, this.tmpJointA);
-      const s = SiteConstants.DECK_TOP_HEIGHT / vec2.length(diff);
-      out[0] -= diff[1] * s;
-      out[1] += diff[0] * s;
-    }
-    return out;
-  }
-
-  /** Finds the front and rear load way points corresponding to the given front one; returns the rear.  */
+  /**
+   *  Finds the way point (truck front wheel contact) and load rotation (to place rear wheels on the road) 
+   * for the current parameter. The rotation vector isn't normalized.
+   */
   public getLoadPosition(frontOut: vec2, rotationOut: vec2): void {
     this.getWayPoint(frontOut);
     // Find a point one truck-length behind the load location by binary search.
     const truckLength = DesignConditions.PANEL_SIZE_WORLD;
+    // Work with squared truck length to avoid square roots.
+    const squaredTruckLength = truckLength * truckLength;
     let t0 = this.ctx.t - truckLength;
     // Use rotation vector as a buffer for the rear point.
     const rear = rotationOut;
@@ -111,14 +107,14 @@ class AnalysisInterpolator implements Interpolator {
       t0 -= truckLength;
       this.setContextForParameter(this.tmpContext, t0);
       this.getWayPoint(rear, this.tmpContext);
-    } while (frontOut[0] - rear[0] < truckLength);
+    } while (Geometry.distanceSquared2D(frontOut[0], frontOut[1], rear[0], rear[1]) < squaredTruckLength);
     let t1 = this.ctx.t;
-    const target = truckLength * truckLength;
-    const eps2 = 0.05; // ~half centimeter accuracy
-    const hiLimit = target + eps2;
-    const loLimit = target - eps2;
-    // Bail at a fixed limit for safety e.g. for elevation discontinuities at bridge ends, where no solution may exist.
-    for (let i = 0; i < 20; ++i) {
+    const eps2 = 0.08; // ~1 cm accuracy
+    const hiLimit = squaredTruckLength + eps2;
+    const loLimit = squaredTruckLength - eps2;
+    // Bail at a fixed limit for safety e.g. for elevation discontinuities at bridge ends, where 
+    // no solution may exist.  Since the resulting point is still on the way, it's the best we can do.
+    for (let i = 0; i < 16; ++i) {
       const t = (t0 + t1) * 0.5;
       this.setContextForParameter(this.tmpContext, t);
       this.getWayPoint(rear, this.tmpContext);
@@ -132,18 +128,16 @@ class AnalysisInterpolator implements Interpolator {
       }
     }
     vec2.sub(rotationOut, frontOut, rear);
-    vec2.normalize(rotationOut, rotationOut);
   }
 
   /** Returns the interpolated displaced joint location for the current parameter. Exaggeration is incorporated. */
   public getAllDisplacedJointLocations(out: Float32Array): Float32Array {
     const joints = this.service.bridgeService.bridge.joints;
-    let i2 = 0;
-    for (const joint of joints) {
-      const v = this.getExaggeratedJointDisplacement(this.tmpJointA, joint.index, this.ctx);
+    for (let i = 0, i2 = 0; i < joints.length; ++i, i2 += 2) {
+      const joint = joints[i];
+      const v = this.getExaggeratedJointDisplacement(this.tmpJointA, i);
       out[i2] = v[0] + joint.x;
       out[i2 + 1] = v[1] + joint.y;
-      i2 += 2;
     }
     return out;
   }
@@ -152,12 +146,35 @@ class AnalysisInterpolator implements Interpolator {
     return this.interpolationSource.getMemberForce(index, this.ctx);
   }
 
+  /** 
+   * Returns the current position of the load along its path. An optional context is 
+   * used for fetching position data within the current load case.
+   */
+  private getWayPoint(out: vec2, ctx: InterpolatorContext = this.ctx): vec2 {
+    if (isNaN(ctx.tBridge)) {
+      out[0] = ctx.t;
+      out[1] = this.service.terrainModelService.getRoadCenterlinePostAtX(this.post, ctx.t).elevation;
+    } else {
+      const leftIndex = ctx.leftLoadCase;
+      this.getExaggeratedDisplacedJointLocation(this.tmpJointA, leftIndex);
+      this.getExaggeratedDisplacedJointLocation(this.tmpJointB, leftIndex + 1);
+      vec2.lerp(out, this.tmpJointA, this.tmpJointB, ctx.tPanel);
+      // Offset result by deck height along the member perpendicular.
+      const diff = this.tmpDiff;
+      vec2.sub(diff, this.tmpJointB, this.tmpJointA);
+      const s = SiteConstants.DECK_TOP_HEIGHT / vec2.length(diff);
+      out[0] -= diff[1] * s;
+      out[1] += diff[0] * s;
+    }
+    return out;
+  }
+
   /**
    * Returns the interpolated displaced joint location for given joint index and, by default, the current parameter.
    * An alternate context is optional.
    */
-  private getExaggeratedDisplacedJointLocation(pt: vec2, index: number, ctx: InterpolatorContext = this.ctx): vec2 {
-    this.getExaggeratedJointDisplacement(pt, index, ctx);
+  private getExaggeratedDisplacedJointLocation(pt: vec2, index: number): vec2 {
+    this.getExaggeratedJointDisplacement(pt, index);
     const joint = this.service.bridgeService.bridge.joints[index];
     pt[0] += joint.x;
     pt[1] += joint.y;
@@ -165,7 +182,7 @@ class AnalysisInterpolator implements Interpolator {
   }
 
   /** Fills a wrapper for calculations common to several methods. */
-  private setContextForParameter(ctx: InterpolatorContext, t: number): AnalysisInterpolator {
+  private setContextForParameter(ctx: InterpolatorContext, t: number): SourceInterpolator {
     const leftmostJointX = this.getExaggeratedJointDisplacementXForDeadLoadOnly(0);
     const panelIndexMax = this.service.bridgeService.designConditions.loadedJointCount - 1;
     const rightmostJointX = this.getExaggeratedJointDisplacementXForDeadLoadOnly(panelIndexMax);
@@ -187,7 +204,7 @@ class AnalysisInterpolator implements Interpolator {
     return this;
   }
 
-  private updateMemberFailureStatus(): AnalysisInterpolator {
+  private updateMemberFailureStatus(): SourceInterpolator {
     const members = this.service.bridgeService.bridge.members;
     this.isTestFailed = false;
     this.failedMemberMask.clearAll();
@@ -207,8 +224,8 @@ class AnalysisInterpolator implements Interpolator {
     return this;
   }
 
-  private getExaggeratedJointDisplacement(out: vec2, index: number, ctx: InterpolatorContext): vec2 {
-    this.interpolationSource.getJointDisplacement(out, index, ctx);
+  private getExaggeratedJointDisplacement(out: vec2, index: number): vec2 {
+    this.interpolationSource.getJointDisplacement(out, index, this.ctx);
     return vec2.scale(out, out, this.service.parametersService.exaggeration);
   }
 
@@ -235,15 +252,15 @@ class CollapseInterpolator implements Interpolator {
     private readonly service: InterpolationService,
     private readonly failedInterpolator: Interpolator,
   ) {
-    // base source
+    // Base source
     const failedAnalysisAdapter = new AnalysisInterpolationSourceAdapter(this.service.analysisService);
-    // dummy source
+    // Dummy source
     const collapsedAnalysisAdapter = new AnalysisInterpolationSourceAdapter(this.service.collapseAnalysisService);
-    // bi-interpolation source for positions
+    // Bi-interpolation source for positions
     this.collapseSource = new BiInterpolatorSource(failedAnalysisAdapter, collapsedAnalysisAdapter);
-    // bi-interpolator frozen at the failure point
+    // Bi-interpolator for positions with parameter frozen at the failure point
     const t = failedInterpolator.parameter;
-    this.interpolator = new AnalysisInterpolator(service, this.collapseSource).withParameter(t);
+    this.interpolator = new SourceInterpolator(service, this.collapseSource).withParameter(t);
   }
 
   public get memberForceStrengthRatios(): Float32Array {
@@ -349,6 +366,7 @@ class BiInterpolatorSource implements InterpolatorSource {
   }
 }
 
+/** Container for various kinds of interpolators. */
 @Injectable({ providedIn: 'root' })
 export class InterpolationService {
   /** An interpolation source simulating a bridge with no loads applied, including dead loads. */
@@ -366,19 +384,20 @@ export class InterpolationService {
     readonly terrainModelService: TerrainModelService,
   ) {}
 
-  /** Creates an interpolator for the given analysis service, which defaults to the current analysis. */
+  /** Creates an interpolator between load cases of the current analysis. */
   public createAnalysisInterpolator(): Interpolator {
     const sourceAdapter = new AnalysisInterpolationSourceAdapter(this.analysisService);
-    return new AnalysisInterpolator(this, sourceAdapter);
+    return new SourceInterpolator(this, sourceAdapter);
   }
 
+  /** Creates an interpolator between zero and dead load conditions with given load location. */
   public createDeadLoadingInterpolator(t: number): Interpolator {
     const sourceAdapter = new AnalysisInterpolationSourceAdapter(this.analysisService);
     const deadLoadingSource = new BiInterpolatorSource(
       InterpolationService.ZERO_FORCE_INTERPOLATION_SOURCE,
       sourceAdapter,
     );
-    const interpolator = new AnalysisInterpolator(this, deadLoadingSource).withParameter(t);
+    const interpolator = new SourceInterpolator(this, deadLoadingSource).withParameter(t);
     // Monkey patch the interpolator's parameter setter to operate on the bi-source.
     const interpolatorWithParameter = interpolator.withParameter.bind(interpolator);
     interpolator.withParameter = tSource => {
@@ -389,6 +408,10 @@ export class InterpolationService {
     return interpolator;
   }
 
+  /**
+   * From the given failed analysis interpolator, creates an interpolator
+   * between it and a dummy collapsed analysis with the same parameter value.
+   */
   public createCollapseInterpolator(failedInterpolator: Interpolator): Interpolator {
     return new CollapseInterpolator(this, failedInterpolator);
   }
