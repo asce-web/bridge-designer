@@ -47,7 +47,7 @@ export class DesignIteration {
   }
 
   get status(): AnalysisStatus {
-    return this._status || AnalysisStatus.NONE;
+    return this._status ?? AnalysisStatus.NONE;
   }
 
   // UI tree widget item data

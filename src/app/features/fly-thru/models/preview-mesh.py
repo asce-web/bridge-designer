@@ -47,14 +47,6 @@ def getTriangleIndices(i):
     return (INDICES[p], INDICES[p + 1], INDICES[p + 2])
 
 
-def vpx(x):
-    return (x + 1) * 500
-
-
-def vpy(y):
-    return 1000 - (y + 1) * 500
-
-
 def rotX(a):
     c = math.cos(a)
     s = math.sin(a)
@@ -131,14 +123,6 @@ def mulAll(l):
 
 def mulVec(a, x):
     return (dot(a[0], x), dot(a[1], x), dot(a[2], x), dot(a[3], x))
-
-
-def tx(x):
-    return (x + 1) * 500
-
-
-def ty(y):
-    return 1000 - (y + 1) * 500
 
 
 def ptsToArray(d):

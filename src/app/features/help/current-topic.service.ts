@@ -59,7 +59,7 @@ export class CurrentTopicService {
       stack.push({ topicId: this._currentTopicId, scrollTop: this.scrollTopCallback() });
     }
     this._currentTopicId = id;
-    this.currentTopicIdChange.next({ scrollTop: options?.scrollTop || 0, topicId: id });
+    this.currentTopicIdChange.next({ scrollTop: options?.scrollTop ?? 0, topicId: id });
   }
 
   /** Goes back one topic if there's one stacked. */

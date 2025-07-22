@@ -51,7 +51,7 @@ export class TruckRenderingService {
     mat4.translate(m, m, vec3.set(this.offset, truckPosition[0], truckPosition[1], 0));
     Geometry.rotateZ(m, m, truckRotation[1], truckRotation[0]);
     // Tire diameter is 1. A rotation through 2pi radians covers distance pi.
-    const wheelRotation = -2 * truckPosition[0];
+    const wheelRotation = 2 * truckPosition[0];
 
     const wheelbaseOffset = -4;
 
@@ -59,7 +59,7 @@ export class TruckRenderingService {
     m = this.uniformService.pushModelMatrix();
 
     mat4.translate(m, m, vec3.set(this.offset, 0, 0.5, 0.95));
-    mat4.rotateZ(m, m, wheelRotation);
+    mat4.rotateZ(m, m, -wheelRotation);
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
     this.meshRenderingService.renderColoredMesh(this.wheelMesh);
 
@@ -69,7 +69,7 @@ export class TruckRenderingService {
     m = this.uniformService.pushModelMatrix();
 
     mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, 1.05));
-    mat4.rotateZ(m, m, wheelRotation);
+    mat4.rotateZ(m, m, -wheelRotation);
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
     this.meshRenderingService.renderColoredMesh(this.dualWheelMesh);
 

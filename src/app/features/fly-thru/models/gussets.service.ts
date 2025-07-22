@@ -51,7 +51,7 @@ function buildMemberGeometry(gussetJoint: Joint, member: Member): MemberGeometry
   return { x0, y0, x1, y1, x2, y2, ux, uy, upx, upy, halfSizeM };
 }
 
-export type GussetModel = {
+export type Gusset = {
   joint: Joint;
   memberGeometries?: MemberGeometry[]; // Temporary accumulator deleted after gusset is complete.
   /** Convex hull with origin at the joint. */
@@ -68,9 +68,9 @@ export class GussetsService {
   ) {}
 
   /** Builds one gusset per joint in the current bridge. */
-  public get gussets(): GussetModel[] {
+  public get gussets(): Gusset[] {
     // Make one gusset per joint.
-    const gussets: GussetModel[] = this.bridgeService.bridge.joints.map(joint => {
+    const gussets: Gusset[] = this.bridgeService.bridge.joints.map(joint => {
       return {
         joint,
         memberGeometries: [],

@@ -11,7 +11,7 @@ import { DECK_SLAB_MESH_DATA } from './deck-slab';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { SimulationStateService } from '../rendering/simulation-state.service';
 import { GlService } from '../rendering/gl.service';
-import { GussetModel as Gusset, GussetsService } from './gussets.service';
+import { Gusset, GussetsService } from './gussets.service';
 import { TRUSS_PIN_MESH_DATA } from './truss-pin';
 import { MEMBER_MESH_DATA } from './member';
 
@@ -68,20 +68,21 @@ export class BridgeModelService {
     private readonly bridgeService: BridgeService,
     private readonly glService: GlService,
     private readonly gussetService: GussetsService,
-    private readonly simlulationStateService: SimulationStateService,
+    private readonly simulationStateService: SimulationStateService,
   ) {}
 
-  public createForCurrentAnalysis(): BridgeMeshData {
-    const trussOffset = this.bridgeService.trussCenterlineOffset;
-    const okForCrossBraces = this.bridgeService.membersNotTransectingRoadwayClearance;
-    const jointLocations = this.simlulationStateService.interpolator.getAllDisplacedJointLocations(
+  /** Creates mesh data for the current bridge. */
+  public createForCurrentBridge(): BridgeMeshData {
+    const trussCenterlineOffset = this.bridgeService.trussCenterlineOffset;
+    const membersNotTransectingRoadwayClearance = this.bridgeService.membersNotTransectingRoadwayClearance;
+    const jointLocations = this.simulationStateService.interpolator.getAllDisplacedJointLocations(
       this.jointLocationsTmp,
     );
     const gussets = this.gussetService.gussets;
     const gl = this.glService.gl;
     return {
       memberMeshData: {
-        instanceModelTransforms: this.buildMemberInstanceTransforms(undefined, jointLocations, trussOffset),
+        instanceModelTransforms: this.buildMemberInstanceTransforms(undefined, jointLocations, trussCenterlineOffset),
         instanceColors: this.buildMemberInstanceColors(undefined),
         usage: { instanceModelTransforms: gl.STREAM_DRAW, instanceColors: gl.STREAM_DRAW },
         ...MEMBER_MESH_DATA,
@@ -103,8 +104,8 @@ export class BridgeModelService {
         instanceModelTransforms: this.buildWireInstanceTransforms(
           undefined,
           jointLocations,
-          trussOffset,
-          okForCrossBraces,
+          trussCenterlineOffset,
+          membersNotTransectingRoadwayClearance,
         ),
         usage: { instanceModelTransforms: gl.STREAM_DRAW },
       },
@@ -114,42 +115,48 @@ export class BridgeModelService {
         ...TRUSS_PIN_MESH_DATA,
       },
       gussets,
-      trussCenterlineOffset: trussOffset,
-      membersNotTransectingRoadwayClearance: okForCrossBraces,
+      trussCenterlineOffset,
+      membersNotTransectingRoadwayClearance,
     };
   }
 
-  /** Update the model transforms in the given bridge mesh data for current joint positions. */
-  public updateForCurrentJointLocations(bridgeMeshData: BridgeMeshData): void {
-    const jointLocations = this.simlulationStateService.interpolator.getAllDisplacedJointLocations(
-      this.jointLocationsTmp,
-    );
-    this.buildMemberInstanceTransforms(
-      bridgeMeshData.memberMeshData.instanceModelTransforms,
-      jointLocations,
-      bridgeMeshData.trussCenterlineOffset,
-    );
-    this.buildMemberInstanceColors(bridgeMeshData.memberMeshData.instanceColors);
-    this.buildDeckBeamInstanceTransforms(bridgeMeshData.deckBeamMeshData.instanceModelTransforms, jointLocations);
-    this.buildDeckSlabInstanceTransforms(bridgeMeshData.deckSlabMeshData.instanceModelTransforms, jointLocations);
-    this.buildWireInstanceTransforms(
-      bridgeMeshData.stiffeningWireData.instanceModelTransforms,
-      jointLocations,
-      bridgeMeshData.trussCenterlineOffset,
-      bridgeMeshData.membersNotTransectingRoadwayClearance,
-    );
-    this.buildPinInstanceModelTransforms(
-      bridgeMeshData.pinMeshData.instanceModelTransforms,
-      jointLocations,
-      bridgeMeshData.gussets,
-    );
-    for (let i = 0; i < bridgeMeshData.gussetMeshData.length; ++i) {
-      this.buildGussetInstanceModelTransforms(
-        bridgeMeshData.gussetMeshData[i].instanceModelTransforms,
-        bridgeMeshData.gussets[i],
-        jointLocations,
-      );
+  public buildMemberInstanceTransforms(
+    transformsOut: Float32Array | undefined,
+    jointLocations: Float32Array,
+    trussCenterlineOffset: number,
+  ): Float32Array {
+    const members = this.bridgeService.bridge.members;
+    const failed = this.simulationStateService.interpolator.failedMemberMask;
+    transformsOut ||= new Float32Array(members.length * 32);
+    let offset = 0;
+    for (let i = 0; i < members.length; ++i) {
+      if (failed.getBit(i)) {
+        continue;
+      }
+      const member = members[i];
+      const i2a = 2 * member.a.index;
+      const jointAX = jointLocations[i2a];
+      const jointAY = jointLocations[i2a + 1];
+      const i2b = 2 * member.b.index;
+      const jointBX = jointLocations[i2b];
+      const jointBY = jointLocations[i2b + 1];
+      const length = Geometry.distance2D(jointAX, jointAY, jointBX, jointBY);
+      // All but the z-translation to edge or roadway.
+      mat4.fromTranslation(this.mTmp, vec3.set(this.vTmp, jointAX, jointAY, 0));
+      Geometry.rotateX(this.mTmp, this.mTmp, jointBY - jointAY, jointBX - jointAX);
+      const sizeM = member.materialSizeMm * 0.001;
+      mat4.scale(this.mTmp, this.mTmp, vec3.set(this.vTmp, length, sizeM, sizeM));
+      // Front instance.
+      const mFront = transformsOut.subarray(offset, offset + 16);
+      mat4.copy(mFront, this.mTmp);
+      mFront[14] += trussCenterlineOffset;
+      // Rear instance.
+      const mRear = transformsOut.subarray(offset + 16, offset + 32);
+      mat4.copy(mRear, this.mTmp);
+      mRear[14] -= trussCenterlineOffset;
+      offset += 32;
     }
+    return transformsOut;
   }
 
   /**
@@ -157,37 +164,42 @@ export class BridgeModelService {
    * Blue is tension. Neutral gray is zero force. Bright color means failure is close.
    */
   public buildMemberInstanceColors(colorsOut: Float32Array | undefined): Float32Array {
-    const forceStrengthRatios = this.simlulationStateService.interpolator.memberForceStrengthRatios;
+    const forceStrengthRatios = this.simulationStateService.interpolator.memberForceStrengthRatios;
     const members = this.bridgeService.bridge.members;
+    const failed = this.simulationStateService.interpolator.failedMemberMask;
     colorsOut ||= new Float32Array(members.length * 6);
-    for (let i = 0, offset = 0; i < members.length; ++i, offset += 6) {
+    for (let i = 0, offset = 0; i < members.length; ++i) {
+      if (failed.getBit(i)) {
+        continue;
+      }
       const ratio = forceStrengthRatios[i];
       const colors = colorsOut.subarray(offset, offset + 6);
       if (ratio < 0) {
         // compression: interpolate between neutral gray and pure red
-        const clampedRatio = Math.min(1, -ratio);
+        const clampedRatio = 0.5 * Math.min(1, -ratio);
         colors[0] = colors[3] = 0.5 + clampedRatio;
         colors[1] = colors[4] = colors[2] = colors[5] = 0.5 - clampedRatio;
       } else {
         // tension; interpolate between neutral gray and pure blue
-        const clampedRatio = Math.min(1, ratio);
+        const clampedRatio = 0.5 * Math.min(1, ratio);
         colors[2] = colors[5] = 0.5 + clampedRatio;
         colors[0] = colors[3] = colors[1] = colors[4] = 0.5 - clampedRatio;
       }
+      offset += 6;
     }
     return colorsOut;
   }
 
-  private buildDeckBeamInstanceTransforms(out: Float32Array | undefined, jointLocations: Float32Array): Float32Array {
+  public buildDeckBeamInstanceTransforms(transformsOut: Float32Array | undefined, jointLocations: Float32Array): Float32Array {
     const deckJointCount = this.bridgeService.designConditions.loadedJointCount;
-    out ||= new Float32Array(deckJointCount * 16);
+    transformsOut ||= new Float32Array(deckJointCount * 16);
     const halfWidth = BridgeModelService.DECK_BEAM_HALF_WIDTH;
     const height = SiteConstants.DECK_TOP_HEIGHT - this.bridgeService.designConditions.deckThickness;
     for (let i = 0, i2 = 0, offset = 0; i < deckJointCount; ++i, i2 += 2, offset += 16) {
-      // Average deck panel axis vectors for z-rotation. 
+      // Average deck panel axis vectors for z-rotation.
       const jointX = jointLocations[i2];
       const jointY = jointLocations[i2 + 1];
-      const m = out.subarray(offset, offset + 16);
+      const m = transformsOut.subarray(offset, offset + 16);
       let rotationDx = 0;
       let rotationDy = 0;
       if (i > 0) {
@@ -209,12 +221,12 @@ export class BridgeModelService {
       Geometry.rotateZ(m, m, rotationDy, rotationDx);
       mat4.scale(m, m, vec3.set(this.vTmp, halfWidth, height, SiteConstants.DECK_HALF_WIDTH));
     }
-    return out;
+    return transformsOut;
   }
 
-  public buildDeckSlabInstanceTransforms(out: Float32Array | undefined, jointLocations: Float32Array): Float32Array {
+  public buildDeckSlabInstanceTransforms(transformsOut: Float32Array | undefined, jointLocations: Float32Array): Float32Array {
     const slabCount = this.bridgeService.designConditions.panelCount;
-    out ||= new Float32Array(slabCount * 16);
+    transformsOut ||= new Float32Array(slabCount * 16);
     const maxSlabIndex = slabCount - 1;
     const thickness = this.bridgeService.designConditions.deckThickness;
     const heightAboveJoint = SiteConstants.DECK_TOP_HEIGHT - this.bridgeService.designConditions.deckThickness;
@@ -226,7 +238,7 @@ export class BridgeModelService {
       const dx = jointBX - jointAX;
       const dy = jointBY - jointAY;
       const memberLength = Math.hypot(dx, dy);
-      const m = out.subarray(offset, offset + 16);
+      const m = transformsOut.subarray(offset, offset + 16);
       const length = i === 0 || i === maxSlabIndex ? memberLength + SiteConstants.DECK_CANTILEVER : memberLength;
       // Scale, translate up by deck height and left for first panel cantilever, rotate, translate to joint location.
       mat4.fromTranslation(m, vec3.set(this.vTmp, jointAX, jointAY, 0));
@@ -234,51 +246,20 @@ export class BridgeModelService {
       mat4.translate(m, m, vec3.set(this.vTmp, i === 0 ? -SiteConstants.DECK_CANTILEVER : 0, heightAboveJoint, 0));
       mat4.scale(m, m, vec3.set(this.vTmp, length, thickness, SiteConstants.DECK_HALF_WIDTH));
     }
-    return out;
+    return transformsOut;
   }
 
-  private buildMemberInstanceTransforms(
-    out: Float32Array | undefined,
-    jointLocations: Float32Array,
-    trussCenterlineOffset: number,
-  ): Float32Array {
-    const members = this.bridgeService.bridge.members;
-    out ||= new Float32Array(members.length * 32);
-    for (let i = 0, offset = 0; i < members.length; ++i, offset += 32) {
-      const member = members[i];
-      const i2a = 2 * member.a.index;
-      const jointAX = jointLocations[i2a];
-      const jointAY = jointLocations[i2a + 1];
-      const i2b = 2 * member.b.index;
-      const jointBX = jointLocations[i2b];
-      const jointBY = jointLocations[i2b + 1];
-      const length = Geometry.distance2D(jointAX, jointAY, jointBX, jointBY);
-      // All but the z-translation to edge or roadway.
-      mat4.fromTranslation(this.mTmp, vec3.set(this.vTmp, jointAX, jointAY, 0));
-      Geometry.rotateX(this.mTmp, this.mTmp, jointBY - jointAY, jointBX - jointAX);
-      const sizeM = member.materialSizeMm * 0.001;
-      mat4.scale(this.mTmp, this.mTmp, vec3.set(this.vTmp, length, sizeM, sizeM));
-      // Front instance.
-      const mFront = out.subarray(offset, offset + 16);
-      mat4.copy(mFront, this.mTmp);
-      mFront[14] += trussCenterlineOffset;
-      // Rear instance.
-      const mRear = out.subarray(offset + 16, offset + 32);
-      mat4.copy(mRear, this.mTmp);
-      mRear[14] -= trussCenterlineOffset;
-    }
-    return out;
-  }
-
-  private buildWireInstanceTransforms(
-    out: Float32Array | undefined,
+  public buildWireInstanceTransforms(
+    transformsOut: Float32Array | undefined,
     jointLocations: Float32Array,
     trussCenterlineOffset: number,
     okMembers: BitVector,
   ): Float32Array {
     const members = this.bridgeService.bridge.members;
-    out ||= new Float32Array(members.length * 16);
-    for (let i = 0, offset = 0; i < members.length; ++i, offset += 16) {
+    // Allocate a buffer ignoring okMembers and return a subarray.
+    const out = transformsOut || new Float32Array(members.length * 16);
+    let offset = 0;
+    for (let i = 0; i < members.length; ++i) {
       if (!okMembers.getBit(i)) {
         continue;
       }
@@ -294,24 +275,22 @@ export class BridgeModelService {
       mat4.fromTranslation(m, vec3.set(this.vTmp, jointAX, jointAY, -trussCenterlineOffset));
       Geometry.rotateX(m, m, jointBY - jointAY, jointBX - jointAX);
       mat4.scale(m, m, vec3.set(this.vTmp, length, 1, 2 * trussCenterlineOffset));
+      offset += 16
     }
-    return out;
+    return transformsOut ?? out.subarray(0, offset);
   }
 
-  private buildPinInstanceModelTransforms(
-    out: Float32Array | undefined,
+  public buildPinInstanceModelTransforms(
+    outTransforms: Float32Array | undefined,
     jointLocations: Float32Array,
     gussets: Gusset[],
   ): Float32Array {
     const centerOffset = this.bridgeService.trussCenterlineOffset;
     const joints = this.bridgeService.bridge.joints;
-    // TODO: Replace with simple loop since it runs for each frame.
-    const nonInterferingJointCount = joints.reduce<number>(
-      (count, joint) => (BridgeService.isJointClearOfRoadway(joint) ? count + 1 : count),
-      0,
-    );
-    out ||= new Float32Array(nonInterferingJointCount * 16);
-    for (let i = 0, offset = 0; i < joints.length; ++i) {
+    // Allocate a buffer ignoring roadway clearance and return a subarray.
+    const out = outTransforms || new Float32Array(joints.length * 16);
+    let offset = 0;
+    for (let i = 0; i < joints.length; ++i) {
       const gusset = gussets[i];
       if (!BridgeService.isJointClearOfRoadway(gusset.joint)) {
         continue;
@@ -325,7 +304,24 @@ export class BridgeModelService {
       mat4.fromTranslation(m, vec3.set(this.vTmp, jointX, jointY, 0));
       mat4.scale(m, m, vec3.set(this.vTmp, 0.6, 0.6, halfLength));
     }
-    return out;
+    return outTransforms || out.subarray(0, offset);
+  }
+
+  public buildGussetInstanceModelTransforms(
+    transformsOut: Float32Array | undefined,
+    gusset: Gusset,
+    jointLocations: Float32Array,
+  ): Float32Array {
+    transformsOut ||= new Float32Array(32);
+    const centerOffset = this.bridgeService.trussCenterlineOffset;
+    const i2 = 2 * gusset.joint.index;
+    const jointX = jointLocations[i2];
+    const jointY = jointLocations[i2 + 1];
+    const mNegativeZ = transformsOut.subarray(0, 16);
+    mat4.fromTranslation(mNegativeZ, vec3.set(this.vTmp, jointX, jointY, -centerOffset));
+    const mPositiveZ = transformsOut.subarray(16, 32);
+    mat4.fromTranslation(mPositiveZ, vec3.set(this.vTmp, jointX, jointY, centerOffset));
+    return transformsOut;
   }
 
   /** Builds colored mesh data with two instance positioning matrices, back and front. */
@@ -427,22 +423,5 @@ export class BridgeModelService {
     }
     const instanceModelTransforms = this.buildGussetInstanceModelTransforms(undefined, gusset, jointLocations);
     return { positions, normals, materialRefs, instanceModelTransforms, indices };
-  }
-
-  private buildGussetInstanceModelTransforms(
-    out: Float32Array | undefined,
-    gusset: Gusset,
-    jointLocations: Float32Array,
-  ): Float32Array {
-    out ||= new Float32Array(32);
-    const centerOffset = this.bridgeService.trussCenterlineOffset;
-    const i2 = 2 * gusset.joint.index;
-    const jointX = jointLocations[i2];
-    const jointY = jointLocations[i2 + 1];
-    const mNegativeZ = out.subarray(0, 16);
-    mat4.fromTranslation(mNegativeZ, vec3.set(this.vTmp, jointX, jointY, -centerOffset));
-    const mPositiveZ = out.subarray(16, 32);
-    mat4.fromTranslation(mPositiveZ, vec3.set(this.vTmp, jointX, jointY, centerOffset));
-    return out;
   }
 }

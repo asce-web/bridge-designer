@@ -21,8 +21,8 @@ interface InterpolatorSource {
 export interface Interpolator {
   /** Interpolation parameter: roughly meters right from the left abutment. */
   readonly parameter: number;
-  /** Whether any member failed during the last parameter advance. */
-  readonly isTestFailed: boolean;
+  /** Count of members failed during the last parameter advance. */
+  readonly failedMemberCount: number;
   /** Which members failed during the last parameter advance. */
   readonly failedMemberMask: BitVector;
   /** Member force/strength ratios after the last parameter advance. */
@@ -70,7 +70,7 @@ class SourceInterpolator implements Interpolator {
   // computation across simulation state machine and frame rendering.
   public readonly memberForceStrengthRatios = new Float32Array(DesignConditions.MAX_MEMBER_COUNT);
   public readonly failedMemberMask = new BitVector(DesignConditions.MAX_MEMBER_COUNT);
-  public isTestFailed: boolean = false;
+  public failedMemberCount: number = 0;
 
   private readonly ctx: InterpolatorContext = {} as InterpolatorContext;
 
@@ -206,7 +206,7 @@ class SourceInterpolator implements Interpolator {
 
   private updateMemberFailureStatus(): SourceInterpolator {
     const members = this.service.bridgeService.bridge.members;
-    this.isTestFailed = false;
+    this.failedMemberCount = 0
     this.failedMemberMask.clearAll();
     for (let i = 0; i < members.length; ++i) {
       const force = this.getMemberForce(i);
@@ -217,7 +217,7 @@ class SourceInterpolator implements Interpolator {
       const ratio = force / strength;
       this.memberForceStrengthRatios[i] = ratio;
       if (Math.abs(ratio) > 1) {
-        this.isTestFailed = true;
+        this.failedMemberCount++;
         this.failedMemberMask.setBit(i);
       }
     }
@@ -285,8 +285,8 @@ class CollapseInterpolator implements Interpolator {
     return this.interpolator.getAllDisplacedJointLocations(out);
   }
 
-  public get isTestFailed(): boolean {
-    return this.failedInterpolator.isTestFailed;
+  public get failedMemberCount(): number {
+    return this.failedInterpolator.failedMemberCount;
   }
 
   public get failedMemberMask(): BitVector {

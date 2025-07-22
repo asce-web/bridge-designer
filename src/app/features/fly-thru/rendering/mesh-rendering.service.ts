@@ -41,13 +41,15 @@ export type Mesh = {
   positionBuffer?: WebGLBuffer;
   normalBuffer?: WebGLBuffer;
   materialRefBuffer?: WebGLBuffer;
-  instanceColorBuffer?: WebGLBuffer;
   texture?: WebGLTexture;
   textureUniformLocation?: WebGLUniformLocation;
   texCoordBuffer?: WebGLBuffer;
   instanceModelTransformBuffer?: WebGLBuffer;
-  // Instance count inferred from mesh data instanceModelTransforms, if any.
+  instanceModelTransforms?: Float32Array; // Backing data.
+  instanceColorBuffer?: WebGLBuffer;
+  instanceColors?: Float32Array; // Backing data.
   instanceCount?: number;
+  instanceLimit?: number;
 };
 
 export type WireData = {
@@ -67,10 +69,12 @@ export type Wire = {
   vertexArray: WebGLVertexArrayObject;
   indexBuffer: WebGLBuffer;
   elementCount: number;
-  instanceCount?: number;
   positionBuffer: WebGLBuffer;
   directionBuffer: WebGLBuffer;
   instanceModelTransformBuffer?: WebGLBuffer;
+  instanceModelTransforms?: Float32Array; // Backing data.
+  instanceCount?: number;
+  instanceLimit?: number;
 };
 
 /** Container for the WebGL details of rendering meshes: one-time preparation and per-frame drawing. */
@@ -82,8 +86,8 @@ export class MeshRenderingService {
     private readonly shaderService: ShaderService,
   ) {}
 
-  /** Prepares a colored mesh for drawing. */
-  public prepareColoredMesh(meshData: MeshData): Mesh {
+  /** Prepares a colored mesh for drawing. Optionially retains backing data for future updates. */
+  public prepareColoredMesh(meshData: MeshData, updatable: boolean = false): Mesh {
     const gl = this.glService.gl;
 
     const vertexArray = gl.createVertexArray()!;
@@ -121,7 +125,7 @@ export class MeshRenderingService {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
 
-    return {
+    const mesh: Mesh = {
       vertexArray,
       indexBuffer,
       elementCount,
@@ -132,6 +136,11 @@ export class MeshRenderingService {
       instanceColorBuffer,
       instanceModelTransformBuffer,
     };
+    if (updatable) {
+      mesh.instanceModelTransforms = meshData.instanceModelTransforms;
+      mesh.instanceColors = meshData.instanceColors;
+    }
+    return mesh;
   }
 
   /** Renders a previously prepared color facet mesh.  */
@@ -149,7 +158,13 @@ export class MeshRenderingService {
     gl.bindVertexArray(mesh.vertexArray);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
     if (mesh.instanceCount) {
-      gl.drawElementsInstanced(gl.TRIANGLES, mesh.elementCount, gl.UNSIGNED_SHORT, 0, mesh.instanceCount);
+      gl.drawElementsInstanced(
+        gl.TRIANGLES,
+        mesh.elementCount,
+        gl.UNSIGNED_SHORT,
+        0,
+        mesh.instanceLimit ?? mesh.instanceCount,
+      );
     } else {
       gl.drawElements(gl.TRIANGLES, mesh.elementCount, gl.UNSIGNED_SHORT, 0);
     }
@@ -157,6 +172,7 @@ export class MeshRenderingService {
     gl.bindVertexArray(null);
   }
 
+  /** Prepares a colored mesh for drawing. Not updateable.. */
   public prepareTexturedMesh(meshData: MeshData, textureUrl: string, preloadColor: Uint8Array): Mesh {
     const gl = this.glService.gl;
 
@@ -172,11 +188,13 @@ export class MeshRenderingService {
     );
     const texture = this.prepareTexture(textureUrl, preloadColor);
 
-    let programName = 'textured_mesh';
-    let instanceCount = 0;
+    let programName, instanceCount;
     if (meshData.instanceModelTransforms) {
       programName = 'textured_mesh_instances';
       instanceCount = meshData.instanceModelTransforms.length / 16;
+    } else {
+      programName = 'textured_mesh';
+      instanceCount = 0;
     }
     const program = this.shaderService.getProgram(programName);
     const textureUniformLocation = gl.getUniformLocation(program, 'meshTexture')!;
@@ -218,21 +236,19 @@ export class MeshRenderingService {
   }
 
   /**
-   * Replaces the instancce transform data of the given mesh.
+   * Replaces the instance transform data of the given mesh.
    * It will often be convenient to update and resend meshData.instanceModelTransforms.
    */
-  public updateInstanceModelTransforms(
-    meshOrWire: Mesh | Wire,
-    data: ArrayBufferView,
-    usage: number = this.glService.gl.STREAM_DRAW,
-  ): void {
-    if (!meshOrWire.instanceModelTransformBuffer) {
-      return;
+  public updateInstanceModelTransforms(meshOrWire: Mesh | Wire, usage: number = this.glService.gl.STREAM_DRAW): void {
+    if (!meshOrWire.instanceModelTransforms) {
+      return; // Not updateable
     }
     const gl = this.glService.gl;
     gl.bindVertexArray(meshOrWire.vertexArray);
-    gl.bindBuffer(gl.ARRAY_BUFFER, meshOrWire.instanceModelTransformBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, data, usage, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, meshOrWire.instanceModelTransformBuffer!);
+    // Replace all data even if there's a limit because subdata updates are said to hinder GPU parallelism.
+    // TODO: Experiment to see if this is true or makes any difference.
+    gl.bufferData(gl.ARRAY_BUFFER, meshOrWire.instanceModelTransforms, usage, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
   }
@@ -241,18 +257,15 @@ export class MeshRenderingService {
    * Replaces the instancce colors of the given mesh.
    * It will often be convenient to update and resend meshData.instanceColors.
    */
-  public updateInstanceColors(
-    mesh: Mesh,
-    data: ArrayBufferView,
-    usage: number = this.glService.gl.STREAM_DRAW,
-  ): void {
-    if (!mesh.instanceColorBuffer) {
-      return;
+  public updateInstanceColors(mesh: Mesh, usage: number = this.glService.gl.STREAM_DRAW): void {
+    if (!mesh.instanceColors) {
+      return; // Not updateable
     }
     const gl = this.glService.gl;
     gl.bindVertexArray(mesh.vertexArray);
-    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.instanceColorBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, data, usage, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.instanceColorBuffer!);
+    // See comment in updateInstanceModelTransforms. Same TODO.
+    gl.bufferData(gl.ARRAY_BUFFER, mesh.instanceColors, usage, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
   }
@@ -319,7 +332,7 @@ export class MeshRenderingService {
   }
 
   /** Prepares a wire from given raw data. */
-  public prepareWire(wireData: WireData): Wire {
+  public prepareWire(wireData: WireData, updatable: boolean = false): Wire {
     const gl = this.glService.gl;
 
     const vertexArray = gl.createVertexArray()!;
@@ -335,7 +348,7 @@ export class MeshRenderingService {
     const elementCount = wireData.indices.length;
     const instanceCount = wireData.instanceModelTransforms ? wireData.instanceModelTransforms.length / 16 : 0;
 
-    return {
+    const wire: Wire = {
       vertexArray,
       positionBuffer,
       directionBuffer,
@@ -344,6 +357,10 @@ export class MeshRenderingService {
       instanceCount,
       instanceModelTransformBuffer,
     };
+    if (updatable) {
+      wire.instanceModelTransforms = wireData.instanceModelTransforms;
+    }
+    return wire;
   }
 
   /** Renders the already prepared wire. */

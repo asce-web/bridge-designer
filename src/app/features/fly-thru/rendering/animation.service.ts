@@ -49,22 +49,21 @@ export class AnimationService {
       ++this.frameCount;
       if (!this.frameTickMillis) {
         this.frameTickMillis = nowMillis;
-      } else {
-        if (nowMillis - this.frameTickMillis > 1000) {
-          console.log(
-            'fps:',
-            this.frameCount,
-            'eye:',
-            this.viewService.eye[0].toFixed(1),
-            this.viewService.eye[1].toFixed(1),
-            this.viewService.eye[2].toFixed(1),
-            'render %:',
-            Math.round(this.totalRenderMillis * 0.1) // /1000*100
-          );
-          this.frameTickMillis = nowMillis;
-          this.frameCount = 0;
-          this.totalRenderMillis = 0;
-        }
+      } else if (nowMillis - this.frameTickMillis > 1000) {
+        // TODO: Put this in an overlay div.
+        console.log(
+          'fps:',
+          this.frameCount,
+          'eye:',
+          this.viewService.eye[0].toFixed(1),
+          this.viewService.eye[1].toFixed(1),
+          this.viewService.eye[2].toFixed(1),
+          'render %:',
+          Math.round(this.totalRenderMillis * 0.1), // /1000*100
+        );
+        this.frameTickMillis = nowMillis;
+        this.frameCount = 0;
+        this.totalRenderMillis = 0;
       }
       if (this._state === AnimationState.STOPPED) {
         return; // Skips scheduling next loop iteration.
@@ -79,15 +78,15 @@ export class AnimationService {
       }
       const clockMillis =
         this._state === AnimationState.PAUSED ? this.lastClockMillis : nowMillis - this.clockBaseMillis;
-      const frameStartMillis = window.performance.now();
+      const frameStartMillis = performance.now();
       this.renderService.renderFrame(clockMillis, clockMillis - this.lastClockMillis);
-      this.totalRenderMillis +=  performance.now() - frameStartMillis;
+      this.totalRenderMillis += performance.now() - frameStartMillis;
       this.lastClockMillis = clockMillis;
       // Schedule next loop iteration.
       requestAnimationFrame(render);
     };
     this.renderService.prepareToRender();
-    // Kick off the animation loop. Scheduled so the resize handler can 
+    // Kick off the animation loop. Scheduled so the resize handler can
     // set viewport and projection before first frame is rendered.
     setTimeout(() => requestAnimationFrame(render));
   }

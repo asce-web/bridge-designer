@@ -110,7 +110,7 @@ export class SimulationStateService {
           return this.advance(clockMillis);
         }
         this.deadLoadingInterpolator.withParameter(tDeadLoading);
-        if (this.deadLoadingInterpolator.isTestFailed) {
+        if (this.deadLoadingInterpolator.failedMemberCount > 0) {
           startCollapsing(this.deadLoadingInterpolator);
           return;
         }
@@ -136,7 +136,7 @@ export class SimulationStateService {
             return this.advance(clockMillis);
           }
           this.advanceLoad(clockMillis);
-          if (this.traversingInterpolator.isTestFailed) {
+          if (this.traversingInterpolator.failedMemberCount > 0) {
             startCollapsing(this.traversingInterpolator);
             return;
           }

@@ -1,6 +1,6 @@
 import { ElementRef } from '@angular/core';
 import { Utility } from './utility';
-import { mat4, ReadonlyMat4 } from 'gl-matrix';
+import { mat3, mat4, ReadonlyMat4 } from 'gl-matrix';
 
 /** Colors meant to be consistent across the application. */
 export class Colors {
@@ -530,10 +530,10 @@ export class Geometry {
   }
 
   /** Glmatrix operation adapted to accept direction vector rather than angle. */
-  public static rotateX(out: mat4, a: ReadonlyMat4, sinTheta: number, cosTheta: number): mat4 {
-    const scale = 1 / Math.hypot(cosTheta, sinTheta);
-    const c = scale * cosTheta;
-    const s = scale * sinTheta;
+  public static rotateX(out: mat4, a: ReadonlyMat4, dy: number, dx: number): mat4 {
+    const scale = 1 / Math.hypot(dx, dy);
+    const c = scale * dx;
+    const s = scale * dy;
     const a00 = a[0];
     const a01 = a[1];
     const a02 = a[2];
@@ -566,10 +566,10 @@ export class Geometry {
   }
 
   /** Glmatrix operation adapted to accept direction vector rather than angle. */
-  public static rotateZ(out: mat4, a: ReadonlyMat4, sinTheta: number, cosTheta: number) {
-    const scale = 1 / Math.hypot(cosTheta, sinTheta);
-    const c = scale * cosTheta;
-    const s = scale * sinTheta;
+  public static rotateZ(out: mat4, a: ReadonlyMat4, dy: number, dx: number) {
+    const scale = 1 / Math.hypot(dx, dy);
+    const c = scale * dx;
+    const s = scale * dy;
     let a00 = a[0];
     let a01 = a[1];
     let a02 = a[2];
@@ -598,6 +598,32 @@ export class Geometry {
     out[5] = a11 * c - a01 * s;
     out[6] = a12 * c - a02 * s;
     out[7] = a13 * c - a03 * s;
+    return out;
+  }
+
+  /** Glmatrix operation adapted to accept direction vector rather than angle. */
+  public static rotate(out: mat3, a: mat3, dy: number, dx: number): mat3 {
+    const scale = 1 / Math.hypot(dx, dy);
+    const c = scale * dx;
+    const s = scale * dy;
+    const a00 = a[0],
+      a01 = a[1],
+      a02 = a[2],
+      a10 = a[3],
+      a11 = a[4],
+      a12 = a[5],
+      a20 = a[6],
+      a21 = a[7],
+      a22 = a[8];
+    out[0] = c * a00 + s * a10;
+    out[1] = c * a01 + s * a11;
+    out[2] = c * a02 + s * a12;
+    out[3] = c * a10 - s * a00;
+    out[4] = c * a11 - s * a01;
+    out[5] = c * a12 - s * a02;
+    out[6] = a20;
+    out[7] = a21;
+    out[8] = a22;
     return out;
   }
 }

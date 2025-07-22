@@ -62,7 +62,7 @@ export class FillPatternsService {
     }
     patternCtx.stroke();
     const pattern = ctx.createPattern(patternCtx.canvas, 'repeat');
-    return pattern || Colors.CONCRETE;
+    return pattern ?? Colors.CONCRETE;
   }
 
   private createEarthImpl(ctx: CanvasRenderingContext2D): FillPattern {
@@ -82,7 +82,7 @@ export class FillPatternsService {
     }
     patternCtx.stroke();
     const pattern = ctx.createPattern(patternCtx.canvas, 'repeat');
-    return pattern || Colors.EARTH;
+    return pattern ?? Colors.EARTH;
   }
 
   private createExcavationImpl(ctx: CanvasRenderingContext2D): FillPattern {
@@ -99,7 +99,7 @@ export class FillPatternsService {
     patternCtx.lineTo(size, size);
     patternCtx.stroke();
     const pattern = ctx.createPattern(patternCtx.canvas, 'repeat');
-    return pattern || Colors.EXCAVATION;
+    return pattern ?? Colors.EXCAVATION;
   }
 
   private createSubgradeImpl(ctx: CanvasRenderingContext2D): FillPattern {
@@ -113,7 +113,7 @@ export class FillPatternsService {
     patternCtx.lineTo(4, 8);
     patternCtx.stroke();
     const pattern = ctx.createPattern(patternCtx.canvas, 'repeat');
-    return pattern || Colors.CONCRETE;
+    return pattern ?? Colors.CONCRETE;
   }
 
   private static getPatternContext(size: number): CanvasRenderingContext2D | undefined {

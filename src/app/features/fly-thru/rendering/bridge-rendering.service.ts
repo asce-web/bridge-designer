@@ -3,35 +3,39 @@ import { mat4 } from 'gl-matrix';
 import { Mesh, MeshRenderingService, Wire } from './mesh-rendering.service';
 import { BridgeMeshData, BridgeModelService } from '../models/bridge-model.service';
 import { UniformService } from './uniform.service';
+import { SimulationStateService } from './simulation-state.service';
+import { DesignConditions } from '../../../shared/services/design-conditions.service';
+import { BitVector } from '../../../shared/core/bitvector';
+import { Gusset } from '../models/gussets.service';
+
+type BridgeMesh = {
+  membersMesh: Mesh;
+  deckBeamsMesh: Mesh;
+  deckSlabsMesh: Mesh;
+  stiffeningWires: Wire;
+  gussetMeshes: Mesh[];
+  pinsMesh: Mesh;
+  gussets: Gusset[];
+  trussCenterlineOffset: number;
+  membersNotTransectingRoadwayClearance: BitVector;
+};
 
 @Injectable({ providedIn: 'root' })
 export class BridgeRenderingService {
-  private bridgeMeshData!: BridgeMeshData;
-  private deckBeamMesh!: Mesh;
-  private deckSlabMesh!: Mesh;
-  private gussetMeshes!: Mesh[];
-  private membersMesh!: Mesh;
-  private pinMesh!: Mesh;
-  private stiffeningWire!: Wire;
+  private mesh!: BridgeMesh;
+  private readonly jointLocationsTmp = new Float32Array(2 * DesignConditions.MAX_JOINT_COUNT);
 
   constructor(
     private readonly bridgeModelService: BridgeModelService,
     private readonly meshRenderingService: MeshRenderingService,
+    private readonly simulationStateService: SimulationStateService,
     private readonly uniformService: UniformService,
   ) {}
 
   public prepare(): void {
-    this.meshRenderingService.deleteExistingMesh(this.membersMesh);
-    const bridgeMeshData = this.bridgeModelService.createForCurrentAnalysis();
-    this.bridgeMeshData = bridgeMeshData;
-    this.membersMesh = this.meshRenderingService.prepareColoredMesh(bridgeMeshData.memberMeshData);
-    this.deckBeamMesh = this.meshRenderingService.prepareColoredMesh(bridgeMeshData.deckBeamMeshData);
-    this.deckSlabMesh = this.meshRenderingService.prepareColoredMesh(bridgeMeshData.deckSlabMeshData);
-    this.stiffeningWire = this.meshRenderingService.prepareWire(bridgeMeshData.stiffeningWireData);
-    this.gussetMeshes = bridgeMeshData.gussetMeshData.map(meshData =>
-      this.meshRenderingService.prepareColoredMesh(meshData),
-    );
-    this.pinMesh = this.meshRenderingService.prepareColoredMesh(bridgeMeshData.pinMeshData);
+    this.deleteExistingMesh(this.mesh);
+    const meshData = this.bridgeModelService.createForCurrentBridge();
+    this.mesh = this.prepareMesh(meshData);
   }
 
   public render(viewMatrix: mat4, projectionMatrix: mat4): void {
@@ -39,46 +43,100 @@ export class BridgeRenderingService {
     this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
 
     // Update the instance transforms for bridge elements.
-    this.bridgeModelService.updateForCurrentJointLocations(this.bridgeMeshData);
+    this.updateMeshForCurrentLoading(this.mesh);
 
     // Send updated values to the GPU.
-    this.meshRenderingService.updateInstanceModelTransforms(
-      this.membersMesh,
-      this.bridgeMeshData.memberMeshData.instanceModelTransforms!,
+    const mesh = this.mesh;
+    this.meshRenderingService.updateInstanceModelTransforms(mesh.membersMesh);
+    this.meshRenderingService.updateInstanceColors(mesh.membersMesh);
+    this.meshRenderingService.updateInstanceModelTransforms(mesh.stiffeningWires);
+    this.meshRenderingService.updateInstanceModelTransforms(mesh.deckBeamsMesh);
+    this.meshRenderingService.updateInstanceModelTransforms(mesh.deckSlabsMesh);
+    for (const gussetMesh of mesh.gussetMeshes) {
+      this.meshRenderingService.updateInstanceModelTransforms(gussetMesh);
+    }
+    this.meshRenderingService.updateInstanceModelTransforms(mesh.pinsMesh);
+    this.renderMesh(mesh);
+  }
+
+  private prepareMesh(meshData: BridgeMeshData): BridgeMesh {
+    // Everything must be updateable because the bridge moves.
+    const membersMesh = this.meshRenderingService.prepareColoredMesh(meshData.memberMeshData, true);
+    const deckBeamsMesh = this.meshRenderingService.prepareColoredMesh(meshData.deckBeamMeshData, true);
+    const deckSlabsMesh = this.meshRenderingService.prepareColoredMesh(meshData.deckSlabMeshData, true);
+    const stiffeningWires = this.meshRenderingService.prepareWire(meshData.stiffeningWireData, true);
+    const gussetMeshes = meshData.gussetMeshData.map(meshData =>
+      this.meshRenderingService.prepareColoredMesh(meshData, true),
     );
-    this.meshRenderingService.updateInstanceModelTransforms(
-      this.stiffeningWire,
-      this.bridgeMeshData.stiffeningWireData.instanceModelTransforms!,
+    const pinsMesh = this.meshRenderingService.prepareColoredMesh(meshData.pinMeshData, true);
+    return {
+      deckBeamsMesh,
+      deckSlabsMesh,
+      gussetMeshes,
+      membersMesh,
+      pinsMesh,
+      stiffeningWires,
+      gussets: meshData.gussets,
+      trussCenterlineOffset: meshData.trussCenterlineOffset,
+      membersNotTransectingRoadwayClearance: meshData.membersNotTransectingRoadwayClearance,
+    };
+  }
+
+  /** Updates the model transforms in the given bridge mesh for current joint positions. */
+  private updateMeshForCurrentLoading(mesh: BridgeMesh): void {
+    const jointLocations = this.simulationStateService.interpolator.getAllDisplacedJointLocations(
+      this.jointLocationsTmp,
     );
-    this.meshRenderingService.updateInstanceColors(
-      this.membersMesh,
-      this.bridgeMeshData.memberMeshData.instanceColors!,
+    const failedMemberCount = this.simulationStateService.interpolator.failedMemberCount;
+    this.bridgeModelService.buildMemberInstanceTransforms(
+      mesh.membersMesh.instanceModelTransforms,
+      jointLocations,
+      mesh.trussCenterlineOffset,
     );
-    this.meshRenderingService.updateInstanceModelTransforms(
-      this.deckBeamMesh,
-      this.bridgeMeshData.deckBeamMeshData.instanceModelTransforms!,
+    this.bridgeModelService.buildMemberInstanceColors(mesh.membersMesh.instanceColors);
+    // The builders possibly skipped failed members. so add a commensurate limit.
+    mesh.membersMesh.instanceLimit = mesh.membersMesh.instanceCount! - 2 * failedMemberCount;
+    this.bridgeModelService.buildDeckBeamInstanceTransforms(mesh.deckBeamsMesh.instanceModelTransforms, jointLocations);
+    this.bridgeModelService.buildDeckSlabInstanceTransforms(mesh.deckSlabsMesh.instanceModelTransforms, jointLocations);
+    this.bridgeModelService.buildWireInstanceTransforms(
+      mesh.stiffeningWires.instanceModelTransforms,
+      jointLocations,
+      mesh.trussCenterlineOffset,
+      mesh.membersNotTransectingRoadwayClearance,
     );
-    this.meshRenderingService.updateInstanceModelTransforms(
-      this.deckSlabMesh,
-      this.bridgeMeshData.deckSlabMeshData.instanceModelTransforms!,
+    this.bridgeModelService.buildPinInstanceModelTransforms(
+      mesh.pinsMesh.instanceModelTransforms,
+      jointLocations,
+      mesh.gussets,
     );
-    for (let i = 0; i < this.gussetMeshes.length; ++i) {
-      this.meshRenderingService.updateInstanceModelTransforms(
-        this.gussetMeshes[i],
-        this.bridgeMeshData.gussetMeshData[i].instanceModelTransforms!,
+    for (let i = 0; i < mesh.gussetMeshes.length; ++i) {
+      this.bridgeModelService.buildGussetInstanceModelTransforms(
+        mesh.gussetMeshes[i].instanceModelTransforms,
+        mesh.gussets[i],
+        jointLocations,
       );
     }
-    this.meshRenderingService.updateInstanceModelTransforms(
-      this.pinMesh,
-      this.bridgeMeshData.pinMeshData.instanceModelTransforms!,
-    );
+  }
 
+  private renderMesh(mesh: BridgeMesh): void {
     // Render with meshes most likely to be occluded last to save work.
-    this.meshRenderingService.renderColoredMesh(this.deckSlabMesh);
-    this.meshRenderingService.renderColoredMesh(this.membersMesh);
-    this.meshRenderingService.renderColoredMesh(this.deckBeamMesh);
-    this.gussetMeshes.forEach(mesh => this.meshRenderingService.renderColoredMesh(mesh));
-    this.meshRenderingService.renderWire(this.stiffeningWire);
-    this.meshRenderingService.renderColoredMesh(this.pinMesh);
+    this.meshRenderingService.renderColoredMesh(mesh.deckSlabsMesh);
+    this.meshRenderingService.renderColoredMesh(mesh.membersMesh);
+    this.meshRenderingService.renderColoredMesh(mesh.deckBeamsMesh);
+    mesh.gussetMeshes.forEach(mesh => this.meshRenderingService.renderColoredMesh(mesh));
+    this.meshRenderingService.renderWire(mesh.stiffeningWires);
+    this.meshRenderingService.renderColoredMesh(mesh.pinsMesh);
+  }
+
+  private deleteExistingMesh(mesh: BridgeMesh | undefined): void {
+    if (!mesh) {
+      return;
+    }
+    this.meshRenderingService.deleteExistingMesh(mesh.deckBeamsMesh);
+    this.meshRenderingService.deleteExistingMesh(mesh.deckSlabsMesh);
+    mesh.gussetMeshes.forEach(mesh => this.meshRenderingService.deleteExistingMesh(mesh));
+    this.meshRenderingService.deleteExistingMesh(mesh.membersMesh);
+    this.meshRenderingService.deleteExistingMesh(mesh.pinsMesh);
+    this.meshRenderingService.deleteExistingWire(mesh.stiffeningWires);
   }
 }

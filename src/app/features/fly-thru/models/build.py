@@ -148,11 +148,18 @@ class Processor:
                 print(f"    {p[0]:.4f}, {p[1]:.4f}, // {index}", file=out_file)
             print("  ]),", file=out_file)
         if populated[2]:
-            print(f"  normals: new Float32Array([", file=out_file)
-            for index, quad in enumerate(self.quad_index.keys()):
-                p = self.normals[quad[2]]
-                print(f"    {p[0]:.4g}, {p[1]:.4g}, {p[2]:.4g}, // {index}", file=out_file)
-            print("  ]),", file=out_file)
+            if self.options.get('normals', '').lower() == 'index':
+                print(f"  normalIndices: new Uint16Array([", file=out_file)
+                for index, quad in enumerate(self.quad_index.keys()):
+                    p = self.normals[quad[2]]
+                    print(f"    {quad[2] - 1},  // {index}: {p[0]:.4g}, {p[1]:.4g}, {p[2]:.4g}", file=out_file)
+                print("  ]),", file=out_file)
+            else:
+                print(f"  normals: new Float32Array([", file=out_file)
+                for index, quad in enumerate(self.quad_index.keys()):
+                    p = self.normals[quad[2]]
+                    print(f"    {p[0]:.4g}, {p[1]:.4g}, {p[2]:.4g}, // {index}", file=out_file)
+                print("  ]),", file=out_file)
         if populated[3] and self.options.get('materialRefs', '').lower() != 'no':
             print(
                 f"  materialRefs: new Uint16Array([",
