@@ -7,7 +7,7 @@ import { SimulationStateService } from './simulation-state.service';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { BitVector } from '../../../shared/core/bitvector';
 import { Gusset } from '../models/gussets.service';
-import { BuckledMemberMesh, FailedMemberRenderingService } from './failed-member-rendering.service';
+import { BuckledMemberMesh, FailedMemberRenderingService, TornMemberMesh } from './failed-member-rendering.service';
 
 type BridgeMesh = {
   membersMesh: Mesh;
@@ -18,7 +18,7 @@ type BridgeMesh = {
   pinsMesh: Mesh;
   /** Mesh for all bucked members bending in parabola shapes. Added when/if bridge fails. */
   buckledMembersMesh?: BuckledMemberMesh;
-  tornMemberMesh?: Mesh;
+  tornMemberMesh?: TornMemberMesh;
   gussets: Gusset[];
   trussCenterlineOffset: number;
   membersNotTransectingRoadwayClearance: BitVector;
@@ -66,7 +66,7 @@ export class BridgeRenderingService {
       this.meshRenderingService.updateInstanceModelTransforms(mesh.buckledMembersMesh.mesh);
     }
     if (mesh.tornMemberMesh) {
-      this.meshRenderingService.updateInstanceModelTransforms(mesh.tornMemberMesh);
+      this.meshRenderingService.updateInstanceModelTransforms(mesh.tornMemberMesh.mesh);
     }
     this.renderMesh(mesh);
   }
@@ -99,13 +99,18 @@ export class BridgeRenderingService {
     const jointLocations = this.getJointLocations();
     const failedMemberCount = this.simulationStateService.interpolator.failedMemberCount;
     if (failedMemberCount > 0) {
-      if (mesh.buckledMembersMesh) {
-        // TODO: Handle torn member updates.
-        this.failedMemberRenderingService.update(mesh.buckledMembersMesh, jointLocations);
-      } else {
+      // Either prepare the failed member mesh(es) or update them if already present.
+      if (!mesh.buckledMembersMesh && !mesh.tornMemberMesh) {
         const [buckled, torn] = this.failedMemberRenderingService.prepare(jointLocations);
         mesh.buckledMembersMesh = buckled;
         mesh.tornMemberMesh = torn;
+      } else {
+        if (mesh.buckledMembersMesh) {
+          this.failedMemberRenderingService.updateBuckledMembers(mesh.buckledMembersMesh);
+        }
+        if (mesh.tornMemberMesh) {
+          this.failedMemberRenderingService.updateTornMembers(mesh.tornMemberMesh);
+        }
       }
     }
     this.bridgeModelService.buildMemberInstanceTransforms(
@@ -154,7 +159,7 @@ export class BridgeRenderingService {
       this.failedMemberRenderingService.render(mesh.buckledMembersMesh);
     }
     if (mesh.tornMemberMesh) {
-      this.meshRenderingService.renderColoredMesh(mesh.tornMemberMesh);
+      this.meshRenderingService.renderColoredMesh(mesh.tornMemberMesh.mesh);
     }
   }
 
@@ -169,6 +174,6 @@ export class BridgeRenderingService {
     this.meshRenderingService.deleteExistingMesh(mesh.pinsMesh);
     this.meshRenderingService.deleteExistingWire(mesh.stiffeningWires);
     this.failedMemberRenderingService.deleteExistingBuckledMemberMesh(mesh.buckledMembersMesh);
-    this.meshRenderingService.deleteExistingMesh(mesh.tornMemberMesh);
+    this.failedMemberRenderingService.deleteExistingTornMemberMesh(mesh.tornMemberMesh);
   }
 }

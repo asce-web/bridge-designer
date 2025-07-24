@@ -32,9 +32,14 @@ export class SimulationStateService {
   /** Inverse duration of the collapse phase. */
   private static readonly INV_COLLAPSING_MILLIS = 1 / 1000;
 
+  /** Load location along the traveled way. Contact point of front tire. */
   public readonly wayPoint = vec2.create();
+  /** Load rotation vector to place rear wheels on traveled way when front wheels are. Not unit. */
   public readonly rotation = vec2.create();
+  /** Opaqueness varied while fading in and out. */
   public loadAlpha = 1;
+  /** Time since the current phase started. Useful for sub-animations. */
+  public phaseClockMillis: number = 0;
 
   private phase: SimulationPhase = SimulationPhase.UNSTARTED;
   private phaseStartClockMillis: number | undefined;
@@ -92,6 +97,7 @@ export class SimulationStateService {
     if (this.phaseStartClockMillis === undefined) {
       this.phaseStartClockMillis = clockMillis;
     }
+    this.phaseClockMillis = clockMillis - this.phaseStartClockMillis;
     // Advance to the collapsing phase after setting up the collapse analysis.
     const startCollapsing = (failedInterpolator: Interpolator): void => {
       this.collapseAnalysisService.analyze({ degradeMembersMask: failedInterpolator.failedMemberKinds });

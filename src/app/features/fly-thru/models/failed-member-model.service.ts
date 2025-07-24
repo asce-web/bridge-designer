@@ -1,12 +1,21 @@
 import { Injectable } from '@angular/core';
-import { mat3, mat4, vec2 } from 'gl-matrix';
+import { mat3, mat4, vec2, vec3 } from 'gl-matrix';
 import { Geometry } from '../../../shared/classes/graphics';
 import { Member } from '../../../shared/classes/member.model';
 import { MeshData } from '../rendering/mesh-rendering.service';
 import { BUCKLED_MEMBER_MESH_DATA } from './buckled-member';
 import { GlService } from '../rendering/gl.service';
+import { TORN_MEMBER_MESH_DATA } from './torn-member';
+import { SimulationStateService } from '../rendering/simulation-state.service';
 
 export type BuckledMemberMeshData = {
+  meshData: MeshData;
+  members: Member[];
+  jointLocations: Float32Array;
+  trussCenterlineOffset: number;
+};
+
+export type TornMemberMeshData = {
   meshData: MeshData;
   members: Member[];
   jointLocations: Float32Array;
@@ -38,11 +47,12 @@ export class FailedMemberModelService {
   private readonly prevInnerLeft = vec2.create();
   private readonly prevOuterRight = vec2.create();
   private readonly prevInnerRight = vec2.create();
-  private readonly segmentTransform = mat3.create();
-  private readonly modelTransform = mat3.create();
-  private readonly modelTranslation = vec2.create();
+  private readonly tmpM31 = mat3.create();
+  private readonly tmpM32 = mat3.create();
+  private readonly tmpV2 = vec2.create();
+  private readonly tmpV3 = vec3.create();
 
-  constructor(private readonly glService: GlService) {}
+  constructor(private readonly glService: GlService, private readonly simulationStateService: SimulationStateService) {}
 
   /**
    * Builds mesh data for a list of buckled members. Assumes the given displaced joint locations make the member shorter
@@ -53,15 +63,21 @@ export class FailedMemberModelService {
     jointLocations: Float32Array,
     trussCenterlineOffset: number,
   ): BuckledMemberMeshData {
-    const transforms = new Float32Array(members.length * FailedMemberModelService.SEGMENT_TRANSFORM_FLOAT_COUNT);
+    const segmentTransforms = new Float32Array(members.length * FailedMemberModelService.SEGMENT_TRANSFORM_FLOAT_COUNT);
     let offset = 0;
     for (const member of members) {
-      this.buildSegmentTransformsForMember(transforms, member, jointLocations, trussCenterlineOffset, offset);
+      this.buildSegmentTransformsForBuckledMember(
+        segmentTransforms,
+        member,
+        jointLocations,
+        trussCenterlineOffset,
+        offset,
+      );
       offset += FailedMemberModelService.SEGMENT_TRANSFORM_FLOAT_COUNT;
     }
     const gl = this.glService.gl;
     const meshData: MeshData = {
-      instanceModelTransforms: transforms,
+      instanceModelTransforms: segmentTransforms,
       usage: { instanceModelTransforms: gl.STREAM_DRAW },
       ...BUCKLED_MEMBER_MESH_DATA,
     };
@@ -73,13 +89,98 @@ export class FailedMemberModelService {
     };
   }
 
+  /** Builds mesh data depicting the ends of members torn by failure in tension. */
+  public buildMeshDataForTornMembers(
+    members: Member[],
+    jointLocations: Float32Array,
+    trussCenterlineOffset: number,
+  ): TornMemberMeshData {
+    const instanceModelTransforms = new Float32Array(members.length * 64); // Four mat4's per 2d member.
+    let offset = 0;
+    for (const member of members) {
+      this.buildModelInstanceTransformsForTornMember(
+        instanceModelTransforms,
+        member,
+        jointLocations,
+        trussCenterlineOffset,
+        offset,
+      );
+      offset += 64;
+    }
+    const gl = this.glService.gl;
+    const meshData: MeshData = {
+      instanceModelTransforms,
+      usage: { instanceModelTransforms: gl.STREAM_DRAW },
+      ...TORN_MEMBER_MESH_DATA,
+    };
+    return {
+      meshData,
+      members,
+      jointLocations, 
+      trussCenterlineOffset,
+    }
+  }
+
+  /** Builds instance transformations for the ends of members torn by failure in tension. */
+  public buildModelInstanceTransformsForTornMember(
+    transformsOut: Float32Array,
+    member: Member,
+    jointLocations: Float32Array,
+    trussCenterlineOffset: number,
+    offset: number,
+  ): void {
+    // Splay the broken member ends by rotating at joints. 
+    // Not too much, else occulsion of/by other members is a problem.
+    const rotationRate = 0.005; // radians per milli
+    const rotationMax = 0.4; // radians
+    const rotation = Math.min(rotationRate * this.simulationStateService.phaseClockMillis, rotationMax);
+    const aIndex = 2 * member.a.index;
+    const bIndex = 2 * member.b.index;
+    const aX = jointLocations[aIndex];
+    const aY = jointLocations[aIndex + 1];
+    const bX = jointLocations[bIndex];
+    const bY = jointLocations[bIndex + 1];
+    const dx = bX - aX;
+    const dy = bY - aY;
+    const theta = Math.atan2(dy, dx);
+    const halfLength = 0.5 * member.length;
+    const size = member.materialSizeMm * 0.001;
+
+    // Joint A, front
+    const mAFront = transformsOut.subarray(offset, offset + 16);
+    mat4.fromTranslation(mAFront, vec3.set(this.tmpV3, aX, aY, trussCenterlineOffset));
+    mat4.rotateZ(mAFront, mAFront, theta + rotation);
+    mat4.scale(mAFront, mAFront, vec3.set(this.tmpV3, halfLength, size, size));
+
+    // Joint B, front
+    offset += 16;
+    const mBFront = transformsOut.subarray(offset, offset + 16);
+    mat4.fromTranslation(mBFront, vec3.set(this.tmpV3, bX, bY, trussCenterlineOffset));
+    mat4.rotateZ(mBFront, mBFront, Math.PI + theta + rotation);
+    mat4.scale(mBFront, mBFront, vec3.set(this.tmpV3, halfLength, size, size));
+
+    // Joint A, back
+    offset += 16;
+    const mABack = transformsOut.subarray(offset, offset + 16);
+    mat4.fromTranslation(mABack, vec3.set(this.tmpV3, aX, aY, -trussCenterlineOffset));
+    mat4.rotateZ(mABack, mABack, theta - rotation);
+    mat4.scale(mABack, mABack, vec3.set(this.tmpV3, halfLength, size, size));
+
+    // Joint B, back
+    offset += 16;
+    const mBBack = transformsOut.subarray(offset, offset + 16);
+    mat4.fromTranslation(mBBack, vec3.set(this.tmpV3, bX, bY, -trussCenterlineOffset));
+    mat4.rotateZ(mBBack, mBBack, Math.PI + theta - rotation);
+    mat4.scale(mBBack, mBBack, vec3.set(this.tmpV3, halfLength, size, size));
+  }
+
   /**
    * Builds transforms in the given array to represent the given member in the buckled state in both front
-   * and rear trusses of the bridge. Each transform takes a prototypical unit cube to a trapezoidal prism
-   * along the axis of a parabola.
+   * and back trusses of the bridge. Each transform takes a prototypical unit cube to a trapezoidal prism
+   * along the axis of a parabola. A dedicated shader extracts normals and also transforms the unit cube.
    */
-  public buildSegmentTransformsForMember(
-    out: Float32Array,
+  public buildSegmentTransformsForBuckledMember(
+    transformsOut: Float32Array,
     member: Member,
     jointLocations: Float32Array,
     trussCenterlineOffset: number,
@@ -99,8 +200,9 @@ export class FailedMemberModelService {
     const size = halfSize * 2;
     const pointCount = FailedMemberModelService.PARABOLA_POINT_COUNT;
     const pointsGenerator = parabolaPoints(this.outer, this.inner, buckledLength, height, halfSize, pointCount);
-    mat3.fromTranslation(this.modelTransform, vec2.set(this.modelTranslation, aX, aY));
-    Geometry.rotate(this.modelTransform, this.modelTransform, dy, dx);
+    const modelTransform = this.tmpM32;
+    mat3.fromTranslation(modelTransform, vec2.set(this.tmpV2, aX, aY));
+    Geometry.rotate(modelTransform, modelTransform, dy, dx);
 
     pointsGenerator.next();
     vec2.copy(this.prevOuterLeft, this.outer);
@@ -108,17 +210,18 @@ export class FailedMemberModelService {
     vec2.copy(this.prevOuterRight, this.outer);
     vec2.copy(this.prevInnerRight, this.inner);
     while (!pointsGenerator.next().done) {
-      // Make space for the left front and rear transform materices.
-      const mLeftFront = out.subarray(offset, offset + 16);
+      // Make space for the left front and back transform materices.
+      const mLeftFront = transformsOut.subarray(offset, offset + 16);
       offset += 16;
-      const mLeftRear = out.subarray(offset, offset + 16);
+      const mLeftBack = transformsOut.subarray(offset, offset + 16);
       offset += 16;
 
       // The left trapezoid is now (prevOuter, outer, inner, prevInner).
-      this.buildSegmentTransform(this.segmentTransform, this.prevOuterLeft, this.outer, this.inner, this.prevInnerLeft);
-      mat3.multiply(this.segmentTransform, this.modelTransform, this.segmentTransform);
-      addDimensionZ(mLeftFront, this.segmentTransform, size, trussCenterlineOffset);
-      addDimensionZ(mLeftRear, this.segmentTransform, size, -trussCenterlineOffset);
+      const segmentTransform = this.tmpM31;
+      this.buildSegmentTransform(segmentTransform, this.prevOuterLeft, this.outer, this.inner, this.prevInnerLeft);
+      mat3.multiply(segmentTransform, modelTransform, segmentTransform);
+      addDimensionZ(mLeftFront, segmentTransform, size, trussCenterlineOffset);
+      addDimensionZ(mLeftBack, segmentTransform, size, -trussCenterlineOffset);
 
       // Prepare for next left segment.
       vec2.copy(this.prevInnerLeft, this.inner);
@@ -127,33 +230,27 @@ export class FailedMemberModelService {
       // Advance to right point pair.
       pointsGenerator.next();
 
-      // Make space for the front and rear transform materices.
-      const mRightFront = out.subarray(offset, offset + 16);
+      // Make space for the front and back transform materices.
+      const mRightFront = transformsOut.subarray(offset, offset + 16);
       offset += 16;
-      const mRightRear = out.subarray(offset, offset + 16);
+      const mRightBack = transformsOut.subarray(offset, offset + 16);
       offset += 16;
 
       // The right trapezoid is now (outer, prevOuter, prevInner, inner.)
-      this.buildSegmentTransform(
-        this.segmentTransform,
-        this.outer,
-        this.prevOuterRight,
-        this.prevInnerRight,
-        this.inner,
-      );
-      mat3.multiply(this.segmentTransform, this.modelTransform, this.segmentTransform);
-      addDimensionZ(mRightFront, this.segmentTransform, size, trussCenterlineOffset);
-      addDimensionZ(mRightRear, this.segmentTransform, size, -trussCenterlineOffset);
+      this.buildSegmentTransform(segmentTransform, this.outer, this.prevOuterRight, this.prevInnerRight, this.inner);
+      mat3.multiply(segmentTransform, modelTransform, segmentTransform);
+      addDimensionZ(mRightFront, segmentTransform, size, trussCenterlineOffset);
+      addDimensionZ(mRightBack, segmentTransform, size, -trussCenterlineOffset);
 
       // Prepare for next right segment.
       vec2.copy(this.prevInnerRight, this.inner);
       vec2.copy(this.prevOuterRight, this.outer);
     }
-    return out;
+    return transformsOut;
   }
 
   /**
-   * Returns a 3x3 matrix that takes a unit 2d rectangle to the given arbitrary trapezoid with "perspective" division:
+   * Returns a 3x3 matrix that takes a 2d unit square to the given arbitrary trapezoid via "perspective" division:
    * ```
    * (0,1)   (1,1)                p2+t(p0-p1)         p2
    *    o----o                    o-------------------o
@@ -251,7 +348,7 @@ export class FailedMemberModelService {
   }
 }
 
-/** Spreads the 3x3 model-transformed segment matrix into a 4x4 with z translation. */
+/** Spreads the 3x3 model-transformed segment matrix into a 4x4 with z scale and translation. */
 function addDimensionZ(out: mat4, a: mat3, zSize: number, zOffset: number): mat4 {
   // prettier-ignore
   mat4.set(out, 
@@ -265,11 +362,11 @@ function addDimensionZ(out: mat4, a: mat3, zSize: number, zOffset: number): mat4
 
 /**
  * Returns point pairs at fixed offset `size/2` outside and inside a parabolic axis having
- * end points (0,0), (`width`, 0) and peak at (`width`/2, `height`). The pair is at the peak
+ * end points (0,0), (`width`, 0) and apex at (`width`/2, `height`). The pair is at the apex
  * followed by successsive pairs left then right. The pairs are evenly spaced on the x-axis for
  * low, flat parabolas and along the y-axis for taller, thinner ones. The geneator returns the
- * top point of each pair, but it's expected that values will be copied from the `vec2` buffers
- * furnished when it's created.
+ * top point of each pair, but it's expected to be ignored. Insteady, users copy from the
+ * `vec2` buffers furnished when the generator is created.
  */
 // visible-for-testing
 export function* parabolaPoints(
