@@ -7,8 +7,9 @@ import { SimulationParametersService } from './simulation-parameters.service';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { Utility } from '../../../shared/classes/utility';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 
-const enum SimulationPhase {
+export const enum SimulationPhase {
   UNSTARTED,
   DEAD_LOADING,
   FADING_IN,
@@ -45,22 +46,63 @@ export class SimulationStateService {
   private phaseStartClockMillis: number | undefined;
   private endParameter: number = 44;
 
-  private readonly deadLoadingInterpolator: Interpolator;
-  private readonly traversingInterpolator: Interpolator;
+  private deadLoadingInterpolator!: Interpolator;
+  private traversingInterpolator!: Interpolator;
   // Initially undefined. Created when the test fails, after failure analysis is complete.
   private collapsingInterpolator: Interpolator | undefined;
 
   constructor(
     private readonly bridgeService: BridgeService,
     @Inject(COLLAPSE_ANALYSIS) private readonly collapseAnalysisService: AnalysisService,
+    private readonly eventBrokerService: EventBrokerService,
     private readonly parameterService: SimulationParametersService,
     private readonly interpolationService: InterpolationService,
   ) {
-    const tStart = SimulationStateService.START_PARAMETER;
-    this.deadLoadingInterpolator = interpolationService.createDeadLoadingInterpolator(tStart);
-    this.traversingInterpolator = interpolationService.createAnalysisInterpolator();
+    eventBrokerService.simulationReplayRequest.subscribe(() => this.start());
   }
 
+  /** Starts or restarts the state machine. */
+  public start(): void {
+    if (!this.deadLoadingInterpolator) {
+      const tStart = SimulationStateService.START_PARAMETER;
+      this.deadLoadingInterpolator = this.interpolationService.createDeadLoadingInterpolator(tStart);
+    }
+    if (!this.traversingInterpolator) {
+      this.traversingInterpolator = this.interpolationService.createAnalysisInterpolator();
+    }
+    this.phaseStartClockMillis = undefined;
+    this.phase = SimulationPhase.DEAD_LOADING;
+    this.loadAlpha = 0;
+    this.endParameter = this.bridgeService.designConditions.spanLength + SimulationStateService.END_PARAMETER_PAST_SPAN;
+    this.deadLoadingInterpolator
+      .withParameter(SimulationStateService.START_PARAMETER)
+      .getLoadPosition(this.wayPoint, this.rotation);
+    this.collapsingInterpolator = undefined;
+    this.notifyPhaseChange();
+  }
+
+  /**
+   * Advances the simulation state based on current clock value and sends a notification if phase has changed. State machine:
+   * ```text
+   *                                                ------------------<--time expiry------------------------------<---
+   *                                               /                                                                   \
+   *                                              v                                                                    /
+   *  --start--> DEAD_LOADING --time expiry--> FADING_IN --time expiry--> TRAVERSING ----end reached---> FADING_OUT --
+   *              ^     \                          /                        /  \                                 / 
+   *              |      -->-test fail------------/------------------------/----o-->-test fail--> COLLAPSING    /
+   *               \                             /                        /                        /           /
+   *                -----<--start---------------o--------<--start--------o-------<--start---------o--<--start--
+   * ```
+   */
+  public advance(clockMillis: number): void {
+    const phaseBeforeAdvance = this.phase;
+    this.doAdvance(clockMillis);
+    if (this.phase !== phaseBeforeAdvance) {
+      this.notifyPhaseChange();
+    }
+  }
+
+  /** Returns the current interpolator or undefined if the state machine is not yet started. */
   public get interpolator(): Interpolator {
     if (this.phase === SimulationPhase.DEAD_LOADING) {
       return this.deadLoadingInterpolator;
@@ -71,28 +113,8 @@ export class SimulationStateService {
     return this.traversingInterpolator;
   }
 
-  public start(): void {
-    this.phaseStartClockMillis = undefined;
-    this.phase = SimulationPhase.DEAD_LOADING;
-    this.loadAlpha = 0;
-    this.endParameter = this.bridgeService.designConditions.spanLength + SimulationStateService.END_PARAMETER_PAST_SPAN;
-    this.deadLoadingInterpolator
-      .withParameter(SimulationStateService.START_PARAMETER)
-      .getLoadPosition(this.wayPoint, this.rotation);
-    this.collapsingInterpolator = undefined;
-  }
-
-  /**
-   * Advances the simulation state based on current clock value. State machine:
-   *
-   *                                                         ------------------<--time expiry------------------------------<--_
-   *                                                        /                                                                  \
-   *                                                       v                                                                   /
-   * UNSTARTED --start--> DEAD_LOADING --time expiry--> FADING_IN --time expiry--> TRAVERSING --endpint reached--> FADING_OUT -
-   *                             \                                                     \
-   *                              -->-test fail------------------------------------------+-->-test fail--> COLLAPSING
-   */
-  public advance(clockMillis: number): void {
+  /** See public `advance` method. Does all except send the notification. */
+  private doAdvance(clockMillis: number): void {
     // Lazily initialize the phase clock first time around.
     if (this.phaseStartClockMillis === undefined) {
       this.phaseStartClockMillis = clockMillis;
@@ -168,5 +190,9 @@ export class SimulationStateService {
     const speed = this.parameterService.speedMetersPerMilli;
     const t = SimulationStateService.START_PARAMETER + speed * (clockMillis - this.phaseStartClockMillis!);
     this.traversingInterpolator.withParameter(t).getLoadPosition(this.wayPoint, this.rotation);
+  }
+
+  private notifyPhaseChange() {
+    this.eventBrokerService.simulationPhaseChange.next({ origin: EventOrigin.SERVICE, data: this.phase });
   }
 }

@@ -222,6 +222,8 @@ export class OverlayUi {
   private isPointerDown: boolean = false;
   private mouseDownX: number = 0;
   private mouseDownY: number = 0;
+  private lastFindX: number = 0;
+  private lastFindY: number = 0;
 
   /** Place for users to connect handlers. Indices match icon array. */
   public readonly iconHandlerSets: IconHandlerSet[];
@@ -234,16 +236,24 @@ export class OverlayUi {
     this.iconHandlerSets = this.overlay.icons.map(_icon => ({}) as IconHandlerSet);
   }
 
+  /** Update icon alphas given as index/value pairs in sequence. */
+  public updateAlphas(...indexAlphas: number[]) {
+    for (let i = 0; i < indexAlphas.length; i += 2) {
+      this.overlay.alphas[indexAlphas[i]] = indexAlphas[i + 1];
+    }
+    this.overlay.areAlphasDirty = true;
+    // Refresh the active icon to account for alpha changes.
+    this.activeIconIndex = this.findIconIndex(this.lastFindX, this.lastFindY);
+  }
+
   public acceptPointerDown(x: number, y: number): void {
-    const foundIconIndex = this.findIconIndex(x, y);
-    if (foundIconIndex !== -1) {
-      this.activeIconIndex = foundIconIndex;
+    const clickIconIndex = this.activeIconIndex;
+    if (clickIconIndex !== -1) {
+      this.activeIconIndex = clickIconIndex;
       this.isPointerDown = true;
-      this.overlay.alphas[foundIconIndex] = 1;
-      this.overlay.areAlphasDirty = true;
       this.mouseDownX = x;
       this.mouseDownY = y;
-      this.iconHandlerSets[foundIconIndex].handlePointerDown?.();
+      this.iconHandlerSets[clickIconIndex].handlePointerDown?.();
     }
   }
 
@@ -276,16 +286,16 @@ export class OverlayUi {
 
   /** Returns a visible icon containing a mouse coordinate or undefined if none.  */
   private findIconIndex(x: number, y: number): number {
+    this.lastFindX = x;
+    this.lastFindY = y;
     const icons = this.overlay.icons;
     for (let i = 0; i < icons.length; ++i) {
       const icon = icons[i];
-      if (this.overlay.alphas[i] === 0) continue;
+      if (this.overlay.alphas[i] <= 0) continue;
       const x0 = getRelativeIconX0(icon, this.viewportService);
       if (x < x0) continue;
       const y0 = getRelativeIconY0(icon, this.viewportService);
-      if (y < y0) continue;
-      if (x > x0 + icon.width) continue;
-      if (y > y0 + icon.height) continue;
+      if (y < y0 || x > x0 + icon.width || y > y0 + icon.height) continue;
       return i;
     }
     return -1;

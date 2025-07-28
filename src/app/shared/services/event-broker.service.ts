@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 import { AnalysisStatus } from './analysis.service';
 import { ToastKind } from '../../features/toast/toast/toast-error';
 import { UiMode } from '../../features/controls/management/ui-state.service';
+import { SimulationPhase } from '../../features/fly-thru/rendering/simulation-state.service';
+import { EditCommandCompletionInfo } from '../../features/drafting/shared/undo-manager.service';
 
 /** Origin of an event. For breaking event cycles. */
 export const enum EventOrigin {
@@ -61,8 +63,9 @@ export class EventBrokerService {
   public readonly designModeSelection = new Subject<EventInfo>();
   public readonly draftingPanelInvalidation = new Subject<EventInfo>();
   public readonly draftingViewportPendingChange = new Subject<EventInfo>();
-  public readonly editCommandCompletion = new Subject<EventInfo>();
+  public readonly editCommandCompletion = new Subject<TypedEventInfo<EditCommandCompletionInfo>>();
   public readonly editModeSelection = new Subject<EventInfo>();
+  public readonly flyThruAnimationPauseRequest = new Subject<TypedEventInfo<boolean>>();
   public readonly flyThruViewportChange = new Subject<TypedEventInfo<void>>();
   public readonly gridDensityChange = new Subject<EventInfo>();
   public readonly gridDensitySelection = new Subject<EventInfo>();
@@ -96,6 +99,8 @@ export class EventBrokerService {
   public readonly sessionStateRestoreCompletion = new Subject<TypedEventInfo<void>>();
   public readonly sessionStateSaveEssentialRequest = new Subject<TypedEventInfo<void>>();
   public readonly sessionStateSaveRequest = new Subject<TypedEventInfo<void>>();
+  public readonly simulationPhaseChange = new Subject<TypedEventInfo<SimulationPhase>>();
+  public readonly simulationReplayRequest = new Subject<TypedEventInfo<void>>();
   public readonly slendernessFailDialogOpenRequest = new Subject<EventInfo>();
   public readonly templateToggle = new Subject<EventInfo>();
   public readonly tipRequest = new Subject<EventInfo>();

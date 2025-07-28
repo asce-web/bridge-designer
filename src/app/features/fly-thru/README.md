@@ -1,6 +1,6 @@
 # Fly-through load test animation
 
-This document describes how data flows through shaders.
+This document describes the organization of the fly-thru animation feature.
 
 ## Overall organization
 
@@ -25,7 +25,6 @@ This document describes how data flows through shaders.
     viewing, then map it to the pane.
   - **Uniforms.** Management of WebGL uniform (global) data blocks, which are communicate to shaders.
 - **Shaders.** GLSL vertex and fragment manipulators.
-
 
 ## Coordinate systems
 
@@ -66,14 +65,16 @@ Static models don't change during the animation. Dynamic ones change geometry or
 
 | Object                  | Generation   | Kind    | Notes                                                                         |
 | ----------------------- | ------------ | ------- | ----------------------------------------------------------------------------- |
-| Terrain and roadway     | Programmatic | Static  | Diamond algorithm. Varies with design conditions. Erosion coloring per slope. |
-| River                   | Stored       | Dynamic | Animated texture.                                                             |
-| Transmission line tower | Stored       | Static  | OBJ file. Four copies.                                                        |
-| Transmission like wine  | Programmatic | Static  | Catenary sag.                                                                 |
 | Bridge abutments & pier | Programmatic | Static  | Height varies with scenario. Texture-mapped surfaces. Abutment in 2 copies.   |
 | Bridge structure        | Programmatic | Dynamic | Joint offsets and color vary per frame.                                       |
+| River                   | Stored       | Dynamic | Animated texture.                                                             |
+| Terrain and roadway     | Programmatic | Static  | Diamond algorithm. Varies with design conditions. Erosion coloring per slope. |
+| Transmission like wine  | Programmatic | Static  | Catenary sag.                                                                 |
+| Transmission line tower | Stored       | Static  | OBJ file. Four copies.                                                        |
 | Truck body              | Stored       | Static  | Multiple colors. Translate and rotate.                                        |
 | Wheels                  | Programmatic | Dynamic | Rotate and translate in 4 copies. Extra tire for dual rears.                  |
+| Wind turbine rotor      | Stored       | Dynamic | OBJ file Simple rotation.                                                     |
+| Wind turbine tower      | Stored       | Static  | OBJ file.                                                                     |
 
 ## Transformations
 
@@ -87,14 +88,16 @@ transformations reconcile them to global world coordinates.
 
 | Object                  | Origin                        | Orientation                                    |
 | ----------------------- | ----------------------------- | ---------------------------------------------- |
-| Terrain and roadway     | Center post, natural y        | Same as global.                                |
-| River                   | Front left                    | Same as global with y constant.                |
-| Transmission line tower | Bottom center of base         | Vertical is y-axis. Arms are along x.          |
-| Transmission line wire  | Global base of leftmost tower | In global coords (so N/A).                     |
 | Bridge abutments & pier | Supported joint               | Left abutment of bridge extending along x axis |
 | Bridge structure        | Leftmost deck joint           | Extending along x-axis                         |
+| River                   | Front left                    | Same as global with y constant.                |
+| Terrain and roadway     | Center post, natural y        | Same as global.                                |
+| Transmission line tower | Bottom center of base         | Vertical is y-axis. Arms are along x.          |
+| Transmission line wire  | Global base of leftmost tower | In global coords (so N/A).                     |
 | Truck body              | Axle level bottom middle      | Chasis center line on x-axis, facing right.    |
 | Wheels                  | Center                        | Tire in x-y plane. Axle on z-axis.             |
+| Wind turbine rotor      | Rear center of hub            | Front faces positive z-axis.                   |
+| Wind turbine tower      | Center of base                | Rotor mount surface faces positive z-axis.     |
 
 ### Model matrix
 
@@ -116,7 +119,7 @@ Set initially and on window size change.
 
 ## Lighting
 
-Use a simple model to keep load on shaders minimal
+Simple model to keep load on shaders minimal
 
 - Parallel sunlight
 - Ambient lit color is a constant factor of material color

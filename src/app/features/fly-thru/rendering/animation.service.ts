@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RenderingService } from './rendering.service';
 import { ViewService } from './view.service';
+import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
 export type FrameRenderer = (clockMillis: number, elapsedMillis: number) => void;
 
@@ -28,9 +29,18 @@ export class AnimationService {
   private totalRenderMillis: number = 0;
 
   constructor(
+    eventBrokerService: EventBrokerService,
     private readonly renderService: RenderingService,
     private readonly viewService: ViewService,
-  ) {}
+  ) {
+    eventBrokerService.flyThruAnimationPauseRequest.subscribe(info => {
+      if (info.data) {
+        this.pause();
+      } else {
+        this.unpause();
+      }
+    });
+  }
 
   /** Returns the current state of animation. */
   public get state(): AnimationState {
@@ -42,10 +52,27 @@ export class AnimationService {
     if (this._state !== AnimationState.STOPPED) {
       return;
     }
-    this.resetClock();
     this._state = AnimationState.RUNNING;
-    this.lastClockMillis = this.clockBaseMillis;
     const render = (nowMillis: number): void => {
+      if (this._state === AnimationState.STOPPED) {
+        return; // Skips scheduling next loop iteration.
+      }
+      // Handle first frame.
+      if (this.lastClockMillis === undefined) {
+        this.lastClockMillis = nowMillis;
+      }
+      // First frame and reset after unpause.
+      if (this.clockBaseMillis === undefined) {
+        this.clockBaseMillis = nowMillis - this.lastClockMillis;
+      }
+      const clockMillis =
+        this._state === AnimationState.PAUSED ? this.lastClockMillis : nowMillis - this.clockBaseMillis;
+      const frameStartMillis = performance.now();
+      this.renderService.renderFrame(clockMillis, clockMillis - this.lastClockMillis);
+      this.totalRenderMillis += performance.now() - frameStartMillis;
+      this.lastClockMillis = clockMillis;
+
+      // Track fps and eye point:
       ++this.frameCount;
       if (!this.frameTickMillis) {
         this.frameTickMillis = nowMillis;
@@ -65,23 +92,7 @@ export class AnimationService {
         this.frameCount = 0;
         this.totalRenderMillis = 0;
       }
-      if (this._state === AnimationState.STOPPED) {
-        return; // Skips scheduling next loop iteration.
-      }
-      // Handle first frame.
-      if (this.lastClockMillis === undefined) {
-        this.lastClockMillis = nowMillis;
-      }
-      // Reset after unpause.
-      if (this.clockBaseMillis === undefined) {
-        this.clockBaseMillis = nowMillis - this.lastClockMillis;
-      }
-      const clockMillis =
-        this._state === AnimationState.PAUSED ? this.lastClockMillis : nowMillis - this.clockBaseMillis;
-      const frameStartMillis = performance.now();
-      this.renderService.renderFrame(clockMillis, clockMillis - this.lastClockMillis);
-      this.totalRenderMillis += performance.now() - frameStartMillis;
-      this.lastClockMillis = clockMillis;
+
       // Schedule next loop iteration.
       requestAnimationFrame(render);
     };
@@ -91,8 +102,13 @@ export class AnimationService {
     setTimeout(() => requestAnimationFrame(render));
   }
 
+  /** Stops calls to the registered renderer. */
+  public stop(): void {
+    this._state = AnimationState.STOPPED;
+  }
+
   /** When running, pauses the clock while the renderer is still called at the frame rate. */
-  public pause(): void {
+  private pause(): void {
     if (this._state !== AnimationState.RUNNING) {
       return;
     }
@@ -100,22 +116,12 @@ export class AnimationService {
   }
 
   /** When paused, upauses the rendering clock. Rendering proceeds at the frame rate. */
-  public unpause(): void {
+  private unpause(): void {
     if (this._state !== AnimationState.PAUSED) {
       return;
     }
     this._state = AnimationState.RUNNING;
     // Reset base so clock will advance from the paused value.
     this.clockBaseMillis = undefined;
-  }
-
-  /** Stops calls to the registered renderer. */
-  public stop(): void {
-    this._state = AnimationState.STOPPED;
-  }
-
-  /** Reset the simulation clock to zero, regardless of state. */
-  public resetClock(): void {
-    this.clockBaseMillis = Date.now();
   }
 }

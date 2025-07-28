@@ -3,6 +3,13 @@ import { Deque } from '../../../shared/core/deque';
 import { EditCommand, EditCommandPlaceholder } from '../../../shared/classes/editing';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 
+export type EditCommandCompletionInfo = {
+  kind: 'do' | 'undo' | 'redo';
+  effectsMask: number;
+  doneCount: number;
+  undoneCount: number;
+};
+
 @Injectable({ providedIn: 'root' })
 export class UndoManagerService {
   public static readonly NO_EDIT_COMMAND = new EditCommandPlaceholder('[no edit command]');
@@ -32,7 +39,7 @@ export class UndoManagerService {
     return this.done.peekLeft() || UndoManagerService.NO_EDIT_COMMAND;
   }
 
- undo(count: number = 1): void {
+  undo(count: number = 1): void {
     let effectsMask: number = 0;
     while (count-- > 0) {
       const editCommand = this.done.popLeft();

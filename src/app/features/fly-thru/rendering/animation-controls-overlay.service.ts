@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Overlay, OverlayDescriptor, OverlayService, OverlayUi } from './overlay.service';
-import { EventBrokerService } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { ViewService } from './view.service';
+import { SimulationPhase } from './simulation-state.service';
 
 /** Icons in overlay texture array image 'img/overlay.png', top to bottom. The enum numeric value matters. */
 export enum OverlayIcon {
@@ -116,20 +117,44 @@ export class AnimationControlsOverlayService {
   public overlayUi!: OverlayUi;
 
   constructor(
-    eventBrokerService: EventBrokerService,
+    private readonly eventBrokerService: EventBrokerService,
     private readonly overlayService: OverlayService,
     private readonly viewService: ViewService,
-  ) {
-    // Cause next render to re-compute and push icon positions because they're bottom relative.
-    eventBrokerService.flyThruViewportChange.subscribe(_data => {
-      this.overlay.arePositionsDirty = true;
-    });
-  }
+  ) {}
 
   public prepare() {
     this.overlay = this.overlayService.prepare(FLY_THRU_OVERLAY_DESCRIPTOR);
     this.overlayUi = this.overlayService.attachUi(this.overlay, DIM_ALPHA);
     this.viewService.provideUiHandlers(this.overlayUi);
+
+    // Attach handlers for the overlay and its UI.
+    // Cause next render to re-compute and push icon positions because they're viewport bottom relative.
+    this.eventBrokerService.flyThruViewportChange.subscribe(_info => {
+      this.overlay.arePositionsDirty = true;
+    });
+    // Conditionally show the pause, play, or replay button based on button presses and animation state.
+    this.overlayUi.iconHandlerSets[OverlayIcon.PAUSE].handlePointerDown = () => {
+      this.eventBrokerService.flyThruAnimationPauseRequest.next({ origin: EventOrigin.SERVICE, data: true });
+      this.overlayUi.updateAlphas(OverlayIcon.PLAY, DIM_ALPHA, OverlayIcon.PAUSE, 0, OverlayIcon.REPLAY, 0);
+    };
+    this.overlayUi.iconHandlerSets[OverlayIcon.PLAY].handlePointerDown = () => {
+      this.eventBrokerService.flyThruAnimationPauseRequest.next({ origin: EventOrigin.SERVICE, data: false });
+      this.overlayUi.updateAlphas(OverlayIcon.PLAY, 0, OverlayIcon.PAUSE, DIM_ALPHA, OverlayIcon.REPLAY, 0);
+    };
+    this.overlayUi.iconHandlerSets[OverlayIcon.REPLAY].handlePointerDown = () => {
+      this.eventBrokerService.simulationReplayRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
+      this.overlayUi.updateAlphas(OverlayIcon.PLAY, 0, OverlayIcon.PAUSE, DIM_ALPHA, OverlayIcon.REPLAY, 0);
+    };
+    this.eventBrokerService.simulationPhaseChange.subscribe(info => {
+      switch (info.data) {
+        case SimulationPhase.DEAD_LOADING:
+          this.overlayUi.updateAlphas(OverlayIcon.PLAY, 0, OverlayIcon.PAUSE, DIM_ALPHA, OverlayIcon.REPLAY, 0);
+          break;
+        case SimulationPhase.COLLAPSING:
+          this.overlayUi.updateAlphas(OverlayIcon.PLAY, 0, OverlayIcon.PAUSE, 0, OverlayIcon.REPLAY, DIM_ALPHA);
+          break;
+      }
+    });
   }
 
   public render() {

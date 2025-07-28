@@ -62,9 +62,14 @@ export class RenderingService {
     }
 
     // Per-bridge setups.
+    // Put the user in the home position.
     this.setDefaultView();
+    // Reset the state machine. Required before bridge renderer can be prepared.
+    this.simulationStateService.start();
     // TODO: Some of these can be done only on design conditions changes to save some GC.
+    // Build terrain that matches the work site configuration.
     this.terrainModelService.initializeForBridge();
+    // Clear old meshes if any. Then build new ones.
     this.meshRenderingService.deleteExistingMesh(this.terrainMesh);
     this.meshRenderingService.deleteExistingMesh(this.roadwayMesh);
     this.terrainMesh = this.meshRenderingService.prepareTerrainMesh(this.terrainModelService.terrainMeshData);
@@ -74,7 +79,6 @@ export class RenderingService {
     this.pierRenderingService.prepare();
     this.utilityLineRenderingService.prepare();
     this.windTurbineRenderingService.prepare();
-    this.simulationStateService.start();
 
     // Other on-time setups follow.
     if (this.prepared) {

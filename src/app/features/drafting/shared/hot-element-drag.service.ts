@@ -75,6 +75,10 @@ export class HotElementDragService {
     this.dragging = undefined;
   }
 
+  handlePointerLeave(_event: PointerEvent): void {
+    this.hotElementService.clearRenderedHotElement(this.ctx);
+  }
+
   private get ctx(): CanvasRenderingContext2D {
     return Utility.assertNotUndefined(this._ctx);
   }

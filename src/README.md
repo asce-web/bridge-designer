@@ -100,7 +100,6 @@ We thank the providers now and forever.
 # Issues
 
 - Make help its own window.
-- Member edit dialog size changes don't update the hot layer.
 - Increment iteration on first edit of fresh load
 - Dirty edit save behavior missing
 

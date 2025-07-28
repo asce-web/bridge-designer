@@ -8,6 +8,7 @@ import { DesignConditions } from '../../../shared/services/design-conditions.ser
 import { BitVector } from '../../../shared/core/bitvector';
 import { Gusset } from '../models/gussets.service';
 import { BuckledMemberMesh, FailedMemberRenderingService, TornMemberMesh } from './failed-member-rendering.service';
+import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
 type BridgeMesh = {
   membersMesh: Mesh;
@@ -31,11 +32,21 @@ export class BridgeRenderingService {
 
   constructor(
     private readonly bridgeModelService: BridgeModelService,
+    eventBrokerService: EventBrokerService,
     private readonly failedMemberRenderingService: FailedMemberRenderingService,
     private readonly meshRenderingService: MeshRenderingService,
     private readonly simulationStateService: SimulationStateService,
     private readonly uniformService: UniformService,
-  ) {}
+  ) {
+    // Handle user request to replay the simulation by deleting failed member meshes, if any..
+    eventBrokerService.simulationReplayRequest.subscribe(() => {
+      if (this.mesh) {
+        failedMemberRenderingService.deleteExistingBuckledMemberMesh(this.mesh.buckledMembersMesh);
+        failedMemberRenderingService.deleteExistingTornMemberMesh(this.mesh.tornMemberMesh);
+        this.mesh.buckledMembersMesh = this.mesh.tornMemberMesh = undefined;
+      }
+    });
+  }
 
   public prepare(): void {
     this.deleteExistingMesh(this.mesh);

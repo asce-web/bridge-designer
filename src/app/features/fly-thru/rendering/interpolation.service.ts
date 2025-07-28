@@ -43,7 +43,7 @@ export interface Interpolator {
   getMemberForce(index: number): number;
 }
 
-/** Internal holder for calculations common to several interpolator methods. */
+/** Internal holder for an interpolation parameter and dependent values common to several interpolator methods. */
 type InterpolatorContext = {
   /** Overall parameter. Roughly directed distance in x-coordinate meters from left abutment. */
   t: number;
@@ -63,7 +63,7 @@ type InterpolatorContext = {
   rightLoadCase: number;
 };
 
-/** Wrapper for interpolation logic that refers to a given source. */
+/** Wrapper for an interpolation based on a, given source. */
 class SourceInterpolator implements Interpolator {
   // Result buffers.
   private readonly post: CenterlinePost = { elevation: 0, xNormal: 0, yNormal: 1 };
@@ -96,7 +96,7 @@ class SourceInterpolator implements Interpolator {
   }
 
   /**
-   *  Finds the way point (truck front wheel contact) and load rotation (to place rear wheels on the road)
+   * Finds the way point (truck front wheel contact) and load rotation (to place rear wheels on the road)
    * for the current parameter. The rotation vector isn't normalized.
    */
   public getLoadPosition(frontOut: vec2, rotationOut: vec2): void {
@@ -148,13 +148,14 @@ class SourceInterpolator implements Interpolator {
     return out;
   }
 
+  /** Returns interpolated member forces from adjacent load cases. */
   public getMemberForce(index: number): number {
     return this.interpolationSource.getMemberForce(index, this.ctx);
   }
 
   /**
    * Returns the current position of the load along its path. An optional context is
-   * used for fetching position data within the current load case.
+   * used for fetching alternate position data with the current load case.
    */
   private getWayPoint(out: vec2, ctx: InterpolatorContext = this.ctx): vec2 {
     if (isNaN(ctx.tBridge)) {
@@ -176,8 +177,7 @@ class SourceInterpolator implements Interpolator {
   }
 
   /**
-   * Returns the interpolated displaced joint location for given joint index and, by default, the current parameter.
-   * An alternate context is optional.
+   * Returns the interpolated displaced joint location for given joint index and the current parameter.
    */
   private getExaggeratedDisplacedJointLocation(pt: vec2, index: number): vec2 {
     this.getExaggeratedJointDisplacement(pt, index);
@@ -187,7 +187,7 @@ class SourceInterpolator implements Interpolator {
     return pt;
   }
 
-  /** Fills a wrapper for calculations common to several methods. */
+  /** Fills a context with calculations common to several methods for the given parameter. Avoids redundancy. */
   private setContextForParameter(ctx: InterpolatorContext, t: number): SourceInterpolator {
     const leftmostJointX = this.getExaggeratedJointDisplacementXForDeadLoadOnly(0);
     const panelIndexMax = this.service.bridgeService.designConditions.loadedJointCount - 1;
@@ -210,6 +210,7 @@ class SourceInterpolator implements Interpolator {
     return this;
   }
 
+  /** Fills fields that cache bridge failure status for the current parameter. Avoids redundancey. */
   private updateMemberFailureStatus(): SourceInterpolator {
     const members = this.service.bridgeService.bridge.members;
     this.failedMemberCount = 0;
@@ -228,7 +229,7 @@ class SourceInterpolator implements Interpolator {
       } else if (ratio > 1) {
         this.failedMemberCount++;
         this.failedMemberKinds[i] = FailedMemberKind.TENSION;
-      } 
+      }
     }
     return this;
   }
@@ -247,11 +248,11 @@ class SourceInterpolator implements Interpolator {
 }
 
 /**
- * Interpolator for the bridge collapse animation. Bi-interpolates positions between a "base" interpolator
- * (in practice one where a member fails) and a "dummy" analysis interpolator (in practice one with the
- * same failed members severely weakend). The dummy will have extreme joint displacements, a gross
- * approximation of collapse. For non-position values, i.e. those related to member forces, delegates
- * to the base interpolator, since forces in the dummy aren't useful.
+ * Interpolator for the bridge collapse animation that bi-interpolates positions between a "base" analysis
+ * (in practice one where a member fails) and a "dummy" one (in practice one with the same failed
+ * members severely weakend). The dummy will have extreme joint displacements, a gross approximation of
+ * collapse. For non-position values, i.e. those related to member forces, this interpolator delegates
+ * directly to the base. Forces in the dummy aren't useful.
  */
 class CollapseInterpolator implements Interpolator {
   private readonly collapseSource: BiInterpolatorSource;
@@ -272,42 +273,49 @@ class CollapseInterpolator implements Interpolator {
     this.interpolator = new SourceInterpolator(service, this.collapseSource).withParameter(t);
   }
 
-  public get memberForceStrengthRatios(): Float32Array {
-    return this.failedInterpolator.memberForceStrengthRatios;
-  }
-
   /** Sets the source parameter: zero is the base, one is the dummy collapse. Advancing approximates collapse.  */
   public withParameter(t: number): Interpolator {
     this.collapseSource.withParameter(t);
     return this;
   }
 
+  /** Returns the parameter at the failure collapse point, which is common to base and dummy interpolators. */
   public get parameter(): number {
     return this.interpolator.parameter;
   }
 
+  /** Returns force strength rations from the base interpolator. */
+  public get memberForceStrengthRatios(): Float32Array {
+    return this.failedInterpolator.memberForceStrengthRatios;
+  }
+
+  /** Returns interpolated dummy load position. */
   public getLoadPosition(frontOut: vec2, rotationOut: vec2): void {
     return this.interpolator.getLoadPosition(frontOut, rotationOut);
   }
 
+  /** Returns interpolated dummy joint locations.  */
   public getAllDisplacedJointLocations(out: Float32Array): Float32Array {
     return this.interpolator.getAllDisplacedJointLocations(out);
   }
 
+  /** Returns failed member count from the base interpolator. */
   public get failedMemberCount(): number {
     return this.failedInterpolator.failedMemberCount;
   }
 
+  /** Returns the failed member kinds mask of the base interpolator. */
   public get failedMemberKinds(): Uint8Array /* FailedMemberKind[] */ {
     return this.failedInterpolator.failedMemberKinds;
   }
 
-  getMemberForce(index: number): number {
+  /** Returns a member force from the base interpolator. */
+  public getMemberForce(index: number): number {
     return this.failedInterpolator.getMemberForce(index);
   }
 }
 
-/** A source adapter for interpolating between analysis load cases. */
+/** A source adapter for interpolating between load cases of a single analysis. */
 class AnalysisInterpolationSourceAdapter implements InterpolatorSource {
   private readonly tmpDisplacementA = vec2.create();
   private readonly tmpDisplacementB = vec2.create();
@@ -393,13 +401,13 @@ export class InterpolationService {
     readonly terrainModelService: TerrainModelService,
   ) {}
 
-  /** Creates an interpolator between load cases of the current analysis. */
+  /** Creates an interpolator between load cases of the current analysis. A valid underlying analysis is required. */
   public createAnalysisInterpolator(): Interpolator {
     const sourceAdapter = new AnalysisInterpolationSourceAdapter(this.analysisService);
     return new SourceInterpolator(this, sourceAdapter);
   }
 
-  /** Creates an interpolator between zero and dead load conditions with given load location. */
+  /** Creates an interpolator between zero and dead load conditions with given load location. A valid underlying analysis is required. */
   public createDeadLoadingInterpolator(t: number): Interpolator {
     const sourceAdapter = new AnalysisInterpolationSourceAdapter(this.analysisService);
     const deadLoadingSource = new BiInterpolatorSource(

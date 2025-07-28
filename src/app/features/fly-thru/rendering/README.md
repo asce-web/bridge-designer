@@ -1,6 +1,6 @@
 # Rendering
 
-If you're reading this, the organization may not be obvious.
+This directory contains rendering logic for fly-thru animation models.
 
 ## Organization
 
@@ -8,8 +8,8 @@ If you're reading this, the organization may not be obvious.
   render once per frame, including OpenGL objects. There is a hierarchical level graph of kinds of meshes:
 
   - **Top-level.** This is `RenderingService.` It injects a renderer for each kind of scene object and exports functions
-    to initialize them and render at the frame rate. It does one-time initializations (e.g. for the sky box),
-    once-per-design-conditions (e.g. terrain), and once per bridge configuration.
+    to initialize them and render at the frame rate. It does initializations: one-time (e.g. for the sky box),
+    once-per-design-conditions (e.g. terrain), and once per bridge.
   - **Specific.** These are dedicated to a specific scene object type. They are called directly from the top level.
     Examples: abutments, the bridge, UI overlays, river, sky box, truck, utility lines.
   - **General purpose.** These render generic meshes. They may be called by top-level or specific renderers. Examples:
@@ -52,6 +52,8 @@ The interpolation service provides the underlying data for the load test animati
 - The z-axis rotation vector for the truck that places all tires on the bridge.
   - Also used as the view vector of a person in the truck cab.
 
+While the idea is simple, implementation has nuances.
+
 ### The progress parameter
 
 A single parameter (`t` in the code) gives the position of the truck load's front tire contact point. It is
@@ -62,10 +64,10 @@ sways far to the right under dead load, what should the truck do when it reaches
 teleport backward or ignore one of the two overlapping chunks of roadway? If ignore, which?
 
 We chose a "no teleport" policy. The truck should follow the roadway smoothly. Where the abutment gap is large, it
-should fly "fly." To achieve this:
+should "fly" across it. To achieve this:
 
-- Follow the roadway centerline with x=t until `t` = L, the x-coordinate of the leftmost deck joint with only dead load
-  applied.
+- Follow the roadway centerline with `t` = x until `t` = L, the x-coordinate of the leftmost deck joint with only dead
+  load applied.
 - The parameter space from L to R is now used to interpolate among the deck joints. If there are N of these, then
   `(t -  L) / (R - L)` is the fraction of the deck the truck has traversed.
 - Upon reaching R, again follow the roadway centerline with x=t.
@@ -73,40 +75,41 @@ should fly "fly." To achieve this:
 This can result in instantaneous jumps in the y-direction if deck end and terrain height differ. We won't worry about
 that, since major elevation differences wouldn't be practical designs.
 
-### Types of interpolations
+One important effect of this definition of parameter is that a valid analysis is needed to set one. This requires
+interpolators to be created "lazily" when an analysis is guaranteed present.
 
-There are multiple
+### Interpolators and their data sources
 
-- **Load case.** This interpolates between successive load cases, i.e. positions of the truck. The analysis service
-  computes a discrete data set for each point where the front tire of the truck coincides exactly with a deck joint.
-  Because the truck wheel base length matches deck panel size, the rear tire is also on a joint if over the bridge.
-  Happily, it's valid to linearly interpolate all the needed quantities from those of adjacent joints.
+Interpolation is implemented with two interfiaces. A data source interface provides raw data e.g. displaced joint
+locations and member forces. Implementations broadly follow an adapter pattern:
 
-  - The input is a single analysis i.e. analysis service instance.
-  - The interpolation parameter is the truck's x-coordinate. Any load case interpolation with t <= 0 or t >= (span
-    length + truck length) is called "dead load only." The truck load isn't affecting the bridge.
+- An analysis adapter exposes a bridge analysis in the expected form.
+- A "bi-source" interpolates between two other data sources and via its own parameter.
+- A "zero force" source always returns zero displacements and
 
-- **Special.** These are load case-like interpolations with specific purposes:
+An interpolator accepts a data source and produces interpolated data similar to what the source provides, but includes
+other derivative attributes e.g. about failure of the structure at the current interpolation point.
 
-  - **Null loading.** This is a load case interpolation for the negative parameter value called the "start setback"
-    where the truck starts its move toward the bridge. It is essentially static data. The bridge has zero load applied,
-    including dead loads. There are no inputs, and the parameter is fixed at the start setback.
+There are two kinds of interpolator: one that interpolates a single source and another that's specialized for the bridge
+collapse animation.
 
-  - **Failure loading.** This is a normal load case interpolation except that the underlying analysis instance roughly
-    simulates failed members by applying a factor of 1/50 to their strength.
+Withall, there are three interpolators managed by the simulation state machine. Only one is effective at any time.
 
-- **Bi-interpolations.** This interpolates between two of the previous load case interpolations having the same
-  parameter value, i.e. the truck is not moving.
+- The _dead loading phase_ interpolator is a normal source interpolator with a bi-source interpolating between the zero
+  load case and the analysis dead load only case.
+- The _traversal interpolator_ has the analysis as a data source, so the output is interpolating analysis load cases
+  directly.
+- The _collapse interpolator_ is an odd duck. It uses a bi-source of two adapters, each connected to its own analysis.
+  One is the normal bridge analysis with its parameter frozen at the first value where a member fails. The second is
+  computed on the fly. Each failed member from the first analysis is artificially weakened by a large factor, and then
+  the analysis is completed. The weakened members cause very large joint displacements that roughly approximate bridge
+  failure. Its parameter is frozen at the same value, so the truck is positioned on the distorted bridge. The bi-source
+  parameter is varied to go smoothly from the intially failed state to the large displacements of the distorted
+  analysis.
 
-  - The input is load case interpolations A and B.
-  - The linear interpolation parameter, where t=0 corresponds to A and t=1 to B.
-
-  They're used for two parts of the animation:
-
-  - **Dead loading phase.** This depicts the truck at the start setback. It animates the interpolation between the null
-    loading and dead loading-only conditions over a few seconds.
-  - **Failure phase.** This animates a rough approximation of the bridge failing by interpolating between the normal
-    load case interpolation at the point of failure and a corresonding special failure loading interpolation.
-
-  In the implementation it proved simplest to interpolate the source data (joint displacements and member forces), and
-  provide this to the normal load case interpolator algorithm.
+  The odd bit is that a normal source analysis interpolator of the bi-source would produce some incorrect results in
+  addition to the joint displacements and truck locations needed for the animation. These are the member forces and
+  derived failure data. The member forces in the artifically weakened bridge have no useful meaning. We don't want them
+  to affect the collapse interpolator's outputs at all. Consequently, there is a custom collapse intepolator
+  implementation that is just a wrapper for two others: the bi-source interpolator and also a normal analysis
+  iterpolator to the normal analysis. The wrapper delegates to the correct wrapped interpolator for each kind of output.
