@@ -62,12 +62,13 @@ export class SelectCursorService {
     const ctx = this.ctx!;
     const savedStrokeStyle = ctx.strokeStyle;
     const savedLineDash = ctx.getLineDash();
-
+    
+    const cursor = this.cursor;
     ctx.strokeStyle = 'blue';
-    ctx.setLineDash(this.cursor.width >= 0 ? [] : [4, 4]);
+    ctx.setLineDash(cursor.width >= 0 ? [] : [4, 4]);
 
     ctx.beginPath();
-    ctx.rect(this.cursor.x0, this.cursor.y0, this.cursor.width, this.cursor.height);
+    ctx.rect(cursor.x0, cursor.y0, cursor.width, cursor.height);
     ctx.stroke();
 
     ctx.setLineDash(savedLineDash);

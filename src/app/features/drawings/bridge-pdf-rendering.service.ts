@@ -7,6 +7,7 @@ import { DRAWING_LINE_WIDTH_MM, DRAWING_MARGIN_MM } from './drawings.service';
 import { AbutmentSide, SiteRenderingHelper2D } from '../../shared/classes/site-rendering-helper-2d';
 import { Point2D, Point2DInterface, Rectangle2DInterface } from '../../shared/classes/graphics';
 import { DesignConditions } from '../../shared/services/design-conditions.service';
+import { MemberLabelPositionService } from '../../shared/services/MemberLabelPosition.service';
 
 const DIMENSION_GAP = 4;
 const DIMENSION_EXTENSION = 1.5;
@@ -18,8 +19,11 @@ export class BridgePdfRenderingService {
   private scale: number = 1;
   private translateX: number = 0;
   private translateY: number = 0;
+  private labelPositions!: Float64Array;
+
   constructor(
     private readonly bridgeService: BridgeService,
+    private readonly memberLabelPositionService: MemberLabelPositionService,
     private readonly gussetsService: GussetsService,
   ) {}
 
@@ -43,10 +47,13 @@ export class BridgePdfRenderingService {
     // Set drawing environment.]
     doc.setLineWidth(DRAWING_LINE_WIDTH_MM);
     this.setUpTilingPatterns(doc);
+    // Get non-overlapping label positions.
+    this.labelPositions = this.memberLabelPositionService.labelPositions;
     // Draw. Order matters.
     this.bridgeService.bridge.members.forEach(member => this.drawMember(doc, member));
     const suppportsBottomY = this.drawSupports(doc);
     this.gussetsService.gussets.forEach(gusset => this.drawJoint(doc, gusset));
+    this.bridgeService.bridge.members.forEach(member => this.drawMemberLabel(doc, member));
     const dimensionsY = DIMENSION_GAP + Math.max(this.tY(bridgeExtent.y0), suppportsBottomY);
     this.drawVerticalDimensions(doc, bridgeExtent);
     return DIMENSION_GAP + this.drawHorizontalDimensions(doc, dimensionsY);
@@ -150,23 +157,38 @@ export class BridgePdfRenderingService {
   private drawMember(doc: jsPDF, member: Member): void {
     const length = member.length;
     const halfWidth = member.materialSizeMm * 0.0005;
-    const dx = member.b.x - member.a.x;
-    const dy = member.b.y - member.a.y;
-    const perpDx = (-dy / length) * halfWidth;
-    const perpDy = (dx / length) * halfWidth;
-
-    // Draw parallels to member axis offset by half width.
     const ax = member.a.x;
     const ay = member.a.y;
     const bx = member.b.x;
     const by = member.b.y;
-    doc.line(this.tX(ax + perpDx), this.tY(ay + perpDy), this.tX(bx + perpDx), this.tY(by + perpDy), 'S');
-    doc.line(this.tX(ax - perpDx), this.tY(ay - perpDy), this.tX(bx - perpDx), this.tY(by - perpDy), 'S');
+    const ux = (bx - ax) / length;
+    const uy = (by - ay) / length;
+    const perpDx = -uy * halfWidth;
+    const perpDy = ux * halfWidth;
 
+    // Draw box parallel to member axis offset by half width. Fill for appearance of crossing members.
+    const path = [
+      {op: 'm', c: [this.tX(ax + perpDx), this.tY(ay + perpDy)]},
+      {op: 'l', c: [this.tX(bx + perpDx), this.tY(by + perpDy)]},
+      {op: 'l', c: [this.tX(bx - perpDx), this.tY(by - perpDy)]},
+      {op: 'l', c: [this.tX(ax - perpDx), this.tY(ay - perpDy)]},
+      {op: 'h'}
+    ];
+    doc.setFillColor('white');
+    doc.path(path).fillStroke();
+  }
+
+  /** Draws a single member number label. */
+  private drawMemberLabel(doc: jsPDF, member: Member): void {
     // Label at center in a filled rectangle.
-    // TODO: Eliminate overlapping labels with a spring system solver.
-    const labelX = ax + dx * 0.5;
-    const labelY = ay + dy * 0.5;
+    const length = member.length;
+    const ax = member.a.x;
+    const ay = member.a.y;
+    const ux = (member.b.x - ax) / length;
+    const uy = (member.b.y - ay) / length;
+    const labelPosition = this.labelPositions[member.index]; // distance from a
+    const labelX = ax + ux * labelPosition;
+    const labelY = ay + uy * labelPosition;
     const labelText = member.number.toString();
     doc.setFontSize(6);
     const { w, h } = doc.getTextDimensions(labelText);
@@ -181,15 +203,15 @@ export class BridgePdfRenderingService {
    * Draws horizontal dimension lines starting at given y and working downward, returning bottom-most y.
    * ```
    *   /\
-   * _/__\__ 
+   * _/__\__
    * //////   provided bottom of bridge drawing box
    *   |
    *   |  dimension gap
    *   |<------
-   *   | 
+   *   |
    *   |  dimension gap
    *   |<-----
-   *         
+   *
    * ```
    */
   private drawHorizontalDimensions(doc: jsPDF, yMm: number): number {
@@ -242,21 +264,23 @@ export class BridgePdfRenderingService {
     let xMm = this.tX(bridgeExtent.x0) - SUPPORT_HALF_WIDTH - DIMENSION_GAP;
     const y1 = bridgeExtent.y0 + bridgeExtent.height;
     let topYMm = this.tY(y1);
-    let deckMm = this.tY(0);
+    let deckYMm = this.tY(0);
     let bottomYMm = this.tY(bridgeExtent.y0);
     let dimensionCount = 0;
     if (y1 > 0) {
-      this.drawVerticalDimension(doc, topYMm, deckMm, xMm, y1);
+      this.drawVerticalDimension(doc, topYMm, deckYMm, xMm, y1);
       ++dimensionCount;
     }
     if (bridgeExtent.y0 < 0) {
-      this.drawVerticalDimension(doc, deckMm, bottomYMm, xMm, -bridgeExtent.y0);
+      this.drawVerticalDimension(doc, deckYMm, bottomYMm, xMm, -bridgeExtent.y0);
       ++dimensionCount;
     }
     // Add overall dimension if more than one was drawn above.
     if (dimensionCount > 1) {
       xMm -= DIMENSION_GAP;
-      this.drawVerticalDimension(doc, topYMm, bottomYMm, xMm, bridgeExtent.height);
+      // Position outer label at midpoint between inner ones to prevent overlaps.
+      const labelY = 0.25 * (2 * deckYMm + topYMm + bottomYMm);
+      this.drawVerticalDimension(doc, topYMm, bottomYMm, xMm, bridgeExtent.height, labelY);
     }
   }
 
@@ -280,7 +304,14 @@ export class BridgePdfRenderingService {
   }
 
   /** Draws a single vertical dimension with given millimeter coordinates. */
-  private drawVerticalDimension(doc: jsPDF, ayMm: number, byMm: number, dimensionX: number, distanceM: number): void {
+  private drawVerticalDimension(
+    doc: jsPDF,
+    ayMm: number,
+    byMm: number,
+    dimensionX: number,
+    distanceM: number,
+    labelY: number = (ayMm + byMm) * 0.5,
+  ): void {
     this.drawArrowHead(doc, dimensionX, ayMm, dimensionX, byMm);
     this.drawArrowHead(doc, dimensionX, byMm, dimensionX, ayMm);
     doc.line(dimensionX, ayMm, dimensionX, byMm);
@@ -293,7 +324,6 @@ export class BridgePdfRenderingService {
     const labelWidth = w + 0.8; // 0.4mm margin each side
     const labelHeight = h + 0.6; // 0.3mm margin top and bottom
     doc.setFillColor('white');
-    const labelY = (ayMm + byMm) * 0.5;
     doc.rect(dimensionX - labelWidth * 0.5, labelY - labelHeight * 0.5, labelWidth, labelHeight, 'F');
     doc.text(lengthText, dimensionX, labelY, { align: 'center', baseline: 'middle' });
   }
