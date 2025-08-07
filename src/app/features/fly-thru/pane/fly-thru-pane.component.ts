@@ -13,10 +13,11 @@ import { AnimationService } from '../rendering/animation.service';
 import { GlService } from '../rendering/gl.service';
 import { ViewportService } from '../rendering/viewport.service';
 import { AnimationControlsOverlayService } from '../rendering/animation-controls-overlay.service';
+import { FlyThruSettingsDialogComponent } from '../fly-thru-settings-dialog/fly-thru-settings-dialog.component';
 
 @Component({
   selector: 'fly-thru-pane',
-  imports: [],
+  imports: [FlyThruSettingsDialogComponent],
   templateUrl: './fly-thru-pane.component.html',
   styleUrl: './fly-thru-pane.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

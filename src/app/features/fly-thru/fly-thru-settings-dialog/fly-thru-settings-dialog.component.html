@@ -10,65 +10,93 @@
   <div class="header">Animation settings</div>
   <div class="container">
     <div>
+      Speed (km/hr)
       <jqxSlider
         #speedSlider
         [height]="60"
         [min]="5"
         [max]="30"
-        [value]="5"
+        [value]="20"
         [step]="10"
         [mode]="'fixed'"
         [showTickLabels]="true"
         [tooltip]="true"
         [ticksFrequency]="10"
+        (onChange)="handleSpeedSliderChange()"
       >
       </jqxSlider>
+    </div>
+    <div>
+      Brightness
+      <jqxSlider
+        #brightnessSlider
+        [height]="60"
+        [min]="0"
+        [max]="100"
+        [value]="50"
+        [step]="10"
+        [mode]="'fixed'"
+        [showTickLabels]="true"
+        [tooltip]="true"
+        [ticksFrequency]="10"
+        (onChange)="handleBrightnessSliderChange()"
+      >
+      </jqxSlider>
+    </div>
+    <div>
       <jqxCheckBox
+        #shadowsCheckbox
         [width]="checkboxWidth"
-        height=" "
-        checkboxHeight
+        [height]="checkboxHeight"
+        (onChange)="handleShadowsCheckboxChange()"
       >
         Shadows</jqxCheckBox
       >
       <jqxCheckBox
+        #skyCheckbox
         [width]="checkboxWidth"
-        height=" "
-        checkboxHeight
+        [height]="checkboxHeight"
+        (onChange)="handleSkyCheckboxChange()"
       >
         Sky</jqxCheckBox
       >
       <jqxCheckBox
+        #terrainCheckbox
         [width]="checkboxWidth"
-        height=" "
-        checkboxHeight
+        [height]="checkboxHeight"
+        (onChange)="handleTerrainCheckboxChange()"
       >
         Terrain</jqxCheckBox
       >
       <jqxCheckBox
+        #abutmentsCheckbox
         [width]="checkboxWidth"
-        height=" "
-        checkboxHeight
+        [height]="checkboxHeight"
+        (onChange)="handleAbutmentsCheckboxChange()"
       >
         Abutments</jqxCheckBox
       >
       <jqxCheckBox
+        #truckCheckbox
         [width]="checkboxWidth"
-        height=" "
-        checkboxHeight
+        [height]="checkboxHeight"
+        (onChange)="handleTruckCheckboxChange()"
       >
         Truck</jqxCheckBox
       >
       <jqxCheckBox
+        #memberColorsCheckbox
         [width]="checkboxWidth"
-        height=" "
-        checkboxHeight
+        [height]="checkboxHeight"
+        (onChange)="handleMemberColorsCheckbox()"
       >
         Member colors</jqxCheckBox
       >
       <jqxCheckBox
+        #exaggerationCheckbox
         [width]="checkboxWidth"
-        height=" "
-        checkboxHeight
+        [height]="checkboxHeight"
+        (onChange)="handleExaggerationCheckbox()"
       >
         Exaggeration</jqxCheckBox
       >

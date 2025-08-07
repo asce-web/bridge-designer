@@ -18,8 +18,8 @@ export function step(
   h: number,
   f: (y: Float64Array, x: Float64Array) => void,
   n: number = x.length,
-  yTmp: Float64Array = new Float64Array(x.length),
-  xTmp: Float64Array = new Float64Array(x.length),
+  yTmp: Float64Array = new Float64Array(n),
+  xTmp: Float64Array = new Float64Array(n),
 ) {
   const half = 0.5;
   const third = 0.33333333333333333333;

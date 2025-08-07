@@ -80,7 +80,7 @@ export class RenderingService {
     this.utilityLineRenderingService.prepare();
     this.windTurbineRenderingService.prepare();
 
-    // Other on-time setups follow.
+    // Other one-time setups follow.
     if (this.prepared) {
       return;
     }

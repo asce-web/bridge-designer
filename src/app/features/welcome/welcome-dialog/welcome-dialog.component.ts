@@ -3,7 +3,6 @@ import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { jqxRadioButtonModule, jqxRadioButtonComponent } from 'jqwidgets-ng/jqxradiobutton';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
-import { SessionStateService } from '../../../shared/services/session-state.service';
 
 @Component({
   selector: 'welcome-dialog',
@@ -19,7 +18,6 @@ export class WelcomeDialogComponent implements AfterViewInit {
   @ViewChild('openButton') openButton!: jqxRadioButtonComponent;
 
   constructor(
-    readonly sessionStateService: SessionStateService,
     private readonly eventBrokerService: EventBrokerService,
   ) {}
 

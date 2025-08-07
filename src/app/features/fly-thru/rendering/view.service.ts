@@ -6,6 +6,7 @@ import { TerrainModelService } from '../models/terrain-model.service';
 import { SimulationStateService } from './simulation-state.service';
 import { OverlayUi } from './overlay.service';
 import { OverlayIcon } from './animation-controls-overlay.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 
 /** Container for the fly-thru and driver view transforms and associated update logic. */
 @Injectable({ providedIn: 'root' })
@@ -46,6 +47,7 @@ export class ViewService {
 
   constructor(
     private readonly bridgeService: BridgeService,
+    private readonly eventBrokerService: EventBrokerService,
     private readonly simulationStateService: SimulationStateService,
     private readonly terrainService: TerrainModelService,
   ) {}
@@ -93,6 +95,10 @@ export class ViewService {
     truck.handlePointerDrag = (dx: number, dy: number) => {
       this.phiDriverHead = Utility.clamp(dy * ViewService.UI_RATE_TILT, -Math.PI * 0.25, Math.PI * 0.1);
       this.thetaDriverHead = Utility.clamp(1.5 * dx * ViewService.UI_RATE_TILT, -Math.PI * 0.3, Math.PI * 0.3);
+    };
+    const settings = handlerSets[OverlayIcon.SETTINGS];
+    settings.handlePointerDown = () => {
+      this.eventBrokerService.flyThruSettingsRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
     };
   }
 

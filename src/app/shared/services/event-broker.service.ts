@@ -5,6 +5,7 @@ import { ToastKind } from '../../features/toast/toast/toast-error';
 import { UiMode } from '../../features/controls/management/ui-state.service';
 import { SimulationPhase } from '../../features/fly-thru/rendering/simulation-state.service';
 import { EditCommandCompletionInfo } from '../../features/drafting/shared/undo-manager.service';
+import { FlyThruSettings } from '../../features/fly-thru/rendering/fly-thru-settings.service';
 
 /** Origin of an event. For breaking event cycles. */
 export const enum EventOrigin {
@@ -13,6 +14,7 @@ export const enum EventOrigin {
   CURSOR_OVERLAY,
   DESIGN_ITERATION_DIALOG,
   DRAFTING_PANEL,
+  FLY_THRU_SETTINGS_DIALOG,
   MEMBER_EDIT_DIALOG,
   MEMBER_TABLE,
   MENU,
@@ -67,6 +69,8 @@ export class EventBrokerService {
   public readonly editModeSelection = new Subject<EventInfo>();
   public readonly editModeChange = new Subject<TypedEventInfo<number>>();
   public readonly flyThruAnimationPauseRequest = new Subject<TypedEventInfo<boolean>>();
+  public readonly flyThruSettingsChange = new Subject<TypedEventInfo<FlyThruSettings>>();
+  public readonly flyThruSettingsRequest = new Subject<TypedEventInfo<void>>();
   public readonly flyThruViewportChange = new Subject<TypedEventInfo<void>>();
   public readonly gridDensityChange = new Subject<EventInfo>();
   public readonly gridDensitySelection = new Subject<EventInfo>();
