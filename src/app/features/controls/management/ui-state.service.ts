@@ -21,8 +21,14 @@ type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
  * Container for logic that sychronizes multiple UI elements having the same purpose.
  *
  * This class doesn't track the state of toggle and select subjects. It only toggles
- * and selects the state of attached UI objects. When explicit state is needed, that
- * must, it's recommended to have a separate service subscribe to the respective subject.
+ * and selects the state of attached UI objects. When explicit state is needed, a separate
+ * service should subscribe to the respective subject.
+ * 
+ * An exception is UI elements with registered "disable overrides." An override, as the name
+ * implies, causes its element to be disabled regardless of it normal enable/disable state
+ * based on UI states specified at registration time. When the UI leaves the disabled state,
+ * the element's enable/disable state is restored. This service necessarily tracks the
+ * normal states for this purpose.
  */
 @Injectable({ providedIn: 'root' })
 export class UiStateService {
@@ -56,6 +62,7 @@ export class UiStateService {
       for (const [subject, override] of this.disableOverridesBySubject) {
         this.disableByOverride(subject, override);
       }
+      eventBrokerService.uiModeChange.next({origin: EventOrigin.SERVICE, data: this.uiMode});
     });
     // By-UI mode disablement setup. Must be complete before session state registration.
     const initial: UiMode[] = ['initial'];
@@ -238,7 +245,7 @@ export class UiStateService {
     }
   }
 
-  /** Adds a disabler for given subject. Useful for disabling widgets that don't  send messages themselves. */
+  /** Adds a disabler for given subject. Useful for disabling widgets that don't send messages themselves. */
   public addWidgetDisabler(subject: Subject<any>, disabler: (disable: boolean) => void): void {
     let disablers: ((disable: boolean) => void)[] | undefined = this.widgetDisablersBySubject.get(subject);
     if (!disablers) {
@@ -255,6 +262,12 @@ export class UiStateService {
    */
   public addDisableOverrides(subject: Subject<any>, overrides: UiMode[], initialDisabled: boolean = false) {
     this.disableOverridesBySubject.set(subject, { isDisabled: initialDisabled, disabledModes: overrides });
+  }
+
+  /** Returns whether the given subject is disabled for the current UI state. If no override has been registered, returns false. */
+  public isDisabledForCurrentUiMode(subject: Subject<any>): boolean {
+    const override = this.disableOverridesBySubject.get(subject);
+    return override !== undefined && (override.disabledModes.includes(this.uiMode) || override.isDisabled);
   }
 
   /** Dis/enables the subject based on override state. */

@@ -70,7 +70,6 @@ export class EventBrokerService {
   public readonly editModeChange = new Subject<TypedEventInfo<number>>();
   public readonly flyThruAnimationPauseRequest = new Subject<TypedEventInfo<boolean>>();
   public readonly flyThruSettingsChange = new Subject<TypedEventInfo<FlyThruSettings>>();
-  public readonly flyThruSettingsRequest = new Subject<TypedEventInfo<void>>();
   public readonly flyThruViewportChange = new Subject<TypedEventInfo<void>>();
   public readonly gridDensityChange = new Subject<EventInfo>();
   public readonly gridDensitySelection = new Subject<EventInfo>();
@@ -113,6 +112,7 @@ export class EventBrokerService {
   public readonly toastRequest = new Subject<TypedEventInfo<ToastKind>>();
   public readonly toolsToggle = new Subject<EventInfo>();
   public readonly uiModeRequest = new Subject<TypedEventInfo<UiMode>>();
+  public readonly uiModeChange = new Subject<TypedEventInfo<UiMode>>();
   public readonly undoRequest = new Subject<EventInfo>();
   public readonly unstableBridgeDialogOpenRequest = new Subject<EventInfo>();
   public readonly welcomeRequest = new Subject<EventInfo>();

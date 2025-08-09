@@ -17,6 +17,7 @@ import { PierRenderingService } from './pier-rendering.service';
 import { WindTurbineRenderingService } from '../../../shared/services/wind-turbine-rendering.service';
 import { SimulationStateService } from './simulation-state.service';
 import { AnimationControlsOverlayService } from './animation-controls-overlay.service';
+import { FlyThruSettingsService } from './fly-thru-settings.service';
 
 /** Rendering functionality for fly-thrus. */
 @Injectable({ providedIn: 'root' })
@@ -31,6 +32,7 @@ export class RenderingService {
     private readonly abutmentRenderingService: AbutmentRenderingService,
     private readonly animationControlsOverlayService: AnimationControlsOverlayService,
     private readonly bridgeRenderingService: BridgeRenderingService,
+    private readonly flyThruSettingsService: FlyThruSettingsService,
     private readonly glService: GlService,
     private readonly meshRenderingService: MeshRenderingService,
     private readonly pierRenderingService: PierRenderingService,
@@ -95,7 +97,7 @@ export class RenderingService {
 
   /**
    * Renders a single frame.
-   * 
+   *
    * @param nowMillis Current time in milliseconds.
    * @param elapsedNowMillis Elapsed time since last frame in milliseconds.
    * @param clockMillis Simulation clock time in milliseconds. Can be paused by view controls.
@@ -118,23 +120,35 @@ export class RenderingService {
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
     gl.depthFunc(gl.LEQUAL);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.clearColor(0, 0.4, 0.8, 1);
+    const clearMask = this.flyThruSettingsService.settings.noSky ? gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT : gl.DEPTH_BUFFER_BIT;
+    gl.clear(clearMask);
 
     this.uniformService.updateTimeUniform(nowMillis);
     this.uniformService.updateLightDirection(this.viewMatrix);
 
     // Render. The renderers can make no assumption about what's in the transforms uniform.
     this.uniformService.updateTransformsUniform(this.viewMatrix, this.projectionMatrix);
-    this.meshRenderingService.renderTerrainMesh(this.terrainMesh);
-    this.meshRenderingService.renderColoredMesh(this.roadwayMesh);
-    this.riverRenderingService.render(this.viewMatrix, this.projectionMatrix);
-    this.abutmentRenderingService.render(this.viewMatrix, this.projectionMatrix);
-    this.pierRenderingService.render(this.viewMatrix, this.projectionMatrix);
-    this.truckRenderingService.render(this.viewMatrix, this.projectionMatrix);
-    this.utilityLineRenderingService.render(this.viewMatrix, this.projectionMatrix);
-    this.windTurbineRenderingService.render(this.viewMatrix, this.projectionMatrix, nowMillis);
+    if (!this.flyThruSettingsService.settings.noTerrain) {
+      this.meshRenderingService.renderTerrainMesh(this.terrainMesh);
+      this.meshRenderingService.renderColoredMesh(this.roadwayMesh);
+      this.utilityLineRenderingService.render(this.viewMatrix, this.projectionMatrix);
+      this.riverRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    }
+    if (!this.flyThruSettingsService.settings.noAbutments) {
+      this.abutmentRenderingService.render(this.viewMatrix, this.projectionMatrix);
+      this.pierRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    }
+    if (!this.flyThruSettingsService.settings.noWindTurbine) {
+      this.windTurbineRenderingService.render(this.viewMatrix, this.projectionMatrix, nowMillis);
+    }
     this.bridgeRenderingService.render(this.viewMatrix, this.projectionMatrix);
-    this.skyRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    if (!this.flyThruSettingsService.settings.noSky) {
+      this.skyRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    }
+    if (!this.flyThruSettingsService.settings.noTruck) {
+      this.truckRenderingService.render(this.viewMatrix, this.projectionMatrix);
+    }
     this.animationControlsOverlayService.render();
   }
 }

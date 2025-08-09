@@ -5,9 +5,9 @@ import { vec2 } from 'gl-matrix';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { Geometry } from '../../../shared/classes/graphics';
 import { AnalysisService } from '../../../shared/services/analysis.service';
-import { SimulationParametersService } from './simulation-parameters.service';
 import { SiteConstants } from '../../../shared/classes/site-constants';
 import { COLLAPSE_ANALYSIS } from '../pane/constants';
+import { FlyThruSettingsService } from './fly-thru-settings.service';
 
 /** Source data for an interpolator. Has several purpose-built implementations. */
 interface InterpolatorSource {
@@ -236,13 +236,13 @@ class SourceInterpolator implements Interpolator {
 
   private getExaggeratedJointDisplacement(out: vec2, index: number): vec2 {
     this.interpolationSource.getJointDisplacement(out, index, this.ctx);
-    return vec2.scale(out, out, this.service.parametersService.exaggeration);
+    return vec2.scale(out, out, this.service.settingsService.exaggeration);
   }
 
   /** Gets a displaced joint's x-coordinate for the dead load only case. */
   private getExaggeratedJointDisplacementXForDeadLoadOnly(index: number): number {
     const joint = this.service.bridgeService.bridge.joints[index];
-    const exaggeration = this.service.parametersService.exaggeration;
+    const exaggeration = this.service.settingsService.exaggeration;
     return joint.x + this.interpolationSource.getJointDisplacementXForDeadLoadOnly(index) * exaggeration;
   }
 }
@@ -397,7 +397,7 @@ export class InterpolationService {
     readonly analysisService: AnalysisService,
     @Inject(COLLAPSE_ANALYSIS) readonly collapseAnalysisService: AnalysisService,
     readonly bridgeService: BridgeService,
-    readonly parametersService: SimulationParametersService,
+    readonly settingsService: FlyThruSettingsService,
     readonly terrainModelService: TerrainModelService,
   ) {}
 

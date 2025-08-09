@@ -3,11 +3,11 @@ import { InterpolationService, Interpolator } from './interpolation.service';
 import { AnalysisService } from '../../../shared/services/analysis.service';
 import { vec2 } from 'gl-matrix';
 import { COLLAPSE_ANALYSIS } from '../pane/constants';
-import { SimulationParametersService } from './simulation-parameters.service';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { Utility } from '../../../shared/classes/utility';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
+import { FlyThruSettingsService } from './fly-thru-settings.service';
 
 export const enum SimulationPhase {
   UNSTARTED,
@@ -41,6 +41,7 @@ export class SimulationStateService {
   public loadAlpha = 1;
   /** Time since the current phase started. Useful for sub-animations. */
   public phaseClockMillis: number = 0;
+  public lastLoadAdvanceMillis: number | undefined;
 
   private phase: SimulationPhase = SimulationPhase.UNSTARTED;
   private phaseStartClockMillis: number | undefined;
@@ -55,7 +56,7 @@ export class SimulationStateService {
     private readonly bridgeService: BridgeService,
     @Inject(COLLAPSE_ANALYSIS) private readonly collapseAnalysisService: AnalysisService,
     private readonly eventBrokerService: EventBrokerService,
-    private readonly parameterService: SimulationParametersService,
+    private readonly settingsService: FlyThruSettingsService,
     private readonly interpolationService: InterpolationService,
   ) {
     eventBrokerService.simulationReplayRequest.subscribe(() => this.start());
@@ -88,7 +89,7 @@ export class SimulationStateService {
    *                                               /                                                                   \
    *                                              v                                                                    /
    *  --start--> DEAD_LOADING --time expiry--> FADING_IN --time expiry--> TRAVERSING ----end reached---> FADING_OUT --
-   *              ^     \                          /                        /  \                                 / 
+   *              ^     \                          /                        /  \                                 /
    *              |      -->-test fail------------/------------------------/----o-->-test fail--> COLLAPSING    /
    *               \                             /                        /                        /           /
    *                -----<--start---------------o--------<--start--------o-------<--start---------o--<--start--
@@ -135,6 +136,7 @@ export class SimulationStateService {
         if (tDeadLoading > 1) {
           this.phase = SimulationPhase.FADING_IN;
           this.phaseStartClockMillis = clockMillis;
+          this.lastLoadAdvanceMillis = undefined;
           return this.advance(clockMillis);
         }
         this.deadLoadingInterpolator.withParameter(tDeadLoading);
@@ -156,7 +158,7 @@ export class SimulationStateService {
         break;
       case SimulationPhase.TRAVERSING:
         const remainingTraverseMillis =
-          (this.endParameter - this.traversingInterpolator.parameter) * this.parameterService.elapsedMillisPerMeter;
+          (this.endParameter - this.traversingInterpolator.parameter) * this.settingsService.elapsedMillisPerMeter;
         if (remainingTraverseMillis * SimulationStateService.INV_MATERIALIZING_MILLIS < 1) {
           this.phase = SimulationPhase.FADING_OUT;
           // Don't reset the clock.
@@ -170,9 +172,10 @@ export class SimulationStateService {
         break;
       case SimulationPhase.FADING_OUT:
         const remainingFadeOutMillis =
-          (this.endParameter - this.traversingInterpolator.parameter) * this.parameterService.elapsedMillisPerMeter;
+          (this.endParameter - this.traversingInterpolator.parameter) * this.settingsService.elapsedMillisPerMeter;
         if (remainingFadeOutMillis < 0) {
           this.phaseStartClockMillis = clockMillis;
+          this.lastLoadAdvanceMillis = undefined;
           this.phase = SimulationPhase.FADING_IN;
           return this.advance(clockMillis);
         }
@@ -187,8 +190,13 @@ export class SimulationStateService {
   }
 
   private advanceLoad(clockMillis: number) {
-    const speed = this.parameterService.speedMetersPerMilli;
-    const t = SimulationStateService.START_PARAMETER + speed * (clockMillis - this.phaseStartClockMillis!);
+    // Advance absolutely the first time, then relatively so user speed changes look smooth.
+    const t =
+      this.lastLoadAdvanceMillis === undefined
+        ? SimulationStateService.START_PARAMETER
+        : this.traversingInterpolator.parameter +
+          this.settingsService.speedMetersPerMilli * (clockMillis - this.lastLoadAdvanceMillis);
+    this.lastLoadAdvanceMillis = clockMillis;
     this.traversingInterpolator.withParameter(t).getLoadPosition(this.wayPoint, this.rotation);
   }
 

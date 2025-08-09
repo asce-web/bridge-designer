@@ -2,17 +2,21 @@
   #dialog
   [isModal]="false"
   [autoOpen]="false"
-  [width]="344"
-  [height]="300"
+  [width]="dialogWidth"
+  [height]="dialogHeight"
   [initContent]="initDialogContent"
+  [resizable]="false"
+  (onClose)="handleDialogClose()"
 >
   <div class="header">Animation settings</div>
   <div class="content">
     <!-- documented, unfixed bug in jqWidgets: sliders must be programmatically built in initContent -->
     <div class="top-controls">
       <div class="speed">
-        Speed
-        <ng-container #speedSliderContainer></ng-container>{{ speed }} km/hr
+        <div>Speed {{ speed }} km/hr</div>
+        <div class="speed-slider">
+          <ng-container #speedSliderContainer></ng-container>
+        </div>
       </div>
     </div>
     <div class="left-controls">
@@ -20,6 +24,7 @@
         #shadowsCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noShadows"
         (onChange)="handleShadowsCheckboxChange()"
       >
         Shadows</jqxCheckBox
@@ -28,6 +33,7 @@
         #skyCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noSky"
         (onChange)="handleSkyCheckboxChange()"
       >
         Sky</jqxCheckBox
@@ -36,6 +42,7 @@
         #terrainCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noTerrain"
         (onChange)="handleTerrainCheckboxChange()"
       >
         Terrain</jqxCheckBox
@@ -44,6 +51,7 @@
         #windTurbineCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noWindTurbine"
         (onChange)="handleWindTurbineCheckboxChange()"
       >
         Wind turbine</jqxCheckBox
@@ -52,6 +60,7 @@
         #abutmentsCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noAbutments"
         (onChange)="handleAbutmentsCheckboxChange()"
       >
         Abutments</jqxCheckBox
@@ -60,16 +69,16 @@
         #truckCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noTruck"
         (onChange)="handleTruckCheckboxChange()"
       >
         Truck</jqxCheckBox
       >
-    </div>
-    <div class="right-controls">
       <jqxCheckBox
         #memberColorsCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noMemberColors"
         (onChange)="handleMemberColorsCheckbox()"
       >
         Member colors</jqxCheckBox
@@ -78,12 +87,19 @@
         #exaggerationCheckbox
         [width]="checkboxWidth"
         [height]="checkboxHeight"
+        [checked]="!settings.noExaggeration"
         (onChange)="handleExaggerationCheckbox()"
       >
         Exaggeration</jqxCheckBox
       >
-      <div>
-        Brightness
+    </div>
+    <div class="right-controls">
+      <div class="brightness-label">Brightness</div>
+      <div class="brightness-icons">
+        <img src="img/bright.png" />
+        <img src="img/dim.png" />
+      </div>
+      <div class="brightness-slider">
         <ng-container #brightnessSliderContainer></ng-container>
       </div>
     </div>

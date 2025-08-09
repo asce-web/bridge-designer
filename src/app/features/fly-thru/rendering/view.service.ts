@@ -41,6 +41,7 @@ export class ViewService {
   private yEyeVelocity: number = 0;
   private phiDriverHead: number = 0;
   private thetaDriverHead: number = 0;
+  private showControls: boolean = false;
   public isIgnoringBoundaries: boolean = false;
   public isMovingLaterally: boolean = false;
   public isDriving: boolean = false;
@@ -50,7 +51,9 @@ export class ViewService {
     private readonly eventBrokerService: EventBrokerService,
     private readonly simulationStateService: SimulationStateService,
     private readonly terrainService: TerrainModelService,
-  ) {}
+  ) {
+    eventBrokerService.animationControlsToggle.subscribe(eventInfo => this.showControls = eventInfo.data);
+  }
 
   public provideUiHandlers(overlayUi: OverlayUi): void {
     // Install the animation controls handlers that vary the view via overlay icons.
@@ -98,7 +101,7 @@ export class ViewService {
     };
     const settings = handlerSets[OverlayIcon.SETTINGS];
     settings.handlePointerDown = () => {
-      this.eventBrokerService.flyThruSettingsRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
+      this.eventBrokerService.animationControlsToggle.next({ origin: EventOrigin.SERVICE, data: !this.showControls });
     };
   }
 
