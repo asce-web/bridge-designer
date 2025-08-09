@@ -221,9 +221,6 @@ export class UiStateService {
 
   public registerKey(key: string, modifierMask: number, subject: Subject<EventInfo>, data?: any): void {
     const lookupKey = `${key}|${modifierMask}`;
-    if (this.keyInfosByKey[lookupKey]) {
-      throw new Error(`Multiple reg for key '${key}'`);
-    }
     const info: [boolean, Subject<EventInfo>, any] = [false, subject, data];
     this.keyInfosByKey[lookupKey] = info;
     this.addWidgetDisabler(subject, disable => {

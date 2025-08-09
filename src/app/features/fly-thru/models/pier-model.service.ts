@@ -3,7 +3,7 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { MeshData } from '../rendering/mesh-rendering.service';
 import { Geometry } from '../../../shared/classes/graphics';
 import { Material } from './materials';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 import { TerrainModelService } from './terrain-model.service';
 
 @Injectable({ providedIn: 'root' })

@@ -44,34 +44,34 @@ import { DraftingPanelState } from '../../../shared/services/persistence.service
  * Basic appearance and event-handling happens here. Card-specific logic is delegated to CardService.
  */
 @Component({
-    selector: 'setup-wizard',
-    imports: [
-        CommonModule,
-        FormsModule,
-        HeightListComponent,
-        jqxButtonModule,
-        jqxDropDownListModule,
-        jqxExpanderModule,
-        jqxInputModule,
-        jqxListBoxModule,
-        jqxRadioButtonModule,
-        jqxWindowModule,
-        LocalContestCodeInputComponent,
-    ],
-    providers: [
-        BridgeService,
-        { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
-        BridgeSketchService,
-        CardService,
-        CartoonJointRenderingService,
-        CartoonRenderingService,
-        CartoonSiteRenderingService,
-        CartoonSketchRenderingService,
-        ViewportTransform2D,
-    ],
-    templateUrl: './setup-wizard.component.html',
-    styleUrl: './setup-wizard.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'setup-wizard',
+  imports: [
+    CommonModule,
+    FormsModule,
+    HeightListComponent,
+    jqxButtonModule,
+    jqxDropDownListModule,
+    jqxExpanderModule,
+    jqxInputModule,
+    jqxListBoxModule,
+    jqxRadioButtonModule,
+    jqxWindowModule,
+    LocalContestCodeInputComponent,
+  ],
+  providers: [
+    BridgeService,
+    { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
+    BridgeSketchService,
+    CardService,
+    CartoonJointRenderingService,
+    CartoonRenderingService,
+    CartoonSiteRenderingService,
+    CartoonSketchRenderingService,
+    ViewportTransform2D,
+  ],
+  templateUrl: './setup-wizard.component.html',
+  styleUrl: './setup-wizard.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView {
   private static readonly ALL_DECK_ELEVATIONS = [
@@ -305,8 +305,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
   }
 
   helpButtonOnClickHandler(): void {
-    // TODO: Dev only. Implement me for real.
-    // window.open('https://google.com', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');
+    this.eventBrokerService.helpRequest.next({ origin: EventOrigin.SETUP_DIALOG, data: { topic: 'hlp_how_to' } });
   }
 
   isPierRadioChangeHandler(event: any): void {
@@ -418,9 +417,12 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
 
   private maybeSaveThenStartNewDesign(): void {
     // Let the bridge file loader offer the user to save a dirty edit before opening.
-    this.eventBrokerService.loadBridgeFileRequest.next({origin: EventOrigin.SETUP_DIALOG, data: () => {
-      this.open(this.rootBridgeService.instance.designConditions);
-    }})
+    this.eventBrokerService.loadBridgeFileRequest.next({
+      origin: EventOrigin.SETUP_DIALOG,
+      data: () => {
+        this.open(this.rootBridgeService.instance.designConditions);
+      },
+    });
   }
 
   ngAfterViewInit(): void {

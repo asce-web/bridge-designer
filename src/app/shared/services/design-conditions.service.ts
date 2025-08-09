@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Joint } from '../classes/joint.model';
 import { Utility } from '../classes/utility';
-import { SiteConstants } from '../classes/site.model';
+import { SiteConstants } from '../classes/site-constants';
 
 export const enum LoadType {
   NONE = -1,

@@ -93,7 +93,14 @@ export class RenderingService {
     this.prepared = true;
   }
 
-  public renderFrame(clockMillis: number, elapsedMillis: number): void {
+  /**
+   * Renders a single frame.
+   * 
+   * @param nowMillis Current time in milliseconds.
+   * @param elapsedNowMillis Elapsed time since last frame in milliseconds.
+   * @param clockMillis Simulation clock time in milliseconds. Can be paused by view controls.
+   */
+  public renderFrame(nowMillis: number, elapsedNowMillis: number, clockMillis: number): void {
     if (!this.glService.isWebGL2Supported) {
       return;
     }
@@ -102,7 +109,7 @@ export class RenderingService {
 
     // TODO: Maybe call this getter once every time viewport is set.
     this.projectionService.getPerspectiveProjection(this.projectionMatrix);
-    this.viewService.updateWalkingView(elapsedMillis * 0.001);
+    this.viewService.updateWalkingView(elapsedNowMillis * 0.001);
     this.viewService.getLookAtMatrix(this.viewMatrix);
 
     const gl = this.glService.gl;
@@ -113,7 +120,7 @@ export class RenderingService {
     gl.depthFunc(gl.LEQUAL);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    this.uniformService.updateTimeUniform(clockMillis);
+    this.uniformService.updateTimeUniform(nowMillis);
     this.uniformService.updateLightDirection(this.viewMatrix);
 
     // Render. The renderers can make no assumption about what's in the transforms uniform.
@@ -125,7 +132,7 @@ export class RenderingService {
     this.pierRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.truckRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.utilityLineRenderingService.render(this.viewMatrix, this.projectionMatrix);
-    this.windTurbineRenderingService.render(this.viewMatrix, this.projectionMatrix, clockMillis);
+    this.windTurbineRenderingService.render(this.viewMatrix, this.projectionMatrix, nowMillis);
     this.bridgeRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.skyRenderingService.render(this.viewMatrix, this.projectionMatrix);
     this.animationControlsOverlayService.render();

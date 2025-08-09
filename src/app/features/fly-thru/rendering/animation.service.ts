@@ -22,6 +22,7 @@ export const enum AnimationState {
 @Injectable({ providedIn: 'root' })
 export class AnimationService {
   private clockBaseMillis: number | undefined;
+  private lastNowMillis: number | undefined;
   private lastClockMillis: number | undefined;
   private _state: AnimationState = AnimationState.STOPPED;
   private frameTickMillis: number | undefined;
@@ -58,8 +59,8 @@ export class AnimationService {
         return; // Skips scheduling next loop iteration.
       }
       // Handle first frame.
-      if (this.lastClockMillis === undefined) {
-        this.lastClockMillis = nowMillis;
+      if (this.lastClockMillis === undefined || this.lastNowMillis === undefined) {
+        this.lastClockMillis = this.lastNowMillis = nowMillis;
       }
       // First frame and reset after unpause.
       if (this.clockBaseMillis === undefined) {
@@ -68,9 +69,10 @@ export class AnimationService {
       const clockMillis =
         this._state === AnimationState.PAUSED ? this.lastClockMillis : nowMillis - this.clockBaseMillis;
       const frameStartMillis = performance.now();
-      this.renderService.renderFrame(clockMillis, clockMillis - this.lastClockMillis);
+      this.renderService.renderFrame(nowMillis, nowMillis - this.lastNowMillis, clockMillis);
       this.totalRenderMillis += performance.now() - frameStartMillis;
       this.lastClockMillis = clockMillis;
+      this.lastNowMillis = nowMillis;
 
       // Track fps and eye point:
       ++this.frameCount;

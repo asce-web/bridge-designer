@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
 import { Graphics, Rectangle2D } from '../../../shared/classes/graphics';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 import { StandardCursor } from '../../../shared/classes/widget-helper';
 import { DraggableService } from './hot-element-drag.service';
 import { Utility } from '../../../shared/classes/utility';

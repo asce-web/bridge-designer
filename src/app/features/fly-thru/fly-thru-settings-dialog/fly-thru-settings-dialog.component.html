@@ -9,11 +9,13 @@
   <div class="header">Animation settings</div>
   <div class="content">
     <!-- documented, unfixed bug in jqWidgets: sliders must be programmatically built in initContent -->
-    <div class="speed">
-      Speed
-      <ng-container #speedSliderContainer></ng-container>{{ speed }} km/hr
+    <div class="top-controls">
+      <div class="speed">
+        Speed
+        <ng-container #speedSliderContainer></ng-container>{{ speed }} km/hr
+      </div>
     </div>
-    <div class="controls">
+    <div class="left-controls">
       <jqxCheckBox
         #shadowsCheckbox
         [width]="checkboxWidth"
@@ -62,6 +64,8 @@
       >
         Truck</jqxCheckBox
       >
+    </div>
+    <div class="right-controls">
       <jqxCheckBox
         #memberColorsCheckbox
         [width]="checkboxWidth"

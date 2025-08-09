@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TerrainModelService } from './terrain-model.service';
 import { BridgeService } from '../../../shared/services/bridge.service';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 import { MeshData } from '../rendering/mesh-rendering.service';
 import { Material } from './materials';
 import { mat4, vec3 } from 'gl-matrix';

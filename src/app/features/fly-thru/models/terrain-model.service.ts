@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { makeRandomGenerator } from '../../../shared/core/random-generator';
 import { Utility } from '../../../shared/classes/utility';
 import { MeshData } from '../rendering/mesh-rendering.service';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { RIVER_AXIS } from './river';
 import { Geometry } from '../../../shared/classes/graphics';

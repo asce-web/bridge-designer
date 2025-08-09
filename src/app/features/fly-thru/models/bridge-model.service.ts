@@ -5,7 +5,7 @@ import { mat4, vec3 } from 'gl-matrix';
 import { Geometry } from '../../../shared/classes/graphics';
 import { Material } from './materials';
 import { BitVector } from '../../../shared/core/bitvector';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 import { DECK_BEAM_MESH_DATA } from './deck-beam';
 import { DECK_SLAB_MESH_DATA } from './deck-slab';
 import { SimulationStateService } from '../rendering/simulation-state.service';

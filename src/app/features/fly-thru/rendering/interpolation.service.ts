@@ -6,7 +6,7 @@ import { DesignConditions } from '../../../shared/services/design-conditions.ser
 import { Geometry } from '../../../shared/classes/graphics';
 import { AnalysisService } from '../../../shared/services/analysis.service';
 import { SimulationParametersService } from './simulation-parameters.service';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 import { COLLAPSE_ANALYSIS } from '../pane/constants';
 
 /** Source data for an interpolator. Has several purpose-built implementations. */

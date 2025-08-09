@@ -1,7 +1,9 @@
 import { DesignConditions } from '../services/design-conditions.service';
 import { ViewportTransform2D } from '../services/viewport-transform.service';
 import { FillStyle, Point2D, Point2DInterface, StrokeStyle } from './graphics';
-import { PointTag, SiteConstants, SiteModel } from './site.model';
+import { SiteModel } from './site.model';
+import { PointTag } from './site-constants';
+import { SiteConstants } from './site-constants';
 
 export const enum AbutmentSide {
   LEFT,

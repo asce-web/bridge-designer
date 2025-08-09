@@ -19,17 +19,16 @@ export class AboutDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;
 
   handlePurposeButtonClick(): void {
-    this.eventBrokerService.helpRequest.next({ origin: EventOrigin.ABOUT_DIALOG, data: { topic: 'hlp_purposes' } });
+    const data = { topic: 'hlp_purposes' };
+    this.eventBrokerService.helpRequest.next({ origin: EventOrigin.ABOUT_DIALOG, data });
   }
 
   handleHowItWorksButtonClick() {
-    this.eventBrokerService.helpRequest.next({
-      origin: EventOrigin.ABOUT_DIALOG,
-      data: { topic: 'hlp_how_wpbd_works' },
-    });
+    const data = { topic: 'hlp_how_wpbd_works' };
+    this.eventBrokerService.helpRequest.next({ origin: EventOrigin.ABOUT_DIALOG, data });
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.aboutRequest.subscribe(_eventInfo => this.dialog.open());
+    this.eventBrokerService.aboutRequest.subscribe(() => this.dialog.open());
   }
 }

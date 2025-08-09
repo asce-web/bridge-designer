@@ -4,7 +4,7 @@ import { BridgeService } from './bridge.service';
 import { Joint } from '../classes/joint.model';
 import { Geometry, Point2DInterface } from '../classes/graphics';
 import { Member } from '../classes/member.model';
-import { SiteConstants } from '../classes/site.model';
+import { SiteConstants } from '../classes/site-constants';
 
 /**
  * Geometry of one member adjacent to a given gusset. The coordinate origin as at the

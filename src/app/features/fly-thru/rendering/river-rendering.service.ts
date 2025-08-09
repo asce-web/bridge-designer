@@ -5,7 +5,7 @@ import { Mesh, MeshRenderingService } from './mesh-rendering.service';
 import { RIVER_MESH_DATA } from '../models/river';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { TerrainModelService } from '../models/terrain-model.service';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 
 /** Container for the singleton river mesh and rendering context. */
 @Injectable({ providedIn: 'root' })

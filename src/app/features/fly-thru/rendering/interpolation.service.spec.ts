@@ -5,7 +5,7 @@ import { TerrainModelService, CenterlinePost } from '../models/terrain-model.ser
 import { vec2 } from 'gl-matrix';
 import { projectLocalMatchers } from '../../../shared/test/jasmine-matchers';
 import { SimulationParametersService } from './simulation-parameters.service';
-import { SiteConstants } from '../../../shared/classes/site.model';
+import { SiteConstants } from '../../../shared/classes/site-constants';
 
 describe('InterpolationService', () => {
   let bridgeService: jasmine.SpyObj<BridgeService>;
