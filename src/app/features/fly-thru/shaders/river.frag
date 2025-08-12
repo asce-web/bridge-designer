@@ -4,6 +4,7 @@ precision mediump float;
 
 layout(std140) uniform LightConfig {
   vec3 unitDirection;
+  float brightness;
   vec3 color;
   float ambientIntensity;
 } light;
@@ -35,5 +36,5 @@ void main() {
   // Use fractional parts of terms to avoid float overflow.
   vec3 texColor = texture(water, fract(texCoord) + WATER_VELOCITY * time.clock).rgb;
   vec3 diffuseColor = diffuseIntensity * texColor * light.color * (1.0f - specularIntensity);
-  fragmentColor = vec4(specularColor + diffuseColor, 1.0f);
+  fragmentColor = light.brightness * vec4(specularColor + diffuseColor, 1.0f);
 }

@@ -4,6 +4,7 @@ precision mediump float;
 
 layout(std140) uniform LightConfig {
   vec3 unitDirection;
+  float brightness;
   vec3 color;
   float ambientIntensity;
 } light;
@@ -19,6 +20,5 @@ void main() {
   float normalDotLight = dot(unitNormal, light.unitDirection);
   float diffuseIntensity = (1.0f - light.ambientIntensity) * clamp(normalDotLight, 0.0f, 1.0f) + light.ambientIntensity;
   vec3 materialColor = texture(meshTexture, texCoord).rgb;
-  fragmentColor = vec4(diffuseIntensity * materialColor * light.color, 1);
-  // fragmentColor = texture(meshTexture, texCoord);
+  fragmentColor = light.brightness * vec4(diffuseIntensity * materialColor * light.color, 1);
 }

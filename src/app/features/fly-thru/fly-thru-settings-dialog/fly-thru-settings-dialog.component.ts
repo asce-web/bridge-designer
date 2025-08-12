@@ -36,7 +36,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
   @ViewChild('exaggerationCheckbox') exaggerationCheckbox!: jqxCheckBoxComponent;
   @ViewChild('windTurbineCheckbox') windTurbineCheckbox!: jqxCheckBoxComponent;
   private speedSlider: number | jqxSliderComponent = 30;
-  private brightnessSlider: number | jqxSliderComponent = 100;
+  private brightnessSlider: number | jqxSliderComponent = 50;
   /** Whether a close event being handled was a user click on the close icon (otherwise a programmatic close). */
   private isUserClose: boolean = true;
   /** Tracked value of the animation controls toggle. Needed for hiding/unhiding the dialog as UI state changes. */
@@ -59,7 +59,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
     this.initDialogContent = this.initDialogContent.bind(this);
   }
 
-  /** Works around heinous bug in jqxSlider. Can't be declared in HTML if parent isn't visible. Create dynamically. */
+  /** Works around heinous bug in jqxSlider: can't be declared in HTML if parent isn't visible. Create dynamically. */
   initDialogContent(): void {
     // Work around heinous bug in jqWidgets. Can't declare sliders in html :-(
     this.speedSlider = FlyThruSettingsDialogComponent.setUpSlider(
@@ -96,28 +96,6 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
     );
   }
 
-  handleSpeedSliderChange(): void {
-    this.speed = typeof this.speedSlider === 'object' ? this.speedSlider.getValue() : this.speedSlider;
-    this.notifySettingsChange({
-      speed: this.speed,
-    });
-    this.changeDetector.detectChanges();
-  }
-
-  handleBrightnessSliderChange(): void {
-    this.notifySettingsChange({
-      brightness: typeof this.brightnessSlider === 'object' ? this.brightnessSlider.getValue() : this.brightnessSlider,
-    });
-  }
-
-  handleShadowsCheckboxChange(): void {
-    this.notifySettingsChange({ noShadows: !this.shadowsCheckbox.checked()! });
-  }
-
-  handleSkyCheckboxChange(): void {
-    this.notifySettingsChange({ noSky: !this.skyCheckbox.checked()! });
-  }
-
   handleDialogClose(): void {
     // Only handle clicks on dialog close button, not programmatic closings.
     // (Nothing in the close event says where it came from.)
@@ -130,28 +108,64 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
     });
   }
 
-  handleTerrainCheckboxChange(): void {
-    this.notifySettingsChange({ noTerrain: !this.terrainCheckbox.checked()! });
-  }
-
   handleAbutmentsCheckboxChange(): void {
     this.notifySettingsChange({ noAbutments: !this.abutmentsCheckbox.checked()! });
   }
 
-  handleTruckCheckboxChange(): void {
-    this.notifySettingsChange({ noTruck: !this.truckCheckbox.checked()! });
-  }
-
-  handleMemberColorsCheckbox(): void {
-    this.notifySettingsChange({ noMemberColors: !this.memberColorsCheckbox.checked()! });
+  handleBrightnessSliderChange(): void {
+    this.notifySettingsChange({
+      brightness: typeof this.brightnessSlider === 'object' ? this.brightnessSlider.getValue() : this.brightnessSlider,
+    });
   }
 
   handleExaggerationCheckbox(): void {
     this.notifySettingsChange({ noExaggeration: !this.exaggerationCheckbox.checked()! });
   }
 
+  handleMemberColorsCheckbox(): void {
+    this.notifySettingsChange({ noMemberColors: !this.memberColorsCheckbox.checked()! });
+  }
+
+  handleShadowsCheckboxChange(): void {
+    this.notifySettingsChange({ noShadows: !this.shadowsCheckbox.checked()! });
+  }
+
+  handleSkyCheckboxChange(): void {
+    this.notifySettingsChange({ noSky: !this.skyCheckbox.checked()! });
+  }
+
+  handleSpeedSliderChange(): void {
+    this.speed = typeof this.speedSlider === 'object' ? this.speedSlider.getValue() : this.speedSlider;
+    this.notifySettingsChange({
+      speed: this.speed,
+    });
+    this.changeDetector.detectChanges();
+  }
+
+  handleTerrainCheckboxChange(): void {
+    this.notifySettingsChange({ noTerrain: !this.terrainCheckbox.checked()! });
+  }
+
+  handleTruckCheckboxChange(): void {
+    this.notifySettingsChange({ noTruck: !this.truckCheckbox.checked()! });
+  }
+
   handleWindTurbineCheckboxChange(): void {
     this.notifySettingsChange({ noWindTurbine: !this.windTurbineCheckbox.checked()! });
+  }
+
+  /** Sync notified settings wtih current control widget state.  */
+  private syncSettings(): void {
+    this.handleAbutmentsCheckboxChange();
+    this.handleBrightnessSliderChange();
+    this.handleExaggerationCheckbox();
+    this.handleMemberColorsCheckbox();
+    this.handleShadowsCheckboxChange();
+    this.handleSkyCheckboxChange();
+    this.handleSpeedSliderChange();
+    this.handleTerrainCheckboxChange();
+    this.handleTruckCheckboxChange();
+    this.handleWindTurbineCheckboxChange();
   }
 
   private static setUpSlider(
@@ -220,7 +234,9 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
       () => this.dehydrate(),
       state => this.rehydrate(state),
     );
+    this.syncSettings();
   }
+
   private dehydrate(): State {
     return {
       brightness: typeof this.brightnessSlider === 'object' ? this.brightnessSlider.getValue() : this.brightnessSlider,

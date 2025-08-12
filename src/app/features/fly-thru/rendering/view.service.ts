@@ -194,4 +194,8 @@ export class ViewService {
     }
     return mat4.lookAt(m, this.eye, this.center, this.up);
   }
+
+  public getLightLookAtMatrix(m: mat4 = mat4.create()): mat4 {
+    return m;
+  }
 }

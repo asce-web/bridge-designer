@@ -4,6 +4,7 @@ precision mediump float;
 
 layout(std140) uniform LightConfig {
   vec3 unitDirection;
+  float brightness;
   vec3 color;
   float ambientIntensity;
 } light;
@@ -25,5 +26,5 @@ void main() {
   // Powering up makes the erosion effect more visible.
   float normalTerrainColorWeight = pow(yModelNormal, 6.0f);
   vec3 color = ERODED_TERRAIN_COLOR + EROSION_DIFF * normalTerrainColorWeight;
-  fragmentColor = vec4(diffuseIntensity * color * light.color, 1.0f);
+  fragmentColor = light.brightness * vec4(diffuseIntensity * color * light.color, 1.0f);
 }

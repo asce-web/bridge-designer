@@ -24,6 +24,7 @@ export const BUCKLED_MEMBER_FRAGMENT_SHADER =
 precision mediump float;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
+float brightness;
 vec3 color;
 float ambientIntensity;}light;
 in vec3 vertex;
@@ -40,7 +41,7 @@ float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),SHININESS);
 vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 diffuseColor=diffuseIntensity*COLOR*light.color*(1.0f-specularIntensity);
-fragmentColor=vec4(specularColor+diffuseColor,1);}`;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1);}`;
 
 export const COLORED_MESH_VERTEX_SHADER = 
 `#version 300 es
@@ -65,6 +66,7 @@ export const COLORED_MESH_FRAGMENT_SHADER =
 precision mediump float;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
+float brightness;
 vec3 color;
 float ambientIntensity;}light;
 struct MaterialSpec{
@@ -86,7 +88,7 @@ float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),materialSpec.s
 vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 diffuseColor=diffuseIntensity*materialSpec.spec.xyz*light.color*(1.0f-specularIntensity);
-fragmentColor=vec4(specularColor+diffuseColor,materialConfig.globalAlpha);}`;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,materialConfig.globalAlpha);}`;
 
 export const COLORED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
@@ -131,6 +133,7 @@ export const INSTANCE_COLORED_MESH_FRAGMENT_SHADER =
 precision mediump float;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
+float brightness;
 vec3 color;
 float ambientIntensity;}light;
 const float MEMBER_SHININESS=20.0;
@@ -147,7 +150,7 @@ float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),MEMBER_SHININE
 vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 diffuseColor=diffuseIntensity*color*light.color*(1.0f-specularIntensity);
-fragmentColor=vec4(specularColor+diffuseColor,1.0);}`;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1.0);}`;
 
 export const OVERLAY_VERTEX_SHADER = 
 `#version 300 es
@@ -200,6 +203,7 @@ export const RIVER_FRAGMENT_SHADER =
 precision mediump float;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
+float brightness;
 vec3 color;
 float ambientIntensity;}light;
 layout(std140)uniform Time{
@@ -220,7 +224,7 @@ vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 texColor=texture(water,fract(texCoord)+WATER_VELOCITY*time.clock).rgb;
 vec3 diffuseColor=diffuseIntensity*texColor*light.color*(1.0f-specularIntensity);
-fragmentColor=vec4(specularColor+diffuseColor,1.0f);}`;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1.0f);}`;
 
 export const SKY_VERTEX_SHADER = 
 `#version 300 es
@@ -262,6 +266,7 @@ export const TERRAIN_FRAGMENT_SHADER =
 precision mediump float;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
+float brightness;
 vec3 color;
 float ambientIntensity;}light;
 in vec3 normal;
@@ -277,7 +282,7 @@ float adjustedAmbientIntensity=light.ambientIntensity*0.2f;
 float diffuseIntensity=(1.0f-adjustedAmbientIntensity)*clamp(normalDotLight,0.0f,1.0f)+adjustedAmbientIntensity;
 float normalTerrainColorWeight=pow(yModelNormal,6.0f);
 vec3 color=ERODED_TERRAIN_COLOR+EROSION_DIFF*normalTerrainColorWeight;
-fragmentColor=vec4(diffuseIntensity*color*light.color,1.0f);}`;
+fragmentColor=light.brightness*vec4(diffuseIntensity*color*light.color,1.0f);}`;
 
 export const TEXTURED_MESH_VERTEX_SHADER = 
 `#version 300 es
@@ -300,6 +305,7 @@ export const TEXTURED_MESH_FRAGMENT_SHADER =
 precision mediump float;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
+float brightness;
 vec3 color;
 float ambientIntensity;}light;
 uniform sampler2D meshTexture;
@@ -311,7 +317,7 @@ vec3 unitNormal=normalize(normal);
 float normalDotLight=dot(unitNormal,light.unitDirection);
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 materialColor=texture(meshTexture,texCoord).rgb;
-fragmentColor=vec4(diffuseIntensity*materialColor*light.color,1);}`;
+fragmentColor=light.brightness*vec4(diffuseIntensity*materialColor*light.color,1);}`;
 
 export const TEXTURED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
@@ -350,6 +356,7 @@ export const WIRE_FRAGMENT_SHADER =
 precision mediump float;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
+float brightness;
 vec3 color;
 float ambientIntensity;}light;
 in vec3 vertex;
@@ -367,7 +374,7 @@ float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),WIRE_SHININESS
 vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 diffuseColor=diffuseIntensity*WIRE_COLOR*light.color*(1.0-specularIntensity);
-fragmentColor=vec4(specularColor+diffuseColor,1.0f);}`;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1.0f);}`;
 
 export const WIRE_INSTANCES_VERTEX_SHADER = 
 `#version 300 es

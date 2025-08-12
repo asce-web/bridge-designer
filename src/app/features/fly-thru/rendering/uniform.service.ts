@@ -9,16 +9,13 @@ import {
   TIME_UBO_BINDING_INDEX,
   SKYBOX_TRANSFORMS_UBO_BINDING_INDEX,
 } from '../shaders/constants';
-import { mat4, vec4 } from 'gl-matrix';
+import { mat4 } from 'gl-matrix';
 import { GlService } from './gl.service';
-
-/** std124 padding. */
-const _ = 0;
+import { UNIT_LIGHT_DIRECTION } from './constants';
 
 @Injectable({ providedIn: 'root' })
 export class UniformService {
   /** Homogeneous light vector (w == 0). */
-  public static UNIT_LIGHT_DIRECTION = vec4.fromValues(0.0572181596, 0.68661791522, 0.72476335496, 0);
   private lightConfigBuffer!: WebGLBuffer;
   private materialConfigBuffer!: WebGLBuffer;
   private skyboxTransformsBuffer!: WebGLBuffer;
@@ -35,11 +32,10 @@ export class UniformService {
   // prettier-ignore
   private readonly lightConfig = new Float32Array([
     0, 1, 0, // unit light direction (placeholder values)
-    _,
+    0.5, // brightness
     0.9, 0.9, 1.0, // light color
-    0.5, // ambient intensity
+    0.3, // ambient intensity
   ]);
-  private readonly lightDirection = new Float32Array(this.lightConfig.buffer, 0, 4);
   public readonly timeFloats = new Float32Array(4);
 
   constructor(
@@ -157,8 +153,14 @@ export class UniformService {
   }
 
   /** Transforms the constant light direction with the view matrix and updates the light config uniform. */
-  public updateLightDirection(viewMatrix: mat4) {
-    vec4.transformMat4(this.lightDirection, UniformService.UNIT_LIGHT_DIRECTION, viewMatrix);
+  public updateLight(viewMatrix: mat4, brightness: number) {
+    const u = UNIT_LIGHT_DIRECTION;
+    const c = this.lightConfig;
+    // gl-matrix doesn't do vector operaions.
+    c[0] = viewMatrix[0] * u[0] + viewMatrix[4] * u[1] + viewMatrix[8] * u[2];
+    c[1] = viewMatrix[1] * u[0] + viewMatrix[5] * u[1] + viewMatrix[9] * u[2];
+    c[2] = viewMatrix[2] * u[0] + viewMatrix[6] * u[1] + viewMatrix[10] * u[2];
+    c[3] = brightness;
     const gl = this.glService.gl;
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.lightConfigBuffer);
     gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.lightConfig);

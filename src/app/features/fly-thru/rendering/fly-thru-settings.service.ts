@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
 export const DEFAULT_FLY_THRU_SETTINGS: FlyThruSettings = {
-  brightness: 80,
+  brightness: 50,
   speed: 30,
 };
 
@@ -42,5 +42,9 @@ export class FlyThruSettingsService {
 
   public get exaggeration(): number {
     return this.settings.noExaggeration ? 1 : 20;
+  }
+
+  public get brightness(): number {
+    return 0.75 + this.settings.brightness! * 0.0075; // 0.75 to 1.5
   }
 }

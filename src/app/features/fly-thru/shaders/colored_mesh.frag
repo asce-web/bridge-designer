@@ -4,6 +4,7 @@ precision mediump float;
 
 layout(std140) uniform LightConfig {
   vec3 unitDirection;
+  float brightness;
   vec3 color;
   float ambientIntensity;
 } light;
@@ -35,5 +36,5 @@ void main() {
   vec3 specularColor = specularIntensity * light.color;
   float diffuseIntensity = (1.0f - light.ambientIntensity) * clamp(normalDotLight, 0.0f, 1.0f) + light.ambientIntensity;
   vec3 diffuseColor = diffuseIntensity * materialSpec.COLOR * light.color * (1.0f - specularIntensity);
-  fragmentColor = vec4(specularColor + diffuseColor, materialConfig.globalAlpha);
+  fragmentColor = light.brightness * vec4(specularColor + diffuseColor, materialConfig.globalAlpha);
 }

@@ -125,7 +125,7 @@ export class RenderingService {
     gl.clear(clearMask);
 
     this.uniformService.updateTimeUniform(nowMillis);
-    this.uniformService.updateLightDirection(this.viewMatrix);
+    this.uniformService.updateLight(this.viewMatrix, this.flyThruSettingsService.brightness);
 
     // Render. The renderers can make no assumption about what's in the transforms uniform.
     this.uniformService.updateTransformsUniform(this.viewMatrix, this.projectionMatrix);
