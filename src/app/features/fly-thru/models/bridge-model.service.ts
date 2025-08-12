@@ -13,6 +13,7 @@ import { GlService } from '../rendering/gl.service';
 import { Gusset, GussetsService } from '../../../shared/services/gussets.service';
 import { TRUSS_PIN_MESH_DATA } from './truss-pin';
 import { MEMBER_MESH_DATA } from './member';
+import { FlyThruSettingsService } from '../rendering/fly-thru-settings.service';
 
 // TODO: We could probably do with something lighter weight than full gussets.
 export type BridgeMeshData = {
@@ -64,6 +65,7 @@ export class BridgeModelService {
 
   constructor(
     private readonly bridgeService: BridgeService,
+    private readonly flyThruSettingsService: FlyThruSettingsService,
     private readonly glService: GlService,
     private readonly gussetService: GussetsService,
     private readonly simulationStateService: SimulationStateService,
@@ -159,33 +161,38 @@ export class BridgeModelService {
    * Blue is tension. Neutral gray is zero force. Bright color means failure is close.
    */
   public buildMemberInstanceColors(colorsOut: Float32Array | undefined): Float32Array {
-    const forceStrengthRatios = this.simulationStateService.interpolator.memberForceStrengthRatios;
     const members = this.bridgeService.bridge.members;
-    const failed = this.simulationStateService.interpolator.failedMemberKinds;
     colorsOut ||= new Float32Array(members.length * 6);
-    for (let i = 0, offset = 0; i < members.length; ++i) {
+    if (this.flyThruSettingsService.settings.noMemberColors) {
+      return colorsOut.fill(0.5);
+    }
+    const failed = this.simulationStateService.interpolator.failedMemberKinds;
+    const forceStrengthRatios = this.simulationStateService.interpolator.memberForceStrengthRatios;
+    for (let i = 0, ofs = 0; i < members.length; ++i) {
       if (failed[i]) {
         continue;
       }
       const ratio = forceStrengthRatios[i];
-      const colors = colorsOut.subarray(offset, offset + 6);
       if (ratio < 0) {
         // compression: interpolate between neutral gray and pure red
         const clampedRatio = 0.5 * Math.min(1, -ratio);
-        colors[0] = colors[3] = 0.5 + clampedRatio;
-        colors[1] = colors[4] = colors[2] = colors[5] = 0.5 - clampedRatio;
+        colorsOut[ofs + 0] = colorsOut[ofs + 3] = 0.5 + clampedRatio;
+        colorsOut[ofs + 1] = colorsOut[ofs + 4] = colorsOut[ofs + 2] = colorsOut[ofs + 5] = 0.5 - clampedRatio;
       } else {
         // tension; interpolate between neutral gray and pure blue
         const clampedRatio = 0.5 * Math.min(1, ratio);
-        colors[2] = colors[5] = 0.5 + clampedRatio;
-        colors[0] = colors[3] = colors[1] = colors[4] = 0.5 - clampedRatio;
+        colorsOut[ofs + 2] = colorsOut[ofs + 5] = 0.5 + clampedRatio;
+        colorsOut[ofs] = colorsOut[ofs + 3] = colorsOut[ofs + 1] = colorsOut[ofs + 4] = 0.5 - clampedRatio;
       }
-      offset += 6;
+      ofs += 6;
     }
     return colorsOut;
   }
 
-  public buildDeckBeamInstanceTransforms(transformsOut: Float32Array | undefined, jointLocations: Float32Array): Float32Array {
+  public buildDeckBeamInstanceTransforms(
+    transformsOut: Float32Array | undefined,
+    jointLocations: Float32Array,
+  ): Float32Array {
     const deckJointCount = this.bridgeService.designConditions.loadedJointCount;
     transformsOut ||= new Float32Array(deckJointCount * 16);
     const halfWidth = BridgeModelService.DECK_BEAM_HALF_WIDTH;
@@ -219,7 +226,10 @@ export class BridgeModelService {
     return transformsOut;
   }
 
-  public buildDeckSlabInstanceTransforms(transformsOut: Float32Array | undefined, jointLocations: Float32Array): Float32Array {
+  public buildDeckSlabInstanceTransforms(
+    transformsOut: Float32Array | undefined,
+    jointLocations: Float32Array,
+  ): Float32Array {
     const slabCount = this.bridgeService.designConditions.panelCount;
     transformsOut ||= new Float32Array(slabCount * 16);
     const maxSlabIndex = slabCount - 1;
@@ -270,7 +280,7 @@ export class BridgeModelService {
       mat4.fromTranslation(m, vec3.set(this.vTmp, jointAX, jointAY, -trussCenterlineOffset));
       Geometry.rotateX(m, m, jointBY - jointAY, jointBX - jointAX);
       mat4.scale(m, m, vec3.set(this.vTmp, length, 1, 2 * trussCenterlineOffset));
-      offset += 16
+      offset += 16;
     }
     return transformsOut ?? out.subarray(0, offset);
   }

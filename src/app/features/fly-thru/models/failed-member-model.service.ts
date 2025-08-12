@@ -23,24 +23,25 @@ export type TornMemberMeshData = {
   trussCenterlineOffset: number;
 };
 
+/** Container for the geometric models of failed members: buckled and torn. */
 @Injectable({ providedIn: 'root' })
 export class FailedMemberModelService {
   /** Number of points used to approximate the appearance of buckled members. Must be odd. */
   private static readonly PARABOLA_POINT_COUNT = 33;
-  /** Number of floats in a segment (instance) transform for updating transform backing arrays.  */
+  /** Number of floats in a trapazoidal segment (instance) transform for updating transform backing arrays.  */
   public static readonly SEGMENT_TRANSFORM_FLOAT_COUNT = 32 * (FailedMemberModelService.PARABOLA_POINT_COUNT - 1);
   /** Widths of parabolas with unit arc length, where corresponding element of PARABOLA_HEIGHT gives the height. */
-  private static readonly PARABOLA_WIDTHS = [
+  private static readonly PARABOLA_WIDTHS = new Float32Array([
     0.0, 0.0625, 0.125, 0.15625, 0.1875, 0.21875, 0.25, 0.28125, 0.3125, 0.34375, 0.375, 0.40625, 0.4375, 0.46875, 0.5,
     0.53125, 0.5625, 0.59375, 0.625, 0.65625, 0.6875, 0.71875, 0.75, 0.78125, 0.8125, 0.84375, 0.875, 0.90625, 0.9375,
     0.96875, 0.984375, 0.992188, 1.0,
-  ];
-  /** Hieghts of parabolas with unit arc length, where corresponding element of PARABOLA_WIDTH gives the width. */
-  private static readonly PARABOLA_HEIGHTS = [
+  ]);
+  /** Heights of parabolas with unit arc length, where corresponding element of PARABOLA_WIDTH gives the width. */
+  private static readonly PARABOLA_HEIGHTS = new Float32Array([
     0.5, 0.497717, 0.492161, 0.488378, 0.483979, 0.478991, 0.473431, 0.46731, 0.460633, 0.453402, 0.445614, 0.437259,
     0.428326, 0.418797, 0.40865, 0.397857, 0.386383, 0.374182, 0.361201, 0.347371, 0.332606, 0.316796, 0.299798,
     0.28142, 0.261396, 0.239344, 0.214672, 0.186382, 0.152526, 0.108068, 0.076484, 0.054105, 0.0,
-  ];
+  ]);
   // Typed array allocation is known to be slow wrt 60 fps, so do these once and reuse.
   private readonly outer = vec2.create();
   private readonly inner = vec2.create();
@@ -208,13 +209,14 @@ export class FailedMemberModelService {
     mat3.fromTranslation(modelTransform, vec2.set(this.tmpV2, aX, aY));
     Geometry.rotate(modelTransform, modelTransform, dy, dx);
 
+    // Generator's first points are at the apex of the parabola.
     pointsGenerator.next();
     vec2.copy(this.prevOuterLeft, this.outer);
     vec2.copy(this.prevInnerLeft, this.inner);
     vec2.copy(this.prevOuterRight, this.outer);
     vec2.copy(this.prevInnerRight, this.inner);
     while (!pointsGenerator.next().done) {
-      // Make space for the left front and back transform materices.
+      // Work in left-right pairs from here. First, make space for the left front and back transform materices.
       const mLeftFront = transformsOut.subarray(offset, offset + 16);
       offset += 16;
       const mLeftBack = transformsOut.subarray(offset, offset + 16);
@@ -231,7 +233,7 @@ export class FailedMemberModelService {
       vec2.copy(this.prevInnerLeft, this.inner);
       vec2.copy(this.prevOuterLeft, this.outer);
 
-      // Advance to right point pair.
+      // Now, the right point pair.
       pointsGenerator.next();
 
       // Make space for the front and back transform materices.
@@ -332,7 +334,7 @@ export class FailedMemberModelService {
    * Assumes that `a` is sorted and `x` in the range of `a`.
    */
   // visible-for-testing
-  static searchFloor(x: number, a: number[]): number {
+  static searchFloor(x: number, a: Float32Array): number {
     let lo = 0;
     let hi = a.length - 1;
     // Find two adjacent elements that must include the search value.
