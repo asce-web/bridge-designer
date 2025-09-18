@@ -25,6 +25,8 @@ export enum FailedMemberKind {
 
 /** Interpolator between various analysis states to drive the animation. */
 export interface Interpolator {
+  /** Data source for this interpolator. */
+  readonly source: InterpolatorSource;
   /** Interpolation parameter: roughly meters right from the left abutment. */
   readonly parameter: number;
   /** Count of members failed during the last parameter advance. */
@@ -81,7 +83,7 @@ class SourceInterpolator implements Interpolator {
 
   constructor(
     private readonly service: InterpolationService,
-    private readonly interpolationSource: InterpolatorSource,
+    public readonly source: InterpolatorSource,
   ) {}
 
   /** Sets the context for interpolations by all other methods. */
@@ -149,7 +151,7 @@ class SourceInterpolator implements Interpolator {
 
   /** Returns interpolated member forces from adjacent load cases. */
   public getMemberForce(index: number): number {
-    return this.interpolationSource.getMemberForce(index, this.ctx);
+    return this.source.getMemberForce(index, this.ctx);
   }
 
   /**
@@ -232,7 +234,7 @@ class SourceInterpolator implements Interpolator {
   }
 
   private getExaggeratedJointDisplacement(out: vec2, index: number): vec2 {
-    this.interpolationSource.getJointDisplacement(out, index, this.ctx);
+    this.source.getJointDisplacement(out, index, this.ctx);
     return vec2.scale(out, out, this.service.settingsService.exaggeration);
   }
 
@@ -240,7 +242,7 @@ class SourceInterpolator implements Interpolator {
   private getExaggeratedJointDisplacementXForDeadLoadOnly(index: number): number {
     const joint = this.service.bridgeService.bridge.joints[index];
     const exaggeration = this.service.settingsService.exaggeration;
-    return joint.x + this.interpolationSource.getJointDisplacementXForDeadLoadOnly(index) * exaggeration;
+    return joint.x + this.source.getJointDisplacementXForDeadLoadOnly(index) * exaggeration;
   }
 }
 
@@ -259,15 +261,18 @@ class CollapseInterpolator implements Interpolator {
     private readonly service: InterpolationService,
     private readonly failedInterpolator: Interpolator,
   ) {
-    // Base source
-    const failedAnalysisSource = new AnalysisInterpolationSource(this.service.analysisService);
     // Dummy source
     const collapsedAnalysisSource = new AnalysisInterpolationSource(this.service.collapseAnalysisService);
     // Bi-interpolation source for positions
-    this.collapseSource = new BiInterpolatorSource(failedAnalysisSource, collapsedAnalysisSource);
-    // Bi-interpolator for positions with parameter frozen at the failure point
+    this.collapseSource = new BiInterpolatorSource(failedInterpolator.source, collapsedAnalysisSource);
+    // Interpolator for positions with parameter frozen at the failure point
     const t = failedInterpolator.parameter;
     this.interpolator = new SourceInterpolator(service, this.collapseSource).withParameter(t);
+  }
+
+  /** The data source of the base failed interpolator. */
+  public get source(): InterpolatorSource {
+    return this.failedInterpolator.source;
   }
 
   /** Sets the source parameter: zero is the base, one is the dummy collapse. Advancing approximates collapse.  */
@@ -291,7 +296,7 @@ class CollapseInterpolator implements Interpolator {
     return this.interpolator.getLoadPosition(frontOut, rotationOut);
   }
 
-  /** Returns interpolated dummy joint locations.  */
+  /** Returns interpolated dummy joint locations. */
   public getAllDisplacedJointLocations(out: Float32Array): Float32Array {
     return this.interpolator.getAllDisplacedJointLocations(out);
   }
