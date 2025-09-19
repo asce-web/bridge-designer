@@ -29,7 +29,7 @@ export class MemberTablePdfRenderingService {
       member.materialShortName,
       member.crossSectionShortName,
       member.shape.name,
-      member.length.toFixed(2),
+      member.lengthM.toFixed(2),
     ]);
     // Chop off table-sized chunks for the first page.
     const chunks: string[][][] = [];

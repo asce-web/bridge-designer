@@ -148,7 +148,7 @@ export class FailedMemberModelService {
     const dx = bX - aX;
     const dy = bY - aY;
     const theta = Math.atan2(dy, dx);
-    const halfLength = 0.5 * member.length;
+    const halfLength = 0.5 * member.lengthM;
     const size = member.materialSizeMm * 0.001;
 
     // Joint A, front
@@ -200,7 +200,7 @@ export class FailedMemberModelService {
     const dx = bX - aX;
     const dy = bY - aY;
     const buckledLength = Math.hypot(dx, dy);
-    const height = FailedMemberModelService.getParabolaHeight(member.length, buckledLength);
+    const height = FailedMemberModelService.getParabolaHeight(member.lengthM, buckledLength);
     const halfSize = member.materialSizeMm * 0.0005;
     const size = halfSize * 2;
     const pointCount = FailedMemberModelService.PARABOLA_POINT_COUNT;

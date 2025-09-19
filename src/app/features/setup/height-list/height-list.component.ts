@@ -68,6 +68,7 @@ export class HeightListComponent implements AfterViewInit {
       value = this.heights.length;
     }
     this._selectedIndex = value;
+    this.emitSelectEvent();
     this.updateWidget();
   }
 
@@ -81,8 +82,12 @@ export class HeightListComponent implements AfterViewInit {
       return;
     }
     this._selectedIndex = event.args.index + this._startIndex;
-    this.onSelect.emit({ args: { index: this._selectedIndex } });
+    this.emitSelectEvent();
     this.updateWidget();
+  }
+
+  private emitSelectEvent(): void {
+    this.onSelect.emit({ args: { index: this._selectedIndex } });
   }
 
   /** Workaround for jqxDropDownList not closing when disabled. */

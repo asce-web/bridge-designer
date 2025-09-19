@@ -138,7 +138,7 @@ export class WorkflowManagementService {
     });
 
     // Load bridge completion.
-    eventBrokerService.loadBridgeCompletion.subscribe(_eventInfo => {
+    eventBrokerService.loadBridgeCompletion.subscribe(() => {
       uiStateService.disable(eventBrokerService.undoRequest);
       uiStateService.disable(eventBrokerService.redoRequest);
       eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'drafting' });
@@ -150,11 +150,11 @@ export class WorkflowManagementService {
     });
 
     // Member size change requests.
-    eventBrokerService.memberSizeDecreaseRequest.subscribe(_eventInfo => handleMemberSizeChangeRequest(-1));
-    eventBrokerService.memberSizeIncreaseRequest.subscribe(_eventInfo => handleMemberSizeChangeRequest(+1));
+    eventBrokerService.memberSizeDecreaseRequest.subscribe(() => handleMemberSizeChangeRequest(-1));
+    eventBrokerService.memberSizeIncreaseRequest.subscribe(() => handleMemberSizeChangeRequest(+1));
 
     // Selected elements change.
-    eventBrokerService.selectedElementsChange.subscribe(_eventInfo => {
+    eventBrokerService.selectedElementsChange.subscribe(() => {
       const selectedMembers = selectedElementsService.selectedElements.selectedMembers;
       // Let the material selector alone if nothing is selected.
       if (selectedMembers.size > 0) {
@@ -172,7 +172,7 @@ export class WorkflowManagementService {
     });
 
     // Session state restoration completion.
-    eventBrokerService.sessionStateRestoreCompletion.subscribe(_eventInfo => {
+    eventBrokerService.sessionStateRestoreCompletion.subscribe(() => {
       const uiMode: UiMode =
         bridgeService.designConditions === DesignConditionsService.PLACEHOLDER_CONDITIONS ? 'initial' : 'drafting';
       eventBrokerService.uiModeRequest.next({

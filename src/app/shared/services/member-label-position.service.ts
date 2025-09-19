@@ -58,14 +58,11 @@ export class MemberLabelPositionService {
       [xNew, x] = [x, xNew];
       // Stop when velocities are small. Units are meters per 1/h steps.
       if (MemberLabelPositionService.isNearZero(x, members.length, 0.03)) {
-        console.log('labels rk4 stopped:', i + 1);
         return x;
       }
     }
     // Oops. No convergence. Fall back to midpoint placement.
-    const maxV = x.subarray(members.length).reduce((prev, cur) => Math.max(prev, Math.abs(cur)), 0);
-    console.log('labels rk4 diverged; max V:', maxV);
-    members.forEach((member, index) => (x[index] = 0.5 * member.length));
+    members.forEach((member, index) => (x[index] = 0.5 * member.lengthM));
     return x;
   }
 

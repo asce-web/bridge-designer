@@ -30,7 +30,7 @@ export class Member implements Editable {
     return this.index + 1;
   }
 
-  public get length(): number {
+  public get lengthM(): number {
     return Geometry.distance2DPoints(this.a, this.b);
   }
 
@@ -39,7 +39,7 @@ export class Member implements Editable {
   }
 
   public get slenderness(): number {
-    return this.length * this.shape.inverseRadiusOfGyration;
+    return this.lengthM * this.shape.inverseRadiusOfGyration;
   }
 
   /** Returns a unique string key for this member. */

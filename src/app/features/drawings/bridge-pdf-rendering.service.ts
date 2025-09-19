@@ -155,7 +155,7 @@ export class BridgePdfRenderingService {
 
   /** Draws a single member as a pair of lines. */
   private drawMember(doc: jsPDF, member: Member): void {
-    const length = member.length;
+    const length = member.lengthM;
     const halfWidth = member.materialSizeMm * 0.0005;
     const ax = member.a.x;
     const ay = member.a.y;
@@ -181,7 +181,7 @@ export class BridgePdfRenderingService {
   /** Draws a single member number label. */
   private drawMemberLabel(doc: jsPDF, member: Member): void {
     // Label at center in a filled rectangle.
-    const length = member.length;
+    const length = member.lengthM;
     const ax = member.a.x;
     const ay = member.a.y;
     const ux = (member.b.x - ax) / length;

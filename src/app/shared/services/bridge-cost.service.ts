@@ -29,7 +29,7 @@ export class BridgeCostService {
     for (const member of bridge.members) {
       const newWeightTableRow = new MaterialSectionWeight(member.material, member.shape.section);
       const weightTableRow = weightByMaterialAndSection.insert(newWeightTableRow) || newWeightTableRow;
-      weightTableRow.memberKg += member.length * member.shape.area * member.material.density;
+      weightTableRow.memberKg += member.lengthM * member.shape.area * member.material.density;
 
       const newCountTableRow = new SizeMaterialSectionCount(member.material, member.shape);
       const countTableRow = countBySizeMaterialAndSection.insert(newCountTableRow) || newCountTableRow;

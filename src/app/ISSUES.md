@@ -14,7 +14,8 @@
 
 ## Issues
 
-- Help should be its own window.
+- Help should be its own window. 
+  - Maybe not as BD best in full screen mode anyway?
   - Use router to select either help or BD.
 - Scenario numbers in Project IDs are inconsistent:
   - Project ID of sample is loading with scenario number in text.
@@ -31,3 +32,4 @@
 - Pause button is affecting water. Shouldn't.
 - Watermarks on jqWidgets need removal.
 - Need "loading..." display during app setup.
+- Design conditions in setup wizard incorrectly loaded from root bridge.

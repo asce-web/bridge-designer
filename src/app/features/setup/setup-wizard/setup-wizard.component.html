@@ -454,7 +454,7 @@
           <div>
             <div class="cost-summary-line">
               <div class="deck-cost">
-                <ng-container *ngIf="siteCostExpander.disabled(); else siteCostEnabled">toDollars(0)</ng-container>
+                <ng-container *ngIf="siteCostExpander.disabled(); else siteCostEnabled">{{ toDollars(0) }}</ng-container>
                 <ng-template #siteCostEnabled>{{ toDollars(siteCosts.totalFixedCost) }}</ng-template>
               </div>
               <div class="deck-cost-comment">(Includes cost of deck, excavation, and supports; not steel)</div>

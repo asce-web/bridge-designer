@@ -23,7 +23,7 @@ describe('FailedMemberModelService', () => {
   ]);
   const jointA = { index: 0 } as Joint;
   const jointB = { index: 1 } as Joint;
-  const member = { a: jointA, b: jointB, materialSizeMm: 800, length: 14 } as Member;
+  const member = { a: jointA, b: jointB, materialSizeMm: 800, lengthM: 14 } as Member;
   const jointLocations = new Float32Array([1, 1, 7, 9]);
 
   beforeEach(() => {

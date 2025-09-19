@@ -25,7 +25,7 @@ export class ChangeMembersCommand extends EditCommand {
 
   /** Returns a command that updates selected items of the bridge members list to a new material. */
   public static forMemberMaterialsUpdate(members: Member[], updatedMembers: Member[]): ChangeMembersCommand {
-    const description = EditCommandDescription.formatMemberMessage(members, 'Update material for member');
+    const description = EditCommandDescription.formatMemberMessage(updatedMembers, 'Update material for member');
     return new ChangeMembersCommand(description, members, updatedMembers);
   }
 
@@ -44,7 +44,7 @@ export class ChangeMembersCommand extends EditCommand {
       }
     }
     const action = increment > 0 ? 'Up' : 'Down';
-    const description = EditCommandDescription.formatMemberMessage(members, `${action}-size member`);
+    const description = EditCommandDescription.formatMemberMessage(updatedMembers, `${action}-size member`);
     return new ChangeMembersCommand(description, members, updatedMembers);
   }
 

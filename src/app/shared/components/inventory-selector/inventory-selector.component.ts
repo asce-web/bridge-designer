@@ -7,11 +7,11 @@ import { SessionStateService } from '../../services/session-state.service';
 import { UiStateService } from '../../../features/controls/management/ui-state.service';
 
 @Component({
-    selector: 'inventory-selector',
-    imports: [jqxDropDownListModule],
-    templateUrl: './inventory-selector.component.html',
-    styleUrl: './inventory-selector.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'inventory-selector',
+  imports: [jqxDropDownListModule],
+  templateUrl: './inventory-selector.component.html',
+  styleUrl: './inventory-selector.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InventorySelectorComponent implements AfterViewInit {
   @Input({ required: true }) vertical: boolean = false;
@@ -31,20 +31,6 @@ export class InventorySelectorComponent implements AfterViewInit {
     private readonly sessionStateService: SessionStateService,
     private readonly uiStateService: UiStateService,
   ) {}
-
-  public load(stockId: StockId) {
-    WidgetHelper.setDropdownListSelection(this.materialSelector, stockId.materialIndex);
-    WidgetHelper.setDropdownListSelection(this.crossSectionSelector, stockId.sectionIndex);
-    WidgetHelper.setDropdownListSelection(this.sizeSelector, stockId.sizeIndex);
-    // The event handlers arem't reliably triggered by the above.
-    this.sendStockId();
-  }
-
-  public disable(value: boolean) {
-    this.materialSelector.disabled(value);
-    this.crossSectionSelector.disabled(value);
-    this.sizeSelector.disabled(value);
-  }
 
   get crossSectionSelectorWidth(): number {
     return this.vertical ? 206 : 106;
@@ -76,6 +62,14 @@ export class InventorySelectorComponent implements AfterViewInit {
     this.sendStockId();
   }
 
+  private load(stockId: StockId) {
+    WidgetHelper.setDropdownListSelection(this.materialSelector, stockId.materialIndex);
+    WidgetHelper.setDropdownListSelection(this.crossSectionSelector, stockId.sectionIndex);
+    WidgetHelper.setDropdownListSelection(this.sizeSelector, stockId.sizeIndex);
+    // The event handlers arem't reliably triggered by the above.
+    this.sendStockId();
+  }
+
   private get stockId(): StockId {
     return new StockId(
       this.materialSelector.selectedIndex(),
@@ -90,11 +84,25 @@ export class InventorySelectorComponent implements AfterViewInit {
       data: this.stockId,
     });
   }
+  
+  private disable(value: boolean) {
+    this.materialSelector.disabled(value);
+    this.crossSectionSelector.disabled(value);
+    this.sizeSelector.disabled(value);
+  }
 
   ngAfterViewInit(): void {
-    this.sessionStateService.register(this.sessionStateKey, () => this.dehydrate(), state => this.rehydrate(state));
-    this.eventBrokerService.loadInventorySelectorRequest.subscribe(eventInfo => this.load(eventInfo.data));
-    this.uiStateService.addWidgetDisabler(this.eventBrokerService.inventorySelectionChange, disable => this.disable(disable));
+    this.sessionStateService.register(
+      this.sessionStateKey,
+      () => this.dehydrate(),
+      state => this.rehydrate(state),
+    );
+    this.eventBrokerService.loadInventorySelectorRequest.subscribe(eventInfo =>
+      this.load(eventInfo.data),
+    );
+    this.uiStateService.addWidgetDisabler(this.eventBrokerService.inventorySelectionChange, disable =>
+      this.disable(disable),
+    );
   }
 
   dehydrate(): StockId {
@@ -103,6 +111,5 @@ export class InventorySelectorComponent implements AfterViewInit {
 
   rehydrate(state: StockId): void {
     this.load(state);
-    this.sendStockId();
   }
 }

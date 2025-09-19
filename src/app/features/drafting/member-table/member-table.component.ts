@@ -9,11 +9,11 @@ import { ElementSelectorService } from '../shared/element-selector.service';
 import { AnalysisValidityService } from '../../controls/management/analysis-validity.service';
 
 @Component({
-    selector: 'member-table',
-    imports: [jqxGridModule],
-    templateUrl: './member-table.component.html',
-    styleUrl: './member-table.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'member-table',
+  imports: [jqxGridModule],
+  templateUrl: './member-table.component.html',
+  styleUrl: './member-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MemberTableComponent implements AfterViewInit {
   private static readonly MEMBER_DATA_FIELDS = [
@@ -21,7 +21,7 @@ export class MemberTableComponent implements AfterViewInit {
     { name: 'materialShortName', type: 'string' },
     { name: 'crossSectionShortName', type: 'string' },
     { name: 'materialSizeMm', type: 'number' },
-    { name: 'length', type: 'number' },
+    { name: 'lengthM', type: 'number' },
     { name: 'slenderness', type: 'number' },
     { name: 'compressionForceStrengthRatio', type: 'number' },
     { name: 'tensionForceStrengthRatio', type: 'number' },
@@ -56,7 +56,7 @@ export class MemberTableComponent implements AfterViewInit {
       renderer: MemberTableComponent.renderHeader
     }, { 
       text: 'Length (m)', 
-      datafield: 'length', 
+      datafield: 'lengthM', 
       cellsalign: 'right', 
       cellsformat: 'f2',
       width: 48, 
@@ -185,8 +185,10 @@ export class MemberTableComponent implements AfterViewInit {
   private updateGridContent(): void {
     this.isLastAnalysisValid = this.analysisValidityService.isLastAnalysisValid;
     this.source.localdata = this.bridgeService.bridge.members;
-    this.grid.source(this.dataAdapter);
-    this.grid.updatebounddata('cells');
+    // Preserve user-selected sort columns (and a bunch else we don't care about).
+    const state = this.grid.savestate();
+    this.grid.updatebounddata();
+    this.grid.loadstate(state);
   }
 
   /** Adjust the grid row selection to match selected members (i.e. those selected graphically). */
@@ -212,7 +214,7 @@ export class MemberTableComponent implements AfterViewInit {
         this.updateGridContent();
       }
     });
-    this.eventBrokerService.loadBridgeCompletion.subscribe(_eventInfo => this.updateGridContent());
+    this.eventBrokerService.loadBridgeCompletion.subscribe(() => this.updateGridContent());
     this.eventBrokerService.selectedElementsChange.subscribe(eventInfo => {
       if (eventInfo.origin !== EventOrigin.MEMBER_TABLE) {
         this.updateGridSelection();

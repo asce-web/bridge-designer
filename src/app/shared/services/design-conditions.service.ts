@@ -534,7 +534,7 @@ export class DesignConditions {
   }
 
   /** Returns a unique string key for given design condition attributes. */
-  static getSetupKey(
+  public static getSetupKey(
     deckElevation: number,
     archHeight: number,
     pierHeight: number,
