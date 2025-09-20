@@ -190,10 +190,12 @@ export const RIVER_VERTEX_SHADER =
 precision mediump float;
 layout(std140)uniform Transforms{
 mat4 modelView;
-mat4 modelViewProjection;}transforms;
+mat4 modelViewProjection;
+mat4 depthMapLookup;}transforms;
 layout(location=0)in vec2 inPosition;
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 out vec2 texCoord;
 const float TEX_SCALE=0.2;
 void main(){
@@ -201,11 +203,13 @@ vec4 inPositionHomogeneous=vec4(inPosition.x,0.0f,inPosition.y,1.0f);
 gl_Position=transforms.modelViewProjection*inPositionHomogeneous;
 vertex=vec3(transforms.modelView*inPositionHomogeneous);
 normal=mat3(transforms.modelView)*vec3(0.0f,1.0f,0.0f);
+depthMapLookup=transforms.depthMapLookup*inPositionHomogeneous;
 texCoord=TEX_SCALE*inPosition;}`;
 
 export const RIVER_FRAGMENT_SHADER = 
 `#version 300 es
 precision mediump float;
+precision mediump sampler2DShadow;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
 float brightness;
@@ -215,8 +219,10 @@ float shadowWeight;}light;
 layout(std140)uniform Time{
 float clock;}time;
 uniform sampler2D water;
+uniform sampler2DShadow depthMap;
 in vec3 vertex;
 in vec3 normal;
+in vec4 depthMapLookup;
 in vec2 texCoord;
 out vec4 fragmentColor;
 const vec2 WATER_VELOCITY=vec2(1.0f/32.0f,3.0f/32.0f);
@@ -227,7 +233,10 @@ vec3 unitReflection=normalize(2.0f*normalDotLight*unitNormal-light.unitDirection
 vec3 unitEye=normalize(-vertex);
 float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),120.0f);
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f);
-vec3 specularColor=specularIntensity*light.color;
+if(light.shadowWeight < 1.0f){
+float shadow=/*light.shadowWeight+(1.0-light.shadowWeight)**/textureProj(depthMap,depthMapLookup);
+specularIntensity*=shadow;
+diffuseIntensity*=shadow;}vec3 specularColor=specularIntensity*light.color;
 vec3 texColor=texture(water,fract(texCoord)+WATER_VELOCITY*time.clock).rgb;
 vec3 diffuseColor=(diffuseIntensity+light.ambientIntensity)*texColor*light.color*(1.0f-specularIntensity);
 fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1.0f);}`;

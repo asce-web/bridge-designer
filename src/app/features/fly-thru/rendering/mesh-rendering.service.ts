@@ -14,6 +14,7 @@ import { GlService } from './gl.service';
 import { ImageService } from '../../../shared/core/image.service';
 import { Colors } from '../../../shared/classes/graphics';
 import { FACIA_TEXTURE_UNIT, WATER_TEXTURE_UNIT } from './constants';
+import { DepthBufferService } from './depth-buffer.service';
 
 export type MeshData = {
   positions: Float32Array;
@@ -85,10 +86,11 @@ export type Wire = {
 @Injectable({ providedIn: 'root' })
 export class MeshRenderingService {
   constructor(
+    private readonly depthBufferService: DepthBufferService,
     private readonly glService: GlService,
     private readonly imageService: ImageService,
     private readonly shaderService: ShaderService,
-  ) {}
+  ) { }
 
   /** Prepares a colored mesh for drawing. Optionially retains backing data for future updates. */
   public prepareColoredMesh(meshData: MeshData, updatable: boolean = false): Mesh {
@@ -270,9 +272,11 @@ export class MeshRenderingService {
     gl.bindVertexArray(mesh.vertexArray);
     // TODO: Experiment with doing this once, not once per frame. Possible because we have fewer textures than units?
     // Then no texture location would be needed in the mesh data.
-    gl.uniform1i(mesh.textureUniformLocation!, FACIA_TEXTURE_UNIT);
-    gl.activeTexture(gl.TEXTURE0 + FACIA_TEXTURE_UNIT);
-    gl.bindTexture(gl.TEXTURE_2D, mesh.texture!);
+    if (this.glService.isRenderingDisplay) {
+      gl.uniform1i(mesh.textureUniformLocation!, FACIA_TEXTURE_UNIT);
+      gl.activeTexture(gl.TEXTURE0 + FACIA_TEXTURE_UNIT);
+      gl.bindTexture(gl.TEXTURE_2D, mesh.texture!);
+    }
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
     if (mesh.instanceCount) {
       gl.drawElementsInstanced(gl.TRIANGLES, mesh.elementCount, gl.UNSIGNED_SHORT, 0, mesh.instanceCount);
@@ -361,7 +365,9 @@ export class MeshRenderingService {
   /** Renders the already prepared river mesh. */
   public renderRiverMesh(mesh: Mesh) {
     const gl = this.glService.gl;
-    gl.useProgram(this.shaderService.getProgram('river'));
+    const program = this.shaderService.getProgram('river');
+    gl.useProgram(program);
+    this.depthBufferService.bindDepthTexture(program)
     // TODO: Experiment with doing this once, not once per frame. Possible because we have fewer textures than units?
     gl.uniform1i(mesh.textureUniformLocation!, WATER_TEXTURE_UNIT);
     gl.activeTexture(gl.TEXTURE0 + WATER_TEXTURE_UNIT);

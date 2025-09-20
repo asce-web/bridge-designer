@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { mat4 } from 'gl-matrix';
 import { Mesh, MeshRenderingService, Wire } from './mesh-rendering.service';
 import { BridgeMeshData, BridgeModelService } from '../models/bridge-model.service';
-import { UniformService } from './uniform.service';
+import { DisplayMatrices, UniformService } from './uniform.service';
 import { SimulationStateService } from './simulation-state.service';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { BitVector } from '../../../shared/core/bitvector';
@@ -57,9 +56,9 @@ export class BridgeRenderingService {
     this.mesh = this.prepareMesh(meshData);
   }
 
-  public render(viewMatrix: mat4, projectionMatrix: mat4): void {
+  public render(matrices: DisplayMatrices): void {
     // Push the current view to the GPU.
-    this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+    this.uniformService.updateTransformsUniform(matrices);
 
     // Update the instance transforms for bridge elements. May add buckled/torn meshes.
     this.updateMeshForCurrentLoading(this.mesh);

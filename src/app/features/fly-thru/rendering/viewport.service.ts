@@ -10,6 +10,7 @@ export class ViewportService {
   public readonly mouseProjection = mat3.create();
   public width: number = 0;
   public height: number = 0;
+  public canvasHeight: number = 0;
 
   constructor(
     private readonly eventBrokerService: EventBrokerService,
@@ -24,12 +25,18 @@ export class ViewportService {
     }
     this.width = viewportWidth;
     this.height = viewportHeight;
-    // WebGL's mapping of clip coordinates to device.
-    this.glService.gl.viewport(0, canvasHeight - this.height, this.width, this.height);
+    this.canvasHeight = canvasHeight;
+    this.restoreDisplayViewport();
     // Experimentally  determined perspective view of animation world.
     this.projectionService.setFrustum(45, viewportWidth / viewportHeight, 0.333333, 400, 0.5);
     // Mapping from css (mouse) to WebGL clip coordinates.
     mat3.projection(this.mouseProjection, this.width, this.height);
     this.eventBrokerService.flyThruViewportChange.next({ origin: EventOrigin.SERVICE, data: undefined });
+  }
+
+  /** Restore the last WebGL viewport setting. Useful after drawing the shadow buffer. */
+  public restoreDisplayViewport() {
+    // WebGL's mapping of clip coordinates to device.
+    this.glService.gl.viewport(0, this.canvasHeight - this.height, this.width, this.height);
   }
 }

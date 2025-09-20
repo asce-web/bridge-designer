@@ -7,6 +7,7 @@ precision mediump float;
 layout(std140) uniform Transforms {
   mat4 modelView;
   mat4 modelViewProjection;
+  mat4 depthMapLookup;
 } transforms;
 
 // Make VScode happy.
@@ -18,6 +19,7 @@ layout(location = IN_POSITION_LOCATION) in vec2 inPosition;
 
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 out vec2 texCoord;
 
 // Smaller scale makes texture appear larger.
@@ -28,5 +30,6 @@ void main() {
   gl_Position = transforms.modelViewProjection * inPositionHomogeneous;
   vertex = vec3(transforms.modelView * inPositionHomogeneous);
   normal = mat3(transforms.modelView) * vec3(0.0f, 1.0f, 0.0f);
+  depthMapLookup = transforms.depthMapLookup * inPositionHomogeneous;
   texCoord = TEX_SCALE * inPosition;
 }

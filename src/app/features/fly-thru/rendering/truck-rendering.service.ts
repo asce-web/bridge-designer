@@ -4,7 +4,7 @@ import { Mesh, MeshRenderingService } from './mesh-rendering.service';
 import { DUAL_WHEEL_MESH_DATA } from '../models/dual-wheel';
 import { TRUCK_MESH_DATA } from '../models/truck';
 import { WHEEL_MESH_DATA } from '../models/wheel';
-import { UniformService } from './uniform.service';
+import { DisplayMatrices, UniformService } from './uniform.service';
 import { SimulationStateService } from './simulation-state.service';
 import { GlService } from './gl.service';
 import { Geometry } from '../../../shared/classes/graphics';
@@ -32,7 +32,7 @@ export class TruckRenderingService {
     this.cabInteriorMesh = this.meshRenderingService.prepareColoredMesh(TRUCK_CAB_MESH_DATA);
   }
 
-  public render(viewMatrix: mat4, projectionMatrix: mat4, cabOnly: boolean = false): void {
+  public render(matrices: DisplayMatrices, cabOnly: boolean = false): void {
     let m: mat4;
 
     // Blend for fade in/out effect if needed.
@@ -55,7 +55,7 @@ export class TruckRenderingService {
     Geometry.rotateZ(m, m, truckRotation[1], truckRotation[0]);
     if (cabOnly) {
       gl.disable(gl.CULL_FACE);
-      this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+      this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.cabInteriorMesh);
       gl.enable(gl.CULL_FACE);
     } else {
@@ -69,7 +69,7 @@ export class TruckRenderingService {
 
       mat4.translate(m, m, vec3.set(this.offset, 0, 0.5, 0.95));
       mat4.rotateZ(m, m, -wheelRotation);
-      this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+      this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.wheelMesh);
 
       this.uniformService.popModelMatrix();
@@ -79,7 +79,7 @@ export class TruckRenderingService {
 
       mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, 1.05));
       mat4.rotateZ(m, m, -wheelRotation);
-      this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+      this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.dualWheelMesh);
 
       this.uniformService.popModelMatrix();
@@ -90,7 +90,7 @@ export class TruckRenderingService {
       mat4.translate(m, m, vec3.set(this.offset, 0, 0.5, -0.95));
       mat4.rotateX(m, m, Math.PI);
       mat4.rotateZ(m, m, wheelRotation);
-      this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+      this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.wheelMesh);
 
       this.uniformService.popModelMatrix();
@@ -101,13 +101,13 @@ export class TruckRenderingService {
       mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, -1.05));
       mat4.rotateX(m, m, Math.PI);
       mat4.rotateZ(m, m, wheelRotation);
-      this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+      this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.dualWheelMesh);
 
       this.uniformService.popModelMatrix();
 
       // Body.
-      this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+      this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.bodyMesh);
     }
 

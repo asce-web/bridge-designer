@@ -14,6 +14,7 @@
 
 ## Issues
 
+- Some sample designs fail.
 - Help should be its own window. 
   - Maybe not as BD best in full screen mode anyway?
   - Use router to select either help or BD.

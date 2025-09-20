@@ -21,7 +21,7 @@ export class SessionStateService {
       localStorage.clear();
       params.delete(reset);
       const resetUrl = `${url.origin}${url.pathname}?${params.toString()}`;
-      // Update the browser's displayed URL without reloading
+      // Update the browser's displayed URL without reloading.
       window.history.pushState({}, '', resetUrl);
     }
     eventBrokerService.sessionStateEnableToggle.subscribe(eventInfo => {

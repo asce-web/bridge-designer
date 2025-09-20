@@ -22,7 +22,7 @@ export class ProjectionService {
 
   private readonly tmpMatrix = mat4.create();
   private readonly tmpVector = new Vector2D();
-  private readonly invModelView = mat4.create();
+  private readonly invView = mat4.create();
   private readonly trapezoid = Utility.createArray(() => new Point2D(), 4);
   private readonly unitL = new Vector2D();
   private readonly unitR = new Vector2D();
@@ -77,14 +77,15 @@ export class ProjectionService {
     mat4.ortho(m, -halfWidth, halfWidth, -halfHeight, halfHeight, -halfGridSize, halfGridSize);
   }
 
-  public getTrapezoidalProjection(m: mat4, modelView: mat4, lightView: mat4): void {
+  /** Returns the trapezoidal projection for the current model-view and light-view transforms. */
+  public getTrapezoidalProjection(m: mat4, view: mat4, lightView: mat4): void {
     const halfGridSize = TerrainModelService.HALF_GRID_COUNT * TerrainModelService.METERS_PER_GRID;
     const near = -halfGridSize;
     const far = halfGridSize;
 
     // Form the matrix that takes a canonical view volume to PPSL.
-    mat4.invert(this.invModelView, modelView);
-    mat4.multiply(this.tmpMatrix, lightView, this.invModelView);
+    mat4.invert(this.invView, view);
+    mat4.multiply(this.tmpMatrix, lightView, this.invView);
 
     // Get the convex hull and axis direction of the main frustum.
     this.frustum.getHull(this.convexHullService, this.frustumHull, this.tmpMatrix);

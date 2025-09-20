@@ -43,6 +43,10 @@ export class SaveMarkService {
   public markDesignSaved(fileName: string): void {
     this.savedMark = this.undoManagerService.stateToken;
     this._fileName = fileName;
+    this.setDocumentTitle(fileName);
+  }
+
+  private setDocumentTitle(fileName: string) {
     document.title = fileName.replace(/\.bdc$/, '');
   }
 
@@ -60,7 +64,7 @@ export class SaveMarkService {
     }
     this._fileName = state.fileName;
     if (state.fileName !== undefined) {
-      document.title = state.fileName;
+      this.setDocumentTitle(state.fileName);
     }
   }
 }

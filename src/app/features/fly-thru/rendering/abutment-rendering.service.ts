@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbutmentModelService } from '../models/abutment-model.service';
 import { Mesh, MeshRenderingService } from './mesh-rendering.service';
-import { mat4 } from 'gl-matrix';
-import { UniformService } from './uniform.service';
+import { DisplayMatrices, UniformService } from './uniform.service';
 import { Colors } from '../../../shared/classes/graphics';
 
 @Injectable({ providedIn: 'root' })
@@ -28,8 +27,8 @@ export class AbutmentRenderingService {
     this.pillowMesh = this.meshRenderingService.prepareColoredMesh(coloredMeshData);
   }
 
-  public render(viewMatrix: mat4, projectionMatrix: mat4): void {
-    this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+  public render(matrices: DisplayMatrices): void {
+    this.uniformService.updateTransformsUniform(matrices);
     this.meshRenderingService.renderTexturedMesh(this.abutmentMesh);
     this.meshRenderingService.renderColoredMesh(this.pillowMesh);
   }

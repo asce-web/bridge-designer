@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UTILITY_TOWER_MESH_DATA } from '../models/utility-tower';
 import { Mesh, MeshRenderingService, Wire } from './mesh-rendering.service';
-import { mat4 } from 'gl-matrix';
-import { UniformService } from './uniform.service';
+import { DisplayMatrices, UniformService } from './uniform.service';
 import { UtilityLineModelService } from '../models/utility-line-model.service';
 
 @Injectable({ providedIn: 'root' })
@@ -17,7 +16,6 @@ export class UtilityLineRenderingService {
   ) {}
 
   public prepare(): void {
-    // TODO: This is some overkill. We need only update the tower and wire transforms.
     this.meshRenderingService.deleteExistingMesh(this.towerMesh);
     this.meshRenderingService.deleteExistingWire(this.lineWireInstances);
     const [instanceModelTransforms, wireData] = this.utilityLineModelService.buildModel();
@@ -26,8 +24,8 @@ export class UtilityLineRenderingService {
     this.lineWireInstances = this.meshRenderingService.prepareWire(wireData);
   }
 
-  public render(viewMatrix: mat4, projectionMatrix: mat4) {
-    this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+  public render(matrices: DisplayMatrices) {
+    this.uniformService.updateTransformsUniform(matrices);
     this.meshRenderingService.renderColoredMesh(this.towerMesh);
     this.meshRenderingService.renderWire(this.lineWireInstances);
   }

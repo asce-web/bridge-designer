@@ -25,25 +25,30 @@ type CompileMissing = { compileKind: 'missing'; program: string };
  * with empty fragment shader for the shadow buffer. A spec with name `foo` and a `depthVertexShaderName`
  * produces programs with lookup keys `foo`  and `foo_depth`.
  */
+// TODO: For performance, specialized depth shaders could skip color attribute setup.
 const PROGRAM_SPECS: ProgramSpec[] = [
   {
     name: 'buckling_member',
     displayVertexShaderName: 'BUCKLED_MEMBER_VERTEX_SHADER',
+    depthVertexShaderName: 'BUCKLED_MEMBER_VERTEX_SHADER',
     fragmentShaderName: 'BUCKLED_MEMBER_FRAGMENT_SHADER',
   },
   {
     name: 'colored_mesh',
     displayVertexShaderName: 'COLORED_MESH_VERTEX_SHADER',
+    depthVertexShaderName: 'COLORED_MESH_VERTEX_SHADER',
     fragmentShaderName: 'COLORED_MESH_FRAGMENT_SHADER',
   },
   {
     name: 'colored_mesh_instances',
     displayVertexShaderName: 'COLORED_MESH_INSTANCES_VERTEX_SHADER',
+    depthVertexShaderName: 'COLORED_MESH_INSTANCES_VERTEX_SHADER',
     fragmentShaderName: 'COLORED_MESH_FRAGMENT_SHADER',
   },
   {
     name: 'instance_colored_mesh',
     displayVertexShaderName: 'INSTANCE_COLORED_MESH_VERTEX_SHADER',
+    depthVertexShaderName: 'INSTANCE_COLORED_MESH_VERTEX_SHADER',
     fragmentShaderName: 'INSTANCE_COLORED_MESH_FRAGMENT_SHADER',
   },
   {
@@ -69,11 +74,13 @@ const PROGRAM_SPECS: ProgramSpec[] = [
   {
     name: 'textured_mesh',
     displayVertexShaderName: 'TEXTURED_MESH_VERTEX_SHADER',
+    depthVertexShaderName: 'TEXTURED_MESH_VERTEX_SHADER',
     fragmentShaderName: 'TEXTURED_MESH_FRAGMENT_SHADER',
   },
   {
     name: 'textured_mesh_instances',
     displayVertexShaderName: 'TEXTURED_MESH_INSTANCES_VERTEX_SHADER',
+    depthVertexShaderName: 'TEXTURED_MESH_INSTANCES_VERTEX_SHADER',
     fragmentShaderName: 'TEXTURED_MESH_FRAGMENT_SHADER',
   },
   {
@@ -84,6 +91,7 @@ const PROGRAM_SPECS: ProgramSpec[] = [
   {
     name: 'wire_instances',
     displayVertexShaderName: 'WIRE_INSTANCES_VERTEX_SHADER',
+    depthVertexShaderName: 'WIRE_INSTANCES_VERTEX_SHADER',
     fragmentShaderName: 'WIRE_FRAGMENT_SHADER',
   },
 ];
@@ -128,11 +136,9 @@ export class ShaderService {
 
   /** Gets the given program or throws if it's not present. */
   public getProgram(name: string): WebGLProgram {
-    // TODO: Either use this or rip it out if not needed.
-    // Use the depth program to render depth!
-    // if (this.glService.isRenderingDepth) {
-    //   name += '_depth';
-    // }
+    if (this.glService.isRenderingDepth) {
+      name += '_depth';
+    }
     const program = this.programs?.[name];
     if (!program) {
       throw new Error(`Missing shader: ${name}`);

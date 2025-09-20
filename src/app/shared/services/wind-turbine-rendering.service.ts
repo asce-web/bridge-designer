@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { mat4, vec3 } from 'gl-matrix';
 import { Mesh, MeshRenderingService } from '../../features/fly-thru/rendering/mesh-rendering.service';
-import { UniformService } from '../../features/fly-thru/rendering/uniform.service';
+import { DisplayMatrices, UniformService } from '../../features/fly-thru/rendering/uniform.service';
 import { WIND_ROTOR_MESH_DATA } from '../../features/fly-thru/models/wind-rotor';
 import { WIND_TOWER_MESH_DATA } from '../../features/fly-thru/models/wind-tower';
 import { TerrainModelService } from '../../features/fly-thru/models/terrain-model.service';
@@ -28,15 +28,15 @@ export class WindTurbineRenderingService {
       this.terrainModelService.getElevationAtXZ(this.towerBasePosition[0], this.towerBasePosition[2]) - 0.8;
   }
 
-  public render(viewMatrix: mat4, projectionMatrix: mat4, clockMillis: number) {
+  public render(matrices: DisplayMatrices, clockMillis: number) {
     let m = this.uniformService.pushModelMatrix();
     mat4.translate(m, m, this.towerBasePosition);
-    this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+    this.uniformService.updateTransformsUniform(matrices);
     this.meshRenderingService.renderColoredMesh(this.towerMesh);
     mat4.translate(m, m, this.rotorOffset);
     const millisPerRotation = WindTurbineRenderingService.MILLIS_PER_ROTATION;
     mat4.rotateZ(m, m, -2 * Math.PI * (clockMillis % millisPerRotation) / millisPerRotation);
-    this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+    this.uniformService.updateTransformsUniform(matrices);
     this.meshRenderingService.renderColoredMesh(this.rotorMesh);
     this.uniformService.popModelMatrix();
   }

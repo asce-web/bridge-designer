@@ -1,6 +1,7 @@
 #version 300 es
 
 precision mediump float;
+precision mediump sampler2DShadow;
 
 layout(std140) uniform LightConfig {
   vec3 unitDirection;
@@ -16,9 +17,11 @@ layout(std140) uniform Time {
 } time;
 
 uniform sampler2D water;
+uniform sampler2DShadow depthMap;
 
 in vec3 vertex;
 in vec3 normal;
+in vec4 depthMapLookup;
 in vec2 texCoord;
 out vec4 fragmentColor;
 
@@ -28,16 +31,16 @@ const vec2 WATER_VELOCITY = vec2(1.0f / 32.0f, 3.0f / 32.0f);
 // TODO: Simplify or finish ripples with fine triangulation of river surface.
 void main() {
   vec3 unitNormal = normalize(normal);
-  float normalDotLight = dot(unitNormal, light.unitDirection);
+  float normalDotLight = dot(unitNormal, light.unitDirection); // Actually constant.
   vec3 unitReflection = normalize(2.0f * normalDotLight * unitNormal - light.unitDirection);
   vec3 unitEye = normalize(-vertex);
   float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), 120.0f);
   float diffuseIntensity = (1.0f - light.ambientIntensity) * clamp(normalDotLight, 0.0f, 1.0f);
-  // TODO: Remove testing code.
-  // if (light.shadowWeight < 1.0f) {
-  //   specularIntensity *= 0.1f;
-  //   diffuseIntensity *= 0.1f;
-  // }
+  if (light.shadowWeight < 1.0f) {
+    float shadow = /*light.shadowWeight + (1.0 - light.shadowWeight) * */textureProj(depthMap, depthMapLookup);
+    specularIntensity *= shadow;
+    diffuseIntensity *= shadow;
+  }
   vec3 specularColor = specularIntensity * light.color;
   // Use fractional parts of terms to avoid float overflow.
   vec3 texColor = texture(water, fract(texCoord) + WATER_VELOCITY * time.clock).rgb;

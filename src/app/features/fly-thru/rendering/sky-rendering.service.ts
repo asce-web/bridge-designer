@@ -3,8 +3,7 @@ import { GlService } from './gl.service';
 import { Utility } from '../../../shared/classes/utility';
 import { IN_POSITION_LOCATION } from '../shaders/constants';
 import { ImageService } from '../../../shared/core/image.service';
-import { UniformService } from './uniform.service';
-import { mat4 } from 'gl-matrix';
+import { DisplayMatrices, UniformService } from './uniform.service';
 import { ShaderService } from '../shaders/shader.service';
 import { SKYBOX_TEXTURE_UNIT } from './constants';
 
@@ -112,8 +111,8 @@ export class SkyRenderingService {
   }
 
   /** Renders the sky box. Best done last to maximize gain from depth tests. */
-  public render(viewMatrix: mat4, projectionMatrix: mat4) {
-    this.uniformService.updateSkyboxTransformsUniform(viewMatrix, projectionMatrix);
+  public render(matrices: DisplayMatrices) {
+    this.uniformService.updateSkyboxTransformsUniform(matrices.view, matrices.projection);
     const gl = this.glService.gl;
     gl.useProgram(this.shaderService.getProgram('sky'));
     gl.depthFunc(gl.LEQUAL);

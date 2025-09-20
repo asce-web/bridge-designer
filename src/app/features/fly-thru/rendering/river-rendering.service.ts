@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { mat4, vec3 } from 'gl-matrix';
-import { UniformService } from './uniform.service';
+import { DisplayMatrices, UniformService } from './uniform.service';
 import { Mesh, MeshRenderingService } from './mesh-rendering.service';
 import { RIVER_MESH_DATA } from '../models/river';
 import { BridgeService } from '../../../shared/services/bridge.service';
@@ -23,7 +23,7 @@ export class RiverRenderingService {
     this.surfaceMesh = this.meshRenderingService.prepareRiverMesh(RIVER_MESH_DATA);
   }
 
-  public render(viewMatrix: mat4, projectionMatrix: mat4): void {
+  public render(matrices: DisplayMatrices): void {
     let m: mat4 = this.uniformService.pushModelMatrix();
     // Account for origin x at left joint and y at bridge deck level.
     // TODO: Could listen for bridge loads and compute these only then.
@@ -31,7 +31,7 @@ export class RiverRenderingService {
     const y0 =
       TerrainModelService.WATER_LEVEL + SiteConstants.GAP_DEPTH - this.bridgeService.designConditions.deckElevation;
     mat4.translate(m, m, vec3.set(this.offset, x0, y0, 0));
-    this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+    this.uniformService.updateTransformsUniform(matrices);
     this.meshRenderingService.renderRiverMesh(this.surfaceMesh);
     this.uniformService.popModelMatrix();
   }

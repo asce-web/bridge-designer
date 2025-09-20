@@ -23,12 +23,12 @@ export class GlService {
     }
   }
 
-  public get forDisplayBuffer(): WebGL2RenderingContext {
+  public get setForDisplayBuffer(): WebGL2RenderingContext {
     this._isDepthBuffer = false;
     return this.gl;
   }
 
-  public get forDepthBuffer(): WebGL2RenderingContext {
+  public get setForDepthBuffer(): WebGL2RenderingContext {
     this._isDepthBuffer = true;
     return this.gl;
   }

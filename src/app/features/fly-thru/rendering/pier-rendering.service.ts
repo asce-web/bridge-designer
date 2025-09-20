@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { PierModelService } from '../models/pier-model.service';
 import { Mesh, MeshRenderingService } from './mesh-rendering.service';
-import { UniformService } from './uniform.service';
+import { DisplayMatrices, UniformService } from './uniform.service';
 import { mat4, vec3 } from 'gl-matrix';
 import { Colors } from '../../../shared/classes/graphics';
 import { BridgeService } from '../../../shared/services/bridge.service';
@@ -37,13 +37,13 @@ export class PierRenderingService {
     vec3.set(this.offset, pierJoint.x, pierJoint.y, 0);
   }
 
-  public render(viewMatrix: mat4, projectionMatrix: mat4): void {
+  public render(matrices: DisplayMatrices): void {
     if (!this.bridgeService.designConditions.isPier) {
       return;
     }
     let m = this.uniformService.pushModelMatrix()
     mat4.translate(m, m, this.offset);
-    this.uniformService.updateTransformsUniform(viewMatrix, projectionMatrix);
+    this.uniformService.updateTransformsUniform(matrices);
     this.meshRenderingService.renderTexturedMesh(this.pierMesh);
     this.meshRenderingService.renderColoredMesh(this.pillowMesh);
     this.uniformService.popModelMatrix();

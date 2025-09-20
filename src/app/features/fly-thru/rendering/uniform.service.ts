@@ -13,6 +13,20 @@ import { mat4 } from 'gl-matrix';
 import { GlService } from './gl.service';
 import { UNIT_LIGHT_DIRECTION } from './constants';
 
+/** Source matrices needed to populate shader transforms. */
+export type DisplayMatrices = {
+  view: mat4;
+  projection: mat4;
+  lightView: mat4;
+  trapezoidalProjection: mat4;
+};
+// prettier-ignore
+const CANON_TO_TEX = mat4.fromValues(
+  0.5, 0,   0, 0,
+  0,   0.5, 0, 0,
+  0,   0,   1, 0,
+  0.5, 0.5, 0, 1,
+);
 @Injectable({ providedIn: 'root' })
 export class UniformService {
   /** Homogeneous light vector (w == 0). */
@@ -25,9 +39,10 @@ export class UniformService {
   /** Preallocated model transform stack. Typed array creation is slow. */
   private readonly modelTransformStack = [mat4.create(), mat4.create(), mat4.create(), mat4.create()];
   // One backing store buffer matching the uniform block with two matrix views.
-  private readonly transformsUniformStore = new ArrayBuffer(128); // 2 each 4x4 floats
+  private readonly transformsUniformStore = new ArrayBuffer(192); // 3 each 4x4 floats
   private readonly modelViewMatrix = new Float32Array(this.transformsUniformStore, 0, 16);
   private readonly modelViewProjectionMatrix = new Float32Array(this.transformsUniformStore, 64, 16);
+  private readonly depthMapLookupMatrix = new Float32Array(this.transformsUniformStore, 128, 16);
   private readonly skyboxTransformsFloats = new Float32Array(16);
   // prettier-ignore
   private readonly lightConfig = new Float32Array([
@@ -147,9 +162,12 @@ export class UniformService {
   }
 
   /** Updates the shader transforms uniform with current model matrix and given view and projection matrices. */
-  public updateTransformsUniform(viewMatrix: mat4, projectionMatrix: mat4): void {
-    mat4.multiply(this.modelViewMatrix, viewMatrix, this.modelMatrix);
-    mat4.multiply(this.modelViewProjectionMatrix, projectionMatrix, this.modelViewMatrix);
+  public updateTransformsUniform(matrices: DisplayMatrices): void {
+    mat4.multiply(this.modelViewMatrix, matrices.view, this.modelMatrix);
+    mat4.multiply(this.modelViewProjectionMatrix, matrices.projection, this.modelViewMatrix);
+    mat4.multiply(this.depthMapLookupMatrix, matrices.lightView, this.modelMatrix);
+    mat4.multiply(this.depthMapLookupMatrix, matrices.trapezoidalProjection, this.depthMapLookupMatrix);
+    mat4.multiply(this.depthMapLookupMatrix, CANON_TO_TEX, this.depthMapLookupMatrix);
     const gl = this.glService.gl;
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.transformsBuffer);
     gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.transformsUniformStore);
