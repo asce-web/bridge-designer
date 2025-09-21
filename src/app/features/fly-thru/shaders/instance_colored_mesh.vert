@@ -5,6 +5,7 @@
 layout(std140) uniform Transforms {
   mat4 modelView;
   mat4 modelViewProjection;
+  mat4 depthMapLookup;
 } transforms;
 
 // Make VScode happy.
@@ -22,12 +23,14 @@ layout(location = IN_INSTANCE_MODEL_TRANSFORM_LOCATION) in mat4 inModelTransform
 
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 out vec3 color;
 
 void main() {
-  vec4 position = inModelTransform * vec4(inPosition, 1.0f);
-  gl_Position = transforms.modelViewProjection * position;
-  vertex = vec3(transforms.modelView * position);
+  vec4 inPositionHomogeneous = inModelTransform * vec4(inPosition, 1.0f);
+  gl_Position = transforms.modelViewProjection * inPositionHomogeneous;
+  vertex = vec3(transforms.modelView * inPositionHomogeneous);
   normal = mat3(transforms.modelView) * mat3(inModelTransform) * inNormal;
+  depthMapLookup = transforms.depthMapLookup * inPositionHomogeneous;
   color = inColor;
 }

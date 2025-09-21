@@ -4,8 +4,15 @@ import { DEPTH_TEXTURE_UNIT } from './constants';
 import { ShaderService } from '../shaders/shader.service';
 import { IN_POSITION_LOCATION } from '../shaders/constants';
 
-const DEPTH_BUFFER_SIZE = 2048;
-const TEX_COORDS = new Float32Array([0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0]);
+const DEPTH_BUFFER_SIZE = 4096;
+// prettier-ignore
+const TEX_COORDS = new Float32Array([
+  0, 0, 
+  1, 0, 
+  0, 1, 
+  1, 1, 
+  0, 1, 
+  1, 0]);
 
 @Injectable({ providedIn: 'root' })
 export class DepthBufferService {

@@ -158,7 +158,6 @@ export class RenderingService {
     // Have renderers target depth buffer rather than display.
     this.depthBufferService.bindAndSetViewport();
 
-    gl.cullFace(gl.FRONT);
     gl.clear(gl.DEPTH_BUFFER_BIT);
     const m = this.matrices;
 
@@ -223,15 +222,13 @@ export class RenderingService {
         return;
     }
 
-    gl.cullFace(gl.BACK);
-
     const clearMask = this.flyThruSettingsService.settings.noSky
       ? gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT
       : gl.DEPTH_BUFFER_BIT;
     gl.clear(clearMask);
 
     // Send transformed light and tell the shaders whether we're rendering shadows.
-    const shadowWeight = this.flyThruSettingsService.settings.noShadows ? 1 : 0.1;
+    const shadowWeight = this.flyThruSettingsService.settings.noShadows ? 1 : 0.6;
     this.uniformService.updateLight(this.matrices.view, this.flyThruSettingsService.brightness, shadowWeight);
 
     // The renderers can make no assumption about what's in the transforms uniform.

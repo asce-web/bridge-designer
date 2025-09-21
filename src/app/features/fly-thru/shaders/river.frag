@@ -28,19 +28,20 @@ out vec4 fragmentColor;
 // Components must be multiples of 1/32 for smooth time wrapping.
 const vec2 WATER_VELOCITY = vec2(1.0f / 32.0f, 3.0f / 32.0f);
 
-// TODO: Simplify or finish ripples with fine triangulation of river surface.
 void main() {
   vec3 unitNormal = normalize(normal);
   float normalDotLight = dot(unitNormal, light.unitDirection); // Actually constant.
   vec3 unitReflection = normalize(2.0f * normalDotLight * unitNormal - light.unitDirection);
   vec3 unitEye = normalize(-vertex);
-  float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), 120.0f);
+  float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), 60.0f);
   float diffuseIntensity = (1.0f - light.ambientIntensity) * clamp(normalDotLight, 0.0f, 1.0f);
-  if (light.shadowWeight < 1.0f) {
-    float shadow = /*light.shadowWeight + (1.0 - light.shadowWeight) * */textureProj(depthMap, depthMapLookup);
-    specularIntensity *= shadow;
-    diffuseIntensity *= shadow;
-  }
+  // build_include "shadow_lookup.h"
+  // Make VScode happy.
+  #ifndef SHADOW
+    float shadow = 1.0f;
+  #endif
+  specularIntensity *= shadow;
+  diffuseIntensity *= shadow;
   vec3 specularColor = specularIntensity * light.color;
   // Use fractional parts of terms to avoid float overflow.
   vec3 texColor = texture(water, fract(texCoord) + WATER_VELOCITY * time.clock).rgb;

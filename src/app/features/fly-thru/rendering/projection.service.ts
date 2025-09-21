@@ -52,7 +52,7 @@ export class ProjectionService {
     this.aspect = aspect;
 
     // Set up the pyramids for the trapazoidal shadow mask algorithm.
-    const shadowFar = far * 0.35; // Don't attempt distant shadows to get better resolution close up.
+    const shadowFar = far * 0.5; // Sacrifice distant shadows to get better resolution close up.
     this.frustum.set(this.left, this.right, this.bottom, this.top, near, shadowFar);
     this.focusArea.set(
       this.left,
@@ -79,9 +79,9 @@ export class ProjectionService {
 
   /** Returns the trapezoidal projection for the current model-view and light-view transforms. */
   public getTrapezoidalProjection(m: mat4, view: mat4, lightView: mat4): void {
-    const halfGridSize = TerrainModelService.HALF_GRID_COUNT * TerrainModelService.METERS_PER_GRID * 0.5;
-    const near = -halfGridSize;
-    const far = halfGridSize;
+    const planeOffset = TerrainModelService.HALF_GRID_COUNT * TerrainModelService.METERS_PER_GRID * 2;
+    const near = -planeOffset;
+    const far = planeOffset;
 
     // Form the matrix that takes a canonical view volume to PPSL.
     mat4.invert(this.invView, view);

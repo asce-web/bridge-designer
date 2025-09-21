@@ -1,12 +1,14 @@
 #version 300 es
 
 precision mediump float;
+precision mediump sampler2DShadow;
 
 layout(std140) uniform LightConfig {
   vec3 unitDirection;
   float brightness;
   vec3 color;
   float ambientIntensity;
+  float shadowWeight;
 } light;
 
 // Pack struct manually into vec4s to work around known hardware bugs.
@@ -21,8 +23,11 @@ layout(std140) uniform MaterialConfig {
   MaterialSpec specs[12];
 } materialConfig;
 
+uniform sampler2DShadow depthMap;
+
 in vec3 vertex;
 in vec3 normal;
+in vec4 depthMapLookup;
 flat in uint materialRef;
 out vec4 fragmentColor;
 
@@ -36,5 +41,10 @@ void main() {
   vec3 specularColor = specularIntensity * light.color;
   float diffuseIntensity = (1.0f - light.ambientIntensity) * clamp(normalDotLight, 0.0f, 1.0f) + light.ambientIntensity;
   vec3 diffuseColor = diffuseIntensity * materialSpec.COLOR * light.color * (1.0f - specularIntensity);
-  fragmentColor = light.brightness * vec4(specularColor + diffuseColor, materialConfig.globalAlpha);
+  // build_include "shadow_lookup.h"
+  // Make VScode happy.
+  #ifndef SHADOW
+    float shadow = 1.0f;
+  #endif
+  fragmentColor = light.brightness * vec4(specularColor + diffuseColor, materialConfig.globalAlpha) * shadow;
 }

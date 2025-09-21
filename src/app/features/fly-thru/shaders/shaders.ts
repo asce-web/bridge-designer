@@ -1,15 +1,18 @@
 // This file is generated. Edit .vert and .frag files instead.
 export const BUCKLED_MEMBER_VERTEX_SHADER = 
 `#version 300 es
+precision mediump float;
 layout(std140)uniform Transforms{
 mat4 modelView;
-mat4 modelViewProjection;}transforms;
+mat4 modelViewProjection;
+mat4 depthMapLookup;}transforms;
 layout(location=0)in vec3 inPosition;
 layout(location=1)in uint inNormalRef;
 layout(location=4)in mat4 inModelTransform;
 const mat4 UNIT_SQUARE=mat4(0,0,0,1,1,0,0,1,1,1,0,1,0,1,0,1);
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 void main(){
 vec4 p=inModelTransform*vec4(inPosition,1.0f);
 vec4 position=vec4(p.x/p.w,p.y/p.w,p.z,1.0f);
@@ -17,18 +20,23 @@ mat4 u=inModelTransform*UNIT_SQUARE;
 vec3 rawNormal=inNormalRef==0u ? vec3(0,0,1): inNormalRef==1u ? vec3(0,0,-1): inNormalRef==2u ? vec3(u[2][0]/u[2][3]-u[1][0]/u[1][3],u[2][1]/u[2][3]-u[1][1]/u[1][3],0): inNormalRef==3u ? vec3(u[3][0]/u[3][3]-u[0][0]/u[0][3],u[3][1]/u[3][3]-u[0][1]/u[0][3],0): inNormalRef==4u ? vec3(u[1][0]/u[1][3]-u[2][0]/u[2][3],u[1][1]/u[1][3]-u[2][1]/u[2][3],0): vec3(u[0][0]/u[0][3]-u[3][0]/u[3][3],u[0][1]/u[0][3]-u[3][1]/u[3][3],0);
 gl_Position=transforms.modelViewProjection*position;
 vertex=vec3(transforms.modelView*position);
-normal=mat3(transforms.modelView)*normalize(rawNormal);}`;
+normal=mat3(transforms.modelView)*normalize(rawNormal);
+depthMapLookup=transforms.depthMapLookup*position;}`;
 
 export const BUCKLED_MEMBER_FRAGMENT_SHADER = 
 `#version 300 es
 precision mediump float;
+precision mediump sampler2DShadow;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
 float brightness;
 vec3 color;
-float ambientIntensity;}light;
+float ambientIntensity;
+float shadowWeight;}light;
+uniform sampler2DShadow depthMap;
 in vec3 vertex;
 in vec3 normal;
+in vec4 depthMapLookup;
 out vec4 fragmentColor;
 const vec3 COLOR=vec3(1.0,0.0,0.0);
 const float SHININESS=20.0;
@@ -41,41 +49,50 @@ float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),SHININESS);
 vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 diffuseColor=diffuseIntensity*COLOR*light.color*(1.0f-specularIntensity);
-fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1);}`;
+float shadow=light.shadowWeight < 1.0f ? light.shadowWeight+(1.0-light.shadowWeight)*textureProj(depthMap,depthMapLookup): 1.0f;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1)*shadow;}`;
 
 export const COLORED_MESH_VERTEX_SHADER = 
 `#version 300 es
+precision mediump float;
 layout(std140)uniform Transforms{
 mat4 modelView;
-mat4 modelViewProjection;}transforms;
+mat4 modelViewProjection;
+mat4 depthMapLookup;}transforms;
 layout(location=0)in vec3 inPosition;
 layout(location=1)in vec3 inNormal;
 layout(location=2)in uint inMaterialRef;
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 flat out uint materialRef;
 void main(){
 vec4 inPositionHomogeneous=vec4(inPosition,1.0f);
 gl_Position=transforms.modelViewProjection*inPositionHomogeneous;
 vertex=vec3(transforms.modelView*inPositionHomogeneous);
+depthMapLookup=transforms.depthMapLookup*inPositionHomogeneous;
 normal=mat3(transforms.modelView)*inNormal;
 materialRef=inMaterialRef;}`;
 
 export const COLORED_MESH_FRAGMENT_SHADER = 
 `#version 300 es
 precision mediump float;
+precision mediump sampler2DShadow;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
 float brightness;
 vec3 color;
-float ambientIntensity;}light;
+float ambientIntensity;
+float shadowWeight;}light;
 struct MaterialSpec{
 vec4 spec;};
 layout(std140)uniform MaterialConfig{
 float globalAlpha;
 MaterialSpec specs[12];}materialConfig;
+uniform sampler2DShadow depthMap;
 in vec3 vertex;
 in vec3 normal;
+in vec4 depthMapLookup;
 flat in uint materialRef;
 out vec4 fragmentColor;
 void main(){
@@ -88,25 +105,30 @@ float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),materialSpec.s
 vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 diffuseColor=diffuseIntensity*materialSpec.spec.xyz*light.color*(1.0f-specularIntensity);
-fragmentColor=light.brightness*vec4(specularColor+diffuseColor,materialConfig.globalAlpha);}`;
+float shadow=light.shadowWeight < 1.0f ? light.shadowWeight+(1.0-light.shadowWeight)*textureProj(depthMap,depthMapLookup): 1.0f;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,materialConfig.globalAlpha)*shadow;}`;
 
 export const COLORED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
+precision mediump float;
 layout(std140)uniform Transforms{
 mat4 modelView;
-mat4 modelViewProjection;}transforms;
+mat4 modelViewProjection;
+mat4 depthMapLookup;}transforms;
 layout(location=0)in vec3 inPosition;
 layout(location=1)in vec3 inNormal;
 layout(location=2)in uint inMaterialRef;
 layout(location=4)in mat4 inModelTransform;
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 flat out uint materialRef;
 void main(){
-vec4 position=inModelTransform*vec4(inPosition,1.0f);
-gl_Position=transforms.modelViewProjection*position;
-vertex=vec3(transforms.modelView*position);
+vec4 inPositionHomogeneous=inModelTransform*vec4(inPosition,1.0f);
+gl_Position=transforms.modelViewProjection*inPositionHomogeneous;
+vertex=vec3(transforms.modelView*inPositionHomogeneous);
 normal=mat3(transforms.modelView)*mat3(inModelTransform)*inNormal;
+depthMapLookup=transforms.depthMapLookup*inPositionHomogeneous;
 materialRef=inMaterialRef;}`;
 
 export const DEPTH_TEXTURE_VERTEX_SHADER = 
@@ -125,13 +147,14 @@ precision mediump sampler2DShadow;
 uniform sampler2DShadow depthMap;
 in vec2 texCoord;
 out vec4 fragmentColor;
-const float increment=0.03125f;
+const float increment=1.0f/8.0f;
 void main(){
 float intensity=0.0f;
 for(float f=0.0f;
-f <=1.0f;
+f < 1.0f;
 f+=increment){
-intensity+=increment*texture(depthMap,vec3(texCoord,f));}fragmentColor=vec4(intensity,intensity,intensity,1);}`;
+intensity+=texture(depthMap,vec3(texCoord,f));}intensity*=increment;
+fragmentColor=vec4(intensity,intensity,intensity,1);}`;
 
 export const EMPTY_FRAGMENT_SHADER = 
 `#version 300 es
@@ -142,34 +165,41 @@ export const INSTANCE_COLORED_MESH_VERTEX_SHADER =
 `#version 300 es
 layout(std140)uniform Transforms{
 mat4 modelView;
-mat4 modelViewProjection;}transforms;
+mat4 modelViewProjection;
+mat4 depthMapLookup;}transforms;
 layout(location=0)in vec3 inPosition;
 layout(location=1)in vec3 inNormal;
 layout(location=2)in vec3 inColor;
 layout(location=4)in mat4 inModelTransform;
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 out vec3 color;
 void main(){
-vec4 position=inModelTransform*vec4(inPosition,1.0f);
-gl_Position=transforms.modelViewProjection*position;
-vertex=vec3(transforms.modelView*position);
+vec4 inPositionHomogeneous=inModelTransform*vec4(inPosition,1.0f);
+gl_Position=transforms.modelViewProjection*inPositionHomogeneous;
+vertex=vec3(transforms.modelView*inPositionHomogeneous);
 normal=mat3(transforms.modelView)*mat3(inModelTransform)*inNormal;
+depthMapLookup=transforms.depthMapLookup*inPositionHomogeneous;
 color=inColor;}`;
 
 export const INSTANCE_COLORED_MESH_FRAGMENT_SHADER = 
 `#version 300 es
 precision mediump float;
+precision mediump sampler2DShadow;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
 float brightness;
 vec3 color;
-float ambientIntensity;}light;
-const float MEMBER_SHININESS=20.0;
+float ambientIntensity;
+float shadowWeight;}light;
+uniform sampler2DShadow depthMap;
 in vec3 vertex;
 in vec3 normal;
+in vec4 depthMapLookup;
 in vec3 color;
 out vec4 fragmentColor;
+const float MEMBER_SHININESS=20.0;
 void main(){
 vec3 unitNormal=normalize(normal);
 float normalDotLight=dot(unitNormal,light.unitDirection);
@@ -179,7 +209,8 @@ float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),MEMBER_SHININE
 vec3 specularColor=specularIntensity*light.color;
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 diffuseColor=diffuseIntensity*color*light.color*(1.0f-specularIntensity);
-fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1.0);}`;
+float shadow=light.shadowWeight < 1.0f ? light.shadowWeight+(1.0-light.shadowWeight)*textureProj(depthMap,depthMapLookup): 1.0f;
+fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1.0)*shadow;}`;
 
 export const OVERLAY_VERTEX_SHADER = 
 `#version 300 es
@@ -255,12 +286,12 @@ vec3 unitNormal=normalize(normal);
 float normalDotLight=dot(unitNormal,light.unitDirection);
 vec3 unitReflection=normalize(2.0f*normalDotLight*unitNormal-light.unitDirection);
 vec3 unitEye=normalize(-vertex);
-float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),120.0f);
+float specularIntensity=pow(max(dot(unitReflection,unitEye),0.0f),60.0f);
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f);
-if(light.shadowWeight < 1.0f){
-float shadow=/*light.shadowWeight+(1.0-light.shadowWeight)**/textureProj(depthMap,depthMapLookup);
+float shadow=light.shadowWeight < 1.0f ? light.shadowWeight+(1.0-light.shadowWeight)*textureProj(depthMap,depthMapLookup): 1.0f;
 specularIntensity*=shadow;
-diffuseIntensity*=shadow;}vec3 specularColor=specularIntensity*light.color;
+diffuseIntensity*=shadow;
+vec3 specularColor=specularIntensity*light.color;
 vec3 texColor=texture(water,fract(texCoord)+WATER_VELOCITY*time.clock).rgb;
 vec3 diffuseColor=(diffuseIntensity+light.ambientIntensity)*texColor*light.color*(1.0f-specularIntensity);
 fragmentColor=light.brightness*vec4(specularColor+diffuseColor,1.0f);}`;
@@ -329,37 +360,42 @@ float adjustedAmbientIntensity=light.ambientIntensity*0.2f;
 float diffuseIntensity=(1.0f-adjustedAmbientIntensity)*clamp(normalDotLight,0.0f,1.0f)+adjustedAmbientIntensity;
 float normalTerrainColorWeight=pow(yModelNormal,6.0f);
 vec3 color=ERODED_TERRAIN_COLOR+EROSION_DIFF*normalTerrainColorWeight;
-fragmentColor=light.brightness*vec4(diffuseIntensity*color*light.color,1.0f);
-if(light.shadowWeight < 1.0f){
-float shadow=/*light.shadowWeight+(1.0-light.shadowWeight)**/textureProj(depthMap,depthMapLookup);
-fragmentColor*=shadow;}}`;
+float shadow=light.shadowWeight < 1.0f ? light.shadowWeight+(1.0-light.shadowWeight)*textureProj(depthMap,depthMapLookup): 1.0f;
+fragmentColor=light.brightness*vec4(diffuseIntensity*color*light.color,1.0f)*shadow;}`;
 
 export const TEXTURED_MESH_VERTEX_SHADER = 
 `#version 300 es
 layout(std140)uniform Transforms{
 mat4 modelView;
-mat4 modelViewProjection;}transforms;
+mat4 modelViewProjection;
+mat4 depthMapLookup;}transforms;
 layout(location=0)in vec3 inPosition;
 layout(location=1)in vec3 inNormal;
 layout(location=3)in vec2 inTexCoord;
 out vec3 normal;
+out vec4 depthMapLookup;
 out vec2 texCoord;
 void main(){
 vec4 inPositionHomogeneous=vec4(inPosition,1.0f);
 gl_Position=transforms.modelViewProjection*inPositionHomogeneous;
 normal=mat3(transforms.modelView)*inNormal;
+depthMapLookup=transforms.depthMapLookup*inPositionHomogeneous;
 texCoord=inTexCoord;}`;
 
 export const TEXTURED_MESH_FRAGMENT_SHADER = 
 `#version 300 es
 precision mediump float;
+precision mediump sampler2DShadow;
 layout(std140)uniform LightConfig{
 vec3 unitDirection;
 float brightness;
 vec3 color;
-float ambientIntensity;}light;
+float ambientIntensity;
+float shadowWeight;}light;
 uniform sampler2D meshTexture;
+uniform sampler2DShadow depthMap;
 in vec3 normal;
+in vec4 depthMapLookup;
 in vec2 texCoord;
 out vec4 fragmentColor;
 void main(){
@@ -367,23 +403,27 @@ vec3 unitNormal=normalize(normal);
 float normalDotLight=dot(unitNormal,light.unitDirection);
 float diffuseIntensity=(1.0f-light.ambientIntensity)*clamp(normalDotLight,0.0f,1.0f)+light.ambientIntensity;
 vec3 materialColor=texture(meshTexture,texCoord).rgb;
-fragmentColor=light.brightness*vec4(diffuseIntensity*materialColor*light.color,1);}`;
+float shadow=light.shadowWeight < 1.0f ? light.shadowWeight+(1.0-light.shadowWeight)*textureProj(depthMap,depthMapLookup): 1.0f;
+fragmentColor=light.brightness*vec4(diffuseIntensity*materialColor*light.color,1)*shadow;}`;
 
 export const TEXTURED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
 layout(std140)uniform Transforms{
 mat4 modelView;
-mat4 modelViewProjection;}transforms;
+mat4 modelViewProjection;
+mat4 depthMapLookup;}transforms;
 layout(location=0)in vec3 inPosition;
 layout(location=1)in vec3 inNormal;
 layout(location=3)in vec2 inTexCoord;
 layout(location=4)in mat4 inModelTransform;
 out vec3 normal;
+out vec4 depthMapLookup;
 out vec2 texCoord;
 void main(){
-vec4 position=inModelTransform*vec4(inPosition,1.0f);
-gl_Position=transforms.modelViewProjection*position;
+vec4 inPositionHomogeneous=inModelTransform*vec4(inPosition,1.0f);
+gl_Position=transforms.modelViewProjection*inPositionHomogeneous;
 normal=mat3(transforms.modelView)*mat3(inModelTransform)*inNormal;
+depthMapLookup=transforms.depthMapLookup*inPositionHomogeneous;
 texCoord=inTexCoord;}`;
 
 export const WIRE_VERTEX_SHADER = 

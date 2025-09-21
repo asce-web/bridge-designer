@@ -31,9 +31,10 @@ void main() {
   // Powering up makes the erosion effect more visible.
   float normalTerrainColorWeight = pow(yModelNormal, 6.0f);
   vec3 color = ERODED_TERRAIN_COLOR + EROSION_DIFF * normalTerrainColorWeight;
-  fragmentColor = light.brightness * vec4(diffuseIntensity * color * light.color, 1.0f);
-  if(light.shadowWeight < 1.0f) {
-    float shadow = /*light.shadowWeight + (1.0 - light.shadowWeight) * */textureProj(depthMap, depthMapLookup);
-    fragmentColor *= shadow;
-  }
+  // build_include "shadow_lookup.h"
+  // Make VScode happy.
+  #ifndef SHADOW
+    float shadow = 1.0f;
+  #endif
+  fragmentColor = light.brightness * vec4(diffuseIntensity * color * light.color, 1.0f) * shadow;
 }

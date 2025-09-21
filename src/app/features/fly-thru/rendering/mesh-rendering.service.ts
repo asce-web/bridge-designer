@@ -90,7 +90,7 @@ export class MeshRenderingService {
     private readonly glService: GlService,
     private readonly imageService: ImageService,
     private readonly shaderService: ShaderService,
-  ) { }
+  ) {}
 
   /** Prepares a colored mesh for drawing. Optionially retains backing data for future updates. */
   public prepareColoredMesh(meshData: MeshData, updatable: boolean = false): Mesh {
@@ -151,15 +151,15 @@ export class MeshRenderingService {
   /** Renders a previously prepared color facet mesh.  */
   public renderColoredMesh(mesh: Mesh): void {
     const gl = this.glService.gl;
-    gl.useProgram(
-      this.shaderService.getProgram(
-        mesh.instanceColorBuffer
-          ? 'instance_colored_mesh'
-          : mesh.instanceCount
-            ? 'colored_mesh_instances'
-            : 'colored_mesh',
-      ),
+    const program = this.shaderService.getProgram(
+      mesh.instanceColorBuffer
+        ? 'instance_colored_mesh'
+        : mesh.instanceCount
+          ? 'colored_mesh_instances'
+          : 'colored_mesh',
     );
+    gl.useProgram(program);
+    this.depthBufferService.bindDepthTexture(program);
     gl.bindVertexArray(mesh.vertexArray);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
     if (mesh.instanceCount) {
@@ -214,7 +214,9 @@ export class MeshRenderingService {
   /** Renders a buckled member mesh. */
   public renderBuckledMemberMesh(mesh: Mesh) {
     const gl = this.glService.gl;
-    gl.useProgram(this.shaderService.getProgram('buckling_member'));
+    const program = this.shaderService.getProgram('buckling_member');
+    gl.useProgram(program);
+    this.depthBufferService.bindDepthTexture(program);
     gl.bindVertexArray(mesh.vertexArray);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
     gl.drawElementsInstanced(gl.TRIANGLES, mesh.elementCount, gl.UNSIGNED_SHORT, 0, mesh.instanceCount!);
@@ -268,7 +270,9 @@ export class MeshRenderingService {
 
   public renderTexturedMesh(mesh: Mesh): void {
     const gl = this.glService.gl;
-    gl.useProgram(this.shaderService.getProgram(mesh.instanceCount ? 'textured_mesh_instances' : 'textured_mesh'));
+    const program = this.shaderService.getProgram(mesh.instanceCount ? 'textured_mesh_instances' : 'textured_mesh');
+    gl.useProgram(program);
+    this.depthBufferService.bindDepthTexture(program);
     gl.bindVertexArray(mesh.vertexArray);
     // TODO: Experiment with doing this once, not once per frame. Possible because we have fewer textures than units?
     // Then no texture location would be needed in the mesh data.
@@ -369,7 +373,7 @@ export class MeshRenderingService {
     const gl = this.glService.gl;
     const program = this.shaderService.getProgram('river');
     gl.useProgram(program);
-    this.depthBufferService.bindDepthTexture(program)
+    this.depthBufferService.bindDepthTexture(program);
     // TODO: Experiment with doing this once, not once per frame. Possible because we have fewer textures than units?
     gl.uniform1i(mesh.textureUniformLocation!, WATER_TEXTURE_UNIT);
     gl.activeTexture(gl.TEXTURE0 + WATER_TEXTURE_UNIT);

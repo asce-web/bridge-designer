@@ -1,11 +1,14 @@
 #version 300 es
 
+precision mediump float;
+
 // Special purpose for animating buckling members as red square tubes bent in parabolas.
 // build_include "constants.h"
 
 layout(std140) uniform Transforms {
   mat4 modelView;
   mat4 modelViewProjection;
+  mat4 depthMapLookup;
 } transforms;
 
 // Make VScode happy.
@@ -28,6 +31,7 @@ const mat4 UNIT_SQUARE = mat4(
 
 out vec3 vertex;
 out vec3 normal;
+out vec4 depthMapLookup;
 
 void main() {
   // Segment transform and pseudo-perspective division that's the segment taper.
@@ -60,4 +64,5 @@ void main() {
   gl_Position = transforms.modelViewProjection * position;
   vertex = vec3(transforms.modelView * position);
   normal = mat3(transforms.modelView) * normalize(rawNormal);
+  depthMapLookup = transforms.depthMapLookup * position;
 }
