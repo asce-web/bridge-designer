@@ -8,7 +8,7 @@
   width: calc(100% - 2px);
 }
 
-.member-table {
+.test-report-member-table {
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
@@ -34,6 +34,10 @@
 
 .table-body td {
   padding: 2px 4px;
+}
+
+.table-body tr:nth-child(odd) {
+  background-color: #f2f2f2; /* Light gray */
 }
 
 .std-wide {

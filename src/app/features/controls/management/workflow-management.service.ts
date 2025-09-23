@@ -141,6 +141,7 @@ export class WorkflowManagementService {
     eventBrokerService.loadBridgeCompletion.subscribe(() => {
       uiStateService.disable(eventBrokerService.undoRequest);
       uiStateService.disable(eventBrokerService.redoRequest);
+      uiStateService.disable(eventBrokerService.analysisReportRequest);
       eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'drafting' });
       eventBrokerService.editModeSelection.next({ origin: EventOrigin.SERVICE, data: CursorMode.JOINTS });
       eventBrokerService.loadInventorySelectorRequest.next({

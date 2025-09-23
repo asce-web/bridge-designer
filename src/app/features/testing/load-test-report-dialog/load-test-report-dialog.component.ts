@@ -4,13 +4,15 @@ import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
+import jsPDF from 'jspdf';
+import { autoTable, HookData } from 'jspdf-autotable';
 
 @Component({
-    selector: 'load-test-report-dialog',
-    imports: [CommonModule, jqxWindowModule, jqxButtonModule],
-    templateUrl: './load-test-report-dialog.component.html',
-    styleUrl: './load-test-report-dialog.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'load-test-report-dialog',
+  imports: [CommonModule, jqxWindowModule, jqxButtonModule],
+  templateUrl: './load-test-report-dialog.component.html',
+  styleUrl: './load-test-report-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoadTestReportDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;
@@ -22,10 +24,27 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
     private readonly eventBrokerService: EventBrokerService,
   ) {}
 
-  dialogOpenHandler(): void {
+  handleDialogOpen(): void {
     this.changeToken += 'change';
     this.changeDetector.detectChanges();
     this.changeToken = '';
+  }
+
+  handlePrint(): void {
+    const doc = new jsPDF({ format: 'letter', orientation: 'portrait' });
+    autoTable(doc, {
+      html: '.test-report-member-table',
+      styles: { fontSize: 8 },
+      useCss: true,
+      didDrawPage: (data: HookData) => {
+        doc.setFontSize(8);
+        var pageHeight = doc.internal.pageSize.getHeight();
+        doc.text(`Page ${data.pageNumber}`, data.settings.margin.left, pageHeight - 10);
+      }
+    });
+    const blob = doc.output('blob');
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
   }
 
   ngAfterViewInit(): void {

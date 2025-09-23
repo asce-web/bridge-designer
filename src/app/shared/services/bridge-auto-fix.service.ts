@@ -67,7 +67,7 @@ export class BridgeAutoFixService {
       }
     }
     for (const [joint, count] of memberCountsByJoint.entries()) {
-      if (count === 0) {
+      if (count === 0 && !joint.isFixed) {
         const command = new DeleteJointCommand(joint, bridge, selectedElements);
         this.undoManagerService.do(command);
         removalCount++;

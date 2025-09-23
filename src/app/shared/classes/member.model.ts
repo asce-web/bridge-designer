@@ -5,9 +5,9 @@ import { Joint } from './joint.model';
 
 /** POTO member object. Shouldn't ever contain business logic. */
 export class Member implements Editable {
-  private static readonly OK = '✔️';
-  private static readonly FAILED = '❌';
-  public static readonly UNKNOWN = '—';
+  private static readonly OK = 'ok';
+  private static readonly FAILED = 'fail';
+  public static readonly UNKNOWN = '--';
 
   constructor(
     public index: number,

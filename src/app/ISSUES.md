@@ -2,7 +2,6 @@
 
 ## Master TODO
 
-- Printing test results.
 - Animation
   - Controls
 - Complete help edit
@@ -14,7 +13,6 @@
 ## Issues
 
 - Failed members should be colored in drafting view after test.
-- Some graphics (help for sure) still say 2016.
 - Some sample designs fail.
 - Help should be its own window. 
   - Maybe not as BD best in full screen mode anyway?
@@ -35,3 +33,5 @@
 - Watermarks on jqWidgets need removal.
 - Need "loading..." display during app setup.
 - Design conditions in setup wizard incorrectly loaded from root bridge.
+- Printing test results.
+- Some graphics (help for sure) still say 2016.
