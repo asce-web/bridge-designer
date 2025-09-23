@@ -55,8 +55,11 @@ export class HelpPopupTopicComponent {
     // Determine the x-axis position so popup is entirely visible.
     const popupWidth = 640;
     let left = 2;
-    if (linkRect.left + popupWidth > helpPaneRect.right) {
-      left -= linkRect.left + popupWidth - helpPaneRect.right;
+    // TODO: I don't understand why the popup appears at the right edge of the link by default.
+    // This apparently changed with an Angular + jq-widgets version update. Used to be left.
+    const popupDefaultRight = linkRect.right + popupWidth;
+    if (popupDefaultRight > helpPaneRect.right) {
+      left -= popupDefaultRight - helpPaneRect.right;
     }
     // Render content if not already done.
     if (!this.popup) {
