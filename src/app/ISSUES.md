@@ -12,7 +12,6 @@
 
 ## Issues
 
-- Failed members should be colored in drafting view after test.
 - Some sample designs fail.
 - Help should be its own window. 
   - Maybe not as BD best in full screen mode anyway?
@@ -35,3 +34,4 @@
 - Design conditions in setup wizard incorrectly loaded from root bridge.
 - Printing test results.
 - Some graphics (help for sure) still say 2016.
+- Failed members should be colored in drafting view after test.

@@ -21,20 +21,24 @@ const FAILURE_COLOR_TRANSFORMS = [
 
 @Injectable({ providedIn: 'root' })
 export class DesignMemberRenderingService {
-  // Member color arrays are indexed by failure type, then material.
-  public static readonly NORMAL_COLORS: string[][] = DesignMemberRenderingService.createColors(0, 0);
-  public static readonly SELECTED_COLORS: string[][] = DesignMemberRenderingService.createColors(0, 0.9);
-  public static readonly HOT_COLORS: string[][] = DesignMemberRenderingService.createColors(0.3, 0);
-  public static readonly HOT_SELECTED_COLORS: string[][] = DesignMemberRenderingService.createColors(0.3, 0.9);
-
-  public static readonly INNER_COLORS: string[][] = DesignMemberRenderingService.createInnerColors(0, 0);
-  public static readonly SELECTED_INNER_COLORS: string[][] = DesignMemberRenderingService.createInnerColors(0, 0.9);
-  public static readonly HOT_INNER_COLORS: string[][] = DesignMemberRenderingService.createInnerColors(0.3, 0);
-  // prettier-ignore
-  public static readonly HOT_SELECTED_INNER_COLORS: string[][] = DesignMemberRenderingService.createInnerColors(0.3, 0.9);
-  public static readonly SLENDERNESS_FAIL_MARK: string = 'magenta';
-
-  public static readonly CENTER_LINE_DASH: number[] = [10, 4, 4, 4];
+  // Member color arrays are indexed by isSelected, failure type, then material.
+  private static readonly OUTER_PALETTE = [
+    DesignMemberRenderingService.createColors(0, 0),
+    DesignMemberRenderingService.createColors(0, 0.9),
+  ];
+  private static readonly HOT_OUTER_PALETTE = [
+    DesignMemberRenderingService.createColors(0.3, 0),
+    DesignMemberRenderingService.createColors(0.3, 0.9),
+  ];
+  private static readonly INNER_PALETTE = [
+    DesignMemberRenderingService.createInnerColors(0, 0),
+    DesignMemberRenderingService.createInnerColors(0, 0.9),
+  ];
+  private static readonly HOT_INNER_PALETTE = [
+    DesignMemberRenderingService.createInnerColors(0.3, 0),
+    DesignMemberRenderingService.createInnerColors(0.3, 0.9),
+  ];
+  private static readonly SLENDERNESS_FAIL_MARK: string = 'magenta';
 
   private readonly lineWidths: { outer: number; inner: number }[];
 
@@ -91,33 +95,41 @@ export class DesignMemberRenderingService {
     ]);
   }
 
-  // TODO: Factor common functionality of render and renderHot.
   public render(ctx: CanvasRenderingContext2D, member: Member, isSelected: boolean, isMarked: boolean): void {
-    let failure = this.getFailure(member);
-    const outerColor = this.outerColorsFromSelectionState(isSelected)[failure][member.material.index];
-    const innerColor =
-      member.shape.section.shortName === 'Tube'
-        ? this.innerColorsFromSelectionState(isSelected)[failure][member.shape.section.index]
-        : undefined;
-    this.renderInWorldCoords(
+    this.renderInternal(
       ctx,
-      member.a,
-      member.b,
-      member.shape.sizeIndex,
-      outerColor,
-      innerColor,
-      isMarked ? DesignMemberRenderingService.SLENDERNESS_FAIL_MARK : undefined,
-      this.showMemberNumbers || isSelected ? member.number : undefined,
+      member,
+      isSelected,
+      isMarked,
+      DesignMemberRenderingService.OUTER_PALETTE,
+      DesignMemberRenderingService.INNER_PALETTE,
     );
   }
 
   public renderHot(ctx: CanvasRenderingContext2D, member: Member, isSelected: boolean, isMarked: boolean): void {
+    this.renderInternal(
+      ctx,
+      member,
+      isSelected,
+      isMarked,
+      DesignMemberRenderingService.HOT_OUTER_PALETTE,
+      DesignMemberRenderingService.HOT_INNER_PALETTE,
+    );
+  }
+
+  private renderInternal(
+    ctx: CanvasRenderingContext2D,
+    member: Member,
+    isSelected: boolean,
+    isMarked: boolean,
+    outerPalette: string[][][],
+    innerPalette: string[][][],
+  ) {
     let failure = this.getFailure(member);
-    const outerColor = this.hotOuterColorsFromSelectionState(isSelected)[failure][member.material.index];
-    const innerColor =
-      member.shape.section.shortName === 'Tube'
-        ? this.hotInnerColorsFromSelectionState(isSelected)[failure][member.shape.section.index]
-        : undefined;
+    const outerColor = outerPalette[+isSelected][failure][member.material.index];
+    const materialSection = member.shape.section.shortName;
+    const materialIndex = member.shape.section.index;
+    const innerColor = materialSection === 'Tube' ? innerPalette[+isSelected][failure][materialIndex] : undefined;
     this.renderInWorldCoords(
       ctx,
       member.a,
@@ -163,24 +175,6 @@ export class DesignMemberRenderingService {
       widthViewport = minWidthViewport;
     }
     return this.viewportTransform.viewportToWorldDistance(widthViewport);
-  }
-
-  private outerColorsFromSelectionState(isSelected: boolean): string[][] {
-    return isSelected ? DesignMemberRenderingService.SELECTED_COLORS : DesignMemberRenderingService.NORMAL_COLORS;
-  }
-
-  private hotOuterColorsFromSelectionState(isSelected: boolean): string[][] {
-    return isSelected ? DesignMemberRenderingService.HOT_SELECTED_COLORS : DesignMemberRenderingService.HOT_COLORS;
-  }
-
-  private innerColorsFromSelectionState(isSelected: boolean): string[][] {
-    return isSelected ? DesignMemberRenderingService.SELECTED_INNER_COLORS : DesignMemberRenderingService.INNER_COLORS;
-  }
-
-  private hotInnerColorsFromSelectionState(isSelected: boolean): string[][] {
-    return isSelected
-      ? DesignMemberRenderingService.HOT_SELECTED_INNER_COLORS
-      : DesignMemberRenderingService.HOT_INNER_COLORS;
   }
 
   private renderInWorldCoords(
