@@ -4,7 +4,6 @@ import { DOLLARS_FORMATTER } from '../../../shared/classes/utility';
 
 @Component({
     selector: 'cost-indicator',
-    imports: [],
     templateUrl: './cost-indicator.component.html',
     styleUrl: './cost-indicator.component.css'
 })

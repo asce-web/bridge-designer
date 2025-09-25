@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RenderingService } from './rendering.service';
-import { ViewService } from './view.service';
-import { EventBrokerService } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
+import { KeyboardService } from '../pane/keyboard.service';
 
 export type FrameRenderer = (clockMillis: number, elapsedMillis: number) => void;
 
@@ -30,9 +30,9 @@ export class AnimationService {
   private totalRenderMillis: number = 0;
 
   constructor(
-    eventBrokerService: EventBrokerService,
+    private readonly eventBrokerService: EventBrokerService,
+    private readonly keyboardService: KeyboardService,
     private readonly renderService: RenderingService,
-    private readonly viewService: ViewService,
   ) {
     eventBrokerService.flyThruAnimationPauseRequest.subscribe(info => {
       if (info.data) {
@@ -74,27 +74,23 @@ export class AnimationService {
       this.lastClockMillis = clockMillis;
       this.lastNowMillis = nowMillis;
 
-      // Track fps and eye point:
+      // Track fps and fraction of time rendering to GPU.
       ++this.frameCount;
       if (!this.frameTickMillis) {
         this.frameTickMillis = nowMillis;
       } else if (nowMillis - this.frameTickMillis > 1000) {
-        // TODO: Put this in an overlay div.
-        console.log(
-          'fps:',
-          this.frameCount,
-          'eye:',
-          this.viewService.eye[0].toFixed(1),
-          this.viewService.eye[1].toFixed(1),
-          this.viewService.eye[2].toFixed(1),
-          'render %:',
-          Math.round(this.totalRenderMillis * 0.1), // /1000*100
-        );
+        if (this.keyboardService.debugState.display) {
+          const renderPercent = Math.round(this.totalRenderMillis * 0.1); // T / 1000 * 100
+          this.eventBrokerService.displayDebugTextRequest.next({
+            origin: EventOrigin.SERVICE,
+            data: `${this.frameCount} fps, ${renderPercent}% render`,
+          });
+        }
         this.frameTickMillis = nowMillis;
         this.frameCount = 0;
         this.totalRenderMillis = 0;
       }
-
+      
       // Schedule next loop iteration.
       requestAnimationFrame(render);
     };

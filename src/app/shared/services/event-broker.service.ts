@@ -63,6 +63,7 @@ export class EventBrokerService {
   public readonly designIterationChange = new Subject<EventInfo>();
   public readonly designIterationForwardRequest = new Subject<EventInfo>();
   public readonly designModeSelection = new Subject<EventInfo>();
+  public readonly displayDebugTextRequest = new Subject<TypedEventInfo<string>>();
   public readonly draftingPanelInvalidation = new Subject<EventInfo>();
   public readonly draftingViewportPendingChange = new Subject<EventInfo>();
   public readonly editCommandCompletion = new Subject<TypedEventInfo<EditCommandCompletionInfo>>();

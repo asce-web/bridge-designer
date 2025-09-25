@@ -9,6 +9,7 @@ import { UndoRedoDropdownComponent } from '../undo-redo-dropdown/undo-redo-dropd
 import { StatusIndicatorComponent } from '../status-indicator/status-indicator.component';
 import { CostIndicatorComponent } from '../cost-indicator/cost-indicator.component';
 import { IterationIndicatorComponent } from '../iteration-indicator/iteration-indicator.component';
+import { DebugDisplayComponent } from '../debug-display/debug-display.component';
 
 const enum Tools {
   NEW,
@@ -31,19 +32,18 @@ const enum Tools {
   COST_REPORT,
   STATUS,
   LOAD_TEST_REPORT,
+  DEBUG_DISPLAY,
 }
 
 @Component({
-    selector: 'toolbar-a',
-    imports: [jqxToolBarModule],
-    templateUrl: './toolbar-a.component.html',
-    styleUrl: './toolbar-a.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'toolbar-a',
+  imports: [jqxToolBarModule],
+  templateUrl: './toolbar-a.component.html',
+  styleUrl: './toolbar-a.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToolbarAComponent implements AfterViewInit {
-  @ViewChild('toolbar') toolbar!: jqxToolBarComponent;
-
-  tools: string =
+  readonly tools: string =
     'button button button button | ' +
     'toggleButton toggleButton | ' +
     'button button | ' +
@@ -52,7 +52,10 @@ export class ToolbarAComponent implements AfterViewInit {
     'custom button button button | ' +
     'custom button | ' +
     'custom | ' +
-    'button';
+    'button | ' +
+    'custom';
+
+  @ViewChild('toolbar') toolbar!: jqxToolBarComponent;
 
   constructor(
     private readonly componentService: ComponentService,
@@ -78,7 +81,10 @@ export class ToolbarAComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgButton('Print current bridge', 'img/print.png', tool);
         break;
       case Tools.DESIGN:
-        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool, { toggled: true, disabled: true });
+        WidgetHelper.initToolbarImgToggleButton('Design bridge', 'img/design.png', tool, {
+          toggled: true,
+          disabled: true,
+        });
         break;
       case Tools.LOAD_TEST:
         WidgetHelper.initToolbarImgToggleButton('Run a load test', 'img/loadtest.png', tool, { disabled: true });
@@ -135,6 +141,9 @@ export class ToolbarAComponent implements AfterViewInit {
       case Tools.LOAD_TEST_REPORT:
         WidgetHelper.initToolbarImgButton('Show load test details', 'img/loadtestreport.png', tool, true);
         break;
+      case Tools.DEBUG_DISPLAY:
+        this.componentService.load(DebugDisplayComponent, tool[0]);
+        break;
     }
     return { minimizable: false, menuTool: false };
   }
@@ -150,7 +159,10 @@ export class ToolbarAComponent implements AfterViewInit {
     this.uiStateService.registerPlainToolbarButton(tools[Tools.BACK_ITERATION], eventBroker.designIterationBackRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.COST_REPORT], eventBroker.costReportRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.DELETE], eventBroker.deleteSelectionRequest);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.FORWARD_ITERATION], eventBroker.designIterationForwardRequest);
+    this.uiStateService.registerPlainToolbarButton(
+      tools[Tools.FORWARD_ITERATION],
+      eventBroker.designIterationForwardRequest,
+    );
     this.uiStateService.registerPlainToolbarButton(tools[Tools.GOTO_ITERATION], eventBroker.loadDesignIterationRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.LOAD_TEST_REPORT], eventBroker.analysisReportRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.NEW], eventBroker.newDesignRequest);
