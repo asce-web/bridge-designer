@@ -25,16 +25,16 @@ const vec3 EROSION_DIFF = NORMAL_TERRAIN_COLOR - ERODED_TERRAIN_COLOR;
 void main() {
   vec3 unitNormal = normalize(normal);
   float normalDotLight = dot(unitNormal, light.unitDirection);
-  // Artificially reducing ambient intensity makes terrain more dramatic.
-  float diffuseIntensity = mix(light.ambientIntensity * 0.2f, 1.0f, normalDotLight);
-  // Powering up makes the erosion effect more visible.
-  float normalTerrainColorWeight = pow(yModelNormal, 6.0f);
-  vec3 terrainColor = ERODED_TERRAIN_COLOR + EROSION_DIFF * normalTerrainColorWeight;
-  // build_include "shadow_lookup.h"
+  // build_include "shadow.h"
   // Make VScode happy.
   #ifndef SHADOW
     float shadow = 1.0f;
   #endif
-  vec3 color = light.color * (diffuseIntensity * terrainColor);
-  fragmentColor = vec4(light.brightness * color * shadow, 1.0f);
+  // Artificially reducing ambient intensity makes terrain more dramatic.
+  float diffuseIntensity = mix(light.ambientIntensity * 0.2f, 1.0f, shadow * normalDotLight);
+  // Powering up makes the erosion effect more visible.
+  float normalTerrainColorWeight = pow(yModelNormal, 6.0f);
+  vec3 terrainColor = ERODED_TERRAIN_COLOR + EROSION_DIFF * normalTerrainColorWeight;
+  vec3 color = diffuseIntensity * light.color * terrainColor;
+  fragmentColor = vec4(light.brightness * color, 1.0f);
 }

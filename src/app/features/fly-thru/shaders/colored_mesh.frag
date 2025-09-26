@@ -32,18 +32,11 @@ flat in uint materialRef;
 out vec4 fragmentColor;
 
 void main() {
-  vec3 unitNormal = normalize(normal);
-  float normalDotLight = dot(unitNormal, light.unitDirection);
-  vec3 unitReflection = normalize(2.0f * normalDotLight * unitNormal - light.unitDirection);
-  vec3 unitEye = normalize(-vertex);
   MaterialSpec materialSpec = materialConfig.specs[materialRef];
-  float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), materialSpec.SHININESS);
-  float diffuseIntensity = mix(light.ambientIntensity, 1.0f, normalDotLight);
-  // build_include "shadow_lookup.h"
-  // Make VScode happy.
-  #ifndef SHADOW
-    float shadow = 1.0f;
-  #endif
-  vec3 color = light.color * (specularIntensity + diffuseIntensity * materialSpec.COLOR);
-  fragmentColor = vec4(light.brightness * color * shadow, materialConfig.globalAlpha);
+
+  #define ARG_materialColor materialSpec.COLOR
+  #define ARG_materialShininess materialSpec.SHININESS
+  #define ARG_materialAlpha materialConfig.globalAlpha
+
+  // build_include "lighting.h"
 }

@@ -18,7 +18,12 @@ type CompileFailure = {
   fragmentLog: string | null;
 };
 type CompileSuccess = { compileKind: 'success'; program: WebGLProgram };
-type CompileMissing = { compileKind: 'missing'; program: string };
+type CompileMissing = {
+  compileKind: 'missing';
+  program: string;
+  vertexLog: string | null;
+  fragmentLog: string | null;
+};
 
 /**
  * Specs for shader programs. Each may result in a display program and also an optional depth-only program
@@ -172,24 +177,23 @@ export class ShaderService {
   ): CompileSuccess | CompileFailure | CompileMissing {
     const gl = this.glService.gl;
     const program = gl.createProgram();
-    if (vertexShader === undefined || fragmentShader === undefined) {
-      return { compileKind: 'missing', program: name };
+    const vertexLog = vertexShader === undefined ? null : gl.getShaderInfoLog(vertexShader);
+    const fragmentLog = fragmentShader === undefined ? null : gl.getShaderInfoLog(fragmentShader);
+    if (vertexLog === null || fragmentLog === null) {
+      return { compileKind: 'missing', program: name, vertexLog, fragmentLog };
     }
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
+    if (gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+      gl.attachShader(program, vertexShader);
+    }
+    if (gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      gl.attachShader(program, fragmentShader);
+    }
     gl.linkProgram(program);
     if (gl.getProgramParameter(program, gl.LINK_STATUS)) {
       return { compileKind: 'success', program };
     }
     const linkLog = gl.getProgramInfoLog(program);
-    const vertexLog = gl.getShaderInfoLog(vertexShader);
-    const fragmentLog = gl.getShaderInfoLog(fragmentShader);
-    const failure: CompileFailure = { compileKind: 'failure', program: name, linkLog, vertexLog, fragmentLog };
-    gl.detachShader(program, vertexShader);
-    gl.deleteShader(vertexShader);
-    gl.detachShader(program, fragmentShader);
-    gl.deleteShader(fragmentShader);
-    gl.deleteProgram(program);
-    return failure;
+    // Not worrying about cleanup because any failure makes animation unusable.
+    return { compileKind: 'failure', program: name, linkLog, vertexLog, fragmentLog };
   }
 }

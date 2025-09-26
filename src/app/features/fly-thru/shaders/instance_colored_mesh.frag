@@ -22,17 +22,9 @@ out vec4 fragmentColor;
 const float MEMBER_SHININESS = 20.0;
 
 void main() {
-  vec3 unitNormal = normalize(normal);
-  float normalDotLight = dot(unitNormal, light.unitDirection);
-  vec3 unitReflection = normalize(2.0f * normalDotLight * unitNormal - light.unitDirection);
-  vec3 unitEye = normalize(-vertex);
-  float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), MEMBER_SHININESS);
-  float diffuseIntensity = mix(light.ambientIntensity, 1.0f, normalDotLight);
-  // build_include "shadow_lookup.h"
-  // Make VScode happy.
-  #ifndef SHADOW
-    float shadow = 1.0f;
-  #endif
-  vec3 color = light.color * (specularIntensity + diffuseIntensity * materialColor);
-  fragmentColor = vec4(light.brightness * color * shadow, 1.0f);
+  #define ARG_materialColor materialColor
+  #define ARG_materialShininess MEMBER_SHININESS
+  #define ARG_materialAlpha 1.0f
+
+  // build_include "lighting.h"
 }

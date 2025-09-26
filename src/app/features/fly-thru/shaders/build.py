@@ -27,6 +27,9 @@ def readFileWithIncludes(file_name, depth=0):
 def processDefines(text):
     matches = re.findall(r"#define\s+(\w+)\s+(.*)", text)
     text = re.sub(r"#define .*", "", text)
+    # Support two levels of #define expansion
+    for token, replacement in matches:
+        text = text.replace(token, replacement)
     for token, replacement in matches:
         text = text.replace(token, replacement)
     return text
