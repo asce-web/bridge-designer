@@ -48,6 +48,10 @@ export class BridgeModel {
     return this.joints[n - 1];
   }
 
+  public get taggedProjectId(): string {
+    return `000${this.designConditions.tag}-${this.projectId}`;
+  }
+
   public clear(): void {
     this.joints.length = this.designConditions.prescribedJoints.length;
     this.members.length = 0;

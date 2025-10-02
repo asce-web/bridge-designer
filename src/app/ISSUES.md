@@ -12,12 +12,10 @@
 - Help should be its own window. 
   - Maybe not since BD best in full screen mode anyway?
   - Use router to select either help or BD.
-- Scenario numbers in Project IDs are inconsistent:
-  - Project ID of sample is loading with scenario number in text.
-  - Scenario number missing in print views.
 - Central texture manager. Should initiate loading all at startup.
 - Defer loading of late/intermittent use code: help, print, fly-through.
 - Limited hardware resilience? Need more info.
+  - Add pre-run inventory for browser type and WebGL2 availability.
 
 # Fixed issues
 
@@ -36,3 +34,6 @@
   - Scolls on reload, but previous failed iteration is missing. 
   - Present in list.
   - Reappears in tree if branch is collapsed and re-opened.
+- Scenario numbers in Project IDs are inconsistent:
+  - Project ID of sample is loading with scenario number in text.
+  - Scenario number missing in print views.
