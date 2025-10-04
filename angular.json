@@ -22,11 +22,16 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*.wasm",
+                "input": "node_modules/manifold-3d",
+                "output": "/wasm/"
               }
             ],
             "styles": ["./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css", "src/styles.scss"],
             "scripts": [],
-            "externalDependencies": ["canvg", "html2canvas", "dompurify"]
+            "externalDependencies": ["canvg", "html2canvas", "dompurify", "module"]
           },
           "configurations": {
             "production": {

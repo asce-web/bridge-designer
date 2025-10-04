@@ -8,20 +8,28 @@ type MemberConfig = {
   member: Member;
   length: number;
   halfLength: number;
-  lox: number;
+  /** Unit vector in direction a->b, x-coordinate. */
   ux: number;
+  /** Unit vector in direction a->b, y-coordinate. */
   uy: number;
 };
 
+/** Container for logic that positions member labels for minimum overlap. */
 @Injectable({ providedIn: 'root' })
 export class MemberLabelPositionService {
   constructor(private readonly bridgeService: BridgeService) {}
 
   // Allocate worst case array space  one time for simplicity. Only a few kilobytes.
+
+  /** Integration buffer A of parameter values x for Runge Kutta iterations. */
   private readonly xa = new Float64Array(2 * DesignConditions.MAX_MEMBER_COUNT);
+  /** Integration buffer B of parameter values x for Runge Kutta iterations. */
   private readonly xb = new Float64Array(2 * DesignConditions.MAX_MEMBER_COUNT);
+  /** Temp buffer for x values during Runge Kutta integration. */
   private readonly xTmp = new Float64Array(2 * DesignConditions.MAX_MEMBER_COUNT);
+  /** Temp buffer for y = f(x) values during Runge Kutta integration. */
   private readonly yTmp = new Float64Array(2 * DesignConditions.MAX_MEMBER_COUNT);
+  /** Constant per-member configuration info. */
   private readonly configs: MemberConfig[] = Array.from(
     { length: DesignConditions.MAX_MEMBER_COUNT },
     () => ({}) as MemberConfig,
@@ -74,7 +82,7 @@ export class MemberLabelPositionService {
       const position = x[i];
       const velocity = x[i + n];
       const length = this.configs[i].length;
-      // Clamp position to ends and velocity toward midpoint.
+      // Clamp position to ends, with no velocity.
       if (position > length) {
         x[i] = length;
         if (velocity > 0) {
@@ -104,7 +112,7 @@ export class MemberLabelPositionService {
     const drag = 10; // spring damping
     const ka = 8; // attraction to member centers
     const kr = 4; // repulsion between pairs of labels
-    const km = 0.75; // repulsion between  labels and members
+    const km = 0.75; // repulsion between labels and members
     // Position derivatives are just the velocities.
     for (let ix = 0, iv = ix + n; ix < n; ++ix, ++iv) {
       y[ix] = x[iv];
@@ -140,6 +148,7 @@ export class MemberLabelPositionService {
         y[jv] += labelMemberForce(ljx, ljy, mi, mj);
       }
     }
+
     /**
      * Returns the force between a label and other member. Projects label position onto other axis. If within
      * the member's extent, finds other member radial vector to label. Radial vector length gives inverse
@@ -152,7 +161,7 @@ export class MemberLabelPositionService {
       }
       const px = lx - (oc.member.a.x + t * oc.ux);
       const py = ly - (oc.member.a.y + t * oc.uy);
-      // Clamp to prevent extremely large forces. when label lies on or very near other member.
+      // Clamp to prevent extremely large forces when label lies on or very near other member.
       return Math.min(km / (px * px + py * py), 1000) * (px * lc.ux + py * lc.uy);
     }
   }

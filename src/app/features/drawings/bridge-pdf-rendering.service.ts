@@ -328,6 +328,7 @@ export class BridgePdfRenderingService {
     doc.text(lengthText, dimensionX, labelY, { align: 'center', baseline: 'middle' });
   }
 
+  /** Draws a filled arrow head at head of given line segment. */
   private drawArrowHead(doc: jsPDF, headX: number, headY: number, tailX: number, tailY: number): void {
     const halfWidth = 0.75;
     const headLength = 3;
