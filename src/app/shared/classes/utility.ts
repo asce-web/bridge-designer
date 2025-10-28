@@ -174,9 +174,21 @@ export class Utility {
     let count: number = 0;
     while (n !== 0) {
       ++count;
-      n &= (n - 1);
+      n &= n - 1;
     }
     return count;
+  }
+
+  /** In-place (destructive) version of Array.filter(). */
+  public static remove<T>(a: T[], predicate: (x: T) => boolean): T[] {
+    let q = 0;
+    for (let p = 0; p < a.length; ++p) {
+      if (!predicate(a[p])) {
+        a[q++] = a[p];
+      }
+    }
+    a.length = q;
+    return a;
   }
 
   /* TODO: Not currently used. Remove?

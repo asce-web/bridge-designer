@@ -21,7 +21,7 @@ export class AbutmentRenderingService {
     this.meshRenderingService.deleteExistingMesh(this.pillowMesh);
 
     // Build new ones.
-    const { texturedMeshData, coloredMeshData } = this.abutmentModelService.buildAbutmentForDesignConditions();
+    const { texturedMeshData, coloredMeshData } = this.abutmentModelService.buildAbutment();
     const url = 'img/bricktile.png';
     this.abutmentMesh = this.meshRenderingService.prepareTexturedMesh(texturedMeshData, url, Colors.GL_CONCRETE);
     this.pillowMesh = this.meshRenderingService.prepareColoredMesh(coloredMeshData);

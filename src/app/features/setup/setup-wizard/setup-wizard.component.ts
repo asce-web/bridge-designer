@@ -4,7 +4,6 @@ import { FormsModule } from '@angular/forms';
 import { jqxButtonComponent, jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { jqxDropDownListComponent, jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
 import { jqxExpanderComponent, jqxExpanderModule } from 'jqwidgets-ng/jqxexpander';
-import { jqxInputModule } from 'jqwidgets-ng/jqxinput';
 import { jqxListBoxComponent, jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
 import { jqxRadioButtonComponent, jqxRadioButtonModule } from 'jqwidgets-ng/jqxradiobutton';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
@@ -52,7 +51,6 @@ import { DraftingPanelState } from '../../../shared/services/persistence.service
     jqxButtonModule,
     jqxDropDownListModule,
     jqxExpanderModule,
-    jqxInputModule,
     jqxListBoxModule,
     jqxRadioButtonModule,
     jqxWindowModule,
@@ -330,10 +328,10 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     if (event.args.checked) {
       this.localContestCodeInput.disabled = false;
       this.localContestCodeInput.focus();
-      this.cardService.card.enableControls(); // Next button
     } else {
       this.localContestCodeInput.disabled = true;
     }
+    this.cardService.card.enableControls(); // Next button
   }
 
   nextButtonOnClickHandler(): void {

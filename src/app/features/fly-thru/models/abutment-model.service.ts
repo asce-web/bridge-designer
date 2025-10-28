@@ -16,7 +16,7 @@ export class AbutmentModelService {
     private readonly terrainModelService: TerrainModelService,
   ) {}
 
-  public buildAbutmentForDesignConditions(): { texturedMeshData: MeshData; coloredMeshData: MeshData } {
+  public buildAbutment(): { texturedMeshData: MeshData; coloredMeshData: MeshData } {
     // Comments use the default view as reference frame. We're modeling the
     // left abutment. Front and rear are the flanks wrt the eye; front is closer.
 

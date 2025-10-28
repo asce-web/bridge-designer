@@ -29,7 +29,7 @@ hot glue the other end. Triangulation of gussets with these holes could get mess
 
 ## Settings
 
-- **Scale**. We clearly need to allow setting the scale of the bridge, since printers have different platten sizes.
+- **Scale**. We need to allow setting the scale of the bridge, since printers have different platten sizes.
 - **Minimum feature size**. The smallest possible members are 30mm square. If a 44m span is printed 8 inches long, such
   small members made to scale would be 0.138mm square. Consumer grade 3d printers have a minimum closer to 0.4mm. We'll
   let the user choose a not-to-scale minimum size in the range 0 to 1mm.
@@ -73,12 +73,14 @@ probably not a realistic constraint. So this option is out.
 
 I looked at various approaches to building my own algorithm for computing the union of manifolds: plane sweep and edge
 tracing. Despite trusses being simpler than the general problem, the algorithms are big projects. Moreover, the
-literature is full of warnings about the horrors of floating point precision-related fragility. Since I spent a year of
-my life learning a lot about this during my MS work, and there are PhD dissertations still working on the problem well
-into the 2000's, I will not re-invent this wheel.
+literature is full of warnings about floating point precision-related fragility. Since I spent a year of my life
+experiencing this during my MS work in the 80's, and there are PhD dissertations working on the problem well into the
+2000's, I will not re-invent this wheel.
 
 The best option appears to be the [manifold library](https://github.com/elalish/manifold). It's written in C++, but has
 an emscripten compilation to WebAssembly. It's based on a PhD dissertation claiming to a practical, FP-robust algorithm.
 It's frequently maintained and has many users. It's Apache licensed, so no fee issues. The main down side is, indeed,
 also a strength. That's WebAssembly. While mainstream since 2007, some of its features have been supported in Chromium
 browsers only since 2022.
+
+# Packing objects onto the printer stage

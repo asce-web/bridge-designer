@@ -190,6 +190,11 @@ export class BridgeService {
       : new StockId(materialIndex, sectionIndex, sizeIndex);
   }
 
+  /** Returns an array of member sizes in millimeters sorted smallest to largest. */
+  public getMemberSizesMmSorted(): number[] {
+    return this.bridge.members.map(member => member.materialSizeMm).sort((a, b) => a - b);
+  }
+
   /** Returns whether the given members can be increased or decreased (or both) in size. */
   public getAllowedShapeChangeMask(indices: Iterable<number>): number {
     let mask = 0;

@@ -11,19 +11,19 @@ This document describes the organization of the fly-thru animation feature.
   - Computed models are produced by services.
 - **Rendering.** Logic for rendering models, including interaction with OpenGL.
   - **Meshes.** Converting model data into triangle meshes understood by WebGL shaders. There are three categories.
-    These are a little blurry due to the option of using either instancing or uniforms for model transformations. With
+    These are a little blurry due to the option of using either uniforms or instancing for model transformations. With
     the former, only uniforms need per-frame updates. The mesh is fully static. With the latter, the mesh is static
     except that instance transformations are updated once per frame.
     - **Static.** Created and pushed to the GPA the first time a test animation starts. They don't change. Examples:
       Truck, river, sky box.
-    - **Per-design conditions.** Created and pushed to the GPA every time the design conditions for the bridge change.
+    - **Per-design conditions.** Created and pushed to the GPU every time the design conditions for the bridge change.
       Examples: terrain including utility line, abutments and pier.
-    - **Per frame.** Created and pushed (at least partially) to the GPA for every frame. The sole example is the bridge
+    - **Per frame.** Created and pushed (at least partially) to the GPU for every frame. The sole example is the bridge
       structure. The approach here is to use a canonical cube model of a member with a 4x4 model transform matrix per
       instance to size and position them. Only these need per-frame updates. The cube is pushed only once.
   - **Projections.** Model, view, and projection transformations that orient objects in the scene and the scene for
     viewing, then map it to the pane.
-  - **Uniforms.** Management of WebGL uniform (global) data blocks, which are communicate to shaders.
+  - **Uniforms.** Management of WebGL uniform (global) data blocks available to shaders.
 - **Shaders.** GLSL vertex and fragment manipulators.
 
 ## Coordinate systems
@@ -43,20 +43,22 @@ The animation scene consists of the following:
 - Terrain
   - Regular grid, auto-generated.
 - River
-  - Flat surface with animated texture map depicting flowing water
-  - TODO: Add surface waves via vertex shader
-- Electrical transmission line
-  - Tower
-  - Wires
-- Bridge abutments and optional pier
-- Roadway with shoulder
-- Bridge structure with deck and wear surface
-  - Updates dynamically with animation
+  - Flat surface with animated texture map depicting flowing water.
+  - TODO: Maybe add surface waves.
+- Electrical transmission line.
+  - Tower.
+  - Wires.
+- Bridge abutments and optional pier.
+- Roadway with shoulder.
+- Bridge structure with deck and wear surface.
+  - Updates dynamically with animation.
 - Truck
-  - Rotating wheels
-  - Constrained to roadway and bridge deck wear surface
-  - Fades in on approach to bridge and out on exit.
-- Sky box at infinity
+  - Rotating wheels.
+  - Constrained to roadway and bridge deck wear surface..
+  - Fades in on approach to bridge and out on exit
+- Wind turbine.
+  - Rotating blades.
+- Sky box at infinity. Has no model.
 
 ## Models
 
@@ -73,7 +75,7 @@ Static models don't change during the animation. Dynamic ones change geometry or
 | Transmission line tower | Stored       | Static  | OBJ file. Four copies.                                                        |
 | Truck body              | Stored       | Static  | Multiple colors. Translate and rotate.                                        |
 | Wheels                  | Programmatic | Dynamic | Rotate and translate in 4 copies. Extra tire for dual rears.                  |
-| Wind turbine rotor      | Stored       | Dynamic | OBJ file Simple rotation.                                                     |
+| Wind turbine rotor      | Stored       | Dynamic | OBJ file. Simple rotation.                                                     |
 | Wind turbine tower      | Stored       | Static  | OBJ file.                                                                     |
 
 ## Transformations

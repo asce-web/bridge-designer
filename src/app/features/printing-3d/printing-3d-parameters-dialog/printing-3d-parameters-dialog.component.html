@@ -5,21 +5,96 @@
   [width]="772"
   [height]="476"
 >
-  <jqxNumberInput
-    #bedSizeInput
-    [width]="100"
-    [height]="25"
-    [min]="50"
-    [digits]="4"
-    [decimalDigits]="0"
-    [groupSeparator]="''"
-  ></jqxNumberInput>
-  <jqxNumberInput 
-    [width]="100"
-    [height]="25"
-    [min]="0.01"
-    [digits]="3"
-    [decimalDigits]="2"
-    [groupSeparator]="''"
-  #minFeatureSizeInput></jqxNumberInput>
+  <div
+    #header
+    class="header"
+  >
+    3D Printing
+  </div>
+  <div
+    #content
+    class="content"
+  >
+    <div>Bridge designer needs to know about your 3d printer. <b>All measurements in millimeters, please!</b></div>
+    <div>
+      Maximum print width (x-axis)
+      <jqxNumberInput
+        #bedDxInput
+        [width]="100"
+        [height]="25"
+        [min]="50"
+        [digits]="4"
+        [decimalDigits]="0"
+        [groupSeparator]="''"
+      ></jqxNumberInput>
+    </div>
+    <div>
+      Maximum print depth (y-axis)
+      <jqxNumberInput
+        #bedDyInput
+        [width]="100"
+        [height]="25"
+        [min]="50"
+        [digits]="4"
+        [decimalDigits]="0"
+        [groupSeparator]="''"
+      ></jqxNumberInput>
+    </div>
+    <div>
+      Maximum print height (z-axis)
+      <jqxNumberInput
+        #bedDzInput
+        [width]="100"
+        [height]="25"
+        [min]="50"
+        [digits]="4"
+        [decimalDigits]="0"
+        [groupSeparator]="''"
+      ></jqxNumberInput>
+    </div>
+    <div>
+      Smallest printable feature in millimeters
+      <jqxNumberInput
+        [width]="100"
+        [height]="25"
+        [min]="0.01"
+        [digits]="3"
+        [decimalDigits]="2"
+        [groupSeparator]="''"
+        #minFeatureSizeInput
+      ></jqxNumberInput>
+    </div>
+    <div>
+      File name
+      <input
+        #projectNameInput
+        id="fileName"
+        style="width: 240px"
+        type="text"
+        maxlength="40"
+        [(ngModel)]="fileName"
+      />
+    </div>
+    When you press OK, Bridge Designer
+    <div>
+      <jqxButton
+        style="margin-bottom: 4px; margin-top: 8px; margin-right: 4px"
+        (onClick)="handleHelpButtonClick()"
+        [width]="'240px'"
+        >Help...</jqxButton
+      >
+      <jqxButton
+        style="margin-bottom: 4px; margin-top: 8px; margin-right: 4px"
+        (onClick)="dialog.close()"
+        [width]="'240px'"
+        >Cancel</jqxButton
+      >
+      <jqxButton
+        style="margin-bottom: 4px; margin-top: 8px; margin-right: 4px"
+        (onClick)="handleOkButtonClick()"
+        [width]="'240px'"
+        >Ok</jqxButton
+      >
+    </div>
+  </div>
 </jqxWindow>
