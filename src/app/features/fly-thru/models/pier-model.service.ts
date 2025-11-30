@@ -236,7 +236,7 @@ export class PierModelService {
         indices[ii++] = c;
       };
 
-      // Joint pillow. Two pyramid facess.
+      // Joint pillow. Two pyramid faces.
       addPointPair(-halfWidth, -halfWidth, -Math.SQRT1_2, Math.SQRT1_2);
       addPointPair(0, 0, -Math.SQRT1_2, Math.SQRT1_2);
       addTriangleIndices(0, 3, 2);
