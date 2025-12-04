@@ -1,6 +1,8 @@
 /** Kinds of toast error. Must match id's in toast.component.html (except for 'noError'). */
 export type ToastKind =
   | 'autofixInfo'
+  | 'copyFailedError'
+  | 'copySuccess'
   | 'duplicateJointError'
   | 'duplicateMemberError'
   | 'fileReadError'

@@ -3,9 +3,10 @@ import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, V
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { BridgeService } from '../../../shared/services/bridge.service';
-import { EventBrokerService } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import jsPDF from 'jspdf';
 import { autoTable, HookData } from 'jspdf-autotable';
+import { Member } from '../../../shared/classes/member.model';
 
 @Component({
   selector: 'load-test-report-dialog',
@@ -24,6 +25,23 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
     private readonly eventBrokerService: EventBrokerService,
   ) {}
 
+  async handleCopy(): Promise<void> {
+    try {
+      const text = getLoadTestReportText(this.bridgeService.bridge.members);
+      await navigator.clipboard.writeText(text);
+      this.eventBrokerService.toastRequest.next({
+        origin: EventOrigin.LOAD_TEST_REPORT_DIALOG,
+        data: 'copySuccess',
+      });
+
+    } catch (err) {
+      this.eventBrokerService.toastRequest.next({
+        origin: EventOrigin.LOAD_TEST_REPORT_DIALOG,
+        data: 'copyFailedError',
+      });
+    }
+  }
+
   handleDialogOpen(): void {
     this.changeToken += 'change';
     this.changeDetector.detectChanges();
@@ -40,7 +58,7 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
         doc.setFontSize(8);
         var pageHeight = doc.internal.pageSize.getHeight();
         doc.text(`Page ${data.pageNumber}`, data.settings.margin.left, pageHeight - 10);
-      }
+      },
     });
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
@@ -50,4 +68,19 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.eventBrokerService.analysisReportRequest.subscribe(_eventInfo => this.dialog.open());
   }
+}
+
+function getLoadTestReportText(members: Member[]): string {
+  const lines: string[] = [
+    '#\tMaterial\tCross-section\tSize (mm)\tLength (m)\tSlenderness\tCompression force\t' +
+      'Compression strength\tCompression status\tTension force\tTension strength\tTension status',
+  ];
+  for (const m of members) {
+    const line =
+      `${m.number}\t${m.materialShortName}\t${m.crossSectionShortName}\t${m.materialSizeMm}\t` +
+      `${m.lengthM}\t${m.slenderness}\t${m.maxCompression}\t${m.compressionStrength}\t` +
+      `${m.compressionStatus}\t${m.maxTension}\t${m.tensionStrength}\t${m.tensionStatus}`;
+    lines.push(line);
+  }
+  return lines.join('\n');
 }

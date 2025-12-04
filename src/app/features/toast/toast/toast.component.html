@@ -7,6 +7,23 @@
   Hey! Auto-corrections were applied. Undo if you like.
 </jqxNotification>
 <jqxNotification
+  id="copyFailedError"
+  [template]="'error'"
+  [position]="'bottom-left'"
+  [autoCloseDelay]="autoCloseDelay"
+>
+  Oops... Couldn't copy to clipboard.
+</jqxNotification>
+<jqxNotification
+  id="copySuccess"
+  [template]="'success'"
+  [position]="'bottom-left'"
+  [autoCloseDelay]="autoCloseDelay"
+>
+  Yay! Copied to clipboard.
+</jqxNotification>
+
+<jqxNotification
   id="duplicateJointError"
   [template]="'error'"
   [position]="'bottom-left'"

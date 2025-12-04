@@ -16,7 +16,7 @@
             <th>Material<br />type</th>
             <th>Cross<br />section</th>
             <th>Size<br />(mm)</th>
-            <th>Length<br />(mm)</th>
+            <th>Length<br />(m)</th>
             <th>Slenderness</th>
             <th class="std-wide">Compression<br />force</th>
             <th class="std-wide">Compression<br />strength</th>
@@ -48,8 +48,14 @@
     </div>
     <div class="buttons">
       <jqxButton
+        (onClick)="handleCopy()"
+        [width]="110"
+        style="margin-right: 8px"
+        >Copy</jqxButton
+      >
+      <jqxButton
         (onClick)="handlePrint()"
-        [width]="'110px'"
+        [width]="110"
         style="margin-right: 8px"
         >Print...</jqxButton
       >

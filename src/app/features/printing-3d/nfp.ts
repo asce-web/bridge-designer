@@ -1,5 +1,3 @@
-import { builtinModules } from 'module';
-
 export type Point = [number, number];
 export type Polygon = Point[];
 type Sign = 1 | -1;

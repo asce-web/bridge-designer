@@ -3,34 +3,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "java",
-      "name": "GL2",
-      "request": "launch",
-      "mainClass": "GL2",
-      "projectName": "bridge-designer_58250f4a"
-    },
-    {
-      "type": "java",
-      "name": "FlyThruWheelModel",
-      "request": "launch",
-      "mainClass": "FlyThruWheelModel",
-      "projectName": "bridge-designer_58250f4a"
-    },
-    {
-      "type": "java",
-      "name": "FlyThruTruckModel",
-      "request": "launch",
-      "mainClass": "FlyThruTruckModel",
-      "projectName": "bridge-designer_58250f4a"
-    },
-    {
-      "type": "java",
-      "name": "FlyThruTowerModel",
-      "request": "launch",
-      "mainClass": "FlyThruTowerModel",
-      "projectName": "bridge-designer_58250f4a"
-    },
-    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",
