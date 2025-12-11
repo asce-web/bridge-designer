@@ -16,6 +16,7 @@ import { CurrentTopicService } from '../current-topic.service';
 const enum Tools {
   BACK_TOPIC,
   FORWARD_TOPIC,
+  PRINT,
 }
 
 export const enum HelpTab {
@@ -50,7 +51,7 @@ export class HelpDialogComponent implements AfterViewInit {
   @ViewChild('toolBar') toolBar!: jqxToolBarComponent;
   @ViewChild('topicList') topicList!: HelpTopicListComponent;
 
-  readonly tools: string = 'button button';
+  readonly tools: string = 'button button | button';
   private tabIndex: number | undefined;
 
   constructor(
@@ -67,6 +68,11 @@ export class HelpDialogComponent implements AfterViewInit {
       case Tools.FORWARD_TOPIC:
         WidgetHelper.initToolbarImgButton('Forward one topic', 'img/play.png', tool);
         tool.on('click', () => this.currentTopicService.goForward());
+        break;
+      case Tools.PRINT:
+        WidgetHelper.initToolbarImgButton('Forward one topic', 'img/print.png', tool);
+        tool.css({position: 'absolute', right: '0'});
+        tool.on('click', () => this.currentTopicService.printCurrentTopicRequest.next());
         break;
     }
   }).bind(this);

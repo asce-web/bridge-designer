@@ -14,7 +14,7 @@ body {
 
 .jqx-expander-content-bottom {
   width: 100%;
-  border:0;
+  border: 0;
   padding-left: 0;
   padding-right: 0;
 }
@@ -36,4 +36,21 @@ body {
 .loading-img {
   width: 319px;
   height: 102.5px;
+}
+
+// Cause window.print() to include entire document.
+@media print {
+
+  html,
+  body,
+  div,
+  section {
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  img {
+    max-width: 100% important;
+    display: block;
+  }
 }

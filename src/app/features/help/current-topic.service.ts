@@ -6,12 +6,12 @@ type TopicLocation = { topicId: string; scrollTop: number };
 /**
  * Container for the current help topic id plus "go back" and "go forward" state and logic.
  *
- * All help widgets inject this an call goToTopicId in response to user interaction. Broadcast
+ * All help widgets inject this and call goToTopicId in response to user interaction. Broadcast
  * event handlers update the UI. When this causes e.g. "select" events due to programmatic
- * widget updates, the handler causes goToTopicId recursively. It's the on-stop shop for
+ * widget updates, the handler calls goToTopicId recursively. It's the one-stop shop for
  * breaking such cycles.
  *
- * This replaces an implementation with Angular events, which ended up fare more complex.
+ * This replaces an implementation with Angular events, which ended up far more complex.
  */
 @Injectable({ providedIn: 'root' })
 export class CurrentTopicService {
@@ -19,6 +19,8 @@ export class CurrentTopicService {
 
   /** Broadcast notification subject for current topic changes. */
   public readonly currentTopicIdChange = new Subject<TopicLocation>();
+  /** Broadcast request to print the current topic. */
+  public readonly printCurrentTopicRequest = new Subject<void>();  
   /** Settable callback for fetching current scroll top just before going to a new topic. */
   public scrollTopCallback: () => number = () => 0;
 

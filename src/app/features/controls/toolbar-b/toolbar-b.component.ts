@@ -78,9 +78,7 @@ export class ToolbarBComponent implements AfterViewInit {
         break;
       case Tools.MEMBER_TABLE:
         WidgetHelper.initToolbarImgToggleButton('Hide member table', 'img/close.png', tool, { toggled: true, height: 16 });
-        //WidgetHelper.addButtonImg('img/close.png', 'Hide member table', tool);
-        //tool.jqxButton({ height: 16 });
-        tool.css({ position: 'absolute', right: '0', bottom: '2px' });
+        tool.css({ position: 'absolute', right: '0', bottom: '1px' });
         break;
     }
     return { minimizable: false, menuTool: false };

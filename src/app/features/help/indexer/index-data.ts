@@ -6,6 +6,64 @@ type HelpIndexData = {
 
 export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
+    id: 'hlp_3dprint_assembly',
+    title: '3d printing and assembling your bridge',
+    text: 'print parts assemble make display model bridge begin >exporting obj files parts dialog appear asking' +
+          ' important parameters scale establishes models overall size move slider try different values. dialog' +
+          ' show resulting maximum object dimensions make sure maximums fit within print volume minimum feature' +
+          ' size model bridge members printed accurately scale thin print minimum feature size given millimeter' +
+          's used instead scale size cases modern printers one millimeter minimum value larger ones sacrifice s' +
+          'cale appearance make printing assembly easier shrink 3d printers place bit much material around smal' +
+          'l features like holes pegs used align model bridge parts shrink used adjust sizes good fits unfortun' +
+          'ately every printer different trial error may needed find good value 0.15mm starting point parts fit' +
+          ' tightly try larger shrink vice versa ready click ok three files sent browsers downloads folder brid' +
+          'ge_name trusses.obj bridge_name abutments.obj bridge_name cross members.obj bridge_name substituted ' +
+          'actual name current bridge file contains collection pieces typically fit printers bed however guaran' +
+          'teed use youre slicer software printer usual import files print parts item file separate object obj ' +
+          'file format slicer software let position individually delete ones dont fit single print necessary so' +
+          'metimes splitting command required see separate objects prusa slicer example requires highlight impo' +
+          'rt press button multi colored bridge e.g one color trusses another cross members third deck also org' +
+          'anize objects per intended color assembly things youll need assemble printed parts flat clean work s' +
+          'urface protected glue spills paper shelf paper large paper bag flattend work crazy glue otherwise ca' +
+          'lled cyanoacrylate plastic glue bond parts together xacto knife box cutter single edge razor blade t' +
+          'rim parts needed fine sand paper 150 220 grit nail file roll sticky tape kind scotch tape duct tape ' +
+          'even better tool expand holes diameter equal minimum feature size slightly larger theyre small fit c' +
+          'orresponding pins micro drill bit pin vice tool spin bit ideal pinch possible use large sewing need ' +
+          'heated candle soften move plastic careful begin laying parts type good way avoid confusion draw grid' +
+          ' 11 boxes 3 inches square build survace covering paper label 1 11 sort parts support cross members 1' +
+          ' per support identical theyre used different places abutments 2 note may appear quite different pict' +
+          'ure depending design example arch abutments taller pier 0 1 anchorages 0 1 2 deck end panels 2 deck ' +
+          'mid panels 2 less total number deck segments deck cross members one per unsupported deck joint may 3' +
+          ' 9 deck join beam 1 trusses 2 deck assembly fixture 1 isnt part bridge youll use hold pieces place o' +
+          'thers assembled simple cross members one per joint types count varies abutments 2 pier 0 1 anchorage' +
+          ' blocks 0 1 2 steps complete model step use trimming tool and/or hole drill make joint fit well gaps' +
+          ' excessive tightness applying glue may take time patient glue two support cross members 1 slots two ' +
+          'deck end panels 2 set aside grid square 2 dry bridge pier glue another support cross member 1 deck m' +
+          'id panel 3 otherwise go next step set aside grid square 3 dry glue deck cross member 4 deck join bea' +
+          'm 5 set aside grid square 5 take break wait glue applied far solid continuing glue still wet asking ' +
+          'trouble dry fit whole deck arranging deck panels 2 3 4 top side shown diagram glue use tools ensure ' +
+          'panels fit together tightly compare positions cross member pins holes truss deck panel joints must a' +
+          'ble match exactly first last deck pins cannot farther apart first last truss joint holes little clos' +
+          'er together fine. use sandpaper blade remove bit material panel everything matches keep panels dry f' +
+          'it left right order avoid confusion assembling deck tune cross member pins truss holes needed pin fi' +
+          'ts hole shoulder shown. tuning means using cutter sandpaper nail file hole drill needle needed make ' +
+          'pin hole sizes match attach trusses 6 deck assembly fixture 7 deck joints right end bridge. right en' +
+          'd mean right side bridge appears bridge designer poke fixtures pins two rightmost deck joint holes t' +
+          'russ dont use glue use narrow strip sticky tape hold trusses fixture starting left side bridge add d' +
+          'ry fitted deck panels one time working right gluing go sure keep panels correct order strip tape tru' +
+          'sses joint keep things place glue sets needed reach assembly fixure remove tape holding place substi' +
+          'tute final deck panels take break lett everything dry completely add simple cross members 7 one per ' +
+          'joint hole anchorage joint glue support cross member pillows triangular sections deck corresponding ' +
+          'abutment 9 pier 10 bridge one point model stand flat abutments pier bridge anchorages glue remaining' +
+          ' one two support cross members 1 anchorage block 11 glue pins anchorage support cross member respect' +
+          'ive holes trusses model sitting flat surface ensure correct orientation youre done notes tips bigges' +
+          't pieces model usually trusses goal make biggest possible model try printing trusses one time orient' +
+          'ed diagonally printer bed minimum feature size consider using multiple printers nozzle size thats le' +
+          'ast one millimeter. example nozzle 0.4mm try 1.2 1.6 consider printing assembly instructions ticking' +
+          ' go avoid confusion assembling bridge model challenging methodical work steadily something goes wron' +
+          'g reprint parts need try'
+  },
+  {
     id: 'glos_aashto',
     title: 'AASHTO',
     text: 'aashto american association state highway transportation officials governing body writes publishes d' +
@@ -501,6 +559,13 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           't button click'
   },
   {
+    id: 'hlp_export_to_3dprint',
+    title: 'Export files to 3d print',
+    text: 'use 3d print button file menu item export files obj format imported 3d printer slicer program printe' +
+          'd result parts realistic scale model bridge suitable display see tips 3d printing bridge important d' +
+          'etails'
+  },
+  {
     id: 'hlp_find_opt_substructure',
     title: 'Find the optimum site configuration and load case',
     text: 'design bridge go back one step go forward one step point design process optimized design one particu' +
@@ -912,27 +977,32 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'hlp_member_list',
     title: 'Member list',
-    text: 'member list movable grid normally displayed right hand side bridge design window use member list red' +
-          'uces space available drawing board however easily hidden make space editing structural model member ' +
-          'list member details occupy screen location member details visible change member list clicking tab up' +
-          'per right member list following lists members current structural model lists engineering properties ' +
-          'length material cross section member size slenderness ratio member provides recent load test results' +
-          ' member provides convenient way select one members allows sorting members member number engineering ' +
-          'properties load test results notes tips member list load test results shown ratios member force stre' +
-          'ngth compression tension ratio greater one member unsafe members unsafe tension highlighted blue uns' +
-          'afe compression highlighted red ratio less one member safe ratio much less one member much stronger ' +
-          'needs probably uneconomical member list hidden restored view member list button select member click ' +
-          'corresponding row member list selected member highlighted light blue member list drawing board click' +
-          ' drag mouse button select range members alternately select range clicking one member holding shift k' +
-          'ey clicking second member selects clicked members members select one member range hold ctrl key clic' +
-          'king rows member list sort member list click heading column sort example sort members length click h' +
-          'eading length column first time click column heading list sorted ascending order click sorted descen' +
-          'ding order third click restores default sort order number member list used efficiently optimize memb' +
-          'er properties structural model. immediately following load test sort compression load test results c' +
-          'licking compression force/strength column heading. list sorted safe least safe unsafe members bottom' +
-          ' list highlighted red excessively strong i.e. uneconomical members top select block members needs ma' +
-          'de larger smaller using click drag shift selection use increase member size button decrease member s' +
-          'ize button change selected rows repeat tension load test results'
+    text: 'member list grid optionally displayed right hand side bridge design window member list reduces space' +
+          ' available drawing board hide clicking small close button upper right make space editing structural ' +
+          'model member list following lists members current structural model lists engineering properties incl' +
+          'uding length material cross section member size slenderness ratio member provides recent load test r' +
+          'esults member allows selecting one members order edit allows sorting members grid column notes tips ' +
+          'member list load test results shown ratios member force strength compression tension ratio greater o' +
+          'ne member unsafe members unsafe tension highlighted blue unsafe compression highlighted red ratio le' +
+          'ss one member safe ratio much less one member much stronger needs probably uneconomical addition clo' +
+          'se buton member list hidden restored view member list menu item select member click corresponding ro' +
+          'w member list selected member highlighted light blue member list drawing board click drag mouse butt' +
+          'on select range members alternately select range clicking one member holding shift key clicking seco' +
+          'nd member selects clicked members members select one member range hold ctrl key clicking rows member' +
+          ' list sort member list click heading column sort example sort members length click heading length co' +
+          'lumn first time click column heading list sorted ascending order click sorted descending order third' +
+          ' click restores default sort order number member list used efficiently optimize member properties st' +
+          'ructural model. immediately following load test sort compression load test results clicking compress' +
+          'ion force/strength column heading. list sorted safe least safe unsafe members bottom list highlighte' +
+          'd red excessively strong i.e. uneconomical members top select block members needs made larger smalle' +
+          'r using click drag shift key selection use increase member size button decrease member size button c' +
+          'hange selected rows repeat tension load test results'
+  },
+  {
+    id: 'hlp_view_member_list',
+    title: 'Member list hide or restore',
+    text: 'member list hidden provide information drafting bridge design use close button upper right click but' +
+          'ton appears place reopen notes tips view member list menu item also hides restores member list'
   },
   {
     id: 'glos_member_numbers',
@@ -977,12 +1047,12 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_menu_bar',
     title: 'Menu bar',
     text: 'menu bar located top bridge design window immediately title bar menu bar provides following commands' +
-          ' file new design open file save file save open sample design load template print design recently ope' +
-          'ned files exit edit select delete undo redo go back go forward go iteration increase member size dec' +
-          'rease member size remember work view design tools animation controls member list rulers title block ' +
-          'member numbers symmetry guides template grid resolution drawing tools joint tool member tool select ' +
-          'tool eraser tool test drawing board load test show animation auto correct errors report cost calcula' +
-          'tions load test results help tip day'
+          ' file new design open file save file save open sample design load template print design export files' +
+          ' 3d print recently opened files exit edit select delete undo redo go back go forward go iteration in' +
+          'crease member size decrease member size remember work view design tools animation controls member li' +
+          'st rulers title block member numbers symmetry guides template grid resolution drawing tools joint to' +
+          'ol member tool select tool eraser tool test drawing board load test show animation auto correct erro' +
+          'rs report cost calculations load test results help tip day'
   },
   {
     id: 'glos_modulus_of_elasticity',
@@ -1046,10 +1116,10 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_open_existing',
     title: 'Open an existing bridge design file',
     text: 'open existing bridge design file click open file button main toolbar choose disk drive folder filena' +
-          'me want open click ok notes tips default file extension bridge design files created bridge designer ' +
-          '.bdc bridge designer cannot read .bdf .bd4 bdc bridge design files created earlier versions software' +
-          ' sorry backward compatibility impossible bridge designer use annual bridge design contest current de' +
-          'sign saved prompted save open file'
+          'me want open click ok notes tips file extension bridge design files created bridge designer .bdc sor' +
+          'ry cloud edition files compatible earlier bridge designer files current design saved prompted save o' +
+          'pen file browser security makes file save restore little different applications installed computer e' +
+          'specially true firefox chrome edge chromium based browsers provide better experience'
   },
   {
     id: 'hlp_open_file',
@@ -1061,7 +1131,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_optimize_member_selection',
     title: 'Optimize the member properties',
     text: 'design bridge go back one step go forward one step structural model unsafe members design successful' +
-          ' however design optimum minimize cost first step optimizing design minimize cost current truss confi' +
+          ' however design optimal minimize cost first step optimizing design minimize cost current truss confi' +
           'guration optimizing member properties material cross section member size stage design process change' +
           ' shape configuration current structural model optimize member properties ensure understand bridge de' +
           'signer calculates cost design particular understand trade material cost product cost minimize materi' +
@@ -1122,7 +1192,8 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'mber size entire top chord resulting substantial reduction product cost changing rounded shape also ' +
           'effective bottom chord deck truss notes tips whenever change shape truss need repeat previous three ' +
           'steps design process 1 run load test 2 identify strengthen unsafe members 3 optimize member properti' +
-          'es determine whether change effective reducing cost design'
+          'es determine whether change effective reducing cost design iteration tracking feature bridge designe' +
+          'r helps track optimization steps revert previous one current one didnt work'
   },
   {
     id: 'glos_pier',
@@ -1137,25 +1208,25 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'hlp_print_drawing',
     title: 'Print a drawing',
-    text: 'click print button main toolbar send black white drawing design printer notes tips printed drawing s' +
-          'hows configuration truss annotated member numbers dimensions member properties shown tabular format ' +
-          'bottom page many bridges look best printed landscape mode thats bridge oriented across longest dimen' +
-          'sion page web browsers youll able choose dialog appears immediately pressing print'
+    text: 'click print button main toolbar prepare black white drawing design pdf format saved printed printer ' +
+          'notes tips printed drawing shows configuration truss annotated member numbers dimensions member prop' +
+          'erties shown tabular format bottom page'
   },
   {
     id: 'hlp_print_load_test',
-    title: 'Print the load test results',
+    title: 'Print or copy the load test results',
     text: 'print report recent load test ensure printer connected line click report load test results button st' +
-          'atus toolbar load test results report shown table separate window click print button right hand side' +
-          ' window follow browswers printing instructions send report printer notes tips load test results repo' +
-          'rt also copied windows clipboard clicking copy button right hand side window data copied tab delimit' +
-          'ed text format format pasted directly microsoft excel spreadsheet word notepad document'
+          'atus toolbar load test results report shown table separate window click print button follow browswer' +
+          's printing instructions send report printer notes tips report also copied clipeboard clicking copy b' +
+          'utton since data tab delimited text format pasted directly spreadsheet google sheets microsoft excel' +
+          ' others'
   },
   {
     id: 'hlp_printer',
     title: 'Printers and printing',
-    text: 'bridge designer makes use web browsers printing capability print bridges check browsers maker detail' +
-          's select printer set example choosing landscape portrait mode'
+    text: 'print bridge report bridge designer creates pdf file asks browser preview send printer cases window ' +
+          'pops show printed youll need press another button send alternately download pdf chrome buttons look ' +
+          'like'
   },
   {
     id: 'hlp_purposes',
@@ -1164,16 +1235,17 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           's experience help understand civil engineers design structures demonstrate engineers use computer to' +
           'ol improve effectiveness efficiency design process provide tool visualizing structural behavior tool' +
           ' help understand structures work notes tips overview software functions see bridge designer works br' +
-          'idge designer developed brigadier general stephen ressler 2nd edition series bridge designer includi' +
-          'ng windows mac os x versions developed colonel eugene ressler versions distributed freely provisions' +
-          ' gnu public license intended solely educational use'
+          'idge designer developed brigadier general retired stephen ressler subsequent versions developed brig' +
+          'adier general retired gene ressler versions distributed freely provisions gnu general public license' +
+          ' intended solely educational use'
   },
   {
     id: 'hlp_record_design',
     title: 'Record your design',
-    text: 'design bridge go back one step completed design record document efforts use reference future designs' +
-          ' record final design save design bridge design file print drawing design print load test results not' +
-          'es tips dont wait design complete save bridge design file save early save often case...'
+    text: 'design bridge go back one step youve completed design record document efforts use reference future d' +
+          'esigns record final design save design bridge design file print drawing design print load test resul' +
+          'ts notes tips dont wait design complete save bridge design file save early save often case... also 3' +
+          'd print display model design'
   },
   {
     id: 'hlp_redo',
@@ -1642,10 +1714,10 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'gner project identification project id name designer optional provide shown title block included pri' +
           'nted output notes tips project id consists two parts separated dash first part six character local c' +
           'ontest code entered local contest code started design part project id cannot changed. second part op' +
-          'tional name number helps identify design start new design design project setup wizard prompt designe' +
-          'rs name project id want enter change designers name project id begun design click appropriate box ti' +
-          'tle block cursor appears type edit desired text hide display title block using view title block butt' +
-          'on member list displayed may hide part title block'
+          'tional name number helps identify design start new design setup wizard prompt designers name project' +
+          ' id want enter change designers name project id begun design click appropriate box title block curso' +
+          'r appears type edit desired text hide display title block using view title block button member list ' +
+          'displayed may hide part title block'
   },
   {
     id: 'hlp_toolbars',
@@ -1714,14 +1786,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'click view design tools button view menu display hide design tools palette button functions toggle. ' +
           'design tools palette currently visible clicking button hide palette hidden clicking button display n' +
           'otes tips wont able show design tools palette load test animation progress'
-  },
-  {
-    id: 'hlp_view_member_list',
-    title: 'View member list button',
-    text: 'click view member list button display hide member list button functions toggle. member list currentl' +
-          'y visible clicking button hide member list hidden clicking button display notes tips view member lis' +
-          't button located display toolbar also accessed view menu member list also hidden view dragging right' +
-          ' hand edge drawing board'
   },
   {
     id: 'hlp_view_member_numbers',
@@ -1830,45 +1894,43 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     title: 'What is realistic about the Bridge Designer?',
     text: 'one purposes bridge designer provide realistic hands experience help understand civil engineers desi' +
           'gn real structures many aspects software accurately reflect structural design process however number' +
-          ' significant compromises made keep program getting complex bridge designer intended introduction eng' +
-          'ineering design emphasis design process rather detailed technical aspects structural design bottom l' +
-          'ine aspects bridge designer realistic important understand difference following aspects bridge desig' +
-          'ner reflect reasonable accuracy nature engineering design process practicing civil engineers use des' +
-          'ign real bridges design open ended process real world design problems always many possible solutions' +
-          ' bridge designer demonstrates aspect design process allowing much freedom developing configuration b' +
-          'ridge though design open ended process always constrained real world conditions restrictions bridge ' +
-          'designer demonstrates aspect design process limiting design specific span lengths support configurat' +
-          'ions conform conditions project site limiting choices available materials member types imposing requ' +
-          'irement minimize cost design inherently iterative process engineers usually work incomplete informat' +
-          'ion must often make assumptions subsequently check revise assumptions design process progresses. dev' +
-          'eloping high quality solution always requires engineer consider many different design alternatives u' +
-          'ltimately select best one bridge designer clearly demonstrates aspect design process impossible achi' +
-          'eve truly optimal bridge design without considering many different alternative truss configurations ' +
-          'materials cross sections member sizes design always involves trade offs usually possible find single' +
-          ' design solution best satisfies design criteria making improvements one area often causes unexpected' +
-          ' problems somewhere else experience many trade offs use bridge designer example attempt optimize des' +
-          'ign discover reducing depth truss causes cost verticals diagonals decrease get shorter also causes c' +
-          'ost top bottom chords increase member force increases larger member sizes needed preserve structural' +
-          ' safety real world structural design need find optimum balance two competing criteria structural eng' +
-          'ineering design regulated use codes codes ensure engineering practiced consistent safe manner throug' +
-          'hout country region municipality separate industry standard codes governing design steel concrete wo' +
-          'od structures regional local building codes specify design loads fire protection standards many requ' +
-          'irements designing buildings design highway bridges us governed aashto bridge design specification b' +
-          'ridge designer load test uses standard slightly modified aashto truck loading compressive tensile st' +
-          'rengths members computed exactly specified aashto specification structures generally designed safely' +
-          ' carry one code specified loadings minimizing cost also often important objective never important st' +
-          'ructural safety. cost reductions never made reductions compromise structural safety formulation brid' +
-          'ge designer based relationship safety cost bridge designer design objective minimize cost design nev' +
-          'er valid fails load test structural design often characterized trade offs material cost fabrication ' +
-          'cost construction cost structure designed minimize material cost design often include many different' +
-          ' member types sizes variety member sizes makes harder therefore expensive cut fit members fabricatio' +
-          'n actually assemble job site construction structural designers usually attempt achieve degree standa' +
-          'rdization selection structural elements even means designing resulting increase material cost usuall' +
-          'y offset savings fabrication construction costs bridge designer cost calculation simulates trade rea' +
-          'sonable authenticity modern structural engineering practice structural analysis generally performed ' +
-          'using computer based method called matrix structural analysis specifically direct stiffness method b' +
-          'ridge designer uses method compute member forces load test thats good news also important recognize ' +
-          'bad news whats realistic bridge designer'
+          ' significant compromises made keep program simple bridge designer intended introduction engineering ' +
+          'design emphasis design process rather detailed technical aspects structural design result aspects br' +
+          'idge designer realistic others important understand following aspects bridge designer reflect reason' +
+          'able accuracy nature engineering design process practicing civil engineers use design real bridges d' +
+          'esign open ended process real world design problems always many possible solutions bridge designer s' +
+          'hows allowing much freedom choose refine configuration bridge though design open ended process alway' +
+          's constrained real world conditions restrictions bridge designer demonstrates limiting design three ' +
+          'ways span lengths support configurations must conform conditions project site materials member types' +
+          ' must chosen limited set minimizing cost set important goal design inherently iterative process engi' +
+          'neers usually work incomplete information must often make assumptions check revise assumptions desig' +
+          'n progresses developing high quality solution always requires engineer consider many alternatives ul' +
+          'timately select best one bridge designer clearly demonstrates aspect design process impossible achie' +
+          've truly optimal bridge design without considering many different alternative truss configurations m' +
+          'aterials cross sections member sizes design always involves trade offs usually possible find single ' +
+          'solution best satisfies design criteria making improvements one area often causes problems somewhere' +
+          ' else experience many trade offs use bridge designer example attempt optimize design discover reduci' +
+          'ng depth truss causes cost verticals diagonals decrease get shorter also causes cost top bottom chor' +
+          'ds increase member force increases larger member sizes needed preserve structural safety need find o' +
+          'ptimum balance two competing criteria structural engineering design regulated use codes codes ensure' +
+          ' engineering practiced consistent safe manner throughout country region municipality separate indust' +
+          'ry standard codes governing design steel concrete wood structures regional local building codes spec' +
+          'ify design loads fire protection standards many requirements designing buildings design highway brid' +
+          'ges us governed aashto bridge design specification bridge designer load test uses standard slightly ' +
+          'modified aashto truck loading compressive tensile strengths members computed exactly specified aasht' +
+          'o specification structures generally designed safely carry one code specified loadings minimizing co' +
+          'st also often important objective never important structural safety. cost reductions never made redu' +
+          'ctions compromise structural safety formulation bridge designer based relationship safety cost bridg' +
+          'e designer design objective minimize cost design never valid fails load test structural design often' +
+          ' characterized trade offs material cost fabrication cost construction cost structure designed minimi' +
+          'ze material cost design often include many different member types sizes variety member sizes makes h' +
+          'arder therefore expensive cut fit members fabrication assemble job site construction structural desi' +
+          'gners usually attempt achieve degree standardization selection structural elements even means design' +
+          'ing resulting increase material cost usually offset savings fabrication construction costs bridge de' +
+          'signer cost calculation simulates trade reasonably well modern structural engineering practice struc' +
+          'tural analysis generally performed using computer based method called matrix structural analysis spe' +
+          'cificallyl called direct stiffness method bridge designer uses method compute member forces load tes' +
+          't thats good news also important recognize bad news whats realistic bridge designer'
   },
   {
     id: 'hlp_whats_new',
@@ -1877,15 +1939,15 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ul educational software technologies world new edition update designed enable bridge designer learni' +
           'ng anyone access web browser get started right introductory engineering experience working alone tea' +
           'm team teacher new features please enjoy checking possibilities.. installation required bridge desig' +
-          'ner works recent versions browsers hit web site chrome firefox edge updated 2024 later recommended e' +
+          'ner works recent versions browsers hit web site chrome edge firefox updated 2024 later recommended e' +
           'xport 3d model design addition beautiful blueprint style printed version bridge long part bridge des' +
           'igner export stl file suitable input favorite 3d printer late updates previous bridge designer versi' +
           'ons still 3d walk completed bridges walk fly around animation completed bridge observe performance t' +
           'ruck load drives deck member details interactive member details explorer supplements members list dy' +
-          'namically updated engineering information member cross sections materials lengths costs deep undo li' +
-          'mit 5 100 undo redo last hundred edits current design iteration iterations tree view track design it' +
-          'erations view graphically shows history one click drag member list selections click drag select grou' +
-          'p members member list'
+          'namically updated engineering information member cross sections materials lengths costs deep undo ol' +
+          'd limit 5 100 undo redo last hundred edits current design iteration iterations tree view track desig' +
+          'n iterations view shows history one old chronological list also still available click drag member li' +
+          'st selections click drag select group members member list'
   },
   {
     id: 'hlp_undo_vs_go_back',

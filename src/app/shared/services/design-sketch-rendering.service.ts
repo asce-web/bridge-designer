@@ -29,7 +29,7 @@ export class DesignSketchRenderingService {
     const savedFillStyle = ctx.fillStyle;
 
     ctx.beginPath();
-    ctx.strokeStyle = 'lightgray';
+    ctx.strokeStyle = 'darkgray';
     for (const member of sketch.members) {
       const xa = this.viewportTransform.worldToViewportX(member.a.x);
       const ya = this.viewportTransform.worldToViewportY(member.a.y);
