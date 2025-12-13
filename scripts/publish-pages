@@ -1,0 +1,33 @@
+#!/bin/bash
+
+# Get git project root dir.
+project_dir=$(git rev-parse --show-toplevel)
+
+# Clear the working dir temporarily
+git stash push
+
+# Copy the contents of dist to the pages site source.
+site_source="$project_dir/docs"
+rm -rf "$site_source/bridge-designer"
+cp -R "$project_dir/dist/bridge-designer" "$site_source"
+
+# Stage changes and commit to publish.
+git add --all
+
+# Switch branches and commit there
+old_branch=$(git branch --show-current)
+git switch publish-pages
+
+echo "Stashed ${old_branch}. Commit and publish from branch ${publish-pages}? (Y/n))"
+read -sn1 key
+if [[ "$key" == 'n' ]]
+then
+  exit 1
+fi
+git commit -m 'Publish pages'
+
+# Push to trigger publish
+git push origin publish-pages
+
+# Restore old branch
+git switch "$old_branch"
