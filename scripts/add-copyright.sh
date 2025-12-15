@@ -6,7 +6,7 @@
 license='Copyright (c) 2025-2026 Gene Ressler
 SPDX-License-Identifier: GPL-3.0-or-later'
 
-c_license="/* $(sed '2,$s@^@ * @' <<< $license) */
+c_license="/* $(sed '2,$s@^@   @' <<< $license) */
 "
 
 sh_license="$(sed 's@^@# @' <<< $license)
@@ -22,7 +22,7 @@ cat <<< $sh_license
 echo HTML-style comment:
 cat <<< $html_license
 
-skip_ptn='img/|media/|\.ico$|\.wasm$'
+skip_ptn='img/|media/|docs/bridge-designer/|\.ico$|\.wasm$'
 c_license_file_ptn='\.(ts|js|css|scss)$'
 sh_license_file_ptn='\.(sh|py)$'
 html_license_file_ptn='\.(html?|md)$'
@@ -40,11 +40,11 @@ for file in $(git ls-tree --full-tree -r --name-only HEAD); do
   tmp_file="/tmp/add-copyright-temporary-$(basename "$file")"
   first_line="$(head -n 1 $path)"
   if [[ "$file" =~ $c_license_file_ptn && ! "$first_line" =~ $c_license_ptn ]]; then
-    cat - $path > "$tmp_file" <<< $c_license 
+    cat - $path > "$tmp_file" <<< $c_license  && mv "$tmp_file" "$path"
   elif [[ "$file" =~ $sh_license_file_ptn  && ! "$first_line" =~ $sh_license_ptn ]]; then
-    cat - $path > "$tmp_file" <<< $sh_license 
+    cat - $path > "$tmp_file" <<< $sh_license  && mv "$tmp_file" "$path"
   elif [[ "$file" =~ $html_license_file_ptn  && ! "$first_line" =~ $html_license_ptn ]]; then
-    cat - $path > "$tmp_file" <<< $html_license 
+    cat - $path > "$tmp_file" <<< $html_license && mv "$tmp_file" "$path"
   else 
     echo Skipped: $path
   fi
