@@ -17,7 +17,7 @@ rm -rf "$site_source/app"
 cp -R "$project_dir/dist/bridge-designer/browser" "$site_source"
 mv "$site_source/browser" "$site_source/app"
 
-# Edit the base URL of the root page to match its location.
+# Edit the base URL of the root page to match the sites location.
 sed -i 's@base href="/"@base href="/bridge-designer/app/"@' "$site_source/app/index.html"
 
 # Switch to publishing branch and update it to current, including new pages.
