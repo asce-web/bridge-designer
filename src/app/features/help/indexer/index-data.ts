@@ -6,64 +6,6 @@ type HelpIndexData = {
 
 export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
-    id: 'hlp_3dprint_assembly',
-    title: '3d printing and assembling your bridge',
-    text: 'print parts assemble make display model bridge begin >exporting obj files parts dialog appear asking' +
-          ' important parameters scale establishes models overall size move slider try different values. dialog' +
-          ' show resulting maximum object dimensions make sure maximums fit within print volume minimum feature' +
-          ' size model bridge members printed accurately scale thin print minimum feature size given millimeter' +
-          's used instead scale size cases modern printers one millimeter minimum value larger ones sacrifice s' +
-          'cale appearance make printing assembly easier shrink 3d printers place bit much material around smal' +
-          'l features like holes pegs used align model bridge parts shrink used adjust sizes good fits unfortun' +
-          'ately every printer different trial error may needed find good value 0.15mm starting point parts fit' +
-          ' tightly try larger shrink vice versa ready click ok three files sent browsers downloads folder brid' +
-          'ge_name trusses.obj bridge_name abutments.obj bridge_name cross members.obj bridge_name substituted ' +
-          'actual name current bridge file contains collection pieces typically fit printers bed however guaran' +
-          'teed use youre slicer software printer usual import files print parts item file separate object obj ' +
-          'file format slicer software let position individually delete ones dont fit single print necessary so' +
-          'metimes splitting command required see separate objects prusa slicer example requires highlight impo' +
-          'rt press button multi colored bridge e.g one color trusses another cross members third deck also org' +
-          'anize objects per intended color assembly things youll need assemble printed parts flat clean work s' +
-          'urface protected glue spills paper shelf paper large paper bag flattend work crazy glue otherwise ca' +
-          'lled cyanoacrylate plastic glue bond parts together xacto knife box cutter single edge razor blade t' +
-          'rim parts needed fine sand paper 150 220 grit nail file roll sticky tape kind scotch tape duct tape ' +
-          'even better tool expand holes diameter equal minimum feature size slightly larger theyre small fit c' +
-          'orresponding pins micro drill bit pin vice tool spin bit ideal pinch possible use large sewing need ' +
-          'heated candle soften move plastic careful begin laying parts type good way avoid confusion draw grid' +
-          ' 11 boxes 3 inches square build survace covering paper label 1 11 sort parts support cross members 1' +
-          ' per support identical theyre used different places abutments 2 note may appear quite different pict' +
-          'ure depending design example arch abutments taller pier 0 1 anchorages 0 1 2 deck end panels 2 deck ' +
-          'mid panels 2 less total number deck segments deck cross members one per unsupported deck joint may 3' +
-          ' 9 deck join beam 1 trusses 2 deck assembly fixture 1 isnt part bridge youll use hold pieces place o' +
-          'thers assembled simple cross members one per joint types count varies abutments 2 pier 0 1 anchorage' +
-          ' blocks 0 1 2 steps complete model step use trimming tool and/or hole drill make joint fit well gaps' +
-          ' excessive tightness applying glue may take time patient glue two support cross members 1 slots two ' +
-          'deck end panels 2 set aside grid square 2 dry bridge pier glue another support cross member 1 deck m' +
-          'id panel 3 otherwise go next step set aside grid square 3 dry glue deck cross member 4 deck join bea' +
-          'm 5 set aside grid square 5 take break wait glue applied far solid continuing glue still wet asking ' +
-          'trouble dry fit whole deck arranging deck panels 2 3 4 top side shown diagram glue use tools ensure ' +
-          'panels fit together tightly compare positions cross member pins holes truss deck panel joints must a' +
-          'ble match exactly first last deck pins cannot farther apart first last truss joint holes little clos' +
-          'er together fine. use sandpaper blade remove bit material panel everything matches keep panels dry f' +
-          'it left right order avoid confusion assembling deck tune cross member pins truss holes needed pin fi' +
-          'ts hole shoulder shown. tuning means using cutter sandpaper nail file hole drill needle needed make ' +
-          'pin hole sizes match attach trusses 6 deck assembly fixture 7 deck joints right end bridge. right en' +
-          'd mean right side bridge appears bridge designer poke fixtures pins two rightmost deck joint holes t' +
-          'russ dont use glue use narrow strip sticky tape hold trusses fixture starting left side bridge add d' +
-          'ry fitted deck panels one time working right gluing go sure keep panels correct order strip tape tru' +
-          'sses joint keep things place glue sets needed reach assembly fixure remove tape holding place substi' +
-          'tute final deck panels take break lett everything dry completely add simple cross members 7 one per ' +
-          'joint hole anchorage joint glue support cross member pillows triangular sections deck corresponding ' +
-          'abutment 9 pier 10 bridge one point model stand flat abutments pier bridge anchorages glue remaining' +
-          ' one two support cross members 1 anchorage block 11 glue pins anchorage support cross member respect' +
-          'ive holes trusses model sitting flat surface ensure correct orientation youre done notes tips bigges' +
-          't pieces model usually trusses goal make biggest possible model try printing trusses one time orient' +
-          'ed diagonally printer bed minimum feature size consider using multiple printers nozzle size thats le' +
-          'ast one millimeter. example nozzle 0.4mm try 1.2 1.6 consider printing assembly instructions ticking' +
-          ' go avoid confusion assembling bridge model challenging methodical work steadily something goes wron' +
-          'g reprint parts need try'
-  },
-  {
     id: 'glos_aashto',
     title: 'AASHTO',
     text: 'aashto american association state highway transportation officials governing body writes publishes d' +
@@ -143,6 +85,47 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     title: 'Asphalt',
     text: 'asphalt mixture gravel bitumen product petroleum refining process asphalt commonly used pavement wea' +
           'ring surface bridge decks'
+  },
+  {
+    id: 'hlp_3dprint_assembly',
+    title: 'Assembling your bridge model',
+    text: 'instructions assume youve aleady printed parts model using instructions >exporting obj files prepare' +
+          ' build things youll need assemble printed parts flat clean work surface protected glue spills paper ' +
+          'shelf paper large paper bag flattend work crazy glue otherwise called cyanoacrylate plastic glue bon' +
+          'd parts together xacto knife box cutter single edge razor blade trim parts needed fine sand paper 15' +
+          '0 220 grit nail file roll sticky tape kind scotch tape duct tape even better tool expand holes diame' +
+          'ter equal minimum feature size slightly larger theyre small fit corresponding pins micro drill bit p' +
+          'in vice tool spin bit ideal pinch possible use large sewing need heated candle soften move plastic c' +
+          'areful begin laying parts type good way avoid confusion draw grid 11 boxes 3 inches square build sur' +
+          'vace covering paper label 1 11 sort parts support cross members 1 per support identical theyre used ' +
+          'different places abutments 2 note may appear quite different picture depending design example arch a' +
+          'butments taller pier 0 1 anchorages 0 1 2 deck end panels 2 deck mid panels 2 less total number deck' +
+          ' segments deck cross members one per unsupported deck joint may 3 9 deck join beam 1 trusses 2 deck ' +
+          'assembly fixture 1 isnt part bridge youll use hold pieces place others assembled simple cross member' +
+          's one per joint types count varies abutments 2 pier 0 1 anchorage blocks 0 1 2 steps complete model ' +
+          'step use trimming tool and/or hole drill make joint fit well gaps excessive tightness applying glue ' +
+          'may take time patient glue two support cross members 1 slots two deck end panels 2 set aside grid sq' +
+          'uare 2 dry bridge pier glue another support cross member 1 deck mid panel 3 otherwise go next step s' +
+          'et aside grid square 3 dry glue deck cross member 4 deck join beam 5 set aside grid square 5 take br' +
+          'eak wait glue applied far solid continuing glue still wet asking trouble dry fit whole deck arrangin' +
+          'g deck panels 2 3 4 top side shown diagram glue use tools ensure panels fit together tightly compare' +
+          ' positions cross member pins holes truss deck panel joints must able match exactly first last deck p' +
+          'ins cannot farther apart first last truss joint holes little closer together fine. use sandpaper bla' +
+          'de remove bit material panel everything matches keep panels dry fit left right order avoid confusion' +
+          ' assembling deck tune cross member pins truss holes needed pin fits hole shoulder shown. tuning mean' +
+          's using cutter sandpaper nail file hole drill needle needed make pin hole sizes match attach trusses' +
+          ' 6 deck assembly fixture 7 deck joints right end bridge. right end mean right side bridge appears br' +
+          'idge designer poke fixtures pins two rightmost deck joint holes truss dont use glue use narrow strip' +
+          ' sticky tape hold trusses fixture starting left side bridge add dry fitted deck panels one time work' +
+          'ing right gluing go sure keep panels correct order strip tape trusses joint keep things place glue s' +
+          'ets needed reach assembly fixure remove tape holding place substitute final deck panels take break l' +
+          'ett everything dry completely add simple cross members 7 one per joint hole anchorage joint glue sup' +
+          'port cross member pillows triangular sections deck corresponding abutment 9 pier 10 bridge one point' +
+          ' model stand flat abutments pier bridge anchorages glue remaining one two support cross members 1 an' +
+          'chorage block 11 glue pins anchorage support cross member respective holes trusses model sitting fla' +
+          't surface ensure correct orientation youre done notes tips consider printing assembly instructions p' +
+          'aper ticking go avoid confusion satisfying assembling bridge model challenging methodical work stead' +
+          'ily something goes wrong reprint parts need try'
   },
   {
     id: 'glos_astm',
@@ -562,8 +545,26 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_export_to_3dprint',
     title: 'Export files to 3d print',
     text: 'use 3d print button file menu item export files obj format imported 3d printer slicer program printe' +
-          'd result parts realistic scale model bridge suitable display see tips 3d printing bridge important d' +
-          'etails'
+          'd result parts realistic scale model bridge suitable display dialog appear asking important paramete' +
+          'rs smallest printable feature size model bridge members printed scale thin print minimum feature siz' +
+          'e given millimeters used instead scale size cases one millimeter minimum larger values sacrifice sca' +
+          'le appearance slightly make printing assembly easier wiggle room 3d printers place bit much material' +
+          ' around small features like holes pegs used align model bridge parts value used adjust sizes good fi' +
+          't every printer different trial error may needed find good value 0.20mm starting point parts fit tig' +
+          'htly try larger wiggle room value vice versa scale establishes models overall size move slider try d' +
+          'ifferent values. dialog show resulting maximum object dimensions make sure maximums fit within print' +
+          'ers build volume base file name determines start obj file name containing bridge parts ready click o' +
+          'k three files sent browsers downloads folder base_file_name trusses.obj base_file_name abutments.obj' +
+          ' base_file_name cross members.obj base_file_name substituted name dialog file contains collection pi' +
+          'eces placed theyre likely fit print volume however guaranteed may want arrange print batches differe' +
+          'ntly use youre slicer software printer usual import obj files print parts item file separate object ' +
+          'obj file format slicer software let position individually delete ones dont fit single print necessar' +
+          'y sometimes splitting command required see separate objects prusa slicer example requires highlight ' +
+          'import press button multi colored bridge e.g one color trusses another cross members third deck also' +
+          ' organize objects per intended color notes tips see tips assembing bridge model important details yo' +
+          'uve printed parts biggest pieces model usually trusses goal make biggest possible model try printing' +
+          ' trusses one time oriented diagonally printer bed minimum feature size consider using multiple print' +
+          'ers nozzle size thats least one millimeter. example nozzle 0.4mm try 1.2 1.6'
   },
   {
     id: 'hlp_find_opt_substructure',

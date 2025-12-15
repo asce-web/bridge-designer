@@ -5,7 +5,7 @@ import { EventBrokerService, EventOrigin } from '../../shared/services/event-bro
 import { ToastError } from '../toast/toast/toast-error';
 import { SaveMarkService } from './save-mark.service';
 
-const DEFAULT_NAME = 'MyBridge.bdc';
+export const DEFAULT_SAVE_FILE_NAME = 'MyBridge.bdc';
 const PICKER_ID = 'bridge-design';
 const PICKER_DIR = 'documents';
 const PICKER_TYPES = [
@@ -38,7 +38,7 @@ export class LegacySaveLoadService implements SaveLoadService {
     forceGetFile: boolean,
     fileNameGetter: (value: string) => Promise<string>,
   ): Promise<void> {
-    let preferredName = this.saveMarkService.savedFileName ?? DEFAULT_NAME;
+    let preferredName = this.saveMarkService.savedFileName ?? DEFAULT_SAVE_FILE_NAME;
     if (forceGetFile || this.saveMarkService.savedFileName === undefined) {
       try {
         preferredName = await fileNameGetter(preferredName);
@@ -106,7 +106,7 @@ export class FileSystemSaveLoadService implements SaveLoadService {
   public async saveBridgeFile(forceGetFile: boolean = false): Promise<void> {
     try {
       if (forceGetFile || !this.currentFileHandle || this.saveMarkService.savedFileName === undefined) {
-        this.currentFileHandle = await this.getSaveFile(this.saveMarkService.savedFileName ?? DEFAULT_NAME);
+        this.currentFileHandle = await this.getSaveFile(this.saveMarkService.savedFileName ?? DEFAULT_SAVE_FILE_NAME);
       }
       const stream = await this.currentFileHandle.createWritable();
       const text = this.bridgeService.saveSetText;

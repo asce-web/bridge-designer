@@ -5,53 +5,12 @@
   <ng-container *ngTemplateOutlet="visibleTopic"></ng-container>
 </div>
 <ng-template topic-name="hlp_3dprint_assembly">
-  <h1>3d printing and assembling your bridge</h1>
+  <h1>Assembling your bridge model</h1>
   <div class="p">
-    You can print parts that assemble to make a display model of your bridge. Begin by
-    <topic-link name="hlp_export_to_3dprint">>exporting OBJ files</topic-link> of the parts. A dialog will appear asking
-    for some important parameters.
+    These instructions assume you've aleady printed the parts of your model after using the instructions for
+    <topic-link name="hlp_export_to_3dprint">>exporting OBJ files</topic-link>.
   </div>
-  <ul>
-    <li>
-      <span class="b">Scale.</span> This establishes the model's overall size. Move the slider to try different values.
-      The dialog will show resulting maximum object dimensions. Make sure the maximums fit within print volume.
-    </li>
-    <li>
-      <span class="b">Minimum feature size.</span> Model bridge members printed accurately to scale can be too thin to
-      print. The minimum feature size, given in millimeters, will be used instead of the scale size in such cases. For
-      most modern printers. One millimeter is the minimum value. Larger ones sacrifice scale appearance, but make
-      printing and assembly easier.
-    </li>
-    <li>
-      <span class="b">Shrink.</span> Most 3d printers place a bit too much material around small features like the holes
-      and pegs used to align model bridge parts. Shrink is used to adjust sizes for good fits. Unfortunately, every
-      printer is different, so some trial-and-error may be needed to find a good value. 0.15mm is a starting point. If
-      parts fit too tightly, try a larger shrink and vice versa.
-    </li>
-  </ul>
-  <div class="p">When ready, click OK. Three files will be sent to your browser's Downloads folder:</div>
-  <ul>
-    <li>BRIDGE_NAME-trusses.obj</li>
-    <li>BRIDGE_NAME-abutments.obj</li>
-    <li>BRIDGE_NAME-cross-members.obj</li>
-  </ul>
-  <div class="p">
-    Here BRIDGE_NAME will be substituted with the actual name of your current bridge. Each file contains a collection of
-    pieces that typically fit on a printer's bed. However, this is not guaranteed.
-  </div>
-  <div class="p">
-    Use you're slicer software and printer as usual to import the files and print the parts. Each item in each file is a
-    separate "object" in the OBJ file format. Your slicer software should let you position these individually and delete
-    ones that don't fit in a single print if necessary. Sometimes a "splitting" command is required to see the separate
-    objects. Prusa Slicer, for example, requires that you highlight the import and press this button:<br />
-    <img
-      alt="Prusa split objects button"
-      src="img/help/prusa-split-obj.png"
-    /><br />
-    For a multi-colored bridge, e.g one color for trusses, another for cross-members, and a third for the deck, you can
-    also organize objects per intended color.
-  </div>
-  <h2 class="btop">Assembly</h2>
+  <h2>Prepare to build</h2>
   <div class="p">Some things you'll need to assemble the printed parts:</div>
   <ul>
     <li>
@@ -176,14 +135,9 @@
   </ul>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The biggest pieces in the model are usually the trusses. If your goal is to make the biggest possible model, try
-    printing trusses one at a time, oriented diagonally on the printer bed.
+    Consider printing the assembly instructions on paper and ticking them off as you go to avoid confusion. Very
+    satisfying!
   </div>
-  <div class="p">
-    For minimum feature size, consider using a multiple of your printer's nozzle size that's at least one millimeter.
-    For example, if the nozzle is 0.4mm, then try 1.2 or 1.6.
-  </div>
-  <div class="p">Consider printing the assembly instructions and ticking them off as you go to avoid confusion.</div>
   <div class="p">
     Assembling a bridge model can be challenging! Be methodical. Work steadily. If something goes wrong, just reprint
     the parts you need, and try again.
@@ -1648,12 +1602,68 @@
       alt="3d print button"
       src="img/print3d.png"
     />
-    Use the <span class="b">3d print</span> button or file menu item to export files in OBJ format, which can be
-    imported into a 3d printer slicer program and then printed. The result will be parts of a realistic scale model of
+    Use the <span class="b">3d print</span> button or file menu item to export files in OBJ format. These can be
+    imported by a 3d printer slicer program and then printed. The result will be parts of a realistic scale model of
     your bridge suitable for display.
   </div>
+  <div>A dialog will appear asking for some important parameters.</div>
+  <ul>
+    <li>
+      <span class="b">Smallest printable feature size.</span> Model bridge members printed to scale can be too thin to
+      print. This minimum feature size, given in millimeters, will be used instead of the scale size in such cases. One
+      millimeter is the minimum. Larger values sacrifice scale appearance slightly, but make printing and assembly
+      easier.
+    </li>
+    <li>
+      <span class="b">Wiggle room.</span> Most 3d printers place a bit too much material around small features like the
+      holes and pegs used to align model bridge parts. This value is used to adjust sizes for a good fit. Every printer
+      is different, so some trial-and-error may be needed to find a good value. 0.20mm is a starting point. If parts fit
+      too tightly, try a larger wiggle room value and vice versa.
+    </li>
+    <li>
+      <span class="b">Scale.</span> This establishes the model's overall size. Move the slider to try different values.
+      The dialog will show resulting maximum object dimensions. Make sure the maximums fit within your printer's build
+      volume.
+    </li>
+    <li>
+      <span class="b">Base file name.</span> This determines the start of each OBJ file name containing bridge parts.
+    </li>
+  </ul>
+  <div class="p">When ready, click OK. Three files will be sent to your browser's Downloads folder:</div>
+  <ul>
+    <li>BASE_FILE_NAME-trusses.obj</li>
+    <li>BASE_FILE_NAME-abutments.obj</li>
+    <li>BASE_FILE_NAME-cross-members.obj</li>
+  </ul>
   <div class="p">
-    See <topic-link name="hlp_3dprint_assembly">tips for 3d printing your bridge</topic-link> for important details.
+    BASE_FILE_NAME will be substituted with the name from the dialog. Each file contains a collection of pieces placed
+    so they're likely to fit the print volume. However, this is not guaranteed. You may want to arrange print batches
+    differently.
+  </div>
+  <div class="p">
+    Use you're slicer software and printer as usual to import the OBJ files and print the parts. Each item in each file
+    is a separate "object" in the OBJ file format. Your slicer software should let you position these individually and
+    delete ones that don't fit in a single print if necessary. Sometimes a "splitting" command is required to see the
+    separate objects. Prusa Slicer, for example, requires that you highlight the import and press this button:<br />
+    <img
+      alt="Prusa split objects button"
+      src="img/help/prusa-split-obj.png"
+    /><br />
+    For a multi-colored bridge, e.g one color for trusses, another for cross-members, and a third for the deck, you can
+    also organize objects per intended color.
+  </div>
+  <h2 class="btop">Notes and tips</h2>
+  <div class="p">
+    See <topic-link name="hlp_3dprint_assembly">tips for assembing your bridge model</topic-link> for important details
+    after you've printed all parts.
+  </div>
+  <div class="p">
+    The biggest pieces in the model are usually the trusses. If your goal is to make the biggest possible model, try
+    printing trusses one at a time, oriented diagonally on the printer bed.
+  </div>
+  <div class="p">
+    For minimum feature size, consider using a multiple of your printer's nozzle size that's at least one millimeter.
+    For example, if the nozzle is 0.4mm, then try 1.2 or 1.6.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_find_opt_substructure">

@@ -2,16 +2,17 @@
 
 ## Requirement
 
-On command, we'll emit a single OBJ file suitable for slicing and printing. We use OBJ rather than STL so that multiple
-snap together pieces can be included. STL supports only one mesh. There appears no reasonable way to make the prints
-truly functional. They’ll amount to scale models.
+On command, we'll emit OBJ files suitable for slicing and printing. It's OBJ rather than STL so that multiple parts can
+be included as separate objects. STL supports only one.
+
+There appears to be no reasonable way to make the prints functional in any way. They’ll amount to near-scale models.
 
 The pieces are:
 
-- **Two trusses**. A pair of mirror image meshes. Pin locations are small holes with a square counterbore on the inside
-  to orient pins. The deck-adjacent side of the mesh will be flat so that no support material is needed. Members will
-  have scale sizes. Consequently, the other side of the mesh will reflect that variability.
-- **Joint pins**. Thin square bars with pins that snap into joint holes in trusses.
+- **Two trusses**. A pair of mirror image meshes. Joints are are small diamond-shaped holes to receive same-shaped
+  cross-member pins. The deck side of the truss is flat so that no printing supports are needed. Members have scale
+  sizes. The extra thickness of gussets will all be on the outside surface.
+- **Cross-members**. Thin square bars with pins that snap into joint holes in trusses.
 - **Deck segments**. L-shaped prisms. All but one includes one deck beam and one segment of deck and wear surface. The
   end over each beam has a slot that matches a tab on the corresponding non-beam end of the next segment. End segments
   include the deck cantilever and abutment pillow block. The right end segment is special in that it includes the _two_

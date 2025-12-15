@@ -1,22 +1,83 @@
 import { Injectable } from '@angular/core';
-import { EventBrokerService } from '../../shared/services/event-broker.service';
 import { Manifold, Mesh, Vec3 } from 'manifold-3d';
 import { cleanup } from 'manifold-3d/lib/garbage-collector.js';
 import { Mat2x3, Print3dModelService } from './print-3d-model.service';
+import { DEFAULT_SAVE_FILE_NAME } from '../save-load/save-load.service';
 
+/** A mutable set of user-settable config parameters for a print. */
 export class Printing3dConfig {
   /**
    * @param modelMmPerWorldM model millimeters per world meter
    * @param minFeatureSizeMm minimum printable feature size
+   * @param wiggleMm "slop" at joins to prevent over-tight fits
+   * @param baseFileName base filename of downloads
    */
   constructor(
-    public readonly modelMmPerWorldM: number = 230 / 44,
-    public readonly minFeatureSizeMm: number = 1,
-    public readonly name: string = '',
-    public readonly printDx: number = 250, // width
-    public readonly printDy: number = 210, // depth
-    public readonly printDz: number = 220, // height
+    public modelMmPerWorldM: number = 5.6, // A median value: 250 / 44 rounded to 0.2
+    public minFeatureSizeMm: number = 1.2,
+    public wiggleMm: number = 0.2,
+    public baseFileName: string = DEFAULT_SAVE_FILE_NAME,
   ) {}
+}
+
+/** Information about a printable model provided to user as feedback. */
+export class Print3dModelInfo {
+  constructor(
+    public printWidth: number = 0,
+    public maxWidthPart: string = '<none>',
+    public printDepth: number = 0,
+    public maxDepthPart: string = '<none>',
+    public printHeight: number = 0,
+    public maxHeightPart: string = '<none>',
+  ) {}
+
+  /* Not currently used.
+  mergeOther(other: Print3dModelInfo): void {
+    this.mergeWidth(other.printWidth, other.maxWidthPart);
+    this.mergeDepth(other.printDepth, other.maxDepthPart);
+    this.mergeHeight(other.printHeight, other.maxHeightPart);
+  }
+  */
+
+  mergeManifold(manifold: Manifold, part: string): void {
+    const bb = manifold.boundingBox();
+    this.mergeWidth(bb.max[0] - bb.min[0], part);
+    this.mergeDepth(bb.max[1] - bb.min[1], part);
+    this.mergeHeight(bb.max[2] - bb.min[2], part);
+  }
+
+  /** Returns new info that's this info with a scale factor applied to the sizes. */
+  applyScale(scale: number): Print3dModelInfo {
+    return new Print3dModelInfo(
+      this.printWidth * scale,
+      this.maxWidthPart,
+      this.printDepth * scale,
+      this.maxDepthPart,
+      this.printHeight * scale,
+      this.maxHeightPart,
+    );
+  }
+
+  private mergeWidth(width: number, part: string): void {
+    if (width > this.printWidth) {
+      this.printWidth = width;
+      this.maxWidthPart = part;
+    }
+  }
+
+  private mergeDepth(depth: number, part: string): void {
+    if (depth > this.printDepth) {
+      this.printDepth = depth;
+      this.maxDepthPart = part;
+    }
+  }
+
+  private mergeHeight(height: number, part: string): void {
+    if (height > this.printHeight) {
+      this.printHeight = height;
+      this.maxHeightPart = part;
+    }
+  }
 }
 
 /**
@@ -31,27 +92,42 @@ class ObjFileContext {
 
 @Injectable({ providedIn: 'root' })
 export class Printing3dService {
-  private config = new Printing3dConfig();
+  constructor(private readonly print3dModelService: Print3dModelService) {}
 
-  constructor(
-    eventBrokerService: EventBrokerService,
-    private readonly print3dModelService: Print3dModelService,
-    //objectPlacementService: ObjectPlacementService,
-  ) {
-    eventBrokerService.print3dRequest.subscribe(() => this.emit3dPrint2());
-    //eventBrokerService.print3dRequest.subscribe(() => objectPlacementService.test());
+  /**
+   * Returns model info for the current bridge with a scale factor of 1mm/M.
+   * This can be scaled with a true value of `modelMmPerWorldM` to get a close
+   * estimates of actual model size.
+   */
+  public async getUnscaledModelInfo(): Promise<Print3dModelInfo> {
+    await this.print3dModelService.initialize();
+    const modelMmPerWorldM = 1;
+    const minFeatureSize = 1;
+    const gmy = this.print3dModelService.getGeometry(modelMmPerWorldM, minFeatureSize);
+    // Compute only objects that could possibly establish the max sizes.
+    const truss = this.print3dModelService.buildTruss(gmy, [modelMmPerWorldM, 0, 0, modelMmPerWorldM, 0, 0]);
+    const info = new Print3dModelInfo();
+    info.mergeManifold(truss, 'truss');
+    const leftAbutment = this.print3dModelService.buildAbutment(gmy, 0);
+    info.mergeManifold(leftAbutment, 'abutment');
+    if (this.print3dModelService.isPier) {
+      const pier = this.print3dModelService.buildPier(gmy, 0);
+      info.mergeManifold(pier, 'pier');
+    }
+    if (this.print3dModelService.anchorages.length > 0) {
+      const anchorage = this.print3dModelService.buildAnchorage(gmy, 0);
+      info.mergeManifold(anchorage, 'anchorage');
+    }
+    cleanup(); // Free manifold memory.
+    return Promise.resolve(info);
   }
 
-  public setConfig(config: Printing3dConfig) {
-    this.config = config;
-  }
-
-  private async emit3dPrint2(): Promise<void> {
+  public async emit3dPrint(config: Printing3dConfig): Promise<void> {
     // Load Manifold.
     await this.print3dModelService.initialize();
 
-    const modelMmPerWorldM = this.config.modelMmPerWorldM;
-    const minFeatureSize = this.config.minFeatureSizeMm;
+    const modelMmPerWorldM = config.modelMmPerWorldM;
+    const minFeatureSize = config.minFeatureSizeMm;
     const gmy = this.print3dModelService.getGeometry(modelMmPerWorldM, minFeatureSize);
 
     // ---- Trusses ----
@@ -76,7 +152,7 @@ export class Printing3dService {
     const rearTruss = this.print3dModelService.buildTruss(gmy, rearTrussXform);
 
     this.saveMeshAndFree(rearTruss, 'RearTruss', trussesText, trussesContext);
-    this.downloadObjFileText(trussesText, '3d-trusses');
+    this.downloadObjFileText(trussesText, config.baseFileName, 'trusses');
 
     // ---- Placement control ----
 
@@ -118,7 +194,7 @@ export class Printing3dService {
       this.saveMeshAndFree(pier, 'Pier', abutmentsText, abutmentsContext);
       advancePlacementX(pier);
     }
-    this.downloadObjFileText(abutmentsText, 'abutments');
+    this.downloadObjFileText(abutmentsText, config.baseFileName, 'abutments');
 
     // ---- Cross members
 
@@ -155,7 +231,35 @@ export class Printing3dService {
         advancePlacementX(panel);
       }
     }
-    this.downloadObjFileText(crossMembersText, 'cross-members');
+    this.downloadObjFileText(crossMembersText, config.baseFileName, 'cross-members');
+  }
+
+  // TODO: Could make these more descriptive. E.g. add counts.
+
+  public get abutmentsFileContents(): string {
+    const rtn = ['abutments'];
+    if (this.print3dModelService.isPier) {
+      rtn.push('pier');
+    }
+    switch (this.print3dModelService.anchorages.length) {
+      case 0:
+        break;
+      case 1:
+        rtn.push('anchorage');
+        break;
+      case 2:
+        rtn.push('anchorages');
+        break;
+    }
+    return rtn.join(', ');
+  }
+
+  public get crossMembersFileContents(): string {
+    return 'cross-members, deck panels';
+  }
+
+  public get trussesFileContents(): string {
+    return 'trusses';
   }
 
   /** Saves OBJ file text for given manifold mesh to given text, then frees all manifolds. */
@@ -199,15 +303,16 @@ export class Printing3dService {
     return text;
   }
 
-  private downloadObjFileText(text: string[], kind: string): void {
+  /** Downloads an OBJ file containing given text with given base file name, and kind specifier. */
+  private downloadObjFileText(text: string[], fileName: string, kind: string): void {
     const blob = new Blob(text, { type: 'model/obj' });
     const anchorElement = window.document.createElement('a');
     const url = window.URL.createObjectURL(blob);
     anchorElement.href = url;
-    let fileName = kind;
-    if (this.config.name.length > 0) {
-      fileName += `-${this.config.name}`;
+    if (fileName.length > 0 && kind.length > 0) {
+      fileName += '-';
     }
+    fileName += kind;
     fileName += '.obj';
     anchorElement.download = fileName;
     document.body.appendChild(anchorElement);

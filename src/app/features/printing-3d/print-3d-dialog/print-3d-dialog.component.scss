@@ -1,0 +1,85 @@
+:host {
+  display: block;
+}
+
+.header {
+  font-weight: bold;
+}
+
+.content {
+  padding: 8px;
+  background-color: rgb(238, 238, 238);
+  overflow: hidden;
+}
+
+.para {
+  margin-top: 8px;
+}
+
+.buttons {
+  margin-top: 12px;
+  text-align: right;
+}
+
+.two-column-container {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
+
+.labeled-input-container {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.input-label {
+  grid-column: 1;
+}
+
+.input-widget {
+  grid-column: 2;
+}
+
+.warning-icon {
+  display: inline-block;
+  vertical-align: middle;
+  width: 32px;
+  padding: 8px;
+  margin-right: 4px;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+caption {
+  text-align: start;
+}
+
+th {
+  font-weight: normal;
+  font-style: italic;
+  text-align: center;
+}
+
+th,
+td {
+  border: 1px solid darkgray;
+  padding: 3px;
+}
+
+td:not(:first-child) {
+  text-align: center;
+}
+
+.dimensions th,
+.dimensions td {
+  width: 120px;
+}
+
+.downloads th,
+.downloads td {
+  width: 230px;
+}

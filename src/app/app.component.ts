@@ -25,6 +25,7 @@ import { WelcomeDialogComponent } from './features/welcome/welcome-dialog/welcom
 import { WorkflowManagementService } from './features/controls/management/workflow-management.service';
 import { DrawingsService } from './features/drawings/drawings.service';
 import { Printing3dService } from './features/printing-3d/printing-3d.service';
+import { Print3dDialogComponent } from './features/printing-3d/print-3d-dialog/print-3d-dialog.component';
 
 // ¯\_(ツ)_/¯
 
@@ -42,6 +43,7 @@ import { Printing3dService } from './features/printing-3d/printing-3d.service';
     MemberEditDialogComponent,
     MemberTableComponent,
     MenusComponent,
+    Print3dDialogComponent,
     RulerComponent,
     SampleSelectionDialogComponent,
     SetupWizardComponent,

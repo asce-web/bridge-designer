@@ -1,0 +1,154 @@
+<jqxWindow
+  #dialog
+  [isModal]="true"
+  [autoOpen]="false"
+  [width]="720"
+  [height]="428"
+  [initContent]="initDialogContent"
+  (onOpen)="handleDialogOpen()"
+>
+  <div
+    #header
+    class="header"
+  >
+    Export model to 3D print
+  </div>
+  <div
+    #content
+    class="content"
+  >
+    <div class="para">
+      <img
+        class="warning-icon"
+        src="img/warning.png"
+        alt="Warning icon"
+      />For a successful print, it's important to get these values right! Press Help... if you're not familiar.
+    </div>
+    <div class="labeled-input-container">
+      <div class="input-label">Smallest printable feature (millimeters):</div>
+      <div class="input-widget">
+        <jqxNumberInput
+          [width]="50"
+          [height]="25"
+          [min]="1"
+          [digits]="3"
+          [decimalDigits]="1"
+          [groupSeparator]="''"
+          [(ngModel)]="config.minFeatureSizeMm"
+        ></jqxNumberInput>
+      </div>
+      <div class="input-label">Wiggle room (millimeters):</div>
+      <div class="input-widget">
+        <jqxNumberInput
+          [width]="50"
+          [height]="25"
+          [min]="0"
+          [max]="1"
+          [digits]="3"
+          [decimalDigits]="2"
+          [groupSeparator]="''"
+          [(ngModel)]="config.wiggleMm"
+        ></jqxNumberInput>
+      </div>
+    </div>
+    <div class="two-column-container">
+      <div class="para">
+        <div>Scale: {{ config.modelMmPerWorldM.toFixed(2) }} model millimeters per world meter</div>
+        <ng-container #scaleSliderContainer></ng-container>
+      </div>
+      <div class="para">
+        <table class="dimensions">
+          <caption>
+            Maximum part dimensions
+          </caption>
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th>Size (mm)</th>
+              <th>Part</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Width (x)</td>
+              <td>{{ modelInfo.printWidth.toFixed(1) }}</td>
+              <td>{{ modelInfo.maxWidthPart }}</td>
+            </tr>
+            <tr>
+              <td>Depth (y)</td>
+              <td>{{ modelInfo.printDepth.toFixed(1) }}</td>
+              <td>{{ modelInfo.maxDepthPart }}</td>
+            </tr>
+            <tr>
+              <td>Height (z)</td>
+              <td>{{ modelInfo.printHeight.toFixed(1) }}</td>
+              <td>{{ modelInfo.maxHeightPart }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="two-column-container">
+      <div class="para">
+        File base name
+        <div>
+          <input
+            #projectNameInput
+            id="fileName"
+            style="width: 200px"
+            type="text"
+            maxlength="40"
+            [(ngModel)]="config.baseFileName"
+          />
+        </div>
+      </div>
+      <div class="para">
+        <table class="downloads">
+          <caption>
+            Exports
+          </caption>
+          <thead>
+            <tr>
+              <th>File name</th>
+              <th>Contents</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ config.baseFileName }}-abutments</td>
+              <td>{{ abutmentsFileContents }}</td>
+            </tr>
+            <tr>
+              <td>{{ config.baseFileName }}-cross-members.obj</td>
+              <td>{{ crossMembersFileContents }}</td>
+            </tr>
+            <tr>
+              <td>{{ config.baseFileName }}-trusses.obj</td>
+              <td>{{ trussesFileContents }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="buttons">
+      <jqxButton
+        style="margin-bottom: 4px; margin-top: 8px; margin-right: 4px"
+        (onClick)="handleHelpButtonClick()"
+        [width]="'120px'"
+        >Help...</jqxButton
+      >
+      <jqxButton
+        style="margin-bottom: 4px; margin-top: 8px; margin-right: 4px"
+        (onClick)="dialog.close()"
+        [width]="'120px'"
+        >Cancel</jqxButton
+      >
+      <jqxButton
+        style="margin-bottom: 4px; margin-top: 8px"
+        (onClick)="handleOkButtonClick()"
+        [width]="'120px'"
+        >Ok</jqxButton
+      >
+    </div>
+  </div>
+</jqxWindow>
