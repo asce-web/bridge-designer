@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Injectable } from '@angular/core';
 import { Manifold, Mesh, Vec3 } from 'manifold-3d';
 import { cleanup } from 'manifold-3d/lib/garbage-collector.js';

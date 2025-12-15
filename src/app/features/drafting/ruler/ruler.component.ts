@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, HostBinding, Input, ViewChild } from '@angular/core';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
 import { CommonModule } from '@angular/common';

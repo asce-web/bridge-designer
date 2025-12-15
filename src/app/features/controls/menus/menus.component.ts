@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { jqxMenuComponent, jqxMenuModule } from 'jqwidgets-ng/jqxmenu';

@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 // Source: torn-member.obj
 // prettier-ignore
 export const TORN_MEMBER_MESH_DATA = {

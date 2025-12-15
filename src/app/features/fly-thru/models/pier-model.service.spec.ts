@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { TestBed } from '@angular/core/testing';
 import { PierModelService } from './pier-model.service';
 import { projectLocalMatchers } from '../../../shared/test/jasmine-matchers';

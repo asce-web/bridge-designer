@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2025-2026 Gene Ressler
+     SPDX-License-Identifier: GPL-3.0-or-later -->
+
 # Iterations
 
 An iteration from the user's point of view is a non-empty series of design changes followed by a test. The BD captures

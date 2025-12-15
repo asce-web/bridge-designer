@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { DesignConditions } from '../services/design-conditions.service';
 import { ViewportTransform2D } from '../services/viewport-transform.service';
 import { FillStyle, Point2D, Point2DInterface, StrokeStyle } from './graphics';

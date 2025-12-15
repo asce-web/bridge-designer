@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { DesignConditions } from '../services/design-conditions.service';
 import { Joint } from './joint.model';
 import { Member } from './member.model';

@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { AfterViewInit, ChangeDetectionStrategy, Component, Input, ViewChild } from '@angular/core';
 import { jqxDropDownListComponent, jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
 import { EventBrokerService, EventOrigin } from '../../services/event-broker.service';

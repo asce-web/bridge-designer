@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { BridgeModel } from '../classes/bridge.model';
 import { Point2DInterface } from '../classes/graphics';
 import { Joint } from '../classes/joint.model';

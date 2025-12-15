@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2025-2026 Gene Ressler
+     SPDX-License-Identifier: GPL-3.0-or-later -->
+
 # Edit commands
 
 The undo/redo feature relies on a buffer of edit command objects. Each object represents a user edit of the bridge: add,

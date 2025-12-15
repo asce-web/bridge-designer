@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { AfterViewInit, ChangeDetectionStrategy, Component, QueryList, ViewChildren } from '@angular/core';
 import { jqxNotificationComponent, jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { ToastKind } from './toast-error';

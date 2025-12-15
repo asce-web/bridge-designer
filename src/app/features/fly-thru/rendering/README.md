@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2025-2026 Gene Ressler
+     SPDX-License-Identifier: GPL-3.0-or-later -->
+
 # Rendering
 
 This directory contains rendering logic for fly-thru animation models.

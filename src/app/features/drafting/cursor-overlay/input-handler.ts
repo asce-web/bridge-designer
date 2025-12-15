@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 export type InputHandlerSet = {
   handlePointerEnter?: (event: PointerEvent) => void;
   handlePointerLeave?: (event: PointerEvent) => void;

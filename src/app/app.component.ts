@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { AfterViewInit, Component, ElementRef, HostListener, ViewChild, ViewEncapsulation } from '@angular/core';
 import { AboutDialogComponent } from './features/about/about-dialog/about-dialog.component';
 import { CostReportDialogComponent } from './features/costs/cost-report-dialog/cost-report-dialog.component';

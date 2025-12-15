@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { EditableUtility } from '../../../shared/classes/editing';
 import { Geometry } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';

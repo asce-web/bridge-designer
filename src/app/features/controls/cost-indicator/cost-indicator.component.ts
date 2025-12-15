@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Component } from '@angular/core';
 import { BridgeCostService } from '../../../shared/services/bridge-cost.service';
 import { DOLLARS_FORMATTER } from '../../../shared/classes/utility';

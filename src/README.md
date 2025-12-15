@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2025-2026 Gene Ressler
+     SPDX-License-Identifier: GPL-3.0-or-later -->
+
 # Bridge Designer, Cloud Edition (BDCE)
 
 This is a redesign and implementation as a web app of the Engineering Encounters Bridge Designer, formerly the West

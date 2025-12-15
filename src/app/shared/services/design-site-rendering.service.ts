@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Injectable } from '@angular/core';
 import { Colors, Point2D } from '../classes/graphics';
 import { SiteConstants } from '../classes/site-constants';

@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { Point2DInterface } from '../../../shared/classes/graphics';

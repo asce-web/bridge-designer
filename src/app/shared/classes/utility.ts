@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { BitVector } from '../core/bitvector';
 
 export const DOLLARS_FORMATTER = new Intl.NumberFormat('en-US', {

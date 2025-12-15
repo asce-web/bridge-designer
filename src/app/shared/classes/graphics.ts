@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { ElementRef } from '@angular/core';
 import { Utility } from './utility';
 import { mat3, mat4, ReadonlyMat4 } from 'gl-matrix';

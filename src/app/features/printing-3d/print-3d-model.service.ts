@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Injectable } from '@angular/core';
 import Module, { Manifold, Mat4, Polygons, SimplePolygon, Vec2 } from 'manifold-3d';
 import { garbageCollectManifold } from 'manifold-3d/lib/garbage-collector.js';

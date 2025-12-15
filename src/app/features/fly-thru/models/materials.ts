@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 export const MATERIAL_CONFIG = new Float32Array([
   // Global alpha and padding
   1.0, 0, 0, 0,

@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Material, Shape, StockId } from '../services/inventory.service';
 import { Editable } from './editing';
 import { Geometry } from './graphics';

@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { make32BitRandomGenerator } from './random-generator';
 import { TreeMap } from './tree-map';
 

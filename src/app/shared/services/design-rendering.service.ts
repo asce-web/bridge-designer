@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Injectable } from '@angular/core';
 import { DesignBridgeRenderingService } from './design-bridge-rendering.service';
 import { DesignSiteRenderingService } from './design-site-rendering.service';

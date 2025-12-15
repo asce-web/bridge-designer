@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Injectable } from '@angular/core';
 import { mat3, mat4, vec2, vec3 } from 'gl-matrix';
 import { Geometry } from '../../../shared/classes/graphics';

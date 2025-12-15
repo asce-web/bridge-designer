@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild } from '@angular/core';
 import { jqxGridModule, jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
 import { jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';

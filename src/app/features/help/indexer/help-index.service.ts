@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Injectable } from '@angular/core';
 import { HELP_INDEX_DATA } from './index-data';
 import { create, search, insertMultiple, Results, TypedDocument, Orama, SearchParams } from '@orama/orama';

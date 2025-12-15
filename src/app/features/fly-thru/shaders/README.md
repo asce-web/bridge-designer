@@ -1,3 +1,6 @@
+<!-- Copyright (c) 2025-2026 Gene Ressler
+     SPDX-License-Identifier: GPL-3.0-or-later -->
+
 # Shaders
 
 This directory contains shader code, a simple build system, and a service to provide compiled shader programs.

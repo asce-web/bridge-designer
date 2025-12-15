@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 type Color = 'r' | 'b';
 type NullableNode<K, V> = Node<K, V> | null;
 type Node<K, V> = {

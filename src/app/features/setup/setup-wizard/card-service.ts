@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { CartoonOptionMask } from '../../../shared/services/cartoon-rendering.service';
 import { Injectable } from '@angular/core';
 import { DeckType, DesignConditions, LoadType } from '../../../shared/services/design-conditions.service';

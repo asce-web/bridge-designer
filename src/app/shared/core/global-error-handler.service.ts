@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { ErrorHandler, Injectable } from '@angular/core';
 import { ToastError } from '../../features/toast/toast/toast-error';
 import { EventBrokerService, EventOrigin } from '../services/event-broker.service';

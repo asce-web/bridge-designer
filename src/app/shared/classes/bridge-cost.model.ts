@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { TreeMap } from '../core/tree-map';
 import { CrossSection, Material, Shape } from '../services/inventory.service';
 import { FIXED_FORMATTER } from './utility';

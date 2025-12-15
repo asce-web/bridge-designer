@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 // Source: truck-cab.obj
 // prettier-ignore
 export const TRUCK_CAB_MESH_DATA = {

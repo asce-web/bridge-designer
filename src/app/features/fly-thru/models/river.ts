@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 // This file is generated. Edit river.py.
 // prettier-ignore
 export const RIVER_AXIS = new Float32Array([

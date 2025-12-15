@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { EditCommand, EditEffect } from '../../../shared/classes/editing';
 import { DraftingPanelState } from '../../../shared/services/persistence.service';
 import { DehydrationContext } from './dehydration-context';

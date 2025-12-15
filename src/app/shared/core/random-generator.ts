@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 /** Generates usefully random numbers from a 128 bit seed. Not cryptographically secure. */
 export function make32BitRandomGenerator(a: number, b: number, c: number, d: number): () => number {
   a |= 0;

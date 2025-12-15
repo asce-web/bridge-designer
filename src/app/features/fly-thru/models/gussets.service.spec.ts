@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { TestBed } from '@angular/core/testing';
 import { GussetsService } from '../../../shared/services/gussets.service';
 import { BridgeService } from '../../../shared/services/bridge.service';

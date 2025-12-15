@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 // Source: wheel.obj
 // prettier-ignore
 export const WHEEL_MESH_DATA = {

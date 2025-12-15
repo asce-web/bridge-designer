@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { EventEmitter, Injectable } from '@angular/core';
 import { HotElementService } from './hot-element.service';
 import { Utility } from '../../../shared/classes/utility';

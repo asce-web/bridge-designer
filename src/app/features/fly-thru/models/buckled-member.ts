@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 // Source: buckled-member.obj
 // prettier-ignore
 export const BUCKLED_MEMBER_MESH_DATA = {

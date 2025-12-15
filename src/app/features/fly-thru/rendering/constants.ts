@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { vec4 } from "gl-matrix";
 
 export const UNIT_LIGHT_DIRECTION = vec4.fromValues(0.0572181596, 0.68661791522, 0.72476335496, 0);

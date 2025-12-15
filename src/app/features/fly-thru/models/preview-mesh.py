@@ -1,3 +1,6 @@
+# Copyright (c) 2025-2026 Gene Ressler
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # Rudimentary viewer for mesh data positions and normals. On ubuntu with
 # python3 isntalled, `sudo apt install python3-tk` for Tkinter. Breakpoint
 # model generator and copy/paste JSON.stringify(meshData) from the debug

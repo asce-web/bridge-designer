@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { InterpolationService, Interpolator } from './interpolation.service';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { AnalysisService } from '../../../shared/services/analysis.service';

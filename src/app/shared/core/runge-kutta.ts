@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 /**
  * Performs one step of Runge-Kutta fourth order integration taking state vector `x` to `xNew`.
  * Tailored for applications that don't furnish `t` to the derivative function.

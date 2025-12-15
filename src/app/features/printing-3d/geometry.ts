@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { Polygons, Vec2 } from 'manifold-3d';
 import { SiteConstants } from '../../shared/classes/site-constants';
 import { BridgeService } from '../../shared/services/bridge.service';
