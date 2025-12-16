@@ -55,10 +55,10 @@ export class Print3dDialogComponent implements AfterViewInit {
       {
         height: 44,
         width: 280,
-        max: 10,
+        max: 30,
         min: 2,
         mode: 'fixed',
-        step: 0.2,
+        step: 0.1,
         showTicks: true,
         template: 'primary',
         value: this.config.modelMmPerWorldM,
