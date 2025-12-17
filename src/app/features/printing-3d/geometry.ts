@@ -58,6 +58,7 @@ export class Print3dGeometry {
     bridgeService: BridgeService,
     public readonly modelMmPerWorldM: number,
     public readonly minFeatureSize: number,
+    public readonly wiggle: number,
   ) {
     const minFeatureSizeWorldM = minFeatureSize / modelMmPerWorldM;
     this.gussets = gussetsService.createGussets(minFeatureSizeWorldM * 1000);

@@ -40,8 +40,8 @@ export class Print3dModelService {
   }
 
   /** Returns a container of calculated info common to several manifold builds. */
-  public getGeometry(modelMmPerWorldM: number, minFeatureSize: number): Print3dGeometry {
-    return new Print3dGeometry(this.gussetsService, this.bridgeService, modelMmPerWorldM, minFeatureSize);
+  public getGeometry(modelMmPerWorldM: number, minFeatureSize: number, wiggle: number): Print3dGeometry {
+    return new Print3dGeometry(this.gussetsService, this.bridgeService, modelMmPerWorldM, minFeatureSize, wiggle);
   }
 
   /** Returns whether the current bridge has a pier to print. */
@@ -86,7 +86,8 @@ export class Print3dModelService {
     const pinSize = gmy.pinSize * modelMmPerWorldM;
     const halfPinSize = 0.5 * pinSize;
     for (const member of this.bridgeService.bridge.members) {
-      const size = Math.max(modelMmPerWorldM * member.materialSizeMm * 0.001, gmy.minFeatureSize);
+      // Account for all pin joint wiggle here so the pin doesn't shrink.
+      const size = Math.max(modelMmPerWorldM * member.materialSizeMm * 0.001, gmy.minFeatureSize + 2 * gmy.wiggle);
       const halfsize = size * 0.5;
       const [ax, ay] = transformVec2(xyTransform, member.a.x, member.a.y);
       const [bx, by] = transformVec2(xyTransform, member.b.x, member.b.y);

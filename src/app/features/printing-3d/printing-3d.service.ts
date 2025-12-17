@@ -105,8 +105,7 @@ export class Printing3dService {
   public async getUnscaledModelInfo(): Promise<Print3dModelInfo> {
     await this.print3dModelService.initialize();
     const modelMmPerWorldM = 1;
-    const minFeatureSize = 1;
-    const gmy = this.print3dModelService.getGeometry(modelMmPerWorldM, minFeatureSize);
+    const gmy = this.print3dModelService.getGeometry(1, 1, 0);
     // Compute only objects that could possibly establish the max sizes.
     const truss = this.print3dModelService.buildTruss(gmy, [modelMmPerWorldM, 0, 0, modelMmPerWorldM, 0, 0]);
     const info = new Print3dModelInfo();
@@ -131,7 +130,8 @@ export class Printing3dService {
 
     const modelMmPerWorldM = config.modelMmPerWorldM;
     const minFeatureSize = config.minFeatureSizeMm;
-    const gmy = this.print3dModelService.getGeometry(modelMmPerWorldM, minFeatureSize);
+    const wiggle = config.wiggleMm;
+    const gmy = this.print3dModelService.getGeometry(modelMmPerWorldM, minFeatureSize, wiggle);
 
     // ---- Trusses ----
 
