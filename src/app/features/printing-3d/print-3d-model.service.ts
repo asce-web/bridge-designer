@@ -83,8 +83,8 @@ export class Print3dModelService {
       truss = truss ? truss.add(newComponent) : newComponent;
     };
     const modelMmPerWorldM = gmy.modelMmPerWorldM;
-    const pinSize = gmy.pinSize * modelMmPerWorldM;
-    const halfPinSize = 0.5 * pinSize;
+    const pinHoleSize = gmy.pinHoleSize * modelMmPerWorldM;
+    const halfPinHoleSize = 0.5 * pinHoleSize;
     for (const member of this.bridgeService.bridge.members) {
       // Account for all pin joint wiggle here so the pin doesn't shrink.
       const size = Math.max(modelMmPerWorldM * member.materialSizeMm * 0.001, gmy.minFeatureSize + 2 * gmy.wiggle);
@@ -96,9 +96,10 @@ export class Print3dModelService {
       let len = Math.hypot(dx, dy);
       dx /= len;
       dy /= len;
-      // Rotate to correct angle after shifting down and right, then translate to a.
-      const tx = ax + halfPinSize * dx + halfsize * dy;
-      const ty = ay + halfPinSize * dy - halfsize * dx;
+      // Rotate to correct angle after shifting down by half member size
+      // and right by half pin size with wiggle, then translate to a.
+      const tx = ax + halfPinHoleSize * dx + halfsize * dy;
+      const ty = ay + halfPinHoleSize * dy - halfsize * dx;
       // prettier-ignore
       const m: Mat4 = [
           dx, dy, 0, 0, // column 0
@@ -106,11 +107,11 @@ export class Print3dModelService {
           0, 0, 1, 0, // column 2
           tx, ty, 0, 1, // column 3
         ];
-      add(this.manifoldClass.cube([len - pinSize, size, size]).transform(m));
+      add(this.manifoldClass.cube([len - pinHoleSize, size, size]).transform(m));
     }
-    const hole: SimplePolygon = gmy.pin.map(v => [modelMmPerWorldM * v[0], modelMmPerWorldM * v[1]] as Vec2).reverse();
+    const hole: SimplePolygon = gmy.pinHole.map(v => [modelMmPerWorldM * v[0], modelMmPerWorldM * v[1]] as Vec2);
     // Pad gusset min member size by a few percent to make things easier for slicers.
-    for (const gusset of this.gussetsService.createGussets(gmy.pinSize * 1100)) {
+    for (const gusset of this.gussetsService.createGussets(gmy.pinHoleSize * 1100)) {
       const polygon: SimplePolygon = gusset.hull.map(pt => transformVec2(xyTransform, pt.x, pt.y, 0));
       if (isReverseWinding(xyTransform)) polygon.reverse();
       const [gx, gy] = transformVec2(xyTransform, gusset.joint.x, gusset.joint.y);
@@ -193,21 +194,22 @@ export class Print3dModelService {
   /** Returns a standard (not end or center) deck panel with given geometry. Has male and female zippers. */
   private buildStandardPanel(gmy: Print3dGeometry): Manifold {
     const zipper = this.manifoldClass.extrude(gmy.zipper, gmy.zipperThickness).rotate(0, 90, 0);
+    const zipperHole = this.manifoldClass.extrude(gmy.zipperHole, gmy.zipperThickness).rotate(0, 90, 0);
     const zipperZ = gmy.deckPanelZOffset + 0.001; // fudge to prevent sliver from subtract
     return this.extrudeCentered(gmy.standardDeckPanel, gmy.roadwayWidth)
       .add(zipper.translate(gmy.deckPanelZipperX, zipperZ, 0))
-      .subtract(zipper.translate(-gmy.deckBeamHalfWidth, zipperZ))
+      .subtract(zipperHole.translate(-gmy.deckBeamHalfWidth - 0.001, zipperZ)) // fudge again
       .rotate(-90, 0, 0)
       .translate(gmy.standardDeckPanelXOffset, gmy.deckPanelYOffset, gmy.deckPanelZOffset);
   }
 
   /** Returns a deck beam (no panel) with given geometry. Has two female zippers to join panels on both sides sides. */
   private buildCenterBeam(gmy: Print3dGeometry): Manifold {
-    const zipper = this.manifoldClass.extrude(gmy.zipper, gmy.zipperThickness).rotate(0, 90, 0);
+    const zipper = this.manifoldClass.extrude(gmy.zipperHole, gmy.zipperThickness).rotate(0, 90, 0);
     const zipperZ = gmy.deckPanelZOffset + 0.001; // fudge to prevent sliver from subtract
     return this.extrudeCentered(gmy.centerDeckBeam, gmy.roadwayWidth)
-      .subtract(zipper.translate(-gmy.deckBeamHalfWidth, zipperZ))
-      .subtract(zipper.translate(gmy.deckBeamHalfWidth - gmy.zipperThickness, zipperZ))
+      .subtract(zipper.translate(-gmy.deckBeamHalfWidth - 0.001, zipperZ))
+      .subtract(zipper.translate(gmy.deckBeamHalfWidth - gmy.zipperThickness + 0.001, zipperZ))
       .rotate(-90, 0, 0)
       .translate(gmy.centerDeckBeamXOffset, gmy.deckPanelYOffset, gmy.deckPanelZOffset);
   }
@@ -232,10 +234,10 @@ export class Print3dModelService {
   /** Returns a support pillow with given geometry. */
   private buildPillow(gmy: Print3dGeometry): Manifold {
     const pillow = this.extrudeCentered(gmy.pillow, gmy.roadwayWidth);
-    const tab = this.extrudeCentered(gmy.tab, 2 * gmy.tabThickness)
+    const tabHole = this.extrudeCentered(gmy.tabHole, 2 * gmy.tabThickness)
       .rotate(-90, 0, 0)
       .translate(0, -gmy.pillowHeight, 0);
-    return pillow.subtract(tab).rotate(-90, 0, 0);
+    return pillow.subtract(tabHole).rotate(-90, 0, 0);
   }
 
   private isPillowJoint(joint: Joint): boolean {

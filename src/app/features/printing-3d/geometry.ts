@@ -1,7 +1,7 @@
 /* Copyright (c) 2025-2026 Gene Ressler
    SPDX-License-Identifier: GPL-3.0-or-later */
 
-import { Polygons, Vec2 } from 'manifold-3d';
+import { Vec2 } from 'manifold-3d';
 import { SiteConstants } from '../../shared/classes/site-constants';
 import { BridgeService } from '../../shared/services/bridge.service';
 import { DesignConditions } from '../../shared/services/design-conditions.service';
@@ -42,15 +42,18 @@ export class Print3dGeometry {
   public readonly pillowXOffset: number;
   public readonly pillowHeight: number;
   public readonly pin: Vec2[];
-  public readonly pinSize: number;
+  public readonly pinHole: Vec2[];
+  public readonly pinHoleSize: number;
   public readonly pinMember: Vec2[];
   public readonly pinMemberXOffset: number;
   public readonly pinMemberYOffset: number;
   public readonly standardDeckPanel: Vec2[];
   public readonly standardDeckPanelXOffset: number;
   public readonly tab: Vec2[];
+  public readonly tabHole: Vec2[];
   public readonly tabThickness: number;
-  public readonly zipper: Polygons;
+  public readonly zipper: Vec2[];
+  public readonly zipperHole: Vec2[];
   public readonly zipperThickness: number;
 
   constructor(
@@ -61,6 +64,7 @@ export class Print3dGeometry {
     public readonly wiggle: number,
   ) {
     const minFeatureSizeWorldM = minFeatureSize / modelMmPerWorldM;
+    const wiggleWorldM = wiggle / modelMmPerWorldM;
     this.gussets = gussetsService.createGussets(minFeatureSizeWorldM * 1000);
     this.bridgeWidth = 2 * bridgeService.bridgeHalfWidth;
     this.roadwayWidth = 2 * SiteConstants.DECK_HALF_WIDTH;
@@ -69,7 +73,7 @@ export class Print3dGeometry {
     const dbhw = pmhs + minFeatureSizeWorldM; // deck beam half width
     const dt = bridgeService.designConditions.deckThickness;
     const fw = minFeatureSizeWorldM; // flange width
-    const phs = 0.4; // pillow half size (all 3 sides)
+    const phs = 0.6; // pillow half size (all 3 sides)
     const dphw = 0.5; // Desired pier half width
     const aw = 4; // approach width
     const pw = DesignConditions.PANEL_SIZE_WORLD; // panel width
@@ -111,8 +115,8 @@ export class Print3dGeometry {
     const x11 = dbhw;
     const x12 = -dbhw - fw;
     const x13 = dbhw + fw;
-    const x14 = pw - dbhw - fw;
-    const x15 = pw - dbhw;
+    const x14 = pw - dbhw - fw - wiggleWorldM;
+    const x15 = pw - dbhw - wiggleWorldM;
 
     const y0 = -bridgeService.bridgeHalfWidth;
     const y1 = bridgeService.bridgeHalfWidth;
@@ -156,11 +160,15 @@ export class Print3dGeometry {
     const uu: Vec2 = [x9, z3];
     const vv: Vec2 = [x11, z1];
 
-    // Pin coords
+    // Pin coords. All wiggle is in the hole.
     const ww: Vec2 = [0, z5];
     const xx: Vec2 = [x8, 0];
     const yy: Vec2 = [0, z3];
     const zz: Vec2 = [x9, 0];
+    const wwh: Vec2 = [0, z5 + wiggleWorldM];
+    const xxh: Vec2 = [x8 - wiggleWorldM, 0];
+    const yyh: Vec2 = [0, z3 - wiggleWorldM];
+    const zzh: Vec2 = [x9 + wiggleWorldM, 0];
 
     // Pillow coords. In own coords, not bridge.
     const i: Vec2 = [x5, -pht];
@@ -214,7 +222,8 @@ export class Print3dGeometry {
     this.pillowHeight = pht;
     this.pillowXOffset = phs;
     this.pin = [ww, xx, yy, zz];
-    this.pinSize = 2 * pmhs;
+    this.pinHole = [zzh, yyh, xxh, wwh]; // clockwise
+    this.pinHoleSize = 2 * (pmhs + wiggleWorldM);
     this.pinMember = [tt, uu, jj, ii];
     this.pinMemberXOffset = pmhs;
     this.pinMemberYOffset = 0.5 * this.bridgeWidth;
@@ -240,11 +249,14 @@ export class Print3dGeometry {
     // Zipper.
 
     const ftd = 4 * minFeatureSizeWorldM; // full tooth depth
-    const tht = 1 * minFeatureSizeWorldM; // tooth height
+    const tht = minFeatureSizeWorldM; // tooth height
+    const ol = minFeatureSizeWorldM; // tooth overlap
     const zx0 = -1.5 * ftd;
     const zx1 = -0.5 * ftd;
-    const zx2 = 0.5 * ftd;
-    const zx3 = 1.5 * ftd;
+    const zx2 = zx1 + ol;
+    const zx4 = 0.5 * ftd;
+    const zx3 = zx4 - ol;
+    const zx5 = 1.5 * ftd;
     const zy0 = -2 * tht;
     const zy1 = -tht;
 
@@ -252,25 +264,40 @@ export class Print3dGeometry {
     const zb: Vec2 = [zx1, zy1];
     const zc: Vec2 = [zx2, zy1];
     const zd: Vec2 = [zx3, zy1];
+    const ze: Vec2 = [zx4, zy1];
+    const zf: Vec2 = [zx5, zy1];
 
-    const ze: Vec2 = [zx0, 0];
-    const zf: Vec2 = [zx1, 0];
-    const zg: Vec2 = [zx2, 0];
-    const zh: Vec2 = [zx3, 0];
+    const zg: Vec2 = [zx0, 0];
+    const zh: Vec2 = [zx2, 0];
+    const zi: Vec2 = [zx3, 0];
+    const zj: Vec2 = [zx5, 0];
 
-    const zi: Vec2 = [zx1, zy0];
-    const zj: Vec2 = [zx2, zy0];
+    const zk: Vec2 = [zx1, zy0];
+    const zl: Vec2 = [zx4, zy0];
 
-    this.zipper = [
-      [za, zb, zf, ze],
-      [zb, zi, zj, zc],
-      [zc, zd, zh, zg],
-    ];
+    this.zipper = [zb, zk, zl, ze, zf, zj, zi, zd, zc, zh, zg, za];
+
+    const zha: Vec2 = [zx0 - wiggleWorldM, zy1 + wiggleWorldM];
+    const zhb: Vec2 = [zx1 - wiggleWorldM, zy1 + wiggleWorldM];
+    const zhc: Vec2 = [zx2 + wiggleWorldM, zy1 - wiggleWorldM];
+    const zhd: Vec2 = [zx3 - wiggleWorldM, zy1 - wiggleWorldM];
+    const zhe: Vec2 = [zx4 + wiggleWorldM, zy1 + wiggleWorldM];
+    const zhf: Vec2 = [zx5 + wiggleWorldM, zy1 + wiggleWorldM];
+
+    const zhg: Vec2 = [zx0 - wiggleWorldM, 0];
+    const zhh: Vec2 = [zx2 + wiggleWorldM, 0];
+    const zhi: Vec2 = [zx3 - wiggleWorldM, 0];
+    const zhj: Vec2 = [zx5 + wiggleWorldM, 0];
+
+    const zhk: Vec2 = [zx1 - wiggleWorldM, zy0 - 2 * wiggleWorldM];
+    const zhl: Vec2 = [zx4 + wiggleWorldM, zy0 - 2 * wiggleWorldM];
+    this.zipperHole = [zhb, zhk, zhl, zhe, zhf, zhj, zhi, zhd, zhc, zhh, zhg, zha];
+
     this.zipperThickness = minFeatureSizeWorldM;
 
     // Tab.
 
-    const thw = 0.75 * minFeatureSizeWorldM; // tab half width
+    const thw = 0.5 * minFeatureSizeWorldM; // tab half width
     const thd = 8 * minFeatureSizeWorldM; // tab half depth
     const tx0 = -thw;
     const tx1 = thw;
@@ -281,6 +308,11 @@ export class Print3dGeometry {
     const tc: Vec2 = [tx1, ty1];
     const td: Vec2 = [tx0, ty1];
     this.tab = [ta, tb, tc, td];
+    const tah: Vec2 = [tx0 - wiggleWorldM, ty0 - wiggleWorldM];
+    const tbh: Vec2 = [tx1 + wiggleWorldM, ty0 - wiggleWorldM];
+    const tch: Vec2 = [tx1 + wiggleWorldM, ty1 + wiggleWorldM];
+    const tdh: Vec2 = [tx0 - wiggleWorldM, ty1 + wiggleWorldM];
+    this.tabHole = [tah, tbh, tch, tdh];
     this.tabThickness = 2 * thw;
   }
 }
