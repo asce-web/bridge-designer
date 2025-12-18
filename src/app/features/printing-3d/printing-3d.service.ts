@@ -138,6 +138,7 @@ export class Printing3dService {
 
     const gap = 0.5;
     let placementX = 0;
+    // Advances the placement x-coordinate by width of given manifold to separate parts.
     const advancePlacementX = (manifold: Manifold): number => {
       const bb = manifold.boundingBox();
       return (placementX += bb.max[0] - bb.min[0] + gap);
@@ -149,30 +150,26 @@ export class Printing3dService {
     const abutmentsContext = new ObjFileContext();
 
     const leftAbutment = this.print3dModelService.buildAbutment(gmy, placementX);
-
-    this.saveMeshAndFree(leftAbutment, 'LeftAbutment', abutmentsText, abutmentsContext);
     advancePlacementX(leftAbutment);
+    this.saveMeshAndFree(leftAbutment, 'LeftAbutment', abutmentsText, abutmentsContext);
 
     const rightAbutment = this.print3dModelService.buildAbutment(gmy, placementX);
-
-    this.saveMeshAndFree(rightAbutment, 'RightAbutment', abutmentsText, abutmentsContext);
     advancePlacementX(rightAbutment);
+    this.saveMeshAndFree(rightAbutment, 'RightAbutment', abutmentsText, abutmentsContext);
 
     // ---- Anchorages ----
     for (const side of this.print3dModelService.anchorages) {
       const anchorage = this.print3dModelService.buildAnchorage(gmy, placementX);
-
-      this.saveMeshAndFree(anchorage, `${side}Anchorage`, abutmentsText, abutmentsContext);
       advancePlacementX(anchorage);
+      this.saveMeshAndFree(anchorage, `${side}Anchorage`, abutmentsText, abutmentsContext);
     }
 
     // ---- Pier ----
 
     if (this.print3dModelService.isPier) {
       const pier = this.print3dModelService.buildPier(gmy, placementX);
-
-      this.saveMeshAndFree(pier, 'Pier', abutmentsText, abutmentsContext);
       advancePlacementX(pier);
+      this.saveMeshAndFree(pier, 'Pier', abutmentsText, abutmentsContext);
     }
     this.downloadObjFileText(abutmentsText, baseFileName, 'abutments');
 
@@ -187,9 +184,8 @@ export class Printing3dService {
       const joint = iteration.value;
 
       const crossMember = this.print3dModelService.buildCrossMember(gmy, iteration.value, placementX, placementY);
-
-      this.saveMeshAndFree(crossMember, `CrossMember_${joint.number}`, crossMembersText, crossMembersContext);
       advancePlacementX(crossMember);
+      this.saveMeshAndFree(crossMember, `CrossMember_${joint.number}`, crossMembersText, crossMembersContext);
     }
 
     // ---- Deck panels
@@ -201,8 +197,6 @@ export class Printing3dService {
       const joint = iteration.value;
 
       const panel = this.print3dModelService.buildDeckPanel(gmy, joint, placementX, placementY);
-
-      this.saveMeshAndFree(panel, `DeckPanel_${joint.number}`, crossMembersText, crossMembersContext);
       // Place in two rows.
       if (joint.index === middleJointIndex) {
         placementX = 0;
@@ -210,6 +204,7 @@ export class Printing3dService {
       } else {
         advancePlacementX(panel);
       }
+      this.saveMeshAndFree(panel, `DeckPanel_${joint.number}`, crossMembersText, crossMembersContext);
     }
     this.downloadObjFileText(crossMembersText, baseFileName, 'cross-members');
   }

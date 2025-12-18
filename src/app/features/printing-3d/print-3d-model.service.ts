@@ -124,17 +124,23 @@ export class Print3dModelService {
     return truss;
   }
 
+  /** Returns as a manifold a single abutment at given placement x-coordinate. */
   public buildAbutment(gmy: Print3dGeometry, x: number): Manifold {
     const tab = this.extrudeCentered(gmy.tab, 2 * gmy.tabThickness).translate(
       gmy.abutmentXOffset,
       0,
       gmy.abutmentShelfZ,
     );
+    const cutout = this.manifoldClass
+      .extrude([gmy.abutmentCutout], gmy.abutmentWidth + 2 * FUDGE)
+      .rotate(90, 0, 90)
+      .translate(-FUDGE, 0, 0);
     const depth = gmy.bridgeWidth;
     return this.manifoldClass
       .extrude([gmy.abutment], depth)
       .translate(gmy.abutmentXOffset, 0, -0.5 * depth)
       .rotate(90, 0, 0) // Rotate y axis to z.
+      .subtract(cutout)
       .add(tab)
       .scale(gmy.modelMmPerWorldM)
       .translate(x, 0, 0);
@@ -142,10 +148,14 @@ export class Print3dModelService {
 
   public buildPier(gmy: Print3dGeometry, x: number): Manifold {
     const tab = this.extrudeCentered(gmy.tab, 2 * gmy.tabThickness).translate(gmy.pierXOffset, 0, gmy.pierTopZ);
+    const cutout = this.manifoldClass.extrude([gmy.pierCutout], gmy.pierWidth + 2 * FUDGE)
+      .rotate(90, 0, 90)
+      .translate(-FUDGE, 0, 0);
     return this.manifoldClass
       .extrude(gmy.pier, gmy.pierHeight, undefined, undefined, [gmy.pierTaperX, 1.2])
       .rotate(180, 0, 0) // Flip taper.
       .translate(gmy.pierXOffset, 0, gmy.pierTopZ)
+      .subtract(cutout)
       .add(tab)
       .scale(gmy.modelMmPerWorldM)
       .translate(x, 0, 0);
@@ -157,11 +167,17 @@ export class Print3dModelService {
       0,
       gmy.anchorageTopZ,
     );
+    // Abutment cutout works for anchorages, too.
+    const cutout = this.manifoldClass
+      .extrude([gmy.abutmentCutout], gmy.abutmentWidth + 2 * FUDGE)
+      .rotate(90, 0, 90)
+      .translate(-FUDGE, 0, 0);
     const depth = gmy.bridgeWidth;
     return this.manifoldClass
       .extrude([gmy.anchorage], depth)
       .translate(gmy.anchorageXOffset, 0, -0.5 * depth)
       .rotate(90, 0, 0) // Rotate y axis to z.
+      .subtract(cutout)
       .add(tab)
       .scale(gmy.modelMmPerWorldM)
       .translate(x, 0, 0);
@@ -198,7 +214,7 @@ export class Print3dModelService {
   private buildStandardPanel(gmy: Print3dGeometry): Manifold {
     const zipper = this.manifoldClass.extrude(gmy.zipper, gmy.zipperThickness).rotate(0, 90, 0);
     const zipperHole = this.manifoldClass.extrude(gmy.zipperHole, gmy.zipperThickness).rotate(0, 90, 0);
-    const zipperZ = gmy.deckPanelZOffset - 0.001; // fudge to prevent sliver from subtract
+    const zipperZ = gmy.deckPanelZOffset - FUDGE; // fudge to prevent sliver from subtract
     return this.extrudeCentered(gmy.standardDeckPanel, gmy.roadwayWidth)
       .add(zipper.translate(gmy.deckPanelZipperX, zipperZ, 0))
       .subtract(zipperHole.translate(-gmy.deckBeamHalfWidth - FUDGE, zipperZ))
@@ -209,7 +225,7 @@ export class Print3dModelService {
   /** Returns a deck beam (no panel) with given geometry. Has two female zippers to join panels on both sides sides. */
   private buildCenterBeam(gmy: Print3dGeometry): Manifold {
     const zipper = this.manifoldClass.extrude(gmy.zipperHole, gmy.zipperThickness).rotate(0, 90, 0);
-    const zipperZ = gmy.deckPanelZOffset + 0.001; // fudge to prevent sliver from subtract
+    const zipperZ = gmy.deckPanelZOffset + FUDGE; // fudge to prevent sliver from subtract
     return this.extrudeCentered(gmy.centerDeckBeam, gmy.roadwayWidth)
       .subtract(zipper.translate(-gmy.deckBeamHalfWidth - FUDGE, zipperZ))
       .subtract(zipper.translate(gmy.deckBeamHalfWidth - gmy.zipperThickness + FUDGE, zipperZ))
@@ -220,7 +236,7 @@ export class Print3dModelService {
   /** Returns end end deck panel with given geometry. Has only a male zipper. */
   private buildEndPanel(gmy: Print3dGeometry): Manifold {
     const zipper = this.manifoldClass.extrude(gmy.zipper, gmy.zipperThickness).rotate(0, 90, 0);
-    const zipperZ = gmy.deckPanelZOffset + 0.001; // fudge to prevent sliver from subtract
+    const zipperZ = gmy.deckPanelZOffset + FUDGE; // fudge to prevent sliver from subtract
     return this.extrudeCentered(gmy.endDeckPanel, gmy.roadwayWidth)
       .add(zipper.translate(gmy.deckPanelZipperX, zipperZ, 0))
       .rotate(-90, 0, 0)
