@@ -101,7 +101,6 @@ ul {
 }
 
 .print-3d-parts td {
-  border-collapse: collapse;
   border: 1px solid black;
   padding: 2px 4px 2px 4px;
 }
@@ -125,6 +124,7 @@ td {
   border-style: none;
   border-color: silver;
   padding: 1px;
+}
 
 th {
   border-style: none;
