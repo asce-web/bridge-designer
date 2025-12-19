@@ -20,10 +20,9 @@
       A flat, clean work surface protected from glue spills with paper: shelf paper or a large paper bag flattend out
       will work.
     </li>
-    <li>Crazy glue, otherwise called cyanoacrylate, or some other plastic glue to bond the parts together.</li>
+    <li>Crazy glue, formally called cyanoacrylate, or some other plastic glue to bond the parts together.</li>
     <li>Xacto knife, "box cutter," or single edge razor blade to trim parts as needed.</li>
     <li>Some fine sand paper, 150 to 220 grit, or a nail file or both.</li>
-    <li>A roll of sticky tape of some kind. Scotch tape will do. Duct tape is even better!</li>
     <li>
       A tool to expand holes to a diameter equal to the minimum feature size (or slightly larger) if they're too small
       to fit corresponding pins. A micro drill bit with a pin vice or other tool to spin the bit is ideal. In a pinch,
@@ -31,51 +30,83 @@
     </li>
   </ul>
   <div class="p">
-    Begin by laying out parts by type. A good way to avoid confusion is to draw a grid of 11 boxes about 3 inches square
-    on your build survace covering paper. Label them 1 to 11 and sort the parts as below.
+    Begin by laying out parts by type. A good way to avoid confusion is to draw a grid of none boxes about three inches
+    square on your build survace covering paper. Label them 1 to 9 and sort the parts as below.
   </div>
-  <ol>
-    <!-- 1 -->
-    <li>
-      Support cross-members, 1 per support. All these are identical, but they're used in different places:
-      <ul>
-        <li>
-          Abutments, 2 each. Note these may appear quite different from this picture depending on your design. For
-          example, arch abutments are taller.
-        </li>
-        <li>Pier, 0 or 1 each.</li>
-        <li>Anchorages, 0, 1, or 2 each.</li>
-      </ul>
-    </li>
-    <!-- 2 -->
-    <li>Deck end panels, 2 each.</li>
-    <!-- 3 -->
-    <li>Deck mid-panels, 2 less than the total number of deck segments.</li>
-    <!-- 4 -->
-    <li>Deck cross-members, one per unsupported deck joint, which may be 3 to 9.</li>
-    <!-- 5 -->
-    <li>Deck join beam, 1 each.</li>
-    <!-- 6 -->
-    <li>Trusses, 2 each.</li>
-    <!-- 7 -->
-    <li>
-      Deck assembly fixture, 1 each. This isn't a part of the bridge. You'll use it to hold pieces in place while others
-      are assembled.
-    </li>
-    <!-- 8 -->
-    <li>Simple cross-members, one per joint not of the other types. Count varies.</li>
-    <!-- 9 -->
-    <li>Abutments, 2 each.</li>
-    <!-- 10 -->
-    <li>Pier, 0 or 1 each</li>
-    <!-- 11 -->
-    <li>Anchorage blocks, 0, 1, or 2 each.</li>
-  </ol>
+  <table class="print-3d-parts">
+    <thead>
+      <tr>
+        <th>Ref. No.</th>
+        <th>Name</th>
+        <th></th>
+        <th>Qty.</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td>Support cross-member</td>
+        <td><img src="img/help/supportxmem.png" /></td>
+        <td>2 to 5</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td>Deck end panel</td>
+        <td><img src="img/help/deckendpanel.png" /></td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td>Deck mid panel</td>
+        <td><img src="img/help/deckmidpanel.png" /></td>
+        <td>Varies</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td>Pin cross-member</td>
+        <td><img src="img/help/pinxmem.png" /></td>
+        <td>Varies</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td>Join deck beam</td>
+        <td><img src="img/help/joinbeam.png" /></td>
+        <td>1</td>
+      </tr>
+      <tr>
+        <td>7</td>
+        <td>Abutment</td>
+        <td><img src="img/help/truss.png" /></td>
+        <td>2</td>
+      </tr>
+      <tr>
+        <td>8</td>
+        <td>Pier</td>
+        <td><img src="img/help/pier.png" /></td>
+        <td>0 or 1</td>
+      </tr>
+      <tr>
+        <td>9</td>
+        <td>Anchorage</td>
+        <td>
+          <img
+            class="tall"
+            src="img/help/anchorage.png"
+          />
+        </td>
+        <td>0 to 2</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="p">
+    You can tell the difference between deck end and mid panels by looking for the tabs and slots where they fit
+    together. The mid panel has both. The end panels have only tabs.
+  </div>
   <div class="p">
     Here are steps to complete your model. At each step, use your trimming tool and/or hole drill to make the joint fit
     well, with no gaps or excessive tightness, before applying glue. This may take some time. Be patient.
   </div>
-  <ul>
+  <ul class="checklist">
     <li>
       Glue two support cross-members (1) into the slots of the two deck end panels (2). Set them aside in grid square
       (2) to dry.
@@ -84,19 +115,27 @@
       If your bridge has a pier, glue another support cross-member (1) into any deck mid-panel (3), otherwise go to the
       next step. Set this aside in grid square (3) to dry.
     </li>
-    <li>Glue a deck cross-member (4) into the deck join beam (5). Set this aside in grid square (5).</li>
+    <li>Glue a pin cross-member (4) into the deck join beam (5).</li>
     <li>
-      Take a break! Wait until all glue applied so far is solid. Continuing with the glue still wet is asking for
+      Glue all the remaining pin cross-members (4) into the remaining deck mid-panels (3). The numbers should match!
+    </li>
+    <li>
+      Glue the deck join beam (5) onto one of the deck end panels (2). Use tape if necessary to hold them together until
+      the glue grabs. Return the assembly to square (5) to dry.
+    </li>
+    <li>
+      Take a break! Wait until all glue applied so far is solid. Continuing with the glue still weak is asking for
       trouble!
     </li>
     <li>
-      "Dry fit" the whole deck by arranging deck panels (2, 3, 4) top side up as shown in this diagram with
-      <span class="i">no glue</span>. Use your tools to ensure that the panels fit together tightly. Compare the
-      positions of the cross member pins with the holes in the truss deck panel joints. They must be able to match
-      exactly. The first and last deck pins CANNOT be farther apart then the first and last truss joint holes. (A little
-      closer together is fine.) If they are, use sandpaper and blade to remove a bit of material from each panel until
-      everything matches. Keep the panels in the dry fit left-to-right order to avoid confusion when assembling the
-      deck!
+      "Dry fit" the whole deck by arranging deck panels (2, 3, 4, 5) top side up as shown in this diagram with
+      <span class="i">no glue</span>. Check that the support members for abutments and pier are in the right positions!
+      Use your tools to ensure that the panels fit together completely. If each panel is off just a bit, the deck will
+      end up to long to fit the trusses. Prevent this by comparing the positions of the cross member pins with the holes
+      in the truss deck panel joints. They must be able to match exactly. The first and last deck pins CANNOT be farther
+      apart then the first and last truss joint holes. (A little closer together is fine.) If they are, use sandpaper
+      and blade to remove a bit of material from each panel until everything matches. Keep the panels in the dry fit
+      left-to-right order to avoid confusion when assembling the deck!
     </li>
     <li>
       Tune all cross-member pins and truss holes as needed so each pin fits in each hole up to the shoulder as shown.
@@ -104,33 +143,36 @@
       hole sizes match.
     </li>
     <li>
-      Attach both trusses (6) to the the deck assembly fixture (7) by the deck joints at the right end of your bridge.
-      By right end, we mean the right side as the bridge appears in the Bridge Designer. Poke the fixture's pins through
-      the two rightmost deck joint holes of each truss. DON'T USE GLUE. Use a narrow strip of the sticky tape to hold
-      both trusses to the fixture.
+      Identify the <span class="i">insides</span> of the trusses. These are <span class="i">smooth and flat</span>. The
+      opposite sides have a thickened gusset at each joint. These go <span class="i">>outside.</span> The inside
+      surfaces are assembled so they point toward the deck.
     </li>
     <li>
-      Starting at the left side of the bridge, add the dry-fitted deck panels one at a time, working to the right,
-      gluing as you go. Be sure to keep the panels in the correct order! A strip of tape between the trusses at each
-      joint can keep things in place while glue sets if needed. When you reach the assembly fixure, remove the tape
+      Attach the two leftmost deck joints of both trusses (6) to the the four pins of the deck join beam assembly (5).
+      Make sure the inside of each truss points toward the deck.
+    </li>
+    <li>
+      Starting at the left side of the bridge, add the deck panels one at a time, working to the right, gluing as you
+      go. Be sure to keep the panels in the correct order as you dry fitted them! A strip of tape between the trusses at
+      each joint can keep things in place while glue sets if needed. When you reach the assembly fixure, remove the tape
       holding it in place and substitute the final deck panels.
     </li>
-    <li>Take a break. Lett everything dry completely.</li>
+    <li>Take a break. Let everything dry completely.</li>
     <li>
-      Add all simple cross-members (7). This is one per joint having a hole that is <span class="i">not</span> and
-      anchorage joint.
+      Add the rest of the pin cross-members (4) to all the truss joints. Skip anchorages for now, if your bridge has
+      them.
     </li>
     <li>
-      Glue the support cross member pillows (triangular sections) of the deck to the corresponding abutment (9) and pier
-      (10) (if your bridge has one). At this point, the model should stand flat on the abutments and pier.
+      Glue the support cross member pillows (triangular sections) at the ends of the deck to the corresponding abutment
+      (7) and pier (8), if your bridge has one. At this point, the model should stand flat on its abutments and pier.
     </li>
     <li>
-      If your bridge has anchorages:
+      If your bridge has anchorages (9):
       <ol>
         <li>Glue the remaining one or two support cross-members (1) to anchorage block(s) (11).</li>
         <li>
-          Glue the pins of the anchorage support cross-member(s) to the respective holes of the trusses with the model
-          sitting on a flat surface to ensure correct orientation.
+          Glue the pins of the anchorage support cross-member(s) to the remaining holes of the trusses. Do this with the
+          model sitting on a flat surface to ensure correct orientation.
         </li>
       </ol>
     </li>
