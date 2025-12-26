@@ -1,18 +1,34 @@
 /* Copyright (c) 2025-2026 Gene Ressler
    SPDX-License-Identifier: GPL-3.0-or-later */
 
-.header {
-  font-weight: 700;
-}
-
-.body {
-  margin: 8px;
-}
-
 .buttons {
   margin-top: 8px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
   justify-content: flex-end;
+}
+
+.content {
+  margin: 8px;
+}
+
+.control-grouping {
+  border-style: ridge;
+  border-width: 2px;
+  padding: 5px;
+}
+
+legend {
+  font-weight: 700;
+  color: darkblue;
+}
+
+.header {
+  font-weight: 700;
+}
+
+.properties {
+  background-color: white;
+  border: 1px solid black;
 }

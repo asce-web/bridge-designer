@@ -58,7 +58,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
     private readonly sessionStateService: SessionStateService,
     private readonly uiStateService: UiStateService,
   ) {
-    // jqWidgets provides this of initContent to the jqxWindow component!
+    // jqWidgets provides the wrong "this" (of initContent to the jqxWindow component)!
     this.initDialogContent = this.initDialogContent.bind(this);
   }
 
@@ -91,7 +91,6 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
         orientation: 'vertical',
         step: 10,
         showTicks: false,
-        //template: 'primary',
         tooltip: false,
         value: this.brightnessSlider,
       },

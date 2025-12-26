@@ -5,11 +5,99 @@
   #dialog
   [isModal]="false"
   [autoOpen]="false"
-  [width]="500"
-  [height]="800"
+  [width]="424"
+  [height]="766"
+  [initContent]="initDialogContent"
 >
   <div class="header">Member details</div>
-  <div class="body">
+  <div class="content">
+    <fieldset>
+      <legend>Material specification</legend>
+      <jqxDropDownList [width]="376"></jqxDropDownList>
+      <div>Properties</div>
+      <table>
+        <tbody>
+          <tr>
+            <td>Material</td>
+            <td>{{ material }}</td>
+          </tr>
+          <tr>
+            <td>Yield stress (F<sub>y</sub>)</td>
+            <td>{{ yieldStress }} kN per sq. meter</td>
+          </tr>
+          <tr>
+            <td>Modulus of elasticity (E)</td>
+            <td>{{ modulus }} kN per sq. meter</td>
+          </tr>
+          <tr>
+            <td>Mass density</td>
+            <td>{{ density }} kg per cubic meter</td>
+          </tr>
+        </tbody>
+      </table>
+      <div>Dimensions</div>
+      <div style="display: flex; justify-content: space-between">
+        <div>
+          <table>
+            <tbody>
+              <tr>
+                <td>Cross-section</td>
+                <td>{{ crossSection }}</td>
+              </tr>
+              <tr>
+                <td>Size</td>
+                <td>{{ crossSectionSize }}</td>
+              </tr>
+              <tr>
+                <td>Area</td>
+                <td>{{ crossSectionArea }} sq. meters</td>
+              </tr>
+              <tr>
+                <td>Moment of inertia</td>
+                <td>{{ crossSectionMoment }} meters<sup>4</sup></td>
+              </tr>
+              <tr>
+                <td>Unit cost</td>
+                <td>{{ unitCost }} per meter</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="flex-shrink: 2">
+          <section-diagram
+            [width]="80"
+            [height]="80"
+          ></section-diagram>
+        </div>
+      </div>
+    </fieldset>
+    <fieldset>
+      <legend>Analysis</legend>
+      <div>
+        <div>Member</div>
+        <div>
+          <ng-container #memberSliderContainer></ng-container>
+        </div>
+      </div>
+      <div>Calculations</div>
+      <table>
+        <tbody>
+          <tr>
+            <td>Length</td>
+            <td>{{ memberLength }} meters</td>
+          </tr>
+          <tr>
+            <td>Cost</td>
+            <td>{{ memberCost }} per meter</td>
+          </tr>
+        </tbody>
+      </table>
+      <div>Strength vs length</div>
+      <member-strength-graph
+        [width]="376"
+        [height]="200"
+      ></member-strength-graph>
+    </fieldset>
     <div class="buttons">
       <jqxButton
         (onClick)="dialog.close()"
