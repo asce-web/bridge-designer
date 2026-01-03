@@ -17,6 +17,7 @@ import { jqxExpanderModule } from 'jqwidgets-ng/jqxexpander';
 import { SessionStateService } from '../../../shared/services/session-state.service';
 import { DEFAULT_FLY_THRU_SETTINGS, FlyThruSettings } from '../rendering/fly-thru-settings.service';
 import { UiStateService } from '../../controls/management/ui-state.service';
+import { WidgetHelper } from '../../../shared/classes/widget-helper';
 
 @Component({
   selector: 'fly-thru-settings-dialog',
@@ -65,7 +66,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
   /** Works around heinous bug in jqxSlider: can't be declared in HTML if parent isn't visible. Create dynamically. */
   initDialogContent(): void {
     // Work around heinous bug in jqWidgets. Can't declare sliders in html :-(
-    this.speedSlider = FlyThruSettingsDialogComponent.setUpSlider(
+    this.speedSlider = WidgetHelper.setUpSlider(
       this.speedSliderContainer,
       {
         height: 44,
@@ -80,7 +81,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
       },
       () => this.handleSpeedSliderChange(),
     );
-    this.brightnessSlider = FlyThruSettingsDialogComponent.setUpSlider(
+    this.brightnessSlider = WidgetHelper.setUpSlider(
       this.brightnessSliderContainer,
       {
         height: 140,
@@ -168,20 +169,6 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
     this.handleTerrainCheckboxChange();
     this.handleTruckCheckboxChange();
     this.handleWindTurbineCheckboxChange();
-  }
-
-  private static setUpSlider(
-    containerRef: ViewContainerRef,
-    inputs: { [key: string]: any },
-    onChange: () => void,
-  ): jqxSliderComponent {
-    const sliderRef = containerRef.createComponent(jqxSliderComponent);
-    for (const [key, value] of Object.entries(inputs)) {
-      sliderRef.setInput(key, value);
-    }
-    sliderRef.instance.onChange.subscribe(onChange);
-    sliderRef.changeDetectorRef.detectChanges();
-    return sliderRef.instance;
   }
 
   /** Opens the dialog with custom position logic, as jqxWindow does't offer what we need. */
