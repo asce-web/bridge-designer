@@ -1,3 +1,6 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
 import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Member } from '../../../shared/classes/member.model';
 import { Graphics, Rectangle2D, Rectangle2DInterface } from '../../../shared/classes/graphics';
