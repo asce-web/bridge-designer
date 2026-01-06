@@ -79,7 +79,7 @@ export function areBrowserFeaturesMissing(): boolean {
     localStorage: 'local storage',
     mouse: 'detectable mouse',
     querySelectorAll: 'HTML querySelectorAll',
-    supportedScreenSize: 'screen size 1280x800 or higher',
+    supportedScreenSize: `screen size 1200x800 or higher (found ${BROWSER_FEATURES.screenSize})`,
     supportedBrowser: `a supported browser (found ${BROWSER_FEATURES.browser}, which is not)`,
     viewportUnits: 'CSS viewport units',
     webgl2: 'WebGL2 for fly-thru test animation',
@@ -145,7 +145,7 @@ function getFeatures(document: HTMLDocument): BrowserFeatures {
     querySelectorAll: !!document.querySelectorAll,
     screenSize: `${screen.width}x${screen.height}`,
     supportedBrowser: SUPPORTED_BROWSERS.includes(browser),
-    supportedScreenSize: screen.width >= 1280 && screen.height >= 800,
+    supportedScreenSize: screen.width >= 1200 && screen.height >= 800,
     viewportUnits: (() => {
       const element = create('dummy');
       try {
