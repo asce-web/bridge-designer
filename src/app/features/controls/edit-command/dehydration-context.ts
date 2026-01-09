@@ -21,14 +21,26 @@ export interface DehydratedEditCommand {
   tag: EditCommandTag;
 }
 
-/** A context for serializing the graph of edit command, joints, and members. */
+/**
+ * Context needed to serialize the graph of edit commands, joints, and members.
+ *
+ * Necessary because the collection of undo/redo commands will have multiple instances of
+ * the same joints and members including ones that aren't in the current bridge. And each
+ * may have more than one reference. This forms a DAG. Edit commands are sources. Joints
+ * are sinks.
+ */
 export class DehydrationContext {
-  readonly refsByMember = new Map<Member, ContextElementRef>();
+  /** Map from joint object references to json-able element references that describe them. */
   readonly refsByJoint = new Map<Joint, ContextElementRef>();
-  readonly joints: Joint[] = [];
-  readonly members: Member[] = [];
 
-  private constructor() {}
+  /** Map from member object references to json-able element references that describe them. */
+  readonly refsByMember = new Map<Member, ContextElementRef>();
+
+  /** Library of joints wherein indexes match the context element refs to joints. */
+  readonly joints: Joint[] = [];
+
+  /** Library of members wherein indexes match the context element refs to members. */
+  readonly members: Member[] = [];
 
   /** Builds a dehydration context preloaded with the given bridge's elements. */
   public static forBridge(bridge: BridgeModel): DehydrationContext {
@@ -38,10 +50,12 @@ export class DehydrationContext {
     return context;
   }
 
+  /** Gets a dehydrated reference for the given joint, storing a new one if this is the first occurrence. */
   public getJointRef(joint: Joint): ContextElementRef {
     return this.getDehydrated(joint, this.refsByJoint, this.joints);
   }
 
+  /** Gets a dehydrated reference for the given member, storing a new one if this is the first occurrence. */
   public getMemberRef(member: Member): ContextElementRef {
     return this.getDehydrated(member, this.refsByMember, this.members);
   }
@@ -59,6 +73,7 @@ export class DehydrationContext {
     return ref;
   }
 
+  /** Returns the arrays of dehydrated joints referenced by context element references. */
   dehydrate(): DehydratedDehydrationContext {
     return {
       joints: this.joints.map(joint => DehydrationContext.dehydrateJoint(joint)),
@@ -66,6 +81,17 @@ export class DehydrationContext {
     };
   }
 
+  /** Returns the json-able dehydrated representation of one joint. */
+  public static dehydrateJoint(joint: Joint): DehydratedJoint {
+    return {
+      index: joint.index,
+      x: joint.x,
+      y: joint.y,
+      isFixed: joint.isFixed,
+    };
+  }
+
+  /** Returns the json-able dehydrated representation of one member. */
   public dehydrateMember(member: Member): DehydratedMember {
     return {
       index: member.index,
@@ -76,22 +102,14 @@ export class DehydrationContext {
       sizeIndex: member.shape.sizeIndex,
     };
   }
-
-  public static dehydrateJoint(joint: Joint): DehydratedJoint {
-    return {
-      index: joint.index,
-      x: joint.x,
-      y: joint.y,
-      isFixed: joint.isFixed,
-    };
-  }
-
-  public static rehydrateJoint(joint: DehydratedJoint) {
-    return new Joint(joint.index, joint.x, joint.y, joint.isFixed);
-  }
 }
 
-/** A reference sufficient to rehydrate a joint or member from context. */
+/**
+ * A reference sufficient to rehydrate a joint or member from context. Only
+ * one field is set: `bridge` for elements in the dehydrated bridge, `extern`
+ * for those only in an edit command, e.g. a deletion, undone insert, or change.
+ * The values are indices into arrays of unique joint member instances.
+ */
 export type ContextElementRef = {
   bridge?: number;
   extern?: number;
@@ -121,7 +139,7 @@ export type DehydratedDehydrationContext = {
   members: DehydratedMember[];
 };
 
-/** Container for rehydration context and methods to rehydrate bridge elements using the context. */
+/** Container for context and methods to rehydrate bridge elements. */
 export class RehydrationContext {
   private constructor(
     private readonly bridge: BridgeModel,
@@ -135,27 +153,37 @@ export class RehydrationContext {
     bridge: BridgeModel,
     inventoryService: InventoryService,
   ): RehydrationContext {
-    const externJoints = dehydratedContext.joints.map(joint => DehydrationContext.rehydrateJoint(joint));
+    // Create joint and member objects from json descriptions. Joints first, since members refer to them.
+    const externJoints = dehydratedContext.joints.map(joint => RehydrationContext.rehydrateJoint(joint));
     const members = dehydratedContext.members.map(member =>
       RehydrationContext.rehydrateMember(member, bridge.joints, externJoints, inventoryService),
     );
     return new RehydrationContext(bridge, externJoints, members);
   }
 
+  /** Rehydrate a single joint reference by looking it up in context. */
   public rehydrateJointRef(ref: ContextElementRef): Joint {
     return RehydrationContext.rehydrateJointRefStatic(ref, this.bridge.joints, this.externJoints);
   }
 
+  /** Rehydrate a single member reference by looking it up in context. */
   public rehydrateMemberRef(ref: ContextElementRef): Member {
     return ref.bridge !== undefined
       ? this.bridge.members[ref.bridge]
       : this.externMembers[Utility.assertNotUndefined(ref.extern)];
   }
 
+  /** Rehydrate a single joint reference with furnished context information. */
   private static rehydrateJointRefStatic(ref: ContextElementRef, bridgeJoints: Joint[], externJoints: Joint[]) {
     return ref.bridge !== undefined ? bridgeJoints[ref.bridge] : externJoints[Utility.assertNotUndefined(ref.extern)];
   }
 
+  /** Create a joint object from given dehydrated representation. */
+  private static rehydrateJoint(joint: DehydratedJoint) {
+    return new Joint(joint.index, joint.x, joint.y, joint.isFixed);
+  }
+
+  /** Create a member object from given dehydrated representation, resolving joint references. */
   private static rehydrateMember(
     member: DehydratedMember,
     bridgeJoints: Joint[],
@@ -171,4 +199,3 @@ export class RehydrationContext {
     );
   }
 }
-

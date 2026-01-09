@@ -30,7 +30,7 @@ import { WorkflowManagementService } from './features/controls/management/workfl
 import { DrawingsService } from './features/drawings/drawings.service';
 import { Printing3dService } from './features/printing-3d/printing-3d.service';
 import { Print3dDialogComponent } from './features/printing-3d/print-3d-dialog/print-3d-dialog.component';
-import { MissingFeatureDisablerDialogComponet } from './features/browser/missing-feature-disabler-dialog/missing-feature-disabler-dialog.componet';
+import { MissingFeatureDisablerDialogComponent } from './features/browser/missing-feature-disabler-dialog/missing-feature-disabler-dialog.componet';
 
 // ¯\_(ツ)_/¯
 
@@ -49,7 +49,7 @@ import { MissingFeatureDisablerDialogComponet } from './features/browser/missing
     MemberEditDialogComponent,
     MemberTableComponent,
     MenusComponent,
-    MissingFeatureDisablerDialogComponet,
+    MissingFeatureDisablerDialogComponent,
     Print3dDialogComponent,
     RulerComponent,
     SampleSelectionDialogComponent,
@@ -71,7 +71,7 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('draftingAreaCover') draftingAreaCover!: ElementRef<HTMLDivElement>;
   @ViewChild('leftRuler') leftRuler!: RulerComponent;
   @ViewChild('memberTable') memberTable!: MemberTableComponent;
-  @ViewChild('missingFeatureDisablerDialog') missingFeatureDisablerDialog!: MissingFeatureDisablerDialogComponet;
+  @ViewChild('missingFeatureDisablerDialog') missingFeatureDisablerDialog!: MissingFeatureDisablerDialogComponent;
 
   constructor(
     private readonly eventBrokerService: EventBrokerService,

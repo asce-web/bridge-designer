@@ -8,6 +8,7 @@ import { EventBrokerService } from '../../../shared/services/event-broker.servic
 import { ModifierMask, UiStateService } from '../management/ui-state.service';
 import { HelpTab } from '../../help/help-dialog/help-dialog.component';
 
+/** Component for handling all menu selections and global hot keys by sending brokered events. */
 @Component({
   selector: 'menus',
   imports: [CommonModule, jqxMenuModule],
@@ -69,7 +70,6 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'undo', this.eventBrokerService.undoRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'whatsNew', this.eventBrokerService.helpRequest, {topic: 'hlp_whats_new'});
     
-
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'animation', this.eventBrokerService.animationToggle);
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'animationControls', this.eventBrokerService.animationControlsToggle);
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'autoCorrect', this.eventBrokerService.autoCorrectToggle);
@@ -86,5 +86,6 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerKey('a', ModifierMask.CTRL, this.eventBrokerService.selectAllRequest);
     this.uiStateService.registerKey('y', ModifierMask.CTRL, this.eventBrokerService.redoRequest);
     this.uiStateService.registerKey('z', ModifierMask.CTRL, this.eventBrokerService.undoRequest);
+    this.uiStateService.registerKey('s', ModifierMask.CTRL, this.eventBrokerService.saveBridgeFileRequest);
   }
 }

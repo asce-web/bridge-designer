@@ -20,7 +20,7 @@ export const enum ModifierMask {
 export type UiMode = 'initial' | 'drafting' | 'animation' | 'unknown';
 
 /**
- * Info paired with a subject to connote UI modes where it should be disabled 
+ * Info paired with a subject to connote UI modes where it should be disabled
  * regardless of its normal disabled state. Also a place to store that normal state.
  * Example: Drafting controls have overrides for animation mode, since the drafting
  * panel can't be seen.
@@ -28,7 +28,7 @@ export type UiMode = 'initial' | 'drafting' | 'animation' | 'unknown';
 type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
 
 /**
- * Container for logic that sychronizes multiple UI elements having the same purpose.
+ * Container for logic that synchronizes multiple UI elements having the same purpose.
  *
  * This class doesn't track the state of toggle and select subjects. It only toggles
  * and selects the state of attached UI objects. When explicit state is needed, a separate
@@ -40,7 +40,7 @@ type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
  * the element's enable/disable state is restored. This service necessarily tracks the
  * normal states for this purpose.
  *
- * A global disablement feature is also supported to accomodate browsers lacking capabilities
+ * A global disablement feature is also supported to accommodate browsers lacking capabilities
  * that selected features require. Topics placed on the global list are immediately disabled
  * and remain so.
  */

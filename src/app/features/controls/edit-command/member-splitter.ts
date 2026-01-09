@@ -24,11 +24,13 @@ export class MemberSplitter {
     private readonly selectedMembers: SelectedSet,
   ) {}
 
-  public static createForAdd(joint: Joint, members: Member[], selectedMembers: SelectedSet) {
+  /** Creates a members splitter for adding one joint. */
+  public static createForAdd(joint: Joint, members: Member[], selectedMembers: SelectedSet): MemberSplitter {
     return new MemberSplitter(joint, members, selectedMembers);
   }
 
-  public static createForMove(joints: Joint[], members: Member[], selectedMembers: SelectedSet) {
+  /** Creates a members splitter for resolving the mess that can result when a single joint is moved. */
+  public static createForMove(joints: Joint[], members: Member[], selectedMembers: SelectedSet): MemberSplitter {
     return new MemberSplitter(joints, members, selectedMembers);
   }
 
@@ -77,7 +79,7 @@ export class MemberSplitter {
   }
 
   /** 
-   * Resolves arbitrary joint-on-member conflicts. 
+   * Resolves arbitrary joint-onto-member conflicts. 
    * 
    * Uses the trivial algorithm because there can be only 6000 pairs.
    * Tries to minimize churn in member numbers.

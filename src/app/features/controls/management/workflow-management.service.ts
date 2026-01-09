@@ -27,7 +27,7 @@ export class WorkflowManagementService {
   constructor(
     analysisService: AnalysisService,
     analysisValidityService: AnalysisValidityService,
-    bridgeAutoFixServicce: BridgeAutoFixService,
+    bridgeAutoFixService: BridgeAutoFixService,
     bridgeService: BridgeService,
     eventBrokerService: EventBrokerService,
     inventorySelectionService: InventorySelectionService,
@@ -91,7 +91,7 @@ export class WorkflowManagementService {
           break;
         case 1: // test
           if (autoFix) {
-            bridgeAutoFixServicce.autoFix();
+            bridgeAutoFixService.autoFix();
           }
           analysisService.analyze({ populateBridgeMembers: true });
           break;

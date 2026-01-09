@@ -4,6 +4,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 
+/** Toolbar widget to show optional debug info. Intended to be last so content has rest of bar. */
 @Component({
   selector: 'debug-display',
   templateUrl: './debug-display.component.html',

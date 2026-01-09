@@ -13,6 +13,8 @@ respectively and - after execution is complete - pushes it on the opposite stack
 
 ## Commands share structure with bridges
 
+Sharing is important to the implementation of session persistence as described below, so let's look at it.
+
 Most commands share structure with the bridge during their lifetimes. The nature of sharing depends on whether the
 command lies in the "done" or "undone" stack. In general...
 
@@ -42,7 +44,7 @@ effect" edits to keep the bridge model sound. Here is a catalog:
 | Move labels    | none                          | mutate labels location             |
 
 As implied above, "splitting" members when a joint is added or moved is implemented by removing the original member and
-adding two two new ones.
+adding two two new ones. Moving a joint onto another joint is just flagged with a toast to the user.
 
 ## Commands share structure internally
 
@@ -51,13 +53,11 @@ that holds it. For example this occurs when adding or deleting joints. In the fi
 joint is still referenced by split members. In the second, the deleted joint is still referenced by members removed with
 it and stored in the command.
 
-Sharing is important to the implementation of session persistence as described below.
-
 ## Session persistence
 
-The combined effects of shared structure and side effects must be accomodated when de- and re-hydrating the undo manager
-edit command stacks. For correct behavior after re-hydration, the graph of commands, members and joints, with references
-forming the edges, must be replicated exactly.
+The combined effects of shared structure and side effects must be accommodated when de- and re-hydrating the undo
+manager edit command stacks. For correct behavior after re-hydration, the graph of commands, members and joints, with
+references forming the edges, must be replicated exactly.
 
 General graph serialization methods are well-known. (One example is the built-in of Lisp.) The one used here is a slight
 customization. For dehydration,
@@ -71,9 +71,10 @@ customization. For dehydration,
     map, which is the new objects array index.
 - Dehydrate the new objects array along with the all the manager data.
 
-For rehydration, we can assume the bridge has already been rehydrated. Then...
+For rehydration, we can assume the bridge has already been rehydrated. Other joints and members will be called "extern."
+Then...
 
-- Rehydrate the new objects array.
+- Rehydrate the extern objects array.
 - Traverse the dehydrated done and undone stacks, rehydrating each command in turn.
 - Upon encountering a joint or member reference, look up the contained index in either the bridge or new objects array
   accordingly.
@@ -84,4 +85,5 @@ The logic of several command and the member splitter assumes that "do" is called
 I.e. bridge, selection, and other state may be captured during construction that can't change before the command is
 executed.
 
-TODO: Make the initial "do" operation part of static factory `createAndDo()` methods in each command.
+TODO: For future-proofing, make the initial "do" operation part of static factory `createAndDo()` methods in each
+command.

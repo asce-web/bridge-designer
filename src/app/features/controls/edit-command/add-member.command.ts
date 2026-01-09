@@ -17,7 +17,7 @@ export class AddMemberCommand extends EditCommand {
   private members: Member[] = [];
   public override readonly effectsMask: number = EditEffect.MEMBERS | EditEffect.ADD;
 
-  /** Constructs an add member command object. Even the description is empty because there are variants. */
+  /** Constructs an add member command object. The initial description is empty because there are variants. */
   private constructor(
     private readonly bridge: BridgeModel,
     private readonly selectedElements: SelectedElements,
@@ -25,6 +25,7 @@ export class AddMemberCommand extends EditCommand {
     super('');
   }
 
+  /** Create an add member command, which may include several new members if there are transsecting joints. */
   public static create(member: Member, bridge: BridgeModel, selectedElements: SelectedElements): AddMemberCommand {
     const command = new AddMemberCommand(bridge, selectedElements);
     const transecting = bridge.joints

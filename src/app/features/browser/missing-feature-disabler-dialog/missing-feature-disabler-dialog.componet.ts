@@ -16,11 +16,10 @@ import { BROWSER_FEATURES } from '../browser-checks';
 @Component({
   selector: 'missing-feature-disabler-dialog',
   imports: [ConfirmationDialogComponent],
-  templateUrl: './missing-feature-disabler-dialog.componet.html',
-  styleUrl: './missing-feature-disabler-dialog.componet.scss',
+  templateUrl: './missing-feature-disabler-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MissingFeatureDisablerDialogComponet {
+export class MissingFeatureDisablerDialogComponent {
   contentHtml: string = '';
 
   @ViewChild('dialog') dialog!: ConfirmationDialogComponent;

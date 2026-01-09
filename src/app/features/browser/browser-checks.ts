@@ -1,7 +1,9 @@
 /* Copyright (c) 2025-2026 Gene Ressler
    SPDX-License-Identifier: GPL-3.0-or-later */
 
-/** Hardware feature scanner. Pure Typescript because it's needed before Angular bootstraps. */
+// Hardware feature scanner. Pure Typescript because it's needed before Angular bootstraps.
+
+/** Generic recognized browser types. */
 export type Browser =
   | 'Chrome'
   | 'Edge (chromium)'
@@ -30,8 +32,8 @@ export type BrowserFeatures = {
   webgl2: boolean;
 };
 
-/** Browsers we attempt to make trouble free in latest version. */
 // Don't move below BROWSER_FEATURES decl.
+/** Browsers we attempt to make trouble free in latest version. */
 const SUPPORTED_BROWSERS: Browser[] = ['Chrome', 'Edge (chromium)', 'Firefox', 'Opera'];
 
 /** A report on whether needed features are present in the current browser. */
@@ -57,7 +59,7 @@ type MandatoryDescriptions<K extends keyof BrowserFeatures> = {
 };
 
 /**
- * Key for remembering what's aleady been reported to the user. Can't start with
+ * Key for remembering what's already been reported to the user. Can't start with
  * `bridge-designer`, else it will be cleared by session state service.
  */
 const LOCAL_STORAGE_KEY = 'browser-signature-v1';
@@ -166,7 +168,7 @@ function getFeatures(document: HTMLDocument): BrowserFeatures {
   };
 }
 
-/** Parses the browser user agent string to determine what browser we're running. */
+/** Examines the browser user agent string to determine what browser we're running. */
 function classifyBrowser(): Browser {
   {
     const browsersByKeyword: Record<string, Browser> = {
