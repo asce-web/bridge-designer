@@ -6,7 +6,7 @@
   [isModal]="true"
   [autoOpen]="false"
   [width]="438"
-  [height]="802"
+  [height]="790"
   [initContent]="initDialogContent"
   [modalOpacity]="0.1"
   (onOpen)="handleOpen()"
@@ -126,14 +126,14 @@
         <tbody>
           <tr>
             <td>Length</td>
-            <td style="width: 120px">{{ memberLength }} meters</td>
-            <td style="color: blue; padding-left: 40px">Tension</td>
+            <td style="width: 130px">{{ memberLength }} meters</td>
+            <td style="color: blue; padding-left: 10px">Tension</td>
             <td>{{ passFailTension }}</td>
           </tr>
           <tr>
-            <td>Cost (2 trusses)</td>
+            <td>Cost&nbsp;(2&nbsp;trusses)</td>
             <td>{{ memberCost }}</td>
-            <td style="color: red; padding-left: 40px">Compression</td>
+            <td style="color: red; padding-left: 10px">Compression</td>
             <td>{{ passFailCompression }}</td>
           </tr>
         </tbody>

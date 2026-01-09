@@ -346,12 +346,12 @@ export class MemberStrengthGraphComponet implements OnChanges {
     }
     if (this.selectedMembers) {
       for (const member of this.selectedMembers) {
-        this.renderBracket(ctx, member, false);
+        this.renderDataSpike(ctx, member, false);
       }
     }
     if (this.member) {
       this.renderSlendernessLengthLimit(ctx, this.member);
-      this.renderBracket(ctx, this.member, true);
+      this.renderDataSpike(ctx, this.member, true);
     }
   }
 
@@ -377,7 +377,7 @@ export class MemberStrengthGraphComponet implements OnChanges {
     ctx.setLineDash(savedLineDash);
   }
 
-  private renderBracket(ctx: CanvasRenderingContext2D, member: Member, highlight: boolean): void {
+  private renderDataSpike(ctx: CanvasRenderingContext2D, member: Member, highlight: boolean): void {
     const savedFillStyle = ctx.fillStyle;
 
     // Compression and tension force ranges.
@@ -412,7 +412,7 @@ export class MemberStrengthGraphComponet implements OnChanges {
 
     const gmy = this.geometry;
     const x = lengthToPixel(gmy, member.lengthM);
-    const strengthTickWidth = 4;
+    const strengthTickWidth = 6;
     const strengthTickHalfHeight = 2;
 
     ctx.fillStyle = highlight ? 'red' : PALE_RED;
@@ -490,7 +490,7 @@ function fillVerticalRectLeft(
   x: number,
   y0: number,
   y1: number,
-  width: number = 2,
+  width: number = 3,
 ): void {
   ctx.fillRect(x - width, y0 - 1, width, y1 - y0 + 2);
 }
@@ -500,7 +500,7 @@ function fillVerticalRectRight(
   x: number,
   y0: number,
   y1: number,
-  width: number = 2,
+  width: number = 3,
 ): void {
   ctx.fillRect(x, y0 - 1, width, y1 - y0 + 2);
 }
