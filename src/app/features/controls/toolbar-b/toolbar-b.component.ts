@@ -48,7 +48,7 @@ export class ToolbarBComponent implements AfterViewInit {
     this.initTools = this.initTools.bind(this);
   }
 
-  initTools(_type?: string, index?: number, tool?: any, _menuToolIninitialization?: boolean) {
+  initTools(_type?: string, index?: number, tool?: any, _menuToolInitialization?: boolean) {
     switch (index) {
       case Tools.INVENTORY_SELECTOR:
         this.componentService.load(InventorySelectorComponent, tool[0]);
