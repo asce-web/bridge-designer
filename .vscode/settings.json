@@ -11,5 +11,13 @@
   "markdown.highlightjs.enabled": false,
   "java.format.settings.url": "eclipse-formatter.xml",
   "java.debug.settings.onBuildFailureProceed": true,
-  "latex-workshop.formatting.latex": "tex-fmt"
+  "latex-workshop.formatting.latex": "tex-fmt",
+  "cSpell.words": [
+    "ASTM",
+    "constructability",
+    "crossxsection",
+    "glos",
+    "LRFD",
+    "wpbd"
+  ]
 }
