@@ -1,21 +1,22 @@
-<!-- Copyright (c) 2025-2026 Gene Ressler
-     SPDX-License-Identifier: GPL-3.0-or-later -->
+import { Injectable } from '@angular/core';
+import { BridgeCostService } from '../../../shared/services/bridge-cost.service';
+import { BridgeService } from '../../../shared/services/bridge.service';
+import { table } from 'console';
 
-<jqxWindow
-  #dialog
-  [isModal]="true"
-  [autoOpen]="false"
-  [width]="960"
-  [height]="500"
-  (onOpen)="handleDialogOpen()"
->
-  <div class="header">Cost calculations</div>
-  <div>
-    <div class="scroller">
-      <table
-        #costsTable
-        class="report-table"
-      >
+@Injectable({ providedIn: 'root'})
+export class CostReportFormatterService {
+
+  constructor(
+        private readonly bridgeCostService: BridgeCostService,
+        private readonly bridgeService: BridgeService,
+  
+  ) { }
+
+  public get costReportAsText(): string {
+    table 
+  }
+
+  const foo = `
         <thead class="table-header">
           <tr>
             <th>Type of cost</th>
@@ -104,11 +105,9 @@
             <td></td>
             <td colspan="4">Pier cost</td>
             <td>
-              @if (siteCosts.isPier) {
-                (1 each {{ siteCosts.pierHeight }} meter pier)
-              } @else {
-                No pier
-              }
+              <div *ngIf="siteCosts.isPier; then hasPier; else noPier"></div>
+              <ng-template #hasPier>(1 each {{ siteCosts.pierHeight }} meter pier)</ng-template>
+              <ng-template #noPier>No pier</ng-template>
             </td>
             <td class="shrink-to-fit">=</td>
             <td class="numeric">{{ toDollars(siteCosts.pierCost) }}</td>
@@ -117,12 +116,12 @@
             <td></td>
             <td colspan="4">Anchorage cost</td>
             <td>
-              @if (siteCosts.anchorageCount > 0) {
-                ({{ siteCosts.anchorageCount }} anchorages) × ({{ toDollars(siteCosts.anchorageCostRate) }} per
-                anchorage)
-              } @else {
-                No anchorage
-              }
+              <div *ngIf="siteCosts.anchorageCount > 0; then hasAnchorages; else noAnchorages"></div>
+              <ng-template #hasAnchorages
+                >({{ siteCosts.anchorageCount }} anchorages) × ({{ toDollars(siteCosts.anchorageCostRate) }} per
+                anchorage)</ng-template
+              >
+              <ng-template #noAnchorages>No anchorage</ng-template>
             </td>
             <td class="shrink-to-fit">=</td>
             <td class="numeric">{{ toDollars(siteCosts.anchorageCost) }}</td>
@@ -140,26 +139,5 @@
           </tr>
         </tbody>
       </table>
-    </div>
-    <div class="buttons">
-      <jqxButton
-        (onClick)="handleCopy()"
-        [width]="'110px'"
-        style="margin-right: 8px"
-        >Copy</jqxButton
-      >
-      <jqxButton
-        (onClick)="handlePrint()"
-        [width]="'110px'"
-        style="margin-right: 8px"
-        >Print...</jqxButton
-      >
-      <jqxButton
-        (onClick)="dialog.close()"
-        [width]="'110px'"
-        style="margin-right: 8px"
-        >Close</jqxButton
-      >
-    </div>
-  </div>
-</jqxWindow>
+  `
+}

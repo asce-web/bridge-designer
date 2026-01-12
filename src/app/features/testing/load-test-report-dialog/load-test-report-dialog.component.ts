@@ -10,6 +10,7 @@ import { EventBrokerService, EventOrigin } from '../../../shared/services/event-
 import jsPDF from 'jspdf';
 import { autoTable, HookData } from 'jspdf-autotable';
 import { Member } from '../../../shared/classes/member.model';
+import { ToastKind } from '../../toast/toast/toast-error';
 
 @Component({
   selector: 'load-test-report-dialog',
@@ -32,16 +33,9 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
     try {
       const text = getLoadTestReportText(this.bridgeService.bridge.members);
       await navigator.clipboard.writeText(text);
-      this.eventBrokerService.toastRequest.next({
-        origin: EventOrigin.LOAD_TEST_REPORT_DIALOG,
-        data: 'copySuccess',
-      });
-
+      this.toast('copySuccess');
     } catch (err) {
-      this.eventBrokerService.toastRequest.next({
-        origin: EventOrigin.LOAD_TEST_REPORT_DIALOG,
-        data: 'copyFailedError',
-      });
+      this.toast('copyFailedError');
     }
   }
 
@@ -66,6 +60,10 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
     const blob = doc.output('blob');
     const url = URL.createObjectURL(blob);
     window.open(url, '_blank');
+  }
+
+  private toast(kind: ToastKind): void {
+    this.eventBrokerService.toastRequest.next({ origin: EventOrigin.LOAD_TEST_REPORT_DIALOG, data: kind });
   }
 
   ngAfterViewInit(): void {
