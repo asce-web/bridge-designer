@@ -89,7 +89,7 @@ export class BridgeRenderingService {
   }
 
   private prepareMesh(meshData: BridgeMeshData): BridgeMesh {
-    // Everything must be updateable because the bridge moves.
+    // Everything must be updatable because the bridge moves.
     const membersMesh = this.meshRenderingService.prepareColoredMesh(meshData.memberMeshData, true);
     const deckBeamsMesh = this.meshRenderingService.prepareColoredMesh(meshData.deckBeamMeshData, true);
     const deckSlabsMesh = this.meshRenderingService.prepareColoredMesh(meshData.deckSlabMeshData, true);

@@ -53,8 +53,8 @@ export class HotElementService {
       invalidate?: boolean;
     } = {},
   ): void {
-    const xWorld = this.viewportTransform.viewportToworldX(x);
-    const yWorld = this.viewportTransform.viewportToworldY(y);
+    const xWorld = this.viewportTransform.viewportToWorldX(x);
+    const yWorld = this.viewportTransform.viewportToWorldY(y);
     const bridge = this.bridgeService.bridge;
     let hotElement: HotElement = undefined;
     let pointerCursor: StandardCursor | CustomCursor | undefined = this.defaultCursor;

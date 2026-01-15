@@ -5,7 +5,7 @@ import { BridgeModel } from '../classes/bridge.model';
 import { Point2DInterface } from '../classes/graphics';
 import { Joint } from '../classes/joint.model';
 
-/** Returns a list of structure violations of the given bridge. Empthy is good. */
+/** Returns a list of structure violations of the given bridge. Empty is good. */
 export function validateBridge(bridge: BridgeModel): string[] {
   const problems = [];
   const joints = bridge.joints;

@@ -30,7 +30,7 @@ import { WorkflowManagementService } from './features/controls/management/workfl
 import { DrawingsService } from './features/drawings/drawings.service';
 import { Printing3dService } from './features/printing-3d/printing-3d.service';
 import { Print3dDialogComponent } from './features/printing-3d/print-3d-dialog/print-3d-dialog.component';
-import { MissingFeatureDisablerDialogComponent } from './features/browser/missing-feature-disabler-dialog/missing-feature-disabler-dialog.componet';
+import { MissingFeatureDisablerDialogComponent } from './features/browser/missing-feature-disabler-dialog/missing-feature-disabler-dialog.component';
 import { AllowFreshStartDialogComponent } from './features/session-state/allow-fresh-start-dialog/allow-fresh-start-dialog.component';
 
 // ¯\_(ツ)_/¯

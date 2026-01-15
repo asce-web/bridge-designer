@@ -31,7 +31,7 @@ export type TornMemberMeshData = {
 export class FailedMemberModelService {
   /** Number of points used to approximate the appearance of buckled members. Must be odd. */
   private static readonly PARABOLA_POINT_COUNT = 33;
-  /** Number of floats in a trapazoidal segment (instance) transform for updating transform backing arrays.  */
+  /** Number of floats in a trapezoidal segment (instance) transform for updating transform backing arrays.  */
   public static readonly SEGMENT_TRANSFORM_FLOAT_COUNT = 32 * (FailedMemberModelService.PARABOLA_POINT_COUNT - 1);
   /** Widths of parabolas with unit arc length, where corresponding element of PARABOLA_HEIGHT gives the height. */
   private static readonly PARABOLA_WIDTHS = new Float32Array([
@@ -138,8 +138,8 @@ export class FailedMemberModelService {
     offset: number,
   ): void {
     // Splay the broken member ends by rotating at joints.
-    // Not too much, else occulsion of/by other members is a problem.
-    const rotationRate = 0.005; // radians per milli
+    // Not too much, else occlusion of/by other members is a problem.
+    const rotationRate = 0.005; // radians per millisecond
     const rotationMax = 0.4; // radians
     const rotation = Math.min(rotationRate * this.simulationStateService.phaseClockMillis, rotationMax);
     const aIndex = 2 * member.a.index;
@@ -219,7 +219,7 @@ export class FailedMemberModelService {
     vec2.copy(this.prevOuterRight, this.outer);
     vec2.copy(this.prevInnerRight, this.inner);
     while (!pointsGenerator.next().done) {
-      // Work in left-right pairs from here. First, make space for the left front and back transform materices.
+      // Work in left-right pairs from here. First, make space for the left front and back transform matrices.
       const mLeftFront = transformsOut.subarray(offset, offset + 16);
       offset += 16;
       const mLeftBack = transformsOut.subarray(offset, offset + 16);
@@ -239,7 +239,7 @@ export class FailedMemberModelService {
       // Now, the right point pair.
       pointsGenerator.next();
 
-      // Make space for the front and back transform materices.
+      // Make space for the front and back transform matrices.
       const mRightFront = transformsOut.subarray(offset, offset + 16);
       offset += 16;
       const mRightBack = transformsOut.subarray(offset, offset + 16);
@@ -372,7 +372,7 @@ function addDimensionZ(out: mat4, a: mat3, zSize: number, zOffset: number): mat4
 /**
  * Returns point pairs at fixed offset `halfSize` outside and inside a parabolic axis having
  * end points (0,0), (`width`, 0) and apex at (`width`/2, `height`). First pair is at the apex
- * followed by successsive pairs left then right.  The geneator returns the top point of 
+ * followed by successive pairs left then right.  The generator returns the top point of 
  * each pair, but it's expected to be ignored. Instead, users copy from the `vec2` buffers 
  * furnished when the generator is created.
  *

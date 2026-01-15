@@ -453,7 +453,7 @@ f 31//4 34//4 35//4
 f 2//8 103//8 3//8
 f 103//8 2//8 6//8
 f 6//8 2//8 7//8
-usemtl CorrogatedMetal
+usemtl CorrugatedMetal
 f 8//4 104//4 105//4
 f 104//4 8//4 1//4
 usemtl Aluminum
@@ -461,7 +461,7 @@ f 37//26 106//26 13//26
 f 106//26 37//26 104//26
 f 104//26 37//26 107//26
 f 104//26 107//26 105//26
-usemtl CorrogatedMetal
+usemtl CorrugatedMetal
 f 6//27 105//27 108//27
 f 105//27 6//27 8//27
 usemtl Black
@@ -563,7 +563,7 @@ f 47//11 60//11 62//11
 f 60//11 47//11 43//11
 f 107//7 140//7 141//7
 f 140//7 107//7 37//7
-usemtl CorrogatedMetal
+usemtl CorrugatedMetal
 f 142//8 6//8 108//8
 f 6//8 142//8 103//8
 f 3//8 142//8 143//8

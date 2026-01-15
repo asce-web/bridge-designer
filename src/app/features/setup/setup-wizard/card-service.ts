@@ -53,12 +53,12 @@ export interface SetupWizardCardView {
   loadDesignTemplates(): void;
 
   /** Current value of the local contest code input widget. */
-  get localContestCode(): string | null| undefined;
+  get localContestCode(): string | null | undefined;
 
   /** Renders am elevation cartoon of current design conditions with given options. See enum CartoonOptionsMask. */
   renderElevationCartoon(optionsMask: number): void;
 
-  /** Sets the visiblity of one legend item. */
+  /** Sets the visibility of one legend item. */
   setLegendItemVisibility(item: LegendItemName, isVisible?: boolean): void;
 }
 
@@ -260,11 +260,21 @@ export class CardService {
     this.visitedMask |= 1 << index;
     this.cardIndex = index;
     this.card.initializeOnGoTo();
+    this.renderCard();
   }
 
   /** Returns whether card with given index has been visited by the user. Index 0 always is. */
   public hasCardBeenVisited(index: number): boolean {
     return ((1 << index) | this.visitedMask) !== 0;
+  }
+
+  /** Renders the elements of the current card and syncs the controls. */
+  public renderCard(): void {
+    const card = this.card;
+    card.renderDeckCartoon();
+    card.renderElevationCartoon();
+    card.renderLegendItemsForCartoon();
+    card.enableControls();
   }
 
   get wizardView(): SetupWizardCardView {

@@ -169,7 +169,7 @@ export const enum AllowedShapeChangeMask {
 
 @Injectable({ providedIn: 'root' })
 export class InventoryService {
-  /** Stock a niave user can employ to get a first successful bridge in many cases. */
+  /** Stock a naive user can employ to get a first successful bridge in many cases. */
   public static readonly USEFUL_STOCK: StockId = new StockId(0, 0, 22); // 200mm CSS solid bar
 
   private static readonly COMPRESSION_RESISTANCE_FACTOR: number = 0.9;

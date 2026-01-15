@@ -90,7 +90,7 @@ export class Print3dModelService {
     for (const member of this.bridgeService.bridge.members) {
       // Account for all pin joint wiggle here so the pin doesn't shrink.
       const size = Math.max(modelMmPerWorldM * member.materialSizeMm * 0.001, gmy.minFeatureSize + 2 * gmy.wiggle);
-      const halfsize = size * 0.5;
+      const halfSize = size * 0.5;
       const [ax, ay] = transformVec2(xyTransform, member.a.x, member.a.y);
       const [bx, by] = transformVec2(xyTransform, member.b.x, member.b.y);
       let dx = bx - ax;
@@ -100,8 +100,8 @@ export class Print3dModelService {
       dy /= len;
       // Rotate to correct angle after shifting down by half member size
       // and right by half pin size with wiggle, then translate to a.
-      const tx = ax + halfPinHoleSize * dx + halfsize * dy;
-      const ty = ay + halfPinHoleSize * dy - halfsize * dx;
+      const tx = ax + halfPinHoleSize * dx + halfSize * dy;
+      const ty = ay + halfPinHoleSize * dy - halfSize * dx;
       // prettier-ignore
       const m: Mat4 = [
           dx, dy, 0, 0, // column 0

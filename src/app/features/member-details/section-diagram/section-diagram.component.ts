@@ -35,7 +35,7 @@ export class SectionDiagramComponent {
     if (!this._member) {
       return;
     }
-    const savedlineWidth = ctx.lineWidth;
+    const savedLineWidth = ctx.lineWidth;
     const savedStrokeStyle = ctx.strokeStyle;
     const savedFillStyle = ctx.fillStyle;
     const savedTextAlign = ctx.textAlign;
@@ -113,7 +113,7 @@ export class SectionDiagramComponent {
     ctx.textAlign = savedTextAlign;
     ctx.fillStyle = savedFillStyle;
     ctx.strokeStyle = savedStrokeStyle;
-    ctx.lineWidth = savedlineWidth;
+    ctx.lineWidth = savedLineWidth;
 
     function clearThenFillText(
       ctx: CanvasRenderingContext2D,

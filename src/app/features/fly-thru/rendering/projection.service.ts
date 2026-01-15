@@ -36,7 +36,7 @@ export class ProjectionService {
   private readonly axisDirection = new Vector2D();
   private readonly pointQ = new Point2D();
 
-  // Parameters of trapazoid base and top lines wrt unit ray from
+  // Parameters of trapezoid base and top lines wrt unit ray from
   // near plane center point toward far plane center point.  Also
   // parameter of top of focus area frustum.
   private tBase: number = 0;
@@ -54,7 +54,7 @@ export class ProjectionService {
     this.right = aspect * this.top;
     this.aspect = aspect;
 
-    // Set up the pyramids for the trapazoidal shadow mask algorithm.
+    // Set up the pyramids for the trapezoidal shadow mask algorithm.
     const shadowFar = far * 0.5; // Sacrifice distant shadows to get better resolution close up.
     this.frustum.set(this.left, this.right, this.bottom, this.top, near, shadowFar);
     this.focusArea.set(
@@ -67,7 +67,7 @@ export class ProjectionService {
     );
   }
 
-  /** Returns a projection matrix representing the current frustom settings. */
+  /** Returns a projection matrix representing the current frustum settings. */
   public getPerspectiveProjection(m: mat4): void {
     mat4.frustum(m, this.left, this.right, this.bottom, this.top, this.near, this.far);
   }
@@ -119,7 +119,7 @@ export class ProjectionService {
     const lambda = this.tBase - this.tTop;
     const deltaPrime = this.tFocus - this.tTop;
 
-    // Rename trapazoid points for convenience.
+    // Rename trapezoid points for convenience.
     const p0 = this.trapezoid[0];
     const p1 = this.trapezoid[1];
     const p2 = this.trapezoid[2];
@@ -178,7 +178,7 @@ export class ProjectionService {
             this.unitR.copyFrom(this.tmpVector);
           }
         }
-        // Now we can compute the trapazoid boundary.
+        // Now we can compute the trapezoid boundary.
         const dotLi = 1 / Geometry.dot2D(this.axisDirection, this.unitL);
         const dotRi = 1 / Geometry.dot2D(this.axisDirection, this.unitR);
         const tt = eta;
@@ -304,9 +304,9 @@ class Pyramid {
     vec3.set(this.vCanon[9], 0.5 * (farRight + farLeft), 0.5 * (farTop + farBottom), zf);
   }
 
-  public getHull(convextHullService: ConvexHullService, hull: Point2DInterface[], xForm: mat4): Point2DInterface[] {
+  public getHull(convexHullService: ConvexHullService, hull: Point2DInterface[], xForm: mat4): Point2DInterface[] {
     // Transform the frustum to 2d normalized device coordinates.
-    convextHullService.clear();
+    convexHullService.clear();
     for (let i = 0; i < this.vCanon.length; i++) {
       // Hand code 2d parallel mm for a bit of speed.
       this.vActual[i].x =
@@ -320,9 +320,9 @@ class Pyramid {
         xForm[9] * this.vCanon[i][2] +
         xForm[13];
       // Perspective division for point light source would go here.
-      convextHullService.addPoint(this.vActual[i]);
+      convexHullService.addPoint(this.vActual[i]);
     }
-    return convextHullService.createHull(hull);
+    return convexHullService.createHull(hull);
   }
 
   public get nearCenter(): Point2DInterface {

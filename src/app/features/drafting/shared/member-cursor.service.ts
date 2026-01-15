@@ -71,7 +71,7 @@ export class MemberCursorService {
     ctx.moveTo(this.anchorX, this.anchorY);
     ctx.lineTo(this.cursorX, this.cursorY);
     ctx.stroke();
-    // Restore joints erased along with rubberband.
+    // Restore joints erased along with rubber band.
     this.designJointRenderingService.renderHot(ctx, this._anchorJoint!, false);
     if (hotElement instanceof Joint) {
       this.designJointRenderingService.renderHot(ctx, hotElement, false);

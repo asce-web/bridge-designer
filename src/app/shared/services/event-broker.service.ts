@@ -50,7 +50,7 @@ export type TypedEventInfo<T> = { origin: EventOrigin; data: T };
  *  o xxxSelection: A UI selector widget has been clicked.
  *    - Handled by associated selector groups (e.g. buttons and menu items) plus anyone else interested.
  *  o xxxToggle: A UI toggle widget has been clicked.
- *    - Handled by asssociated toggles (e.g. button and menu item) plus anyone else interested.
+ *    - Handled by associated toggles (e.g. button and menu item) plus anyone else interested.
  *  o xxxInvalidation: Graphic entity xxx requires rendering, e.g. because
  *    the underlying model has changed.
  *    - Handled by the graphic entity.

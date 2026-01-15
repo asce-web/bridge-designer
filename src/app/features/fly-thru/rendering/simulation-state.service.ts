@@ -21,7 +21,7 @@ export const enum SimulationPhase {
   COLLAPSING,
 }
 
-/** Container for the state machine that drivews the load simulation. */
+/** Container for the state machine that drives the load simulation. */
 @Injectable({ providedIn: 'root' })
 export class SimulationStateService {
   /** Load progress parameter starting value. Roughly 16 meters left of the deck. */

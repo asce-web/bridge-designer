@@ -60,7 +60,7 @@ export class BridgeService {
     return this._draftingPanelState;
   }
 
-  /** Updates the current bridge and drafting panel state, cancelling the sketch if it doesnt' match. */
+  /** Updates the current bridge and drafting panel state, cancelling the sketch if it doesn't match. */
   public setBridge(value: BridgeModel, draftingPanelState: DraftingPanelState) {
     if (value.designConditions.tagGeometryOnly !== this.designConditions.tagGeometryOnly) {
       this._sketch = BridgeSketchModel.ABSENT;
@@ -158,7 +158,7 @@ export class BridgeService {
    * Returns a stock heuristically likely to be one the user will want to use next.
    *
    * Three cases:
-   *  - No members in the bridge: Return a stock generally useful to niave users.
+   *  - No members in the bridge: Return a stock generally useful to naive users.
    *  - Empty member index list: returns the most common stock in the bridge, else EMPTY if no members.
    *  - Otherwise: returns stock attributes shared by all given members.
    */
@@ -228,7 +228,7 @@ export class BridgeService {
     // Remove from consideration all joints touched by some non-deleted member.
     this.bridge.members.forEach(member => {
       if (!deletedMemberIndices.has(member.index)) {
-        // The member remains after delection. Can't delete its joints.
+        // The member remains after deletion. Can't delete its joints.
         deletedJointIndices.delete(member.a.index);
         deletedJointIndices.delete(member.b.index);
       }
@@ -266,7 +266,7 @@ export class BridgeService {
     return  entries.sort((a, b) => a[0].localeCompare(b[0], 'en-US')).map(pair => pair[1]);
   }
 
-  /** Returns whether a member with given end points would intersect the high peir, if the conditions have one. */
+  /** Returns whether a member with given end points would intersect the high pier, if the conditions have one. */
   public isMemberIntersectingHighPier(a: Point2DInterface, b: Point2DInterface): boolean {
     if (!this.designConditions.isHiPier || a.x === b.x) {
       return false;
@@ -307,7 +307,7 @@ export class BridgeService {
     for (const member of this.bridge.members) {
       // prettier-ignore
       if ((member.materialSizeMm <= max) || 
-        // Ignore the member if it doesn't transsect the deck.
+        // Ignore the member if it doesn't transect the deck.
         (member.a.y > 0 && member.b.y > 0) ||
         (member.a.y < 0 && member.b.y < 0) ||
         (member.a.index === this.designConditions.leftAnchorageJointIndex) ||
@@ -322,7 +322,7 @@ export class BridgeService {
   }
 
   /**
-   * Return bridge half-width, including the widest members that transsect the deck.
+   * Return bridge half-width, including the widest members that transect the deck.
    * Useful for piers and abutments.
    */
   public get bridgeHalfWidth(): number {

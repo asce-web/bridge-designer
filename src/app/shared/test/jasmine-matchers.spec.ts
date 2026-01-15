@@ -47,14 +47,14 @@ describe('getReasonNotDeeplyEqual', () => {
   });
 
   it('reports type mismatches correctly', () => {
-    expect(getTestValue(null, undefined)).toEqual(['type missmatch @<top>: null != undefined (null != undefined)']);
-    expect(getTestValue(0, 'foo')).toEqual(['type missmatch @<top>: number != string (0 != foo)']);
-    expect(getTestValue('foo', 0)).toEqual(['type missmatch @<top>: string != number (foo != 0)']);
-    expect(getTestValue(42n, 'foo')).toEqual(['type missmatch @<top>: bigint != string (42 != foo)']);
-    expect(getTestValue('foo', 42n)).toEqual(['type missmatch @<top>: string != bigint (foo != 42)']);
-    expect(getTestValue(0, {})).toEqual(['type missmatch @<top>: number != object (0 != <object>)']);
-    expect(getTestValue({}, 0)).toEqual(['type missmatch @<top>: object != number (<object> != 0)']);
-    expect(getTestValue(0, Symbol('foo'))).toEqual(['type missmatch @<top>: number != symbol (0 != <symbol>)']);
+    expect(getTestValue(null, undefined)).toEqual(['type mismatch @<top>: null != undefined (null != undefined)']);
+    expect(getTestValue(0, 'foo')).toEqual(['type mismatch @<top>: number != string (0 != foo)']);
+    expect(getTestValue('foo', 0)).toEqual(['type mismatch @<top>: string != number (foo != 0)']);
+    expect(getTestValue(42n, 'foo')).toEqual(['type mismatch @<top>: bigint != string (42 != foo)']);
+    expect(getTestValue('foo', 42n)).toEqual(['type mismatch @<top>: string != bigint (foo != 42)']);
+    expect(getTestValue(0, {})).toEqual(['type mismatch @<top>: number != object (0 != <object>)']);
+    expect(getTestValue({}, 0)).toEqual(['type mismatch @<top>: object != number (<object> != 0)']);
+    expect(getTestValue(0, Symbol('foo'))).toEqual(['type mismatch @<top>: number != symbol (0 != <symbol>)']);
   });
 
   it('reports array equality correctly', () => {
@@ -70,10 +70,10 @@ describe('getReasonNotDeeplyEqual', () => {
     const s = Symbol('foo');
     expect(getTestValue(['a', 0], ['a', 0, s])).toEqual(['array length mismatch @<top>: 2 != 3)', 'excess: [2: <symbol>]']);
     expect(getTestValue(['a', 0, [s]], ['a', 0, s])).toEqual([
-      'type missmatch @<top>[2]: array != symbol (<array> != <symbol>)',
+      'type mismatch @<top>[2]: array != symbol (<array> != <symbol>)',
     ]);
     expect(getTestValue([['a'], [], [0, [s]]], [['a'], [], [0, ['b']]])).toEqual([
-      'type missmatch @<top>[2][1][0]: symbol != string (<symbol> != b)',
+      'type mismatch @<top>[2][1][0]: symbol != string (<symbol> != b)',
     ]);
   });
 
@@ -92,7 +92,7 @@ describe('getReasonNotDeeplyEqual', () => {
       'field mismatch @<top>: only in Object are {c}; only in Foo are {}',
     ]);
     expect(getTestValue({ a: 42, b: { c: ['foo'] } }, { b: { c: [Symbol('foo')] }, a: 42 })).toEqual([
-      'type missmatch @<top>.b.c[0]: string != symbol (foo != <symbol>)',
+      'type mismatch @<top>.b.c[0]: string != symbol (foo != <symbol>)',
     ]);
   });
 
@@ -107,7 +107,7 @@ describe('getReasonNotDeeplyEqual', () => {
       'array length mismatch @<top>.b.c: 4 != 3)',
       'excess: [3: extra]' ,
       'value mismatch @<top>.b.c[0]: bar != baz',
-      'type missmatch @<top>.b.c[2]: string != symbol (foo != <symbol>)',
+      'type mismatch @<top>.b.c[2]: string != symbol (foo != <symbol>)',
     ]);
   });
 });

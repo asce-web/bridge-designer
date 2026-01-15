@@ -9,7 +9,7 @@ import { Joint } from '../../../shared/classes/joint.model';
 import { MemberCursorService } from './member-cursor.service';
 import { DesignGrid } from '../../../shared/services/design-grid.service';
 
-/** Grid-restricted retical cursor for joints. Optional member rubberbands for joint moves. */
+/** Grid-snapping reticle cursor for joints. Optional member rubber bands for joint moves. */
 @Injectable({ providedIn: 'root' })
 export class JointCursorService {
   private static readonly TARGET_RADIUS = 8.5;

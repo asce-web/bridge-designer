@@ -106,7 +106,7 @@ export class RenderingService {
     this.truckRenderingService.prepare();
     this.animationControlsOverlayService.prepare();
     this.depthBufferService.prepare();
-    this.depthBufferService.pepareRenderToDisplay();
+    this.depthBufferService.prepareRenderToDisplay();
 
     this.prepared = true;
   }

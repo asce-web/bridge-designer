@@ -43,7 +43,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
   private brightnessSlider: number | jqxSliderComponent = 50;
   /** Whether a close event being handled was a user click on the close icon (otherwise a programmatic close). */
   private isUserClose: boolean = true;
-  /** Tracked value of the animation controls toggle. Needed for hiding/unhiding the dialog as UI state changes. */
+  /** Tracked value of the animation controls toggle. Needed for hiding/un-hiding the dialog as UI state changes. */
   private isVisible: boolean = false;
 
   dialogWidth: number = 210;
@@ -157,7 +157,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
     this.notifySettingsChange({ noWindTurbine: !this.windTurbineCheckbox.checked()! });
   }
 
-  /** Sync notified settings wtih current control widget state.  */
+  /** Sync notified settings with current control widget state.  */
   private syncSettings(): void {
     this.handleAbutmentsCheckboxChange();
     this.handleBrightnessSliderChange();

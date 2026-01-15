@@ -98,13 +98,13 @@ export class GuidesService implements DraggableService {
     ctx.lineTo(this.viewportTransform.absWidthViewport + 1, yKnob);
     ctx.stroke();
     this.imagesLoader.invokeAfterLoaded(images => {
-      const horzontialKnob = Utility.assertNotUndefined(images[GuidesService.HORIZONTAL_GUIDE_KNOB]);
+      const horizontalKnob = Utility.assertNotUndefined(images[GuidesService.HORIZONTAL_GUIDE_KNOB]);
       const verticalKnob = Utility.assertNotUndefined(images[GuidesService.VERTICAL_GUILE_KNOB]);
 
       const yHorizontalKnob = yKnob - GuidesService.KNOB_THICKNESS * 0.5;
       this.horizontalGuideKnobRect.x0 = 0;
       this.horizontalGuideKnobRect.y0 = yHorizontalKnob;
-      ctx.drawImage(horzontialKnob, 0, yHorizontalKnob);
+      ctx.drawImage(horizontalKnob, 0, yHorizontalKnob);
 
       const xVerticalKnob = xKnob - GuidesService.KNOB_THICKNESS * 0.5;
       const yVerticalKnob = this.viewportTransform.absHeightViewport - GuidesService.KNOB_LENGTH;
@@ -159,10 +159,10 @@ export class GuidesService implements DraggableService {
   private locate(guideKnob: GuideKnob, x: number, y: number): GuidesService {
     switch (guideKnob.which) {
       case 'horizontal':
-        this.locateHorizontalGuideWorld(this.viewportTransform.viewportToworldY(y));
+        this.locateHorizontalGuideWorld(this.viewportTransform.viewportToWorldY(y));
         break;
       case 'vertical':
-        this.locateVerticalGuideWorld(this.viewportTransform.viewportToworldX(x));
+        this.locateVerticalGuideWorld(this.viewportTransform.viewportToWorldX(x));
         break;
     }
     return this;

@@ -47,7 +47,7 @@ export class CurrentTopicService {
   }
 
   /**
-   * Goes to a specific topic, stacking the current one and its scrolltop
+   * Goes to a specific topic, stacking the current one and its scroll top
    * beforehand (optionally). Broadcasts a notification of the change.
    */
   public goToTopicId(id: string, options?: { scrollTop?: number; stack?: TopicLocation[] | null }): void {

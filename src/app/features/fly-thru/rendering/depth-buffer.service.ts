@@ -96,7 +96,7 @@ export class DepthBufferService {
   }
 
   /** Prepares a texture coordinate buffer for drawing the depth texture to the screen. */
-  public pepareRenderToDisplay(): void {
+  public prepareRenderToDisplay(): void {
     const gl = this.glService.gl;
     const vertexArray = gl.createVertexArray();
     gl.bindVertexArray(vertexArray);

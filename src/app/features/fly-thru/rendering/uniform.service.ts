@@ -182,7 +182,7 @@ export class UniformService {
   public updateLight(viewMatrix: mat4, brightness: number, shadowWeight: number) {
     const u = UNIT_LIGHT_DIRECTION;
     const c = this.lightConfig;
-    // gl-matrix doesn't do vector operaions.
+    // gl-matrix doesn't do vector operations.
     c[0] = viewMatrix[0] * u[0] + viewMatrix[4] * u[1] + viewMatrix[8] * u[2];
     c[1] = viewMatrix[1] * u[0] + viewMatrix[5] * u[1] + viewMatrix[9] * u[2];
     c[2] = viewMatrix[2] * u[0] + viewMatrix[6] * u[1] + viewMatrix[10] * u[2];

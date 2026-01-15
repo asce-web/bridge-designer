@@ -62,7 +62,7 @@ const TITLE_TEXT_Y = 'Strength (kilonewtons)';
   styleUrl: './member-strength-graph.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MemberStrengthGraphComponet implements OnChanges {
+export class MemberStrengthGraphComponent implements OnChanges {
   @Input() width: number = 400;
   @Input() height: number = 400;
   @Input() zoom: boolean = true;
@@ -220,7 +220,7 @@ export class MemberStrengthGraphComponet implements OnChanges {
     }
     ctx.stroke();
 
-    // All tension curvers in pale blue.
+    // All tension curves in pale blue.
     ctx.strokeStyle = PALE_BLUE;
     ctx.beginPath();
     const x0 = lengthToPixel(gmy, 0);
@@ -293,7 +293,7 @@ export class MemberStrengthGraphComponet implements OnChanges {
     ctx.setLineDash(savedLineDash);
   }
 
-  /** Renders a "paddle" dennoting information about the current member, if any. */
+  /** Renders a "paddle" denoting information about the current member, if any. */
   private renderMemberData(ctx: CanvasRenderingContext2D): void {
     const savedFillStyle = ctx.fillStyle;
     const savedTextAlign = ctx.textAlign;

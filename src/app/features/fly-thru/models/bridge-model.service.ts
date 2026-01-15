@@ -417,7 +417,7 @@ export class BridgeModelService {
       indices[ii++] = p;
       indices[ii++] = p + 2;
     }
-    // Triangle fan for posiitive z end.
+    // Triangle fan for positive z end.
     for (let i = 0, q = hullLength, p = 1; i < hullLength; ++i, q = p++) {
       indices[ii++] = positiveZCenterIndex;
       indices[ii++] = positiveZCenterIndex + q;

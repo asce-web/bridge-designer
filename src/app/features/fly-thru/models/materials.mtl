@@ -52,7 +52,7 @@ Ka .3 .4 .1  # Ambient color
 Ks .8 .8 .8  # Specular color
 Ns 100.0  # Shininess
 
-newmtl CorrogatedMetal
+newmtl CorrugatedMetal
 Kd 0.7 0.7 0.7  # Diffuse color
 Ka .21 .41 .08  # Ambient color
 Ks 0.8 0.8 0.8  # Specular color

@@ -41,7 +41,7 @@ function buildMemberGeometry(gussetJoint: Joint, member: Member, minMemberSizeMm
   const vx = otherJoint.x - gussetJoint.x;
   const vy = otherJoint.y - gussetJoint.y;
   // Note adding GUSSET_THICKNESS artificially "thickens" the member so the gusset
-  // is a bit bigger. This pecludes dueling polygons while rendering and other problems.
+  // is a bit bigger. This precludes dueling polygons while rendering and other problems.
   // Looks cool, too.
   const halfSizeM = 0.0005 * Math.max(minMemberSizeMm, member.materialSizeMm) + SiteConstants.GUSSET_THICKNESS;
   const vScale = halfSizeM / Math.hypot(vx, vy);
@@ -108,7 +108,7 @@ export class GussetsService {
         this.convexHullService.add(geometry.x0 - geometry.upx, geometry.y0 - geometry.upy);
         this.convexHullService.add(geometry.x1 + geometry.upx, geometry.y1 + geometry.upy);
         this.convexHullService.add(geometry.x1 - geometry.upx, geometry.y1 - geometry.upy);
-        // Add points due to interections of pairs of member edges.
+        // Add points due to intersections of pairs of member edges.
         for (const altGeometry of gusset.memberGeometries!) {
           if (geometry === altGeometry) {
             continue;

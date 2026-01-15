@@ -2,18 +2,20 @@
      SPDX-License-Identifier: GPL-3.0-or-later -->
 
 <div class="wrapper">
-  <canvas
-    *ngIf="position === 'bottom'"
-    #ruler
-    class="ruler"
-    [width]="screenWidth"
-    [height]="thickness"
-  ></canvas>
-  <canvas
-    *ngIf="position === 'left'"
-    #ruler
-    class="ruler"
-    [width]="thickness"
-    [height]="screenHeight"
-  ></canvas>
+  @if (position === 'bottom') {
+    <canvas
+      #ruler
+      class="ruler"
+      [width]="screenWidth"
+      [height]="thickness"
+    ></canvas>
+  }
+  @if (position === 'left') {
+    <canvas
+      #ruler
+      class="ruler"
+      [width]="thickness"
+      [height]="screenHeight"
+    ></canvas>
+  }
 </div>

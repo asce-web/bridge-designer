@@ -58,7 +58,7 @@ type InterpolatorContext = {
   /** Whether the interpolation point is on the deck. */
   isOnDeck: boolean;
   /**
-   * Value in [0..1) showing progress along the current panel including the "pseudopanel" where the front tire
+   * Value in [0..1) showing progress along the current panel including the "pseudo-panel" where the front tire
    * has left the bridge, but the right has not. Also slightly exceeds the range to account for the left
    * and right deck cantilevers. Set to NaN when ont on any panel.
    */
@@ -67,7 +67,7 @@ type InterpolatorContext = {
   leftLoadCase: number;
   /**
    * Right load case to use for force and joint location interpolation. NaN when interpolation is not relevant,
-   * i.e. load is not on a panel or the pseudopanel (see above).
+   * i.e. load is not on a panel or the pseudo-panel (see above).
    */
   rightLoadCase: number;
 };
@@ -224,7 +224,7 @@ class SourceInterpolator implements Interpolator {
     return this;
   }
 
-  /** Fills fields that cache bridge failure status for the current parameter. Avoids redundancey. */
+  /** Fills fields that cache bridge failure status for the current parameter. Avoids redundancy. */
   private updateMemberFailureStatus(): SourceInterpolator {
     const members = this.service.bridgeService.bridge.members;
     this.failedMemberCount = 0;

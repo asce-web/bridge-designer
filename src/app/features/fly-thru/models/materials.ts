@@ -41,7 +41,7 @@ export const MATERIAL_CONFIG = new Float32Array([
   .4, .4, .5, // diffuse rgb
   100.0, // shininess
 
-  // 9: CorrogatedMetal
+  // 9: CorrugatedMetal
   0.7, 0.7, 0.7, // diffuse rgb
   40.0, // shininess
 
@@ -64,7 +64,7 @@ export const enum Material {
   Black = 6,
   PaintedSteel = 7,
   Aluminum = 8,
-  CorrogatedMetal = 9,
+  CorrugatedMetal = 9,
   TexturedSteel = 10,
   Glass = 11,
 };

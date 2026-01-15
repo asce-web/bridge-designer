@@ -74,7 +74,7 @@ export class HelpPopupTopicComponent {
     }
     // Close extraneous existing popups.
     const popupElement = this.popup.nativeElement;
-    this.pruneVisiblesPopups(popupElement);
+    this.pruneVisiblePopups(popupElement);
     // Make this one visible.
     const style = popupElement.style;
     style.display = 'block';
@@ -87,7 +87,7 @@ export class HelpPopupTopicComponent {
   }
 
   /** Hides all popups that aren't on the path from the given leaf popup up to the root help topic. */
-  private pruneVisiblesPopups(leaf: HTMLDivElement): void {
+  private pruneVisiblePopups(leaf: HTMLDivElement): void {
     const popupAncestorPath = new Set<Element>();
     let root: HTMLElement | null = leaf;
     while (root && !root.classList.contains('pane-content')) {

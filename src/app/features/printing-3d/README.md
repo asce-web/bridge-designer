@@ -19,7 +19,7 @@ The pieces are:
 - **Deck segments**. L-shaped prisms. All but one includes one deck beam and one segment of deck and wear surface. The
   end over each beam has a slot that matches a tab on the corresponding non-beam end of the next segment. End segments
   include the deck cantilever and abutment pillow block. The right end segment is special in that it includes the _two_
-  righmost beams and a slot. It is the first segment snapped in during assembly and furnishes the first slot. Slots are
+  rightmost beams and a slot. It is the first segment snapped in during assembly and furnishes the first slot. Slots are
   slightly elongated so that each segment's pin can be inserted without its tab interfering as the user adds segments
   right to left. Deck beams at piers also include pillow blocks. Pillow blocks include tabs that mate with slots in
   abutments.
@@ -27,13 +27,13 @@ The pieces are:
   For bridges with anchorages, two or four small pillars supporting joint pins are also included.
 
 Note we're ignoring the anti-sway cross-members. Ideally there would be a small eye at each member end where the user
-could use needle and thread to add them. But that face of the truss is on the platten. A less elegant possibility is to
+could use needle and thread to add them. But that face of the truss is on the platen. A less elegant possibility is to
 put a hole at the respective correct place in each gusset. The user would hot glue a thread at one end, pull taut, and
 hot glue the other end. Triangulation of gussets with these holes could get messy.
 
 ## Settings
 
-- **Scale**. We need to allow setting the scale of the bridge, since printers have different platten sizes.
+- **Scale**. We need to allow setting the scale of the bridge, since printers have different platen sizes.
 - **Minimum feature size**. The smallest possible members are 30mm square. If a 44m span is printed 8 inches long, such
   small members made to scale would be 0.138mm square. Consumer grade 3d printers have a minimum closer to 0.4mm. We'll
   let the user choose a not-to-scale minimum size in the range 0 to 1mm.
@@ -88,3 +88,4 @@ also a strength. That's WebAssembly. While mainstream since 2007, some of its fe
 browsers only since 2022.
 
 # Packing objects onto the printer stage
+TODO

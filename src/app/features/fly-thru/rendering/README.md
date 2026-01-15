@@ -32,7 +32,7 @@ This directory contains rendering logic for fly-thru animation models.
     using `MeshRenderingService`.
 
 - **View service.** Maintains the view transformation of the eye flying through the rendered view.
-- **Viewport.** Maintains the projection transformation. This depends on the window (vieport) size, so it listens for
+- **Viewport.** Maintains the projection transformation. This depends on the window (viewport) size, so it listens for
   changes.
 - **Uniform service.** Consolidates all OpenGL uniform handling (i.e. shader global data), which is shared by all
   rendering.
@@ -107,7 +107,7 @@ other derivative attributes e.g. about failure of the structure at the current i
 There are two kinds of interpolator: one that interpolates a single source and another specifically for the bridge
 collapse animation.
 
-Withall, there are three interpolators managed by the simulation state machine. Only one is effective at any time.
+In all, there are three interpolators managed by the simulation state machine. Only one is effective at any time.
 
 - The _dead loading phase_ interpolator is a normal source interpolator with a bi-source interpolating between the zero
   load case and the analysis dead load only case.
@@ -118,7 +118,7 @@ Withall, there are three interpolators managed by the simulation state machine. 
   computed on the fly. Each failed member from the first analysis is artificially weakened by a large factor, and then
   the analysis is completed. The weakened members cause very large joint displacements that roughly approximate bridge
   failure. Its parameter is frozen at the same value, so the truck is positioned on the distorted bridge. The bi-source
-  parameter is varied to go smoothly from the intially failed state to the large displacements of the distorted
+  parameter is varied to go smoothly from the initially failed state to the large displacements of the distorted
   analysis.
 
   The odd bit is that a normal source analysis interpolator of the bi-source would produce some incorrect results in

@@ -54,10 +54,10 @@ export class BridgePdfRenderingService {
     this.labelPositions = this.memberLabelPositionService.labelPositions;
     // Draw. Order matters.
     this.bridgeService.bridge.members.forEach(member => this.drawMember(doc, member));
-    const suppportsBottomY = this.drawSupports(doc);
+    const supportsBottomY = this.drawSupports(doc);
     this.gussetsService.createGussets().forEach(gusset => this.drawJoint(doc, gusset));
     this.bridgeService.bridge.members.forEach(member => this.drawMemberLabel(doc, member));
-    const dimensionsY = DIMENSION_GAP + Math.max(this.tY(bridgeExtent.y0), suppportsBottomY);
+    const dimensionsY = DIMENSION_GAP + Math.max(this.tY(bridgeExtent.y0), supportsBottomY);
     this.drawVerticalDimensions(doc, bridgeExtent);
     return DIMENSION_GAP + this.drawHorizontalDimensions(doc, dimensionsY);
   }

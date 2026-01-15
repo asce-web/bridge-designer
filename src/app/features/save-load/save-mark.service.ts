@@ -42,7 +42,7 @@ export class SaveMarkService {
     return this._fileName;
   }
 
-  /** Marks the current bridge design as consitent with a save set file: saved, freshly loaded or new. */
+  /** Marks the current bridge design as consistent with a save set file: saved, freshly loaded or new. */
   public markDesignSaved(fileName: string): void {
     this.savedMark = this.undoManagerService.stateToken;
     this._fileName = fileName;

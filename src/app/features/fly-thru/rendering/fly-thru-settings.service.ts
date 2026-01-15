@@ -22,7 +22,7 @@ export type FlyThruSettings = {
   noWindTurbine?: boolean;
 };
 
-/** Holder for fly-thru settings for injection into all using services and componets. */
+/** Holder for fly-thru settings for injection into all using services and components. */
 @Injectable({ providedIn: 'root' })
 export class FlyThruSettingsService {
   private static readonly KM_PER_HOUR_TO_M_PER_MILLI = 1 / 3600;

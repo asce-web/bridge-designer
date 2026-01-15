@@ -14,10 +14,19 @@
   "latex-workshop.formatting.latex": "tex-fmt",
   "cSpell.words": [
     "ASTM",
+    "BDCE",
+    "blueification",
     "constructability",
     "crossxsection",
     "glos",
+    "halign",
+    "lerp",
     "LRFD",
-    "wpbd"
+    "Orama",
+    "Rehydrators",
+    "titleblock",
+    "wpbd",
+    "wxmaxima",
+    "xform"
   ]
 }

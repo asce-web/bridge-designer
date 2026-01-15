@@ -54,7 +54,7 @@ export class LabelsService implements DraggableService {
     const deckLabelMetrics = ctx.measureText(LabelsService.DECK_LABEL_TEXT);
     const roadLabelMetrics = ctx.measureText(LabelsService.ROAD_LABEL_TEXT);
 
-    // Slab geometry calclulations matching design-site-rendering.service.
+    // Slab geometry calculations matching design-site-rendering.service.
     const ySlabTop = this.viewportTransform.worldToViewportY(SiteConstants.DECK_TOP_HEIGHT);
     const ySlabBottom = this.viewportTransform.worldToViewportY(
       SiteConstants.DECK_TOP_HEIGHT - conditions.deckThickness,
@@ -111,12 +111,12 @@ export class LabelsService implements DraggableService {
     return this.labelsTextExtent.contains(x, y) ? this.labels : undefined;
   }
 
-  /** Locates the labels at a new, valid viewport postion.  But doesn't render. */
+  /** Locates the labels at a new, valid viewport position.  But doesn't render. */
   private locate(y: number): LabelsService {
     const conditions = this.bridgeService.designConditions;
     const yMin = this.viewportTransform.worldToViewportY(conditions.overClearance);
     const yMax = this.viewportTransform.worldToViewportY(-conditions.underClearance);
-    this.bridgeService.draftingPanelState.yLabels = this.viewportTransform.viewportToworldY(
+    this.bridgeService.draftingPanelState.yLabels = this.viewportTransform.viewportToWorldY(
       Utility.clamp(y, yMin, yMax),
     );
     return this;

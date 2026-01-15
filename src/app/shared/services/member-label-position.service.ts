@@ -124,7 +124,7 @@ export class MemberLabelPositionService {
       const mi = this.configs[i]; // member i config
       const mit = x[i]; // member i label parameter
       const v = x[iv]; // member i label velocity
-      y[iv] = ka * (mi.halfLength - mit) - drag * v; // centering springs and lineear drag
+      y[iv] = ka * (mi.halfLength - mit) - drag * v; // centering springs and linear drag
     }
     // TODO: All pairs may be overkill. Try precomputing those with overlapping bb's. Stability?
     for (let i = 0, iv = i + n; i < n - 1; ++i, ++iv) {

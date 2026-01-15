@@ -95,7 +95,7 @@ export class MeshRenderingService {
     private readonly shaderService: ShaderService,
   ) {}
 
-  /** Prepares a colored mesh for drawing. Optionially retains backing data for future updates. */
+  /** Prepares a colored mesh for drawing. Optionally retains backing data for future updates. */
   public prepareColoredMesh(meshData: MeshData, updatable: boolean = false): Mesh {
     const gl = this.glService.gl;
     const vertexArray = gl.createVertexArray()!;
@@ -180,7 +180,7 @@ export class MeshRenderingService {
     gl.bindVertexArray(null);
   }
 
-  /** Prepares a mesh for an updateable buckled member bending in a parabola. */
+  /** Prepares a mesh for an updatable buckled member bending in a parabola. */
   public prepareBuckledMemberMesh(meshData: MeshData): Mesh {
     const gl = this.glService.gl;
     const vertexArray = gl.createVertexArray()!;
@@ -227,7 +227,7 @@ export class MeshRenderingService {
     gl.bindVertexArray(null);
   }
 
-  /** Prepares a colored mesh for drawing. Not updateable.. */
+  /** Prepares a colored mesh for drawing. Not updatable. */
   public prepareTexturedMesh(meshData: MeshData, textureUrl: string, preloadColor: Uint8Array): Mesh {
     const gl = this.glService.gl;
 
@@ -297,7 +297,7 @@ export class MeshRenderingService {
   /** Replaces the instance transform data of the given mesh. */
   public updateInstanceModelTransforms(meshOrWire: Mesh | Wire, usage: number = this.glService.gl.STREAM_DRAW): void {
     if (!meshOrWire.instanceModelTransforms) {
-      return; // Not updateable
+      return; // Not updatable
     }
     const gl = this.glService.gl;
     gl.bindVertexArray(meshOrWire.vertexArray);
@@ -312,7 +312,7 @@ export class MeshRenderingService {
   /** Replaces the instance colors of the given mesh. */
   public updateInstanceColors(mesh: Mesh, usage: number = this.glService.gl.STREAM_DRAW): void {
     if (!mesh.instanceColors) {
-      return; // Not updateable
+      return; // Not updatable
     }
     const gl = this.glService.gl;
     gl.bindVertexArray(mesh.vertexArray);

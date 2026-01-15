@@ -202,8 +202,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
       this.permitTruckLoadButton.check();
     }
 
-    // Widgets that depend on ones already initialized.
-    this.updateDependentWidgets();
+    this.cardService.renderCard();
   }
 
   setDesignConditionsFromWidgets(): void {
@@ -216,17 +215,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
       this.highStrengthConcreteButton.checked() ? DeckType.HIGH_STRENGTH : DeckType.MEDIUM_STRENGTH,
     );
     this.designConditions = this.designConditionsService.getConditionsForSetupKey(key);
-    this.updateDependentWidgets();
-  }
-
-  /** Sets up widgets that depend on those directly associated with design conditions. */
-  private updateDependentWidgets(): void {
-    const card = this.cardService.card;
-    // TODO: If this ends up only manipulating card, move these to a cardservice update method.
-    card.renderDeckCartoon();
-    card.renderElevationCartoon();
-    card.renderLegendItemsForCartoon();
-    card.enableControls();
+    this.cardService.renderCard();
   }
 
   private setCardVisibility(index: number, isVisible: boolean): void {
@@ -240,10 +229,8 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     // Make the old card invisible and new one visible.
     this.setCardVisibility(this.cardService.card.index, false);
     this.setCardVisibility(newCardIndex, true);
-    // Install the view and navigation logic for the new card.
+    // Install the view and navigation logic for the new card, then render it.
     this.cardService.goToCard(newCardIndex);
-    // Adjust appearance to incorporate the card change (e.g. navigation buttons).
-    this.updateDependentWidgets();
   }
 
   get scenarioId(): string {

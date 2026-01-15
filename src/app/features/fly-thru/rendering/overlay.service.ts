@@ -15,9 +15,9 @@ export type OverlayIcon = {
   x0: number;
   /** Upper left corner y-coord of icon in mouse coords. Negative values are wrt bottom viewport edge. */
   y0: number;
-  /** Rendered width of icon regardless of image widith. */
+  /** Rendered width of icon regardless of image width. */
   width: number;
-  /** Rendered height of icon regardless of image widith. */
+  /** Rendered height of icon regardless of image width. */
   height: number;
   /** Initial alpha value for rendering the icon. */
   initialAlpha?: number;
@@ -69,7 +69,7 @@ export class OverlayService {
     private readonly viewportService: ViewportService,
   ) {}
 
-  /** Prepares (one time) an overlay for rendering using given discriptor. */
+  /** Prepares (one time) an overlay for rendering using given descriptor. */
   public prepare(descriptor: OverlayDescriptor): Overlay {
     const gl = this.glService.gl;
 

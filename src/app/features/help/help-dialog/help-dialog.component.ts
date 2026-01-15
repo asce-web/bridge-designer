@@ -62,7 +62,7 @@ export class HelpDialogComponent implements AfterViewInit {
     private readonly eventBrokerService: EventBrokerService,
   ) {}
 
-  initTools = ((_type?: string, index?: number, tool?: any, _menuToolIninitialization?: boolean): any => {
+  initTools = ((_type?: string, index?: number, tool?: any, _menuToolInitialization?: boolean): any => {
     switch (index) {
       case Tools.BACK_TOPIC:
         WidgetHelper.initToolbarImgButton('Back one topic', 'img/back.png', tool);

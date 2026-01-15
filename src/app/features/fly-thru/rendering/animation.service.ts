@@ -116,7 +116,7 @@ export class AnimationService {
     this._state = AnimationState.PAUSED;
   }
 
-  /** When paused, upauses the rendering clock. Rendering proceeds at the frame rate. */
+  /** When paused, unpauses the rendering clock. Rendering proceeds at the frame rate. */
   private unpause(): void {
     if (this._state !== AnimationState.PAUSED) {
       return;

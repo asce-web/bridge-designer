@@ -44,7 +44,7 @@ export class SiteConstants {
   static readonly WEAR_SURFACE_X1: number = this.ABUTMENT_STEP_X;
   static readonly ACCESS_LENGTH: number = this.FAR_AWAY - this.TANGENT_OFFSET;
   static readonly ACCESS_CURVE: Point2D[] = this.createAccessCurve();
-  /** Terrain cross-section clockwisepolygon. Between WATER_BELOW_GRADE points is the water cross-section. */
+  /** Terrain cross-section clockwise polygon. Between WATER_BELOW_GRADE points is the water cross-section. */
   static readonly ELEVATION_TERRAIN_POINTS: Point2D[] = (
     [
       // #region(collapsed) TABLE

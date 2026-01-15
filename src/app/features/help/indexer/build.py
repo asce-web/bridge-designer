@@ -60,7 +60,7 @@ class Indexer(HTMLParser):
                 if TRIM:
                     # lowercase
                     text = text.lower()
-                    # remove apostophes
+                    # remove apostrophes
                     text = re.sub(r"'", "", text)
                     # ignore uninteresting words
                     text = " ".join(

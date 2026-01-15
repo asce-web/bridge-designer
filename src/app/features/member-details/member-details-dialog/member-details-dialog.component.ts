@@ -14,7 +14,7 @@ import { jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { jqxSliderComponent, jqxSliderModule } from 'jqwidgets-ng/jqxslider';
-import { MemberStrengthGraphComponet } from '../member-strength-graph/member-strength-graph.component';
+import { MemberStrengthGraphComponent } from '../member-strength-graph/member-strength-graph.component';
 import { SectionDiagramComponent } from '../section-diagram/section-diagram.component';
 import { StockDropdownComponent } from '../stock-dropdown/stock-dropdown.component';
 import { WidgetHelper } from '../../../shared/classes/widget-helper';
@@ -28,7 +28,7 @@ import { ElementSelectorService, SelectionStash } from '../../drafting/shared/el
 @Component({
   selector: 'member-details-dialog',
   imports: [
-    MemberStrengthGraphComponet,
+    MemberStrengthGraphComponent,
     SectionDiagramComponent,
     StockDropdownComponent,
     jqxButtonModule,
@@ -88,7 +88,7 @@ export class MemberDetailsDialogComponent implements AfterViewInit {
     private readonly elementSelectorService: ElementSelectorService,
     private readonly eventBrokerService: EventBrokerService,
   ) {
-    // jqWidgets binds unuseful "this" in callbacks. Get the one we want.
+    // jqWidgets binds un-useful "this" in callbacks. Get the one we want.
     this.initDialogContent = this.initDialogContent.bind(this);
   }
 

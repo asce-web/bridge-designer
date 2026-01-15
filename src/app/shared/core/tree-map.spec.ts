@@ -92,7 +92,7 @@ describe('TreeMap', () => {
       }
     });
 
-    it('should delete multiple decending values', () => {
+    it('should delete multiple descending values', () => {
       for (let i = 99; i >= 0; --i) {
         expect(treeMap.insert(i.toString())).withContext(`i=${i}`).toBeUndefined();
       }

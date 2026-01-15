@@ -23,7 +23,7 @@ import {
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { Utility } from '../../../shared/classes/utility';
 
-/** Logic for dehydrating and rehdrating the undo manager. Keeps it free of knowledge about commands and bridges. */
+/** Logic for dehydrating and rehydrating the undo manager. Keeps it free of knowledge about commands and bridges. */
 @Injectable({ providedIn: 'root' })
 export class UndoManagerSessionStateService {
   constructor(
@@ -32,7 +32,7 @@ export class UndoManagerSessionStateService {
     private readonly selectedElementsService: SelectedElementsService,
     sessionStateService: SessionStateService,
     /** 
-     * The session's undo manager. Rehydrators that need undo manager rehydrated  first can 
+     * The session's undo manager. Rehydrators that need undo manager rehydrated first can 
      * inject this service and use this attribute rather than injecting undo manager directly.
      */
     public readonly undoManagerService: UndoManagerService,

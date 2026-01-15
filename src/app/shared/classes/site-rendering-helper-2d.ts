@@ -13,7 +13,7 @@ export const enum AbutmentSide {
   RIGHT,
 }
 
-/** Interface to renderers of site details, normally implemented using methonds of this service. */
+/** Interface to renderers of site details, normally implemented using methods of this service. */
 export interface SiteDetailRenderers {
   renderStandardAbutment(
     location: Point2DInterface,

@@ -33,7 +33,7 @@
 - Failed members should be colored in drafting view after test.
 - Some sample designs fail.
 - Tree view of iteration dialog is not scrolling. 
-  - Scolls on reload, but previous failed iteration is missing. 
+  - Scrolls on reload, but previous failed iteration is missing. 
   - Present in list.
   - Reappears in tree if branch is collapsed and re-opened.
 - Scenario numbers in Project IDs are inconsistent:

@@ -27,7 +27,7 @@ export class CartoonSiteRenderingService {
       this.renderInSituCrossSection(ctx, options);
     }
     if (options & CartoonOptionMask.EXCAVATED_TERRAIN) {
-      this.renderExavatedCrossSection(ctx);
+      this.renderExcavatedCrossSection(ctx);
     }
     if (options & CartoonOptionMask.ARCH_LINE && this.bridgeService.sketch === BridgeSketchModel.ABSENT) {
       this.renderArchLine(ctx);
@@ -111,7 +111,7 @@ export class CartoonSiteRenderingService {
     }
   }
 
-  private renderExavatedCrossSection(ctx: CanvasRenderingContext2D): void {
+  private renderExcavatedCrossSection(ctx: CanvasRenderingContext2D): void {
     const savedStrokeStyle = ctx.strokeStyle;
     const savedFillStyle = ctx.fillStyle;
     const savedLineWidth = ctx.lineWidth;

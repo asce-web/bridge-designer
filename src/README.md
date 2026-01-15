@@ -32,7 +32,7 @@ The following are key, top-level design choices:
 - **Stateful services**: Against common wisdom favoring central stores with pure reduction semantics over immutable
   objects, BDCE provides many services with mutable internal state. This supports "Small devices" above by vastly
   reducing garbage collection pressure. It's also well-aligned with the way state is implemented in other versions. It
-  does complicate persistence across browswer refreshes.
+  does complicate persistence across browser refreshes.
 
 - **Decoupling via broadcast messages**: I considered various schemes for allowing one component or service to pass
   information needed by another. Most of them cause "Law of Demeter" violations: nasty dependency webs. I've chosen to
@@ -56,7 +56,7 @@ Subject names are nouns. General categories are:
   - Name of Subject ends with
 
 `UiStateService` manages flow of events generated and subscribed to by UI widgets. It also handles disabling of UI
-elements using subjects as keys. Hence all widges performing the same function are disabled/enabled as a group.
+elements using subjects as keys. Hence all widgets performing the same function are disabled/enabled as a group.
 
 By convention, dialogs always open in response to a Subject event. They often broadcast a different Subject to effect
 results: loading a new bridge, users' saved bridge, sample bridge, sketch, etc.
@@ -95,4 +95,3 @@ We thank the providers now and forever.
 - `cd src/app/features/fly-thru/shaders && python3 build.py` # builds shaders
 - `cd src/app/features/fly-thru/models && python3 build.py` # builds models from .obj files
 - `scripts/publish-pages.sh` on clean worktree pushes /docs to github
-

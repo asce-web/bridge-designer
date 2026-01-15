@@ -85,17 +85,17 @@ export class ViewportTransform2D {
     return ViewportTransform2D.copySign(Math.round(d * Math.abs(this._xScaleFactor)), d);
   }
 
-  public viewportToworldX(x: number): number {
+  public viewportToWorldX(x: number): number {
     return this._xWindow + (x - this._xMargin - this._xViewport) / this._xScaleFactor;
   }
 
-  public viewportToworldY(y: number): number {
+  public viewportToWorldY(y: number): number {
     return this._yWindow + (y - this._yMargin - this._yViewport) / this._yScaleFactor;
   }
 
   public viewportToWorldPoint(dst: Point2DInterface, src: Point2DInterface): void {
-    dst.x = this.viewportToworldX(src.x);
-    dst.y = this.viewportToworldY(src.y);
+    dst.x = this.viewportToWorldX(src.x);
+    dst.y = this.viewportToWorldY(src.y);
   }
 
   public viewportToWorldDistance(d: number): number {
@@ -103,10 +103,10 @@ export class ViewportTransform2D {
   }
 
   public viewportToWorldRectangle2D(dst: Rectangle2D, src: Rectangle2D): Rectangle2D {
-    dst.x0 = this.viewportToworldX(src.x0);
-    dst.y0 = this.viewportToworldY(src.y0);
-    dst.width = this.viewportToworldX(src.x1) - dst.x0;
-    dst.height = this.viewportToworldY(src.y1) - dst.y0;
+    dst.x0 = this.viewportToWorldX(src.x0);
+    dst.y0 = this.viewportToWorldY(src.y0);
+    dst.width = this.viewportToWorldX(src.x1) - dst.x0;
+    dst.height = this.viewportToWorldY(src.y1) - dst.y0;
     return dst;
   }
 

@@ -137,7 +137,7 @@ class SaveSetParser {
     if (this.scanNumber(false, YEAR_LENGTH, 'bridge designer version') !== saveSet.bridge.version) {
       throw new Error('bridge design file version is not ' + saveSet.bridge.version);
     }
-    const scenarioCode = this.scanNumber(false, SCENARIO_CODE_LENGTH, 'scenariow code');
+    const scenarioCode = this.scanNumber(false, SCENARIO_CODE_LENGTH, 'scenario code');
     saveSet.bridge.designConditions = this.designConditionsService.getConditionsForCodeLong(scenarioCode);
     const jointCount = this.scanNumber(false, JOINT_COUNT_LENGTH, 'number of joints');
     const memberCount = this.scanNumber(false, MEMBER_COUNT_LENGTH, 'number of members');
@@ -156,10 +156,10 @@ class SaveSetParser {
       saveSet.bridge.joints.push(joint);
     }
     for (let i: number = 0, n: number = 1; i < memberCount; i++) {
-      const jointAnumber = this.scanNumber(false, MEMBER_JOINT_LENGTH, `first joint of member ${n}`);
-      const jointA = saveSet.bridge.getJointByNumber(jointAnumber);
-      const jointBnumber = this.scanNumber(false, MEMBER_JOINT_LENGTH, `second joint of member ${n}`);
-      const jointB = saveSet.bridge.getJointByNumber(jointBnumber);
+      const jointANumber = this.scanNumber(false, MEMBER_JOINT_LENGTH, `first joint of member ${n}`);
+      const jointA = saveSet.bridge.getJointByNumber(jointANumber);
+      const jointBNumber = this.scanNumber(false, MEMBER_JOINT_LENGTH, `second joint of member ${n}`);
+      const jointB = saveSet.bridge.getJointByNumber(jointBNumber);
       const materialIndex = this.scanNumber(false, MEMBER_MATERIAL_LENGTH, `material index of member ${n}`);
       const sectionIndex = this.scanNumber(false, MEMBER_SECTION_LENGTH, `section index of member ${n}`);
       const sizeIndex = this.scanNumber(false, MEMBER_SIZE_LENGTH, `size index of member ${n}`);

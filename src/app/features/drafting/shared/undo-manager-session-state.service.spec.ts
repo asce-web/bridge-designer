@@ -90,7 +90,7 @@ describe('UndoManagerSessionStateService', () => {
     expect(bridgeService.bridge.joints.length).toBe(originalJointCount + 3);
     expect(bridgeService.bridge.members.length).toBe(originalMemberCount + 2);
 
-    // Verify dehdrated service looks reasonable.
+    // Verify dehydrated service looks reasonable.
     const dehydrated = service.dehydrate();
     expect(dehydrated.done.length).toBe(4);
     expect(dehydrated.undone.length).toBe(0);

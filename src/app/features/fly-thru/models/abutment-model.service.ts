@@ -170,7 +170,7 @@ export class AbutmentModelService {
       for (let i = 0; i < positionCount1 - 2; i += 2) {
         indices.push(i, i + 3, i + 2, i + 3, i, i + 1);
       }
-      // Joint pillow. Two pyramid facess.
+      // Joint pillow. Two pyramid faces.
       addPointPair(-faceX, shelfY, -Math.SQRT1_2, Math.SQRT1_2);
       addPointPair(0, -archHeight, -Math.SQRT1_2, Math.SQRT1_2);
       indices.push(positionCount1, positionCount1 + 3, positionCount1 + 2);

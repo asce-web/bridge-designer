@@ -57,7 +57,7 @@ export function getReasonsNotDeeplyEqual(
   }
   // Short circuit for any other kind of type mismatch.
   if (aType !== bType) {
-    reasons.push(`type missmatch @${path.join('')}: ${aType} != ${bType} (${safeToString(a)} != ${safeToString(b)})`);
+    reasons.push(`type mismatch @${path.join('')}: ${aType} != ${bType} (${safeToString(a)} != ${safeToString(b)})`);
     return;
   }
   // Short circuit numbers for an imprecise match for numbers.
