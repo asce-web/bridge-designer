@@ -14,10 +14,9 @@ import {
 } from '../shaders/constants';
 import { ShaderService } from '../shaders/shader.service';
 import { GlService } from './gl.service';
-import { ImageService } from '../../../shared/core/image.service';
-import { Colors } from '../../../shared/classes/graphics';
 import { FACIA_TEXTURE_UNIT, WATER_TEXTURE_UNIT } from './constants';
 import { DepthBufferService } from './depth-buffer.service';
+import { TextureService, TextureUrl } from './texture.service';
 
 export type MeshData = {
   positions: Float32Array;
@@ -91,8 +90,8 @@ export class MeshRenderingService {
   constructor(
     private readonly depthBufferService: DepthBufferService,
     private readonly glService: GlService,
-    private readonly imageService: ImageService,
     private readonly shaderService: ShaderService,
+    private readonly textureService: TextureService,
   ) {}
 
   /** Prepares a colored mesh for drawing. Optionally retains backing data for future updates. */
@@ -228,7 +227,7 @@ export class MeshRenderingService {
   }
 
   /** Prepares a colored mesh for drawing. Not updatable. */
-  public prepareTexturedMesh(meshData: MeshData, textureUrl: string, preloadColor: Uint8Array): Mesh {
+  public prepareTexturedMesh(meshData: MeshData, textureUrl: TextureUrl): Mesh {
     const gl = this.glService.gl;
 
     const vertexArray = gl.createVertexArray()!;
@@ -241,7 +240,7 @@ export class MeshRenderingService {
       meshData.instanceModelTransforms,
       meshData.usage?.instanceModelTransforms,
     );
-    const texture = this.prepareTexture(textureUrl, preloadColor);
+    const texture = this.textureService.getTexture(textureUrl);
 
     let programName, instanceCount;
     if (meshData.instanceModelTransforms) {
@@ -362,8 +361,7 @@ export class MeshRenderingService {
 
     const positionBuffer = this.prepareBuffer(IN_POSITION_LOCATION, meshData.positions, meshData.usage?.positions, 2);
     const indexBuffer = this.prepareIndexBuffer(meshData.indices);
-    const texture = this.prepareTexture('img/water.jpg', Colors.GL_WATER);
-
+    const texture = this.textureService.getTexture('img/water.jpg');
     const program = this.shaderService.getProgram('river');
     const textureUniformLocation = gl.getUniformLocation(program, 'water')!;
     const elementCount = meshData.indices.length;
@@ -454,6 +452,7 @@ export class MeshRenderingService {
     if (!mesh) {
       return;
     }
+    // nb: mesh texture is owned by TextureService and so not deleted here.
     const gl = this.glService.gl;
     gl.deleteVertexArray(mesh.vertexArray);
     gl.deleteBuffer(mesh.indexBuffer);
@@ -472,30 +471,12 @@ export class MeshRenderingService {
     if (mesh.instanceColorBuffer) {
       gl.deleteBuffer(mesh.instanceColorBuffer);
     }
-    if (mesh.texture) {
-      gl.deleteTexture(mesh.texture);
-    }
     if (mesh.texCoordBuffer) {
       gl.deleteBuffer(mesh.texCoordBuffer);
     }
     if (mesh.instanceModelTransformBuffer) {
       gl.deleteBuffer(mesh.instanceModelTransformBuffer);
     }
-  }
-
-  private prepareTexture(url: string, preloadColor: Uint8Array): WebGLTexture {
-    const gl = this.glService.gl;
-    const texture = gl.createTexture()!;
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    // Use a solid color texture of 1 pixel until the water image loads.
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, preloadColor);
-    this.imageService.createImagesLoader([url]).invokeAfterLoaded(imagesByUrl => {
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, imagesByUrl[url]);
-      gl.generateMipmap(gl.TEXTURE_2D);
-    });
-    gl.generateMipmap(gl.TEXTURE_2D);
-    return texture;
   }
 
   private prepareBuffer(

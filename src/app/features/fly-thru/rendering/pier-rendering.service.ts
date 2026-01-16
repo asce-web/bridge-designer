@@ -6,7 +6,6 @@ import { PierModelService } from '../models/pier-model.service';
 import { Mesh, MeshRenderingService } from './mesh-rendering.service';
 import { DisplayMatrices, UniformService } from './uniform.service';
 import { mat4, vec3 } from 'gl-matrix';
-import { Colors } from '../../../shared/classes/graphics';
 import { BridgeService } from '../../../shared/services/bridge.service';
 
 @Injectable({ providedIn: 'root' })
@@ -32,9 +31,7 @@ export class PierRenderingService {
 
     // Build new ones.
     const { texturedMeshData, coloredMeshData } = this.pierModelService.buildMeshDataForPier();
-    // TODO: Cache textures as optimization. We use this one twice.
-    const url = 'img/bricktile.png';
-    this.pierMesh = this.meshRenderingService.prepareTexturedMesh(texturedMeshData, url, Colors.GL_CONCRETE);
+    this.pierMesh = this.meshRenderingService.prepareTexturedMesh(texturedMeshData, 'img/bricktile.png');
     this.pillowMesh = this.meshRenderingService.prepareColoredMesh(coloredMeshData);
     const pierJoint = this.bridgeService.bridge.joints[this.bridgeService.designConditions.pierJointIndex];
     vec3.set(this.offset, pierJoint.x, pierJoint.y, 0);
@@ -44,7 +41,7 @@ export class PierRenderingService {
     if (!this.bridgeService.designConditions.isPier) {
       return;
     }
-    let m = this.uniformService.pushModelMatrix()
+    let m = this.uniformService.pushModelMatrix();
     mat4.translate(m, m, this.offset);
     this.uniformService.updateTransformsUniform(matrices);
     this.meshRenderingService.renderTexturedMesh(this.pierMesh);

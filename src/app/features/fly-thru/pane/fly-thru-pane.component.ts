@@ -19,6 +19,7 @@ import { ViewportService } from '../rendering/viewport.service';
 import { AnimationControlsOverlayService } from '../rendering/animation-controls-overlay.service';
 import { FlyThruSettingsDialogComponent } from '../fly-thru-settings-dialog/fly-thru-settings-dialog.component';
 import { KeyboardService } from './keyboard.service';
+import { TextureService } from '../rendering/texture.service';
 
 @Component({
   selector: 'fly-thru-pane',
@@ -43,6 +44,7 @@ export class FlyThruPaneComponent implements AfterViewInit {
     private readonly eventBrokerService: EventBrokerService,
     private readonly glService: GlService,
     private readonly keyBoardService: KeyboardService,
+    private readonly textureService: TextureService,
     private readonly viewportService: ViewportService,
   ) {}
 
@@ -102,6 +104,8 @@ export class FlyThruPaneComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     new ResizeObserver(() => this.handleResize()).observe(this.wrapper.nativeElement);
     this.glService.initialize(this.flyThruCanvas.nativeElement);
+    // Must follow glService initialization above.
+    this.textureService.loadAllTextures();
     this.eventBrokerService.uiModeRequest.subscribe(eventInfo => {
       this.isVisible = eventInfo.data === 'animation';
     });

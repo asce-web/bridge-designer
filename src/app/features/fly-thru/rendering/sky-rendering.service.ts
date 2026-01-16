@@ -5,10 +5,10 @@ import { Injectable } from '@angular/core';
 import { GlService } from './gl.service';
 import { Utility } from '../../../shared/classes/utility';
 import { IN_POSITION_LOCATION } from '../shaders/constants';
-import { ImageService } from '../../../shared/core/image.service';
 import { DisplayMatrices, UniformService } from './uniform.service';
 import { ShaderService } from '../shaders/shader.service';
 import { SKYBOX_TEXTURE_UNIT } from './constants';
+import { TextureService } from './texture.service';
 
 /** Container for sky box rendering logic. */
 @Injectable({ providedIn: 'root' })
@@ -58,24 +58,16 @@ export class SkyRenderingService {
 
   constructor(
     private readonly glService: GlService,
-    private readonly imageService: ImageService,
     private readonly shaderService: ShaderService,
+    private readonly textureService: TextureService,
     private readonly uniformService: UniformService,
   ) {}
 
   public prepare() {
     const gl = this.glService.gl;
+    this.skyBoxTexture = this.textureService.getTexture('skybox');
     const program = this.shaderService.getProgram('sky');
     this.skyBoxUniformLocation = gl.getUniformLocation(program, 'skybox')!;
-    // The images are 1024x1024.
-    const cubeMapTargetsByUrl: { [key: string]: number } = {
-      'img/skye.jpg': gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-      'img/skyw.jpg': gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-      'img/skyup.jpg': gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-      'img/skydn.jpg': gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-      'img/skyn.jpg': gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-      'img/skys.jpg': gl.TEXTURE_CUBE_MAP_NEGATIVE_Z,
-    };
     this.vertexArray = Utility.assertNotNull(gl.createVertexArray());
     gl.bindVertexArray(this.vertexArray);
     const positionBuffer = Utility.assertNotNull(gl.createBuffer());
@@ -86,28 +78,6 @@ export class SkyRenderingService {
     this.indexBuffer = Utility.assertNotNull(gl.createBuffer());
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, SkyRenderingService.INDICES, gl.STATIC_DRAW);
-
-    this.skyBoxTexture = Utility.assertNotNull(gl.createTexture());
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.skyBoxTexture);
-    // Initially use null textures. Replace with images asynchronously.
-    for (const target of Object.values(cubeMapTargetsByUrl)) {
-      gl.texImage2D(target, 0, gl.RGBA, 1024, 1024, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-    }
-    this.imageService
-      .createImagesLoader(Object.keys(cubeMapTargetsByUrl))
-      .invokeAfterLoaded(imagesByUrl => {
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.skyBoxTexture);
-        for (const [url, image] of Object.entries(imagesByUrl)) {
-          gl.texImage2D(cubeMapTargetsByUrl[url], 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-          gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-        }
-      });
-    gl.generateMipmap(gl.TEXTURE_CUBE_MAP);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
     gl.bindVertexArray(null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
