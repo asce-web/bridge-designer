@@ -17,7 +17,7 @@ import { SkyRenderingService } from './sky-rendering.service';
 import { AbutmentRenderingService } from './abutment-rendering.service';
 import { BridgeRenderingService } from './bridge-rendering.service';
 import { PierRenderingService } from './pier-rendering.service';
-import { WindTurbineRenderingService } from '../../../shared/services/wind-turbine-rendering.service';
+import { WindTurbineRenderingService } from './wind-turbine-rendering.service';
 import { SimulationStateService } from './simulation-state.service';
 import { AnimationControlsOverlayService } from './animation-controls-overlay.service';
 import { FlyThruSettingsService } from './fly-thru-settings.service';

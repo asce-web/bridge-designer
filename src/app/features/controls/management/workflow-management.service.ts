@@ -14,7 +14,7 @@ import { AllowedShapeChangeMask, InventoryService, StockId } from '../../../shar
 import { EditEffect } from '../../../shared/classes/editing';
 import { Member } from '../../../shared/classes/member.model';
 import { DesignConditionsService } from '../../../shared/services/design-conditions.service';
-import { BridgeAutoFixService } from '../../../shared/services/bridge-auto-fix.service';
+import { BridgeAutoFixService } from '../../testing/bridge-auto-fix.service';
 import { CursorMode } from '../../drafting/cursor-overlay/cursor-overlay.component';
 import { InventorySelectionService } from '../../../shared/services/inventory-selection.service';
 
@@ -35,7 +35,9 @@ export class WorkflowManagementService {
     uiStateService: UiStateService,
     undoManagerService: UndoManagerService,
   ) {
+    /** State of the show animation checkbox. */
     let showAnimation: boolean = true;
+    /** State of the `Auto-correct errors` checkbox. */
     let autoFix: boolean = true;
 
     // Alpha order by subject.

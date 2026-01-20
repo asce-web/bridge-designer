@@ -2,17 +2,17 @@
    SPDX-License-Identifier: GPL-3.0-or-later */
 
 import { Injectable } from '@angular/core';
-import { BridgeService } from './bridge.service';
-import { Joint } from '../classes/joint.model';
-import { UndoManagerService } from '../../features/drafting/shared/undo-manager.service';
-import { AddMemberCommand } from '../../features/controls/edit-command/add-member.command';
-import { Member } from '../classes/member.model';
-import { SelectedElementsService } from '../../features/drafting/shared/selected-elements-service';
-import { DeleteJointCommand } from '../../features/controls/edit-command/delete-joint.command';
-import { DeleteMembersCommand } from '../../features/controls/edit-command/delete-members.command';
-import { EventBrokerService, EventOrigin } from './event-broker.service';
+import { BridgeService } from '../../shared/services/bridge.service';
+import { Joint } from '../../shared/classes/joint.model';
+import { UndoManagerService } from '../drafting/shared/undo-manager.service';
+import { AddMemberCommand } from '../controls/edit-command/add-member.command';
+import { Member } from '../../shared/classes/member.model';
+import { SelectedElementsService } from '../drafting/shared/selected-elements-service';
+import { DeleteJointCommand } from '../controls/edit-command/delete-joint.command';
+import { DeleteMembersCommand } from '../controls/edit-command/delete-members.command';
+import { EventBrokerService, EventOrigin } from '../../shared/services/event-broker.service';
 
-/** Container for heuristics that try to fix common errors causing instability. */
+/** Container for heuristics that try to fix common errors causing instability just before testing. */
 @Injectable({ providedIn: 'root' })
 export class BridgeAutoFixService {
   constructor(

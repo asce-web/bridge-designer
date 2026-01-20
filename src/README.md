@@ -1,7 +1,7 @@
 <!-- Copyright (c) 2025-2026 Gene Ressler
      SPDX-License-Identifier: GPL-3.0-or-later -->
 
-# Bridge Designer, Cloud Edition (BDCE)
+# Bridge Designer, Cloud Edition
 
 This is a redesign and implementation as a web app of the Engineering Encounters Bridge Designer, formerly the West
 Point Bridge Designer. Engineering Encounters no longer exists, so the new app is just "Bridge Designer," and it's the
@@ -25,14 +25,13 @@ The following are key, top-level design choices:
 - [**jQWidgets:**](https://www.jqwidgets.com/) BDCE uses jQWidgets as the primary UI library. It's full-featured,
   reasonably priced, free for development sans tech support, and not many bugs. On the other hand, the APIs are a bit
   quirky, limited, and inconsistent. Documentation is mostly by example rather than explanation. Reverse engineering and
-  studying the mostly uncommented code are necessary. The jQWidgets team apparently doesn't have a normal issues
-  workflow. Their management tool is a community board with a pay wall. My intent is to pay in for at least one year of
-  support once the implementation is as complete as possible without it.
+  studying the mostly uncommented code are necessary. The jQWidgets team doesn't have a coherent issues workflow for
+  basic license owners. (Organizational licenses seem better-supported, but that's not us.)
 
 - **Stateful services**: Against common wisdom favoring central stores with pure reduction semantics over immutable
   objects, BDCE provides many services with mutable internal state. This supports "Small devices" above by vastly
-  reducing garbage collection pressure. It's also well-aligned with the way state is implemented in other versions. It
-  does complicate persistence across browser refreshes.
+  reducing garbage collection pressure. It's also well-aligned with the way state is implemented in the earlier BD
+  versions. It does complicate persistence across browser refreshes, but not terribly.
 
 - **Decoupling via broadcast messages**: I considered various schemes for allowing one component or service to pass
   information needed by another. Most of them cause "Law of Demeter" violations: nasty dependency webs. I've chosen to
@@ -81,11 +80,17 @@ need.
 Reliance on external libraries is intended to be minimal in order to reduce maintenance forced by others. Yet, some
 features were not worth the cost of re-inventing the wheel:
 
+- [**GlMatrix**](https://glmatrix.net/): Useful vector and matrix operations compatible with WebGL. We're sticking with
+  V1, though V2 became available during development. The API is not backward-compatible. We thank the providers now and
+  forever.
 - [**jQWidgets**](https://www.jqwidgets.com/): The UI widget framework discussed above.
+- [**jsPDF**](https://github.com/parallax/jsPDF?tab=readme-ov-file): A stalwart, still reasonably well maintained
+  library for building PDF documents.
+  - [**Auto-table plugin**](https://github.com/simonbengtsson/jsPDF-AutoTable): Builds PDF tables from HTML.
+- [**Manifold-3d**](https://github.com/elalish/manifold): Supports CSG operations needed to export bridges for 3d
+  printing. Its Typescript binding is via `emscripten` compilation to Web Assembly (WASM). We thank Emmett Lalish and
+  the development team.
 - [**Orama (open source version)**](https://docs.orama.com/open-source): Full text search for Bridge Designer help.
-- Possible: [**three.js**](https://threejs.org/): An abstraction layer over native WebGL. Adds some useful functions.
-
-We thank the providers now and forever.
 
 ## Build notes
 

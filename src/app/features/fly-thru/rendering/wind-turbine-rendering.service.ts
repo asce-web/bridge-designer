@@ -3,11 +3,11 @@
 
 import { Injectable } from '@angular/core';
 import { mat4, vec3 } from 'gl-matrix';
-import { Mesh, MeshRenderingService } from '../../features/fly-thru/rendering/mesh-rendering.service';
-import { DisplayMatrices, UniformService } from '../../features/fly-thru/rendering/uniform.service';
-import { WIND_ROTOR_MESH_DATA } from '../../features/fly-thru/models/wind-rotor';
-import { WIND_TOWER_MESH_DATA } from '../../features/fly-thru/models/wind-tower';
-import { TerrainModelService } from '../../features/fly-thru/models/terrain-model.service';
+import { Mesh, MeshRenderingService } from './mesh-rendering.service';
+import { DisplayMatrices, UniformService } from './uniform.service';
+import { WIND_ROTOR_MESH_DATA } from '../models/wind-rotor';
+import { WIND_TOWER_MESH_DATA } from '../models/wind-tower';
+import { TerrainModelService } from '../models/terrain-model.service';
 
 @Injectable({ providedIn: 'root' })
 export class WindTurbineRenderingService {

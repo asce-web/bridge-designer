@@ -1,14 +1,14 @@
 <!-- Copyright (c) 2025-2026 Gene Ressler
      SPDX-License-Identifier: GPL-3.0-or-later -->
 
-# 3d Printing Support \[DRAFT\]
+# 3d Printing Support
 
 ## Requirement
 
-On command, we'll emit OBJ files suitable for slicing and printing. It's OBJ rather than STL so that multiple parts can
-be included as separate objects. STL supports only one.
+On command, we emit OBJ files suitable for slicing and printing. It's OBJ rather than STL so that multiple parts can be
+included as separate objects. STL supports only one.
 
-There appears to be no reasonable way to make the prints functional in any way. They’ll amount to near-scale models.
+There appears to be no reasonable way to make the prints functional. They’ll amount to near-scale display models.
 
 The pieces are:
 
@@ -23,8 +23,8 @@ The pieces are:
   slightly elongated so that each segment's pin can be inserted without its tab interfering as the user adds segments
   right to left. Deck beams at piers also include pillow blocks. Pillow blocks include tabs that mate with slots in
   abutments.
-- **Abutments**. Prisms including the step for the joint pillow with required mating slots to receive pillow block tabs.
-  For bridges with anchorages, two or four small pillars supporting joint pins are also included.
+- **Abutments and pier**. Prisms including the step for the joint and anchorage pillows (if any) with required mating
+  slots to receive pillow block tabs. The pier (if any) is a separate, similar piece.
 
 Note we're ignoring the anti-sway cross-members. Ideally there would be a small eye at each member end where the user
 could use needle and thread to add them. But that face of the truss is on the platen. A less elegant possibility is to
@@ -37,8 +37,6 @@ hot glue the other end. Triangulation of gussets with these holes could get mess
 - **Minimum feature size**. The smallest possible members are 30mm square. If a 44m span is printed 8 inches long, such
   small members made to scale would be 0.138mm square. Consumer grade 3d printers have a minimum closer to 0.4mm. We'll
   let the user choose a not-to-scale minimum size in the range 0 to 1mm.
-- **Filament changes**. Another possible setting is whether to include material specs, which will cue some printers to
-  do a filament change.
 
 ## Making the truss a manifold.
 
@@ -68,7 +66,7 @@ Possible ways to proceed:
   consideration of the z-axis.
 - Try to exploit the restricted geometry of gussets.
 
-### Summary of analysis
+### Analysis summary
 
 Exploiting gusset geometry to trim each incident member and add a corresponding hole in the gusset edge is fairly
 simple. Unfortunately, there's no similar simple way to handle intersecting members. These can get arbitrarily messy. We
@@ -82,10 +80,11 @@ experiencing this during my MS work in the 80's, and there are PhD dissertations
 2000's, I will not re-invent this wheel.
 
 The best option appears to be the [manifold library](https://github.com/elalish/manifold). It's written in C++, but has
-an emscripten compilation to WebAssembly. It's based on a PhD dissertation claiming to a practical, FP-robust algorithm.
-It's frequently maintained and has many users. It's Apache licensed, so no fee issues. The main down side is, indeed,
-also a strength. That's WebAssembly. While mainstream since 2007, some of its features have been supported in Chromium
-browsers only since 2022.
+an emscripten compilation to WebAssembly. It's based on a PhD dissertation claiming to be a practical, FP-robust
+algorithm. It's frequently maintained and has many users. It's Apache licensed, so no fee issues. The main down side is,
+indeed, also a strength. That's WebAssembly. While mainstream since 2007, some of its features have been supported in
+Chromium browsers only since 2022.
 
 # Packing objects onto the printer stage
-TODO
+
+This is a big project on the top level TODO list, currently "won't fix" pending user feedback.

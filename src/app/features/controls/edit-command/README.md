@@ -11,9 +11,12 @@ by organizing the command buffer as two stacks. It adds a command to the "done" 
 completes and to the "undone" stack after "undo" completes. An undo or redo pops a command from the done or undone stack
 respectively and - after execution is complete - pushes it on the opposite stack.
 
+The undo stack is ultimately truncated at a large number of commands (e.g. 100), since state persistence allows
+unlimited growth across multiple sessions.
+
 ## Commands share structure with bridges
 
-Sharing is important to the implementation of session persistence as described below, so let's look at it.
+Sharing is important to session persistence as described below, so let's look at it.
 
 Most commands share structure with the bridge during their lifetimes. The nature of sharing depends on whether the
 command lies in the "done" or "undone" stack. In general...

@@ -16,6 +16,7 @@ programmatically generated.
 
 - Sky box
 - Synthetic terrain, adjusted for deck elevation
+- Wind turbine
 - Power line poles and wires
 - River surface
 - Road
@@ -40,16 +41,15 @@ Per-frame variables. Starred (\*) are optional via user toggles:
 - Bridge deformation (\* exaggeration may be toggled)
 - Member stress coloration (\*)
 - Water texture flow
+- Wind turbine rotor
 
 Other variables not per-frame:
 
 - Camera position (\* via user fly-thru controls)
-- Soil erosion based on terrain slope (\* may be switched off)
-- Smoothing (\* may be switched off) TODO: Consider deleting.
+- Soil erosion based on terrain slope
+- Sun position
 
-The general idea is to buffer the models initially, including one set of joint offsets per joint corresponding to truck
-location. The vertex shaders for joints will accept two offset attributes bound to vectors, plus a uniform interpolation
-parameter
+To animate the bridge, the intent is to use a single cube model and a 12-element instance transform matrix per member.
 
 ## Triangles
 
@@ -84,3 +84,5 @@ To load one model per deck joint:
 
 - triangles: `12 * 5636 = 67,632`
 - lines: `12 * 240 = 2,880`
+
+This is unlikely to be a challenge for most graphic hardware.

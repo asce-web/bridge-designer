@@ -1,6 +1,6 @@
 # Browser awareness
 
-This directory contains logic for assessing and reacting to the browser environment at startup.
+This directory contains logic for assessing and reacting to browser capabilities at startup.
 
 ## Goal
 
