@@ -344,12 +344,6 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'member surface area cross section picture light blue shaded region'
   },
   {
-    id: 'hlp_deck_truss',
-    title: 'Cross-section',
-    text: 'deck truss deck truss one deck located level top chord. vehicles crossing deck truss bridge supporte' +
-          'd trusses'
-  },
-  {
     id: 'glos_cut',
     title: 'Cut',
     text: 'cut excavation lowers elevation roadway existing surface land'
@@ -368,6 +362,11 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     title: 'Deck',
     text: 'deck floor bridge directly supports vehicles pedestrians cross bridge bridge decks usually made rein' +
           'forced concrete'
+  },
+  {
+    id: 'hlp_deck_truss',
+    title: 'Deck truss',
+    text: 'deck truss one deck located level top chord. vehicles crossing deck truss bridge supported trusses'
   },
   {
     id: 'glos_deck_truss',
@@ -1676,23 +1675,22 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'es engineers select one best satisfies project requirements present selection recommendation client ' +
           'makes final decision implement solution client approved concept design team completes final design p' +
           'repares plans specifications hands construction contractor build evaluate results end project engine' +
-          'ers evaluate completed structure identify aspects project went well aspects could improved ultimatel' +
-          'y observations help improve quality future projects design bridge bridge designer also follow proces' +
-          's identify problem project design truss bridge carry four lane highway across river define problem f' +
-          'ully define understand problem carefully read design specifications familiarize characteristics proj' +
-          'ect site develop alternative solutions achieve high quality design need investigate several differen' +
-          't site configurations truss configurations analyze compare alternative solutions optimize alternativ' +
-          'e configuration minimum cost compare results select best alternative select alternative costs least ' +
-          'still passing load test implement solution finalize design record saving disk printing drawing print' +
-          'ing copy load test results would like build test cardboard model design check learning activities ma' +
-          'nual available free website http //bridgecontest.org/resources/file folder bridges evaluate results ' +
-          'think learned design process structural behavior designed bridge apply lessons improve efficiency ef' +
-          'fectiveness next design notes tips description specific procedures use design bridge bridge designer' +
-          ' see design bridge'
+          'ers evaluate completed structure identify aspects project went well others could improved observatio' +
+          'ns help improve quality future projects design bridge bridge designer follow process identify proble' +
+          'm project design truss bridge carry two lane highway across river define problem fully define unders' +
+          'tand problem carefully read design specifications familiarize project site develop alternative solut' +
+          'ions achieve high quality design need investigate several different site configurations truss config' +
+          'urations analyze compare alternative solutions optimize alternative configuration minimum cost compa' +
+          're results select best alternative select alternative costs least still passing load test implement ' +
+          'solution finalize design record saving printing drawing printing copy load test results perhaps prin' +
+          'ting 3d model also build test cardboard model design check learning activities manual available free' +
+          ' http //bridgecontest.org/resources/file folder bridges evaluate results think learned design proces' +
+          's structural behavior designed bridge apply lessons improve efficiency effectiveness next design not' +
+          'es tips description specific procedures use design bridge bridge designer see design bridge'
   },
   {
     id: 'hlp_through_truss',
-    title: 'Through Truss',
+    title: 'Through truss',
     text: 'truss one deck located level bottom chord vehicles crossing truss bridge supported two main trusses'
   },
   {

@@ -17,6 +17,7 @@ import { DesignConditionsService } from '../../../shared/services/design-conditi
 import { BridgeAutoFixService } from '../../testing/bridge-auto-fix.service';
 import { CursorMode } from '../../drafting/cursor-overlay/cursor-overlay.component';
 import { InventorySelectionService } from '../../../shared/services/inventory-selection.service';
+import { BridgeModel } from '../../../shared/classes/bridge.model';
 
 /**
  * Container for the state of the user's design workflow and associated logic.
@@ -150,13 +151,17 @@ export class WorkflowManagementService {
     });
 
     // Load bridge completion.
-    eventBrokerService.loadBridgeCompletion.subscribe(() => {
+    eventBrokerService.loadBridgeCompletion.subscribe(info => {
+      const bridge: BridgeModel = info.data;
       uiStateService.disable(eventBrokerService.undoRequest);
       uiStateService.disable(eventBrokerService.redoRequest);
       uiStateService.disable(eventBrokerService.analysisReportRequest);
       uiStateService.disable(eventBrokerService.memberDetailsReportRequest);
       eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'drafting' });
-      eventBrokerService.editModeSelection.next({ origin: EventOrigin.SERVICE, data: CursorMode.JOINTS });
+      // Auto-select joint edit mode if the bridge has no user-specified joints yet.
+      if (bridge.joints.length === bridge.designConditions.prescribedJoints.length) {
+        eventBrokerService.editModeSelection.next({ origin: EventOrigin.SERVICE, data: CursorMode.JOINTS });
+      }
       eventBrokerService.loadInventorySelectorRequest.next({
         origin: EventOrigin.SERVICE,
         data: bridgeService.getMostCommonStockId(),

@@ -40,7 +40,7 @@ class Indexer(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if DEBUG == True:
-            self.indent("start:", tag, attrsToStr(attrs))
+            self.indent("start:", tag,  (attrs))
             self.spaces += 1
         match tag:
             case "ng-template":
