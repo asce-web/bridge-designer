@@ -51,39 +51,32 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'back earth embankments approaches bridge abutment part substructure bridge'
   },
   {
-    id: 'glos_anchorages',
-    title: 'Anchorages',
-    text: 'anchorage foundation structure cables suspension bridge connected cables support weight suspension b' +
-          'ridge anchorages generally massive often extend far surface earth bridge designer anchorages represe' +
-          'nted pinned supports'
-  },
-  {
     id: 'hlp_animation_controls',
     title: 'Animation controls',
-    text: 'dialog provides various options modify animations appearance look around animation play/pause see an' +
-          'imation view controls shadows controls whether sun casts shadows within simulated scene sky controls' +
-          ' whether sky drawn clouds sun hills horizon simple blue background terrain controls whether ground w' +
-          'ater around bridge drawn wind turbine controls whether wind generator close bridge drawn abutments c' +
-          'ontrols whether bridge abutments road surfaces drawn truck controls whether cartoon truck loading sh' +
-          'own hidden colors controls whether member forces depicted colors box checked compression represented' +
-          ' red tension blue load moves across bridge deck color brightness corresponds intense loading load in' +
-          'dicated flat gray exaggeration controls whether member deflections exaggerated make visible unchecke' +
-          'd animation realistic checked changes shape truss load multiplied 20 order make visible move speed s' +
-          'lider change speed truck move brightness slider account differences displays making whole image dark' +
-          'er brighter notes tips smoothness animation depends speed computers processor graphics system motion' +
-          ' looks jerky try turning animation features shadows likely greatest effect slowing truck speed makes' +
-          ' easier see members take release load test proceeds turning colors exaggeration provides realistic v' +
-          'iew bridge job'
-  },
-  {
-    id: 'hlp_animation_view_controls',
-    title: 'Animation view controls',
     text: 'column seven faded icons displayed top animation image light mouse gets close walk click icon drag w' +
           'alk animation pan click icon drag shift horizontally vertically without going forward back head turn' +
           ' click icon drag turn head standing still home click move back starting view whole bridge truck view' +
           ' click icon see truck driver traverses bridge drag turn head click walk pan head turn home quit truc' +
           'k view pause/play click pause unpause animation test failed click see failure settings click show hi' +
-          'de settings dialog selecting animation controls view menu'
+          'de settings dialog selecting animation settings view menu'
+  },
+  {
+    id: 'hlp_animation_settings',
+    title: 'Animation settings',
+    text: 'dialog provides options modify animations appearance move around animation play/pause see animation ' +
+          'controls shadows controls whether sun casts shadows within simulated scene sky controls whether sky ' +
+          'drawn clouds sun hills horizon simple blue background terrain controls whether ground water around b' +
+          'ridge drawn wind turbine controls whether wind generator close bridge drawn abutments controls wheth' +
+          'er bridge abutments road surfaces drawn truck controls whether cartoon truck loading shown hidden co' +
+          'lors controls whether member forces depicted colors box checked compression represented red tension ' +
+          'blue load moves across bridge deck color brightness corresponds intense loading load indicated flat ' +
+          'gray exaggeration controls whether member deflections exaggerated make visible unchecked animation r' +
+          'ealistic checked changes shape truss load multiplied 20 order make visible move speed slider change ' +
+          'speed truck move brightness slider account differences displays making whole image darker brighter n' +
+          'otes tips smoothness animation depends speed computers processor graphics system motion looks jerky ' +
+          'try turning animation features shadows likely greatest effect slowing truck speed makes easier see m' +
+          'embers take release load test proceeds turning colors exaggeration provides realistic view bridge jo' +
+          'b'
   },
   {
     id: 'glos_arch_abutments',
@@ -106,53 +99,53 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'hlp_3dprint_assembly',
     title: 'Assembling your bridge model',
-    text: 'instructions assume youve already printed parts model using instructions >exporting obj files prepar' +
-          'e build things youll need assemble printed parts flat clean work surface protected glue spills paper' +
-          ' shelf paper large paper bag flattened work cyanoacrylate glue crazy glue another plastic glue bond ' +
-          'parts xacto knife box cutter single edge razor blade trim parts needed fine sand paper 150 220 grit ' +
-          'nail file tool expand holes diameter equal minimum feature size slightly larger theyre small fit cor' +
-          'responding pins tapered xacto blade work micro drill bit pin vice tool spin bit ideal careful begin ' +
-          'laying parts type good way avoid confusion draw grid nine boxes three inches square build surface co' +
-          'vering paper label 1 9 sort parts ref name qty 1 support cross member 2 5 2 deck end panel 2 3 deck ' +
-          'mid panel varies 4 pin cross member varies 5 join deck beam 1 7 truss 2 8 abutment 2 9 pier 0 1 impo' +
-          'rtant notes tell difference deck end mid panels looking tabs slots fit together mid panel end panels' +
-          ' tabs abutments look bit different picture one associated anchorage case extra step tab support cros' +
-          's member pillow used connect anchored members build steps complete model step use trimming tool and/' +
-          'or hole drill make joint fit well gaps excessive tightness applying glue may take time patient glue ' +
-          'two support cross members 1 slots two deck end panels 2 set aside grid square 2 dry bridge pier deck' +
-          ' height glue another support cross member 1 deck mid panel 3 otherwise go next step set aside grid s' +
-          'quare 3 dry glue pin cross member 4 deck join beam 5 glue remaining pin cross members 4 remaining de' +
-          'ck mid panels 3 numbers match glue deck join beam 5 onto one deck end panels 2 return assembly squar' +
-          'e 5 dry take break wait glue applied far solid dry fit whole deck arranging deck panels 2 3 4 5 top ' +
-          'side shown diagram glue end panels go end deck level pier panel one must also right position use too' +
-          'ls ensure panels fit together completely test pair panels make sure joint pins farther apart deck jo' +
-          'ints truss wont able attach remove material panel tabs sandpaper file keep panels dry fit left right' +
-          ' order avoid confusion assembling deck tune cross member pins truss holes needed pin fits hole shoul' +
-          'der shown. tuning means using cutter sandpaper nail file hole drill needle needed make pin hole size' +
-          's match identify insides trusses smooth flat assembled inside surfaces point toward deck opposite si' +
-          'des thickened gusset joint. >outside truss point away deck attach two leftmost deck joints trusses 7' +
-          ' four pins deck join beam assembly 5 . make sure inside truss points toward deck take break wait dec' +
-          'k join beam connections trusses solid add deck panels one time working right deck join beam assembly' +
-          ' gluing go sure keep panels correct order dry fitted take break let deck panels dry completely add r' +
-          'est pin cross members 4 truss joints make sure skip support joints abutments pier anchorages well ge' +
-          't later glue support cross member 1 pillows triangular sections abutment 8 tab fits slot bridge anch' +
-          'orages theres second tab second support cross member glue pillow finally bridge pier glue last pillo' +
-          'w tab attach truss abutments fit abutment pins corresponding truss pin holes includes anchorage pins' +
-          ' bridge glue yet make sure abutments sitting flat surface add drop glue joint take break make sure b' +
-          'ride attachment abutments solid attache glue piers pins truss one make sure abutments pier sitting f' +
-          'lat surface glue sets youre done notes tips consider printing blueprint bridge assembly instructions' +
-          ' paper truss configuration ready reference steps ticking go strangely satisfying bridge parts partic' +
-          'ularly big spans anchorages tiny youre feeling crafty try printing truss two pieces obtain bridge tw' +
-          'ice scale one print would allow need cut truss half slicer software print half separately glue toget' +
-          'her first step assembly assembling bridge model challenging methodical work steadily something goes ' +
-          'wrong reprint parts need try good luck project'
+    text: 'instructions assume youve already printed parts model using instructions exporting obj files prepare' +
+          ' build things youll need assemble printed parts flat clean work surface protected glue spills paper ' +
+          'shelf paper large paper bag flattened work cyanoacrylate glue crazy glue another plastic glue bond p' +
+          'arts xacto knife box cutter single edge razor blade trim parts needed fine sand paper 150 220 grit n' +
+          'ail file tool expand holes diameter equal minimum feature size slightly larger theyre small fit corr' +
+          'esponding pins tapered xacto blade work micro drill bit pin vice tool spin bit ideal careful begin l' +
+          'aying parts type good way avoid confusion draw grid nine boxes three inches square build surface cov' +
+          'ering paper label 1 9 sort parts ref name qty 1 support cross member 2 5 2 deck end panel 2 3 deck m' +
+          'id panel varies 4 pin cross member varies 5 join deck beam 1 7 truss 2 8 abutment 2 9 pier 0 1 impor' +
+          'tant notes tell difference deck end mid panels looking tabs slots fit together mid panel end panels ' +
+          'tabs abutments look bit different picture one associated anchorage case extra step tab support cross' +
+          ' member pillow used connect anchored members build steps complete model step use trimming tool and/o' +
+          'r hole drill make joint fit well gaps excessive tightness applying glue may take time patient glue t' +
+          'wo support cross members 1 slots two deck end panels 2 set aside grid square 2 dry bridge pier deck ' +
+          'height glue another support cross member 1 deck mid panel 3 otherwise go next step set aside grid sq' +
+          'uare 3 dry glue pin cross member 4 deck join beam 5 glue remaining pin cross members 4 remaining dec' +
+          'k mid panels 3 numbers match glue deck join beam 5 onto one deck end panels 2 return assembly square' +
+          ' 5 dry take break wait glue applied far solid dry fit whole deck arranging deck panels 2 3 4 5 top s' +
+          'ide shown diagram glue end panels go end deck level pier panel one must also right position use tool' +
+          's ensure panels fit together completely test pair panels make sure joint pins farther apart deck joi' +
+          'nts truss wont able attach remove material panel tabs sandpaper file keep panels dry fit left right ' +
+          'order avoid confusion assembling deck tune cross member pins truss holes needed pin fits hole should' +
+          'er shown. tuning means using cutter sandpaper nail file hole drill needle needed make pin hole sizes' +
+          ' match identify insides trusses smooth flat assembled inside surfaces point toward deck opposite sid' +
+          'es thickened gusset joint. >outside truss point away deck attach two leftmost deck joints trusses 7 ' +
+          'four pins deck join beam assembly 5 . make sure inside truss points toward deck take break wait deck' +
+          ' join beam connections trusses solid add deck panels one time working right deck join beam assembly ' +
+          'gluing go sure keep panels correct order dry fitted take break let deck panels dry completely add re' +
+          'st pin cross members 4 truss joints make sure skip support joints abutments pier anchorages well get' +
+          ' later glue support cross member 1 pillows triangular sections abutment 8 tab fits slot bridge ancho' +
+          'rages theres second tab second support cross member glue pillow finally bridge pier glue last pillow' +
+          ' tab attach truss abutments fit abutment pins corresponding truss pin holes includes anchorage pins ' +
+          'bridge glue yet make sure abutments sitting flat surface add drop glue joint take break make sure br' +
+          'ide attachment abutments solid attache glue piers pins truss one make sure abutments pier sitting fl' +
+          'at surface glue sets youre done notes tips consider printing blueprint bridge assembly instructions ' +
+          'paper truss configuration ready reference steps ticking go strangely satisfying bridge parts particu' +
+          'larly big spans anchorages tiny youre feeling crafty try printing truss two pieces obtain bridge twi' +
+          'ce scale one print would allow need cut truss half slicer software print half separately glue togeth' +
+          'er first step assembly assembling bridge model challenging methodical work steadily something goes w' +
+          'rong reprint parts need try good luck project'
   },
   {
     id: 'glos_astm',
     title: 'ASTM',
     text: 'american society testing materials astm profit organization manufacturers consumers researchers gove' +
-          'rnment officials write standards production testing use building materials astm standards ensure mat' +
-          'erials uniformly understood engineering properties appropriate level quality'
+          'rnment officials purpose write standards production testing use building materials astm standards en' +
+          'sure materials uniformly understood engineering properties appropriate level quality'
   },
   {
     id: 'hlp_auto_correct_errors',
@@ -190,8 +183,8 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'glos_cable_anchorages',
     title: 'Cable anchorages',
     text: 'cable anchorage foundation structure cables suspension bridge connected cables support weight suspen' +
-          'sion bridge anchorages generally massive often extend far surface earth bridge designer cable anchor' +
-          'ages represented pinned supports'
+          'sion bridge anchorages massive often extend far surface earth bridge designer cable anchorages repre' +
+          'sented pinned supports'
   },
   {
     id: 'hlp_change_member_properties',
@@ -267,14 +260,24 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_concrete',
     title: 'Concrete',
-    text: 'concrete mixture portland cement sand gravel water concrete hardens forms solid rock like substance ' +
-          'used build many kinds structures'
+    text: 'concrete mixture portland cement sand gravel water perhaps special additives concrete hardens forms ' +
+          'solid rock like substance used build many kinds structures'
   },
   {
     id: 'glos_connections',
     title: 'Connections',
-    text: 'connection assembly steel plates bolts and/or welds attach two members together actual structure con' +
-          'nections real structure represented joints structural model'
+    text: 'connection assembly steel plates bolts and/or welds attach two members together structure connection' +
+          's real structure represented joints bridge designer structural models'
+  },
+  {
+    id: 'hlp_context_widgets',
+    title: 'Context widgets',
+    text: 'drawing board provides controls called context widgets speed work theyre invoked right clicking mous' +
+          'e location right click determines controls appear right click selected member shows dialog controls ' +
+          'support editing selected members member properties lists increase member size button decrease member' +
+          ' size button delete selection button view/hide member list button right click anywhere else shows me' +
+          'nu controls common editing needs design tools selector select button view/hide member list button gr' +
+          'id resolution buttons'
   },
   {
     id: 'hlp_cost',
@@ -351,17 +354,16 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'hlp_truss_configuration',
     title: 'Decide on a truss configuration',
-    text: 'design bridge go back one step go forward one step selected site configuration must decide overall c' +
-          'onfiguration truss bridge bridge designer allows use truss configuration long structural model creat' +
-          'e stable notes tips developing stable structural model tricky highly recommend new inexperienced use' +
-          'rs start standard truss configuration decide use standard truss configuration load display template ' +
-          'help correctly draw joints members'
+    text: 'design bridge go back one step go forward one step youve selected site configuration must decide ove' +
+          'rall configuration bridge bridge designer allows truss configuration long stable notes tips developi' +
+          'ng stable structural model tricky recommend new inexperienced users start standard truss configurati' +
+          'on decide use standard truss configuration load display template help correctly draw joints members'
   },
   {
     id: 'glos_deck',
     title: 'Deck',
-    text: 'deck floor bridge directly supports vehicles pedestrians cross bridge bridge decks usually made rein' +
-          'forced concrete'
+    text: 'deck floor bridge directly supports vehicles pedestrians crossing bridge bridge decks usually made r' +
+          'einforced concrete'
   },
   {
     id: 'hlp_deck_truss',
@@ -371,7 +373,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_deck_truss',
     title: 'Deck truss',
-    text: 'deck truss truss deck located top chord. vehicles crossing deck trusses supported trusses'
+    text: 'deck truss deck located top chord vehicles supported trusses cross bridge'
   },
   {
     id: 'hlp_decrease_member',
@@ -407,8 +409,8 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_delete',
     title: 'Delete button',
     text: 'click delete button delete currently selected joint delete currently selected member notes tips dele' +
-          'te button located main toolbar also accessed edit menu use delete key keyboard perform exactly funct' +
-          'ion delete button also use eraser tool delete joints members'
+          'te button located main toolbar also available edit menu use delete key keyboard perform exactly func' +
+          'tion delete button also use eraser tool delete joints members'
   },
   {
     id: 'hlp_design_specifications',
@@ -467,7 +469,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_diagonals',
     title: 'Diagonals',
-    text: 'diagonals truss members oriented diagonally usually connect top bottom chords together'
+    text: 'diagonals truss members oriented diagonally usually connect top bottom chords'
   },
   {
     id: 'glos_displacement',
@@ -526,23 +528,22 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_drawing_board_button',
     title: 'Drawing board button',
     text: 'click drawing board button return drawing board mode load test notes tips drawing board button locat' +
-          'ed main toolbar also accessed test menu drawing board button load test button work pair. one pressed' +
-          ' time'
+          'ed main toolbar also available test menu drawing board button load test button work pair. one presse' +
+          'd time'
   },
   {
     id: 'glos_drawing_grid',
     title: 'Drawing grid',
-    text: 'drawing grid like piece graph paper drawing board grid made two sets parallel lines one horizontal o' +
-          'ne vertical lines spaced 0.25 0.5 1.0 meters apart depending current grid resolution setting interse' +
-          'ctions grid lines called snap points grid lines visible locations indicated marks vertical horizonta' +
-          'l rulers located left bottom edges drawing board'
+    text: 'drawing grid invisible set snap points drawing board lie intersections two sets parallel lines one h' +
+          'orizontal one vertical lines spaced 0.25 0.5 1.0 meters apart depending current grid resolution join' +
+          'ts located snap points grid locations indicated ticks vertical horizontal rulers located left bottom' +
+          ' edges drawing board'
   },
   {
     id: 'glos_dynamic_load_allowance',
     title: 'Dynamic load allowance',
     text: 'dynamic load allowance factor used bridge design represent effect moving loads bridge designer uses ' +
-          'dynamic load allowance 33% means moving truck causes 33% force bridge members stationary truck would' +
-          ' cause'
+          'dynamic load allowance 33% means moving truck causes 33% force bridge members stationary truck'
   },
   {
     id: 'hlp_erase',
@@ -633,38 +634,39 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'hlp_try_new_configuration',
     title: 'Find the optimum truss configuration',
-    text: 'design bridge go back one step go forward one step design inherently iterative process achieve truly' +
-          ' optimal design probably need try many different truss configurations might guess however millions p' +
-          'ossible configurations probably wont time try find optimum without modeling testing every possible t' +
-          'russ configuration one approach consider alternative configurations systematic way select configurat' +
-          'ion optimize member properties carefully observe changes configuration affected cost design keep tra' +
-          'ck changes produce reductions cost use observations guide selection next alternative configuration f' +
-          'ind optimum truss configuration try different deck location first design deck truss try correspondin' +
-          'g truss configuration vice versa try different standard truss configuration example first design pra' +
-          'tt truss try howe warren configuration try reducing length compression members truss compressive str' +
-          'ength member function length member gets longer compressive strength decreases substantially much le' +
-          'ss resistance buckling reason cost truss design sometimes reduced shortening one compression members' +
-          ' example lets start standard warren truss top chords simple span truss bridge always compression mig' +
-          'ht able reduce cost warren truss subdividing top chord members like consider standard pratt truss co' +
-          'nfiguration top chords verticals normally compression thus could subdivide top chords verticals like' +
-          ' note examples length compression member reduced half reduction length usually allow designer use su' +
-          'bstantially smaller member size achieve required compressive strength note also subdivide member alw' +
-          'ays need add additional joints members maintain stability truss stable truss generally must made ser' +
-          'ies interconnected triangles subdivide compression member bridge designer must delete compression me' +
-          'mber want subdivide add new joint near midpoint member deleted add two new members replace original ' +
-          'member add additional members ensure stability optimize member properties new members reducing lengt' +
-          'h compression members may may reduce total cost design depending whether cost saving using smaller m' +
-          'ember sizes enough offset increased cost additional joints members try reducing number joints cost d' +
-          'esign includes fixed cost per joint thus may able reduce total cost reducing number joints structura' +
-          'l model example consider standard howe deck truss configuration improved simply removing joint midpo' +
-          'int bottom chord like delete joint three attached members deleted well need add single new member re' +
-          'place two bottom chord members deleted modification often effective tension members like bottom chor' +
-          'd members example tensile strength function length however removing joint top chord truss shown less' +
-          ' likely effective deleting top chord joint replacing two chord members one would double length compr' +
-          'ession member making much weaker would need use substantially larger member size make member strong ' +
-          'enough pass load test thus benefit reduced number joints would probably lost try inventing truss con' +
-          'figuration copy configuration actual bridge examples actual bridge configurations might consider rec' +
-          'ognize trusses could also designed deck truss'
+    text: 'design bridge go back one step go forward one step design iterative process achieve optimal design p' +
+          'robably need try many different truss configurations might guess millions possible configurations pr' +
+          'obably wont time try find optimum without modeling testing every possible truss configuration one ap' +
+          'proach consider alternative configurations systematic way select configuration optimize member prope' +
+          'rties carefully observe changes configuration affected cost design keep track changes produce reduct' +
+          'ions cost use observations guide selection next configuration find optimum truss configuration try d' +
+          'ifferent deck location first design deck truss try corresponding truss vice versa try different stan' +
+          'dard truss configuration example first design pratt truss try howe warren configuration try reducing' +
+          ' lengths compression members truss compressive strength member function length member gets longer co' +
+          'mpressive strength decreases substantially much less resistance buckling reason cost truss design so' +
+          'metimes reduced shortening one compression members example lets start standard warren truss top chor' +
+          'ds simple span truss bridge always compression might able reduce cost warren truss subdividing top c' +
+          'hord members like consider standard pratt truss configuration top chords verticals normally compress' +
+          'ion could subdivide top chords verticals like length compression member reduced half designer usuall' +
+          'y able use much smaller member size achieve required compressive strength note also subdivide member' +
+          ' always need add additional joints members maintain stability stable truss generally must made serie' +
+          's interconnected triangles subdivide compression member bridge designer must normally delete compres' +
+          'sion member want subdivide add new joint near midpoint member deleted add two new members replace or' +
+          'iginal member add additional members ensure stability optimize member properties new members reducin' +
+          'g length compression members may may reduce total cost design depending whether cost saving using sm' +
+          'aller member sizes enough offset increased cost additional joints members try reducing number joints' +
+          ' cost design includes fixed cost per joint thus may able reduce total cost reducing number joints st' +
+          'ructural model example consider standard howe deck truss configuration improved simply removing join' +
+          't midpoint bottom chord like delete joint three attached members deleted well need add single new me' +
+          'mber replace two bottom chord members deleted modification often effective tension members like bott' +
+          'om chord members example tensile strength function length removing joint top chord truss shown less ' +
+          'likely effective deleting top chord joint replacing two chord members one would double length compre' +
+          'ssion member making much weaker would need much larger size steel make member strong enough pass loa' +
+          'd test benefit reduced number joints would probably lost try inventing truss configuration copy conf' +
+          'iguration actual bridge examples real bridge configurations might consider trusses shown could also ' +
+          'designed deck truss notes tips youre confident place new joint exactly member divide go ahead bridge' +
+          ' designer automatically split member new joint verify watching member list otherwise use delete add ' +
+          'procedure'
   },
   {
     id: 'glos_floor_beams',
@@ -674,25 +676,25 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_footing',
     title: 'Footing',
-    text: 'footing base abutment pier portion foundation rests directly soil transmits load structure soil'
+    text: 'footing base abutment pier foundation rests directly soil transmits load structure soil'
   },
   {
     id: 'glos_forces',
     title: 'Forces',
     text: 'force push pull weight common example force force measured pounds us system measurement newtons si s' +
-          'ystem bridge designer forces reported kilonewtons kn'
+          'ystem bridge designer forces kilonewtons kn'
   },
   {
     id: 'glossary',
     title: 'Glossary',
-    text: 'aashto abutment anchorages arch abutments arch supports asphalt astm b bearing bridge design file bu' +
-          'ckling c cable anchorages chords client compression concrete connections cut d deck deck truss diago' +
-          'nals displacement drawing grid dynamic load allowance f floor beams footing forces j joints k kilone' +
-          'wton kn l load factors load test loads m mass density member force member numbers member properties ' +
-          'member size members modulus elasticity moment inertia p pier r reinforced concrete resistance factor' +
-          ' safe session simple supports site cost slope snap points span standard abutments structural analysi' +
-          's structural model substructure supports symmetrical template tension truss u unsafe v verticals w w' +
-          'earing surface y yield stress yielding'
+    text: 'aashto abutment arch abutments arch supports asphalt astm b bearing bridge design file buckling c ca' +
+          'ble anchorages chords client compression concrete connections cut d deck deck truss diagonals displa' +
+          'cement drawing grid dynamic load allowance f floor beams footing forces j joints k kilonewton kn l l' +
+          'oad factors load test loads m mass density member force member numbers member properties member size' +
+          ' members modulus elasticity moment inertia p pier r reinforced concrete resistance factor safe sessi' +
+          'on simple supports site cost slope snap points span standard abutments structural analysis structura' +
+          'l model substructure supports symmetrical template tension truss u unsafe v verticals w wearing surf' +
+          'ace y yield stress yielding'
   },
   {
     id: 'hlp_go_back',
@@ -707,9 +709,9 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_go_forward',
     title: 'Go forward button',
     text: 'click go forward button display recent design iteration drawing board notes tips go forward button l' +
-          'ocated main toolbar also accessed edit menu go forward button activated used go back button least al' +
-          'so use go iteration button display design iteration bridge designer remembers design iterations long' +
-          ' remember work checked edit menu unchecked iterations lost time browser refreshed restarted'
+          'ocated main toolbar also available edit menu go forward button activated used go back button least a' +
+          'lso use go iteration button display design iteration bridge designer remembers design iterations lon' +
+          'g remember work checked edit menu unchecked iterations lost time browser refreshed restarted'
   },
   {
     id: 'hlp_go_to',
@@ -725,19 +727,15 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'hlp_grid_resolution',
     title: 'Grid resolution buttons',
-    text: 'use grid resolution buttons set resolution drawing grid drawing board covered grid cant see there. d' +
-          'raw move joints mouse snaps grid line intersections called snap points joints drawn snap points grid' +
-          ' resolution buttons used set drawing grid low medium high resolution low resolution setting place jo' +
-          'ints 1.0 meter intervals medium high resolution settings place joints 0.5 meter 0.25 meter intervals' +
-          ' respectively three buttons work like radio buttons. one three depressed given time click one remain' +
-          's depressed click either two notes tips grid resolution buttons located display toolbar also accesse' +
-          'd view menu click grid resolution buttons rulers drawing board updated reflect new grid resolution e' +
-          'xample low grid resolution rulers display markings 1.0 meter intervals high grid resolution markings' +
-          ' displayed 0.25 meter intervals generally best create structural model using low resolution grid eas' +
-          'ier control placement joints mode begin optimizing design might want switch medium high resolution g' +
-          'rid setting refine shape structural model precisely editing structural model use keyboard arrows mov' +
-          'e joints 0.25 meter intervals regardless current grid resolution setting thus take advantage high re' +
-          'solution grid even without using grid resolution buttons'
+    text: 'use grid resolution buttons set resolution drawing grid drawing board covered invisible grid draw mo' +
+          've joints mouse snaps grid intersections select low medium high resolution pressing respective butto' +
+          'n low resolution setting grid 1.0 meter spacing medium high resolution 0.5 meter 0.25 meters respect' +
+          'ively notes tips grid resolution buttons located display toolbar theyre also available view menu con' +
+          'text menu click grid resolution button tick marks rulers drawing updated show corresponding grid spa' +
+          'cing often best create structural model using low resolution grid easier control joint member placem' +
+          'ent mode begin optimizing design might switch medium high resolution refine shape structural model p' +
+          'recisely always select joint use keyboard arrows move 0.25 meter increments allows small adjustments' +
+          ' regardless current grid resolution setting'
   },
   {
     id: 'hlp_how_wpbd_works',
@@ -790,13 +788,13 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_joints',
     title: 'Joints',
-    text: 'joint point ends two members connected together truss joint assumed act like frictionless pin hinge ' +
-          'prevent connected members rotating respect'
+    text: 'joint point ends two members connected truss joint assumed act like frictionless pin hinge allows co' +
+          'nnected members rotate'
   },
   {
     id: 'glos_kilonewton',
     title: 'Kilonewton',
-    text: 'kilonewton kn measurement force si metric system kilonewton 1000 newtons'
+    text: 'kilonewton kn measurement force si metric system kilonewton 1000 newtons equivalent 225 pounds'
   },
   {
     id: 'glos_kn',
@@ -831,11 +829,11 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_load_factors',
     title: 'Load factors',
-    text: 'load factor number normally greater 1 multiplied design load order represent extreme loading experie' +
-          'nced structure example load factor 1.75 multiplied standard aashto h25 truck loading represent extre' +
-          'mely heavy truck fact represents heaviest truck might reasonably expected cross bridge lifetime diff' +
-          'erent kinds loads different load factors loads unpredictable others example weight bridge predictabl' +
-          'e weight heavy truck load factor bridge weight much lower'
+    text: 'load factor number greater one multiplied design load order represent extreme loading structure exam' +
+          'ple load factor 1.75 multiplied standard aashto h25 truck loading represent extremely heavy truck re' +
+          'presents heaviest truck might reasonably expected cross bridge lifetime different kinds loads differ' +
+          'ent load factors loads unpredictable others example weight bridge predictable weight heavy truck loa' +
+          'd factor bridge weight much lower'
   },
   {
     id: 'hlp_load_template',
@@ -846,9 +844,9 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_load_test',
     title: 'Load test',
-    text: 'bridge designer load test simulated test well design would perform built placed service load test br' +
-          'idge subjected self weight weight standard aashto h25 truck loading every member structural model ch' +
-          'ecked structural safety'
+    text: 'bridge designer load test simulation shows well design would perform built placed service load test ' +
+          'bridge subjected self weight weight standard aashto h25 truck loading. every member structural model' +
+          ' checked structural safety'
   },
   {
     id: 'hlp_load_test3',
@@ -883,13 +881,13 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'mber adding new required members. modifications might successful depending type extent instability s' +
           'till best keep option switched unless theres good reason turn show animation check box test menu swi' +
           'tched load test animation displayed every load test animation shown user returned immediately drawin' +
-          'g board mode load test exaggeration check box animation controls switched bending bridge exaggerated' +
+          'g board mode load test exaggeration check box animation settings switched bending bridge exaggerated' +
           ' factor 20 show clearly truss members shorten elongate carry load option displacements exaggerated m' +
-          'ember colors check box animation controls palette switched members change color animation show magni' +
-          'tude member force red compression blue tension intense color closer member failure switched members ' +
-          'change color animation notes tips animation starts exaggeration member colors options turned make br' +
-          'idge appear realistic possible shadows animation tax graphics hardware computer animation slow rough' +
-          ' turning may improvement'
+          'ember colors check box animation settings switched members change color animation show magnitude mem' +
+          'ber force red compression blue tension intense color closer member failure switched members change c' +
+          'olor animation notes tips animation starts exaggeration member colors options turned make bridge app' +
+          'ear realistic possible shadows animation tax graphics hardware computer animation slow rough turning' +
+          ' may improvement'
   },
   {
     id: 'hlp_load_test_status',
@@ -907,22 +905,22 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'design bridge go back one step go forward one step complete stable structural model must run simulat' +
           'ed load test ensure members design strong enough carry loads prescribed design specification 5 load ' +
           'test design click load test button sit back watch bridge designer perform load test display animatio' +
-          'n update load test status display walk ride test using animation view controls ready click drawing b' +
-          'oard button return continue work design notes tips click load test button bridge designer automatica' +
-          'lly perform following actions create pin roller supports appropriate locations structural model calc' +
-          'ulate weight members apply forces structure loads calculate weight concrete bridge deck asphalt wear' +
-          'ing surface floor beams see design specification 5 information apply corresponding loads structure a' +
-          'pply aashto h25 truck loading structure multiple positions representing movement truck across bridge' +
-          ' check structural model stability structural model unstable bridge designer attempt fix problem unsu' +
-          'ccessful stop load test inform problem provide suggestions return drawing board perform structural a' +
-          'nalysis considering combined effects bridge self weight truck loading truck position calculate displ' +
-          'acement joint member force member structural model member compare calculated member forces truck pos' +
-          'itions determine absolute maximum tension force absolute maximum compression force. critical forces ' +
-          'determine whether given member safe calculate tensile strength compressive strength member member co' +
-          'mpare absolute maximum tension force tensile strength compare absolute maximum compression force com' +
-          'pressive strength force exceeds strength either case member unsafe member safe prepare display load ' +
-          'test animation update load test status display save time run load test without displaying animation ' +
-          'see load test options turn automatic fixing stability problems also explained'
+          'n update load test status display walk ride test using animation controls ready click drawing board ' +
+          'button return continue work design notes tips click load test button bridge designer automatically p' +
+          'erform following actions create pin roller supports appropriate locations structural model calculate' +
+          ' weight members apply forces structure loads calculate weight concrete bridge deck asphalt wearing s' +
+          'urface floor beams see design specification 5 information apply corresponding loads structure apply ' +
+          'aashto h25 truck loading structure multiple positions representing movement truck across bridge chec' +
+          'k structural model stability structural model unstable bridge designer attempt fix problem unsuccess' +
+          'ful stop load test inform problem provide suggestions return drawing board perform structural analys' +
+          'is considering combined effects bridge self weight truck loading truck position calculate displaceme' +
+          'nt joint member force member structural model member compare calculated member forces truck position' +
+          's determine absolute maximum tension force absolute maximum compression force. critical forces deter' +
+          'mine whether given member safe calculate tensile strength compressive strength member member compare' +
+          ' absolute maximum tension force tensile strength compare absolute maximum compression force compress' +
+          'ive strength force exceeds strength either case member unsafe member safe prepare display load test ' +
+          'animation update load test status display save time run load test without displaying animation see l' +
+          'oad test options turn automatic fixing stability problems also explained'
   },
   {
     id: 'glos_loads',
@@ -1006,21 +1004,20 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   },
   {
     id: 'hlp_view_member_list',
-    title: 'Member list hide or restore',
-    text: 'member list hidden provide information drafting bridge design use close button upper right click but' +
-          'ton appears place reopen notes tips view member list menu item also hides restores member list'
+    title: 'Member list hide and restore',
+    text: 'member list hidden provide space drawing bridge design use close button upper right click button app' +
+          'ears place reopen notes tips view menus member list item also hides restores member list'
   },
   {
     id: 'glos_member_numbers',
     title: 'Member numbers',
     text: 'every member structural model member number. numbers assigned order create members . physical signif' +
-          'icance member numbers used reference member properties load test results reported member number memb' +
-          'er list'
+          'icance member numbers used reference member properties load test results reported member number'
   },
   {
     id: 'glos_member_properties',
     title: 'Member properties',
-    text: 'properties member 1 material made 2 type cross section 3 member size'
+    text: 'properties member 1 material made 2 type cross section e.g solid tube 3 cross section size'
   },
   {
     id: 'hlp_member_properties',
@@ -1036,18 +1033,18 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_member_size',
     title: 'Member size',
-    text: 'size member represented dimensions cross section millimeters'
+    text: 'size member dimensions cross section millimeters'
   },
   {
     id: 'hlp_member_tool',
     title: 'Member tool',
     text: 'use member tool draw members create structural model notes tips member tool located design tools pal' +
-          'ette also accessed tools menu member tool selected mouse pointer appears pencil'
+          'ette also available tools menu member tool selected mouse pointer appears pencil'
   },
   {
     id: 'glos_members',
     title: 'Members',
-    text: 'members individual structural elements make truss members connected joints'
+    text: 'members individual structural elements make truss connected joints'
   },
   {
     id: 'hlp_menu_bar',
@@ -1055,7 +1052,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'menu bar located top bridge design window immediately title bar menu bar provides following commands' +
           ' file new design open file save file save open sample design load template print design export files' +
           ' 3d print recently opened files exit edit select delete undo redo go back go forward go iteration in' +
-          'crease member size decrease member size remember work view design tools animation controls member li' +
+          'crease member size decrease member size remember work view design tools animation settings member li' +
           'st rulers title block member numbers symmetry guides template grid resolution drawing tools joint to' +
           'ol member tool select tool eraser tool test drawing board load test show animation auto correct erro' +
           'rs report cost calculations load test results member analysis help tip day'
@@ -1064,13 +1061,14 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'glos_modulus_of_elasticity',
     title: 'Modulus of elasticity',
     text: 'modulus elasticity measure materials stiffness resistance deformation material high modulus elastici' +
-          'ty deforms little loaded modulus elasticity represented symbol e expressed units force per unit area'
+          'ty deforms little loaded vice versa modulus elasticity represented symbol e expressed units force pe' +
+          'r unit area'
   },
   {
     id: 'glos_moment_of_inertia',
     title: 'Moment of inertia',
-    text: 'moment inertia measure members resistance bending buckling function shape dimensions cross section m' +
-          'oment inertia represented symbol expressed units length raised 4th power'
+    text: 'moment inertia measure members resistance bending buckling function shape dimensions member cross se' +
+          'ction represented symbol expressed units length raised fourth power'
   },
   {
     id: 'hlp_move_joint',
@@ -1108,7 +1106,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_new_design',
     title: 'New design button',
     text: 'click new design button start new bridge design click button project setup wizard displayed notes ti' +
-          'ps new design button located main toolbar also accessed file menu'
+          'ps new design button located main toolbar also available file menu'
   },
   {
     id: 'hlp_open_sample_design',
@@ -1131,7 +1129,7 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_open_file',
     title: 'Open file button',
     text: 'click open file button open existing bridge design file notes tips open file button located main too' +
-          'lbar also accessed file menu'
+          'lbar also available file menu'
   },
   {
     id: 'hlp_optimize_member_selection',
@@ -1257,15 +1255,15 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'hlp_redo',
     title: 'Redo button',
-    text: 'click redo button restore change structural model previously undone notes tips redo button located m' +
-          'ain toolbar also found edit menu redo button works together undo button'
+    text: 'click redo button restore change structural model previously undone redo multiple changes clicking a' +
+          'rrow right selecting previous change notes tips redo button located main toolbar also found edit men' +
+          'u redo button works together undo button'
   },
   {
     id: 'glos_reinforced_concrete',
     title: 'Reinforced concrete',
-    text: 'reinforced concrete concrete steel reinforcing rods embedded inside added strength concrete strong c' +
-          'ompression comparatively weak tension reinforcing bars substantially increase ability reinforced con' +
-          'crete carry tension'
+    text: 'reinforced concrete concrete steel rods embedded inside added strength concrete strong compression c' +
+          'omparatively weak tension reinforcing bars substantially increase ability concrete carry tension'
   },
   {
     id: 'hlp_remember_my_work',
@@ -1309,16 +1307,16 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ghosts drawn pale colors pick member highlight slider labeled select member see ghost spikes entire ' +
           'bridge rather one material group uncheck focus box members failing slenderness check close dotted ve' +
           'rtical magenta line maximum length member material spec allowed notes tips currently selected member' +
-          ' also highlighted member table drawing board check top either force range data spike higher correspo' +
-          'nding strength member fails. otherwise carries load successfully forces range vary truck load moves ' +
-          'across bridge force ranges may hard see forces near zero'
+          ' also highlighted member list drawing board check top either force range data spike higher correspon' +
+          'ding strength member fails. otherwise carries load successfully forces range vary truck load moves a' +
+          'cross bridge force ranges may hard see forces near zero'
   },
   {
     id: 'glos_resistance_factor',
     title: 'Resistance factor',
-    text: 'resistance factor dimensionless number used calculation tensile strength compressive strength struct' +
-          'ural members resistance factor provides margin safety design accounts uncertainty material strength ' +
-          'member dimensions construction quality resistance factor always less equal 1'
+    text: 'resistance factor dimensionless number used calculation tensile compressive strength structural memb' +
+          'ers resistance factor provides margin safety design accounts uncertainty material strength member di' +
+          'mensions construction quality resistance factor always less equal one'
   },
   {
     id: 'hlp_restrictions',
@@ -1388,33 +1386,32 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'configurations four load cases click next make selections site configuration site configuration cons' +
           'ists elevation deck high water level choice standard abutments simple supports arch abutments arch s' +
           'upports height arch abutments used choice pier pier height pier used choice zero one two cable ancho' +
-          'rages also see anchorages info selections affects site cost displayed near bottom setup wizard see c' +
-          'ost calculations click arrow lower right made selections click next select load case load case load ' +
-          'case consists choice medium strength high strength concrete deck choice two aashto h25 truck loads o' +
-          'ne traffic lane single 660 kn permit loading laterally centered deck made selections may click finis' +
-          'h complete setup go drawing board notes tips wizard finished way change site configuration load case' +
-          ' start new design. clicking new design button display setup wizard 98 possible site configurations m' +
-          'entioned four possible load cases consisting two deck materials two truck loadings overall makes 392' +
-          ' possible choices represents different type support loading different cost consistent design specifi' +
-          'cations total cost bridge equals site cost plus truss cost picking configuration lowest site cost un' +
-          'likely result lowest total cost general configurations low site cost tend require relatively high co' +
-          'st truss vice versa finding best balance engineers example configuration high deck elevation relativ' +
-          'ely low site cost requires little excavation high deck elevation also greater span length requires l' +
-          'arger heavier truss high truss cost arch abutments cost standard abutments tall arch abutments cost ' +
-          'short ones thus site configurations use arches tend higher site cost. v shape river valley arch abut' +
-          'ments also reduce span length given deck height taller abutment shorter span arch abutments also pro' +
-          'vide lateral restraint standard abutments tend decrease truss costs building pier middle river expen' +
-          'sive means configurations piers higher site costs without pier also divides one long span two short ' +
-          'ones two short trusses usually much less expensive single long one cable anchorages also expensive p' +
-          'rovide additional support e.g. cable supports cable stayed bridge reduce truss cost significantly ch' +
-          'oice deck material affects site cost loads applied load test medium strength concrete less expensive' +
-          ' high strength results thicker deck heavier high strength concrete expensive results thinner deck li' +
-          'ghter thus less expensive deck material tends result higher truss cost expensive deck material resul' +
-          'ts lower truss cost choice truck loading effect site cost significant effect truss cost engineering ' +
-          'design always involves tradeoffs tradeoff cost structure cost supporting substructure critically imp' +
-          'ortant aspect real world bridge designs site configuration load case result lowest total cost dont w' +
-          'orry take best guess move next step design process well find optimum site configuration later proces' +
-          's'
+          'rages selections affects site cost displayed near bottom setup wizard see cost calculations click ar' +
+          'row lower right made selections click next select load case load case load case consists choice medi' +
+          'um strength high strength concrete deck choice two aashto h25 truck loads one traffic lane single 66' +
+          '0 kn permit loading laterally centered deck made selections may click finish complete setup go drawi' +
+          'ng board notes tips wizard finished way change site configuration load case start new design. clicki' +
+          'ng new design button display setup wizard 98 possible site configurations mentioned four possible lo' +
+          'ad cases consisting two deck materials two truck loadings overall makes 392 possible choices represe' +
+          'nts different type support loading different cost consistent design specifications total cost bridge' +
+          ' equals site cost plus truss cost picking configuration lowest site cost unlikely result lowest tota' +
+          'l cost general configurations low site cost tend require relatively high cost truss vice versa findi' +
+          'ng best balance engineers example configuration high deck elevation relatively low site cost require' +
+          's little excavation high deck elevation also greater span length requires larger heavier truss high ' +
+          'truss cost arch abutments cost standard abutments tall arch abutments cost short ones thus site conf' +
+          'igurations use arches tend higher site cost. v shape river valley arch abutments also reduce span le' +
+          'ngth given deck height taller abutment shorter span arch abutments also provide lateral restraint st' +
+          'andard abutments tend decrease truss costs building pier middle river expensive means configurations' +
+          ' piers higher site costs without pier also divides one long span two short ones two short trusses us' +
+          'ually much less expensive single long one cable anchorages also expensive provide additional support' +
+          ' e.g. cable supports cable stayed bridge reduce truss cost significantly choice deck material affect' +
+          's site cost loads applied load test medium strength concrete less expensive high strength results th' +
+          'icker deck heavier high strength concrete expensive results thinner deck lighter thus less expensive' +
+          ' deck material tends result higher truss cost expensive deck material results lower truss cost choic' +
+          'e truck loading effect site cost significant effect truss cost engineering design always involves tr' +
+          'adeoffs tradeoff cost structure cost supporting substructure critically important aspect real world ' +
+          'bridge designs site configuration load case result lowest total cost dont worry take best guess move' +
+          ' next step design process well find optimum site configuration later process'
   },
   {
     id: 'hlp_select_all',
@@ -1427,8 +1424,8 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     title: 'Select tool',
     text: 'use select tool edit structural model need move joint delete joint change member properties delete m' +
           'ember youll need select joint member first clicking select tool notes tips select tool located desig' +
-          'n tools palette also accessed tools menu select tool use mouse pointer appears arrow move select too' +
-          'l drawing board joints members highlighted indicate pointer close enough select'
+          'n tools palette also available tools menu select tool use mouse pointer appears arrow move select to' +
+          'ol drawing board joints members highlighted indicate pointer close enough select'
   },
   {
     id: 'glos_session',
@@ -1494,22 +1491,22 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_slenderness',
     title: 'Slenderness ratio',
-    text: 'slenderness ratio number describes thickness member members long comparison cross sections larger sl' +
-          'enderness ratios shorter slender members likely buckle damaged handling. slenderness check ensures m' +
-          'embers slenderness ratios 300 overly slender member causes bridge fail'
+    text: 'slenderness ratio number describes thickness member members long comparison cross sections higher sl' +
+          'enderness ratios vice versa slender members likely buckle damaged handling slenderness check ensures' +
+          ' members slenderness ratios 300 overly slender member causes bridge fail'
   },
   {
     id: 'glos_slope',
     title: 'Slope',
-    text: 'slope roadway embankment measure steepness expressed ratio vertical distance horizontal distance exa' +
-          'mple river bank slope 2 1 rises 2 meters every 1 meter horizontal distance'
+    text: 'slope roadway embankment measure steepness expressed ratio vertical horizontal distance example rive' +
+          'r bank slope 2 1 rises two meters every one meter horizontal distance'
   },
   {
     id: 'glos_snap_points',
     title: 'Snap points',
     text: 'snap point intersection two grid lines drawing grid joints drawn snap points thus draw move joints s' +
-          'tructural model mouse pointer automatically snaps nearest snap point grid lines actually visible loc' +
-          'ations indicated marks vertical horizontal rulers located left bottom edges drawing board'
+          'tructural model mouse pointer automatically snaps nearest one grid lines invisible locations indicat' +
+          'ed ticks vertical horizontal rulers left bottom edges drawing board'
   },
   {
     id: 'hlp_bars_or_tubes',
@@ -1585,8 +1582,8 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_structural_analysis',
     title: 'Structural analysis',
-    text: 'structural analysis mathematical analysis structural model determine members forces resulting given ' +
-          'set loads bridge designer uses structural analysis formulation called direct stiffness method'
+    text: 'structural analysis mathematical analysis structural model determine member forces resulting given s' +
+          'et loads bridge designer uses structural analysis formulation called direct stiffness method'
   },
   {
     id: 'glos_structural_model',
@@ -1594,8 +1591,8 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     text: 'structural model mathematical idealization actual structure model allows us predict actual structure' +
           ' behave loaded structural model truss following idealized characteristics composed members interconn' +
           'ected joints member connected exactly two joints one end joints assumed act like hinges hold members' +
-          ' together prevent ends members rotating respect members carry axial force either compression tension' +
-          ' bend loads applied structure joints supports placed joints'
+          ' together prevent rotating respect members carry axial force either compression tension bend loads a' +
+          'pplied structure joints supports placed joints'
   },
   {
     id: 'hlp_structural_stability',
@@ -1629,14 +1626,14 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_symmetrical',
     title: 'Symmetrical',
-    text: 'term symmetrical apply structure loading symmetrical structure left hand right hand sides structure ' +
-          'exact mirror images symmetrical loading loads applied either side bridge centerline identical'
+    text: 'term symmetrical apply structure loading symmetrical structure left right hand sides structure mirro' +
+          'r images symmetrical loading loads applied either side bridge centerline identical'
   },
   {
     id: 'glos_template',
     title: 'Template',
     text: 'bridge designer template diagram depicting standard truss configuration load template displayed draw' +
-          'ing board light grey dotted lines template show locate joints members create stable truss design'
+          'ing board gray template shows locate joints members create stable truss'
   },
   {
     id: 'hlp_tensile_strength',
@@ -1696,49 +1693,52 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
   {
     id: 'glos_through_truss',
     title: 'Through truss',
-    text: 'truss truss deck located bottom chord truss vehicles truss pass two main trusses cross bridge'
+    text: 'truss deck located bottom chord vehicles pass two main trusses cross bridge'
   },
   {
     id: 'hlp_tip_of',
     title: 'Tip of the day',
-    text: 'tip day dialog box provides hints help learn use bridge designer efficiently use programs advanced f' +
-          'eatures optimize designs effectively tip day automatically displayed every time start program also v' +
-          'iew clicking help menu selecting tip day notes tips want see tip day dialog box every time start pro' +
-          'gram uncheck show tips startup box resume displaying tip day startup click help menu click tip day f' +
-          'inally check show tips startup box'
+    text: 'tip day provides general information hints help use bridge designer covers programs advanced feature' +
+          's optimizing designs quickly effectively new tip automatically displayed every time start start fres' +
+          'h design session also view tips clicking help menu selecting tip day notes tips want see dialog ever' +
+          'y new session uncheck show tips startup box restart tips day new session click help menu tip day che' +
+          'ck show tips startup box'
   },
   {
     id: 'hlp_title_bar',
     title: 'Title bar',
-    text: 'title bar rectangular area top bridge design window displays words bridge designer followed name cur' +
-          'rent bridge design file notes tips bridge design window maximized move around screen clicking anywhe' +
-          're title bar dragging window desired location'
+    text: 'browsers title bar tab displays words bridge designer followed name current bridge design file notes' +
+          ' tips possible run bridge designer one tab browser isnt recommended work automatically saved browser' +
+          ' local storage tab last tab closed remembered confusing resume work later'
   },
   {
     id: 'hlp_titleblock',
     title: 'Title block',
-    text: 'title block located lower right hand corner drawing board shows name bridge design project name desi' +
-          'gner project identification project id name designer optional provide shown title block included pri' +
-          'nted output notes tips project id consists two parts separated dash first part six character local c' +
-          'ontest code entered local contest code started design part project id cannot changed. second part op' +
-          'tional name number helps identify design start new design setup wizard prompt designers name project' +
-          ' id want enter change designers name project id begun design click appropriate box title block curso' +
-          'r appears type edit desired text hide display title block using view title block button member list ' +
-          'displayed may hide part title block'
+    text: 'title block lower right hand corner drawing board shows name project name designer project id name d' +
+          'esigner optional provide included printed output notes tips project id consists two parts separated ' +
+          'dash first part local contest code entered one started design otherwise code corresponding site cond' +
+          'itions chose part project id cannot changed second part optional name number helps identify design s' +
+          'tart new design setup wizard prompt designers name project id want enter change designers name proje' +
+          'ct id begun design click appropriate box drawing boards title block cursor appears enter desired tex' +
+          't hide display title block using view title block menu entry'
   },
   {
     id: 'hlp_toolbars',
     title: 'Toolbars',
-    text: 'bridge design window includes four toolbars normally grouped two rows menu bar one free floating too' +
-          'l palette together include controls need create test optimize record bridge design toolbars correspo' +
-          'nding controls pictured described main toolbar new design button open file button save file button p' +
-          'rint button drawing board button load test button select button delete button undo button redo butto' +
-          'n go back button go forward button go iteration button status toolbar current cost report cost calcu' +
-          'lations button current load test status report load test results button member properties toolbar me' +
-          'mber properties lists increase member size button decrease member size button report member properti' +
-          'es button display toolbar view member list button view rulers button view title block button view me' +
-          'mber numbers button view symmetry guides button view template button grid resolution buttons palette' +
-          's design tools animation controls'
+    text: 'bridge design window includes two rows buttons menu bar theyre called toolbars also free floating to' +
+          'ol palette drawing board finally context menu dialog commonly used functions available right clickin' +
+          'g drafting panel collection includes controls needed create test optimize record bridge design edit ' +
+          'status toolbar toolbar controls creating recording bridges testing iterating design viewing reports ' +
+          'cost test results member material details new design button open file button save file button print ' +
+          'button export files 3d print button drawing board button load test button select button delete butto' +
+          'n undo controls redo controls go back iteration button go forward iteration button go iteration butt' +
+          'on current cost report cost calculations button current load test status report load test results bu' +
+          'tton report member analysis button member display properties toolbar toolbar controls choosing mater' +
+          'ials changing material sizes opting different ways display edit current design member properties lis' +
+          'ts increase member size button decrease member size button view member list button view rulers butto' +
+          'n view title block button view member numbers button view symmetry guides button view template butto' +
+          'n grid resolution buttons palettes design tools animation settings notes tips many toolbar controls ' +
+          'available quickly via context widgets'
   },
   {
     id: 'hlp_truss_bridges',
@@ -1750,99 +1750,91 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' made wood. classic american covered bridges trusses though wooden truss members covered walls roof ' +
           'protection elements later truss bridges made cast iron wrought iron modern trusses made structural s' +
           'teel truss bridges found many different configurations virtually basic component parts many types br' +
-          'idges include beam bridges arches suspension bridges cable stayed bridges'
+          'idges beam bridges arches suspension bridges cable stayed bridges'
   },
   {
     id: 'hlp_undo',
     title: 'Undo button',
     text: 'click undo button undo recent change structural model notes tips undo button located main toolbar al' +
-          'so accessed edit menu undo button works conjunction redo button'
+          'so available edit menu undo multiple changes clicking arrow right selecting previous change undo but' +
+          'ton works conjunction redo button'
   },
   {
     id: 'glos_unsafe',
     title: 'Unsafe',
     text: 'member unsafe internal member force exceeds strength member member unsafe tension maximum tension fo' +
-          'rce exceeds tensile strength member unsafe compression maximum compression force exceeds compressive' +
-          ' strength'
+          'rce exceeds tensile strength unsafe compression maximum compression force exceeds compressive streng' +
+          'th'
   },
   {
     id: 'hlp_using_undo',
     title: 'Using undo and redo',
-    text: 'anytime make mistake creating editing structural model click undo button undo error mistakenly undo ' +
-          'change structural model restore using redo button notes tips following actions undone draw joint dra' +
-          'w member move joint change properties member delete erase joint delete erase member action undone al' +
-          'so restored using redo bridge designer allows 100 levels undo undo 100 recent changes structural mod' +
-          'el undo changes made current design iteration revert previous design iteration use go back button de' +
-          'tailed explanation see whats difference go back undo'
+    text: 'make mistake creating editing structural model click undo button undo error mistakenly undo change r' +
+          'estore using redo button undo redo multiple changes clicking respective arrow selecting previous cha' +
+          'nge notes tips following actions undone add joint member move joint change properties member delete ' +
+          'joint member move drawing labels action undone also restored using redo bridge designer allows 1000 ' +
+          'levels undo undo 1000 recent changes structural model undo changes made current design iteration rev' +
+          'ert previous design iteration use go back button detailed explanation see whats difference go back u' +
+          'ndo'
   },
   {
     id: 'glos_verticals',
     title: 'Verticals',
-    text: 'verticals truss members oriented vertically usually connect top bottom chords together'
+    text: 'verticals truss members oriented vertically usually connect top bottom chords'
   },
   {
-    id: 'hlp_view_animation_controls',
-    title: 'View animation controls button',
-    text: 'click view animation controls button view menu display hide animation controls button functions togg' +
-          'le. animation controls currently visible clicking button hide controls hidden clicking button displa' +
-          'y notes tips wont able show animation controls drawing board use'
+    id: 'hlp_view_animation_settings',
+    title: 'View animation settings button',
+    text: 'show hide animation settings clicking pale gear animation controls load test animation progress alte' +
+          'rnately click animation settings button view menu notes tips wont able show animation settings drawi' +
+          'ng board use'
   },
   {
     id: 'hlp_view_tools',
     title: 'View design tools button',
-    text: 'click view design tools button view menu display hide design tools palette button functions toggle. ' +
-          'design tools palette currently visible clicking button hide palette hidden clicking button display n' +
-          'otes tips wont able show design tools palette load test animation progress'
+    text: 'click view design tools button view menu display hide design tools palette notes tips wont able show' +
+          ' hide design tools palette load test animation progress'
   },
   {
     id: 'hlp_view_member_numbers',
     title: 'View member numbers button',
-    text: 'click view member numbers button display hide member numbers drawing board button functions toggle. ' +
-          'member numbers currently visible clicking button hide member numbers hidden clicking button display ' +
-          'notes tips view member numbers button located display toolbar also accessed view menu'
+    text: 'click view member numbers button display hide member numbers drawing board notes tips view member nu' +
+          'mbers button located display toolbar also available view menu'
   },
   {
     id: 'hlp_view_rulers',
     title: 'View rulers button',
-    text: 'click view rulers button display hide rulers button functions toggle. rulers currently visible click' +
-          'ing button hide rulers hidden clicking button display notes tips view rulers button located display ' +
-          'toolbar also accessed view menu hide rulers drawing board becomes slightly larger'
+    text: 'click view rulers button display hide rulers hiding increases space available draw bridge notes tips' +
+          ' view rulers button available view menu'
   },
   {
     id: 'hlp_view_symmetry',
     title: 'View symmetry guides button',
     text: 'click view symmetry guides button display hide set two vertical one horizontal guide lines drawing b' +
-          'oard use guides drawing moving joints ensure structural model symmetrical guides moved dragging hand' +
-          'les located left side horizontal guide bottom one vertical guide horizontal left hand vertical guide' +
-          's positioned intersect particular joint intersection horizontal right hand vertical guides marks loc' +
-          'ation symmetrical joint opposite side truss view symmetry guides button functions toggle. guides vis' +
-          'ible clicking button hide guides hidden clicking button display notes tips view symmetry guides butt' +
-          'on located display toolbar also accessed view menu view symmetry guides button available joint tool ' +
-          'select tool active several site configurations pier located along centerline bridge cases optimal st' +
-          'ructural design likely symmetrical'
+          'oard use drawing moving joints ensure structural model symmetrical move dragging handles located lef' +
+          't side bottom drawing theyre positioned joint opposite intersection shows symmetrical joint location' +
+          ' side truss notes tips view symmetry guides button located display toolbar also available view menu ' +
+          'several site configurations pier located along centerline bridge cases optimal design probably wont ' +
+          'symmetrical'
   },
   {
     id: 'hlp_view_template',
     title: 'View template button',
-    text: 'click view template button display hide current template drawing board button functions toggle. temp' +
-          'late visible clicking button hide template hidden clicking button display notes tips view template b' +
-          'utton located display toolbar also accessed view menu view template button enabled template loaded s' +
-          'ee load display template information template always displayed behind structural model drawing board'
+    text: 'click view template button hide display current template drawing board notes tips view template butt' +
+          'on located display toolbar also available view menu whenever new template loaded view template butto' +
+          'n toggled display template always displayed behind structural model drawing board'
   },
   {
     id: 'hlp_view_title',
-    title: 'View title block button',
-    text: 'click view title block button display hide title block button functions toggle. title block currentl' +
-          'y visible clicking button hide title block hidden clicking button display notes tips view title bloc' +
-          'k button located display toolbar also accessed view menu computer low resolution monitor may find ti' +
-          'tle block covers lower edge drawing grid case might need hide title block create edit structural mod' +
-          'el'
+    title: 'View title block',
+    text: 'click view title block menu entry hide display title block notes tips computer small screen title bl' +
+          'ock interfere drawing bridge hiding fix problem'
   },
   {
     id: 'glos_wearing_surface',
     title: 'Wearing surface',
-    text: 'wearing surface layer pavement material normally asphalt concrete placed top bridge deck protect dec' +
-          'k damaged automobile traffic'
+    text: 'wearing surface layer pavement material normally asphalt concrete placed top bridge deck protect dam' +
+          'age vehicle traffic'
   },
   {
     id: 'hlp_not_realistic',
@@ -1882,19 +1874,17 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
     id: 'hlp_design_iteration',
     title: 'What is a design iteration?',
     text: 'anytime make one changes structural model run load test performed one design iteration bridge design' +
-          'er saves design iterations created current session provides capability revert previous iterations ti' +
-          'me session notes tips revert previous design iteration click go back button go iteration button curr' +
-          'ent design iteration number always displayed main toolbar number incremented start new iteration whe' +
-          'never make first change structural model load test design iteration numbers never duplicated design ' +
-          'iterations never overwritten even revert previous iteration example suppose working design iteration' +
-          ' 10 decide go back iteration 6 design iteration number displayed main toolbar change 10 6 accordingl' +
-          'y soon make change structural model design iteration number update 11 since initiated new iteration ' +
-          'way previous iterations 6 7 8 9 10 preserved future use see design iterations related using tree vie' +
-          'w tab reverting previous design iteration particularly useful optimizing design optimization process' +
-          ' never linear always marked dead ends unexpected outcomes attempts optimization successful others un' +
-          'successful attempt simply revert previous successful design iteration try previous design iterations' +
-          ' preserved end current session start new design exit bridge designer previous iterations deleted thu' +
-          's design iteration browser display iterations created current session'
+          'er saves iterations created current session allows switching among time session notes tips switch di' +
+          'fferent design iteration click go back button go forward button go iteration button current design i' +
+          'teration number always displayed main toolbar number incremented start new iteration make first chan' +
+          'ge structural model load test design iteration numbers never duplicated associated designs never cha' +
+          'nge even revert previous iteration example suppose working iteration 10 decide go back 6 iteration n' +
+          'umber displayed toolbar change 10 6 soon make change structural model iteration number update 11 ini' +
+          'tiated new iteration iterations 1 10 remain unchanged see design iterations related using tree view ' +
+          'tab reverting previous design iteration particularly useful optimizing design optimization process s' +
+          'eldom linear always dead ends unexpected outcomes attempts successful others unsuccessful attempt si' +
+          'mply revert previous good iteration try final design iteration saved bridge design files load file d' +
+          'esign iteration browser shows iteration forward back buttons disabled'
   },
   {
     id: 'hlp_realistic',
@@ -1946,26 +1936,25 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'ul educational software technologies world new edition update designed enable bridge designer learni' +
           'ng anyone access web browser get started right introductory engineering experience working alone tea' +
           'm team teacher new features please enjoy checking possibilities.. installation required bridge desig' +
-          'ner works recent versions browsers hit web site chrome edge firefox updated 2024 later recommended e' +
-          'xport 3d model design addition beautiful blueprint style printed version bridge long part bridge des' +
-          'igner export obj files suitable favorite 3d printer member analysis report upgrade old member detail' +
-          's tab interactive explorer supplements members list dynamically updated engineering information memb' +
-          'er cross sections materials lengths costs forces strength dig deep makes bridge work late updates pr' +
-          'evious bridge designer versions still 3d walk completed bridges walk fly around animation completed ' +
-          'bridge observe performance truck load drives deck deep undo old limit 5 100 undo redo last hundred e' +
-          'dits current design iteration iterations tree view track design iterations view shows history one ch' +
-          'ronological list also still available click drag member list selections click drag select group memb' +
-          'ers member list'
+          'ner works recent versions browsers hit web site versions chrome edge firefox 2024 later recommended ' +
+          'export 3d model design addition beautiful blueprint style printed version bridge long part bridge de' +
+          'signer export obj files suitable favorite 3d printer member analysis report upgrade old member detai' +
+          'ls tab interactive explorer supplements members list dynamically updated engineering information mem' +
+          'ber cross sections materials lengths costs forces strength use dig deep makes bridge work late updat' +
+          'es previous bridge designer versions still 3d walk completed bridges walk fly around animation compl' +
+          'eted bridge observe performance truck load drives deck deep undo old limit 5 1000 undo redo last tho' +
+          'usand edits current design iteration iterations tree view track design iterations view shows history' +
+          ' one chronological list still click drag member list selections click drag select group members memb' +
+          'er list'
   },
   {
     id: 'hlp_undo_vs_go_back',
     title: `What's the difference between undo and go back?`,
-    text: 'first glance go back button undo button might appear performing function practice two functions clos' +
-          'ely related important distinctions two use undo correct mistakes make working current design iterati' +
-          'on use go back revert previous design iteration go back function normally used part optimization pro' +
-          'cess rather correct drawing editing errors undo available 100 recent changes structural model go bac' +
-          'k previous design iteration created current session undo applies current design iteration undo funct' +
-          'ion disabled whenever go back previous iteration undo enabled soon make new changes structural model'
+    text: 'first glance go back undo buttons might appear thing really use undo correct mistakes working curren' +
+          't design iteration use go back revert previous design iteration go back normally used optimize bridg' +
+          'e undo available 1000 recent changes structural model go back previous design iteration created curr' +
+          'ent session undo applies current design iteration disabled whenever go back previous iteration undo ' +
+          'enabled soon make new changes structural model'
   },
   {
     id: 'glos_yield_stress',

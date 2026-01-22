@@ -11,7 +11,7 @@
   <h1>Assembling your bridge model</h1>
   <div class="p">
     These instructions assume you've already printed the parts of your model after using the instructions for
-    <topic-link name="hlp_export_to_3dprint">>exporting OBJ files</topic-link>.
+    <topic-link name="hlp_export_to_3dprint">exporting OBJ files</topic-link>.
   </div>
   <h2>Prepare to build</h2>
   <div class="p">Some things you'll need to assemble the printed parts:</div>
@@ -412,11 +412,11 @@
   <h2 class="btop">Notes and tips</h2>
   <div class="p">Disabling the animation allows quicker design iterations.</div>
 </ng-template>
-<ng-template topic-name="hlp_animation_controls">
-  <h1>Animation controls</h1>
+<ng-template topic-name="hlp_animation_settings">
+  <h1>Animation settings</h1>
   <div class="p">
-    This dialog provides various options to modify the animation's appearance. To look around the animation and
-    play/pause it, see <topic-link name="hlp_animation_view_controls">animation view controls</topic-link>.
+    This dialog provides options to modify the animation's appearance. To move around the animation and play/pause it,
+    see <topic-link name="hlp_animation_controls">animation controls</topic-link>.
   </div>
   <table
     cellpadding="8"
@@ -425,7 +425,7 @@
     <tr>
       <td>
         <img
-          alt="Animation controls"
+          alt="Animation settings dialog"
           src="img/help/animctldialog.png"
           style="width: 215px; height: 269px; margin-right: 12px"
         />
@@ -475,8 +475,8 @@
   </div>
   <div class="p">Turning off colors and exaggeration provides the most realistic view of the bridge doing its job.</div>
 </ng-template>
-<ng-template topic-name="hlp_animation_view_controls">
-  <h1>Animation view controls</h1>
+<ng-template topic-name="hlp_animation_controls">
+  <h1>Animation controls</h1>
   <div class="p">
     A column of seven faded icons is displayed over the top of the animation image. Each will light up when the mouse
     gets close.
@@ -488,7 +488,7 @@
     <tr>
       <td>
         <img
-          alt="Animation view control buttons"
+          alt="Animation controls"
           src="img/help/overlay.png"
           style="width: 132px; height: 335px; margin-right: 12px"
         />
@@ -514,7 +514,7 @@
           </li>
           <li>
             <span class="b">Settings.</span> Click to show or hide the settings dialog. Same as selecting
-            <span class="b">Animation controls</span> in the View menu.
+            <span class="b">animation settings</span> in the view menu.
           </li>
         </ul>
       </td>
@@ -809,6 +809,51 @@
     predicts.
   </div>
 </ng-template>
+<ng-template topic-name="hlp_context_widgets">
+  <h1>Context widgets</h1>
+  <div class="p">
+    The <topic-link name="hlp_drawing_board">drawing board</topic-link> provides controls called context widgets that
+    can speed your work. They're invoked by right-clicking with the mouse. The location of the right click determines
+    which controls appear.
+  </div>
+  <table>
+    <tr>
+      <td>
+        <img
+          alt="Context menu"
+          src="img/help/ctxdialog.png"
+          style="border-collapse: collapse; border: 1px solid darkgray; margin: 10px; width: 200px"
+        />
+      </td>
+      <td>
+        A right-click on a selected member shows this dialog, with controls that support editing all selected members.
+        <div class="p in1"><topic-popup name="hlp_member_properties">Member properties lists</topic-popup></div>
+        <div class="p in1"><topic-popup name="hlp_increase_member">Increase member size button</topic-popup></div>
+        <div class="p in1"><topic-popup name="hlp_decrease_member">Decrease member size button</topic-popup></div>
+        <div class="p in1"><topic-popup name="hlp_delete">Delete selection button</topic-popup></div>
+        <div class="p in1"><topic-popup name="hlp_view_member_list">View/hide member list button</topic-popup></div>
+      </td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <td>
+        <img
+          alt="Context selection dialog"
+          src="img/help/ctxmenu.png"
+          style="border-collapse: collapse; border: 1px solid darkgray; margin: 10px; width: 100px"
+        />
+      </td>
+      <td>
+        <div class="p">A right-click anywhere else shows this menu, with controls for common editing needs.</div>
+        <div class="p in1"><topic-popup name="hlp_design_tools">Design tools selector</topic-popup></div>
+        <div class="p in1"><topic-popup name="hlp_select_all">Select all button</topic-popup></div>
+        <div class="p in1"><topic-popup name="hlp_view_member_list">View/hide member list button</topic-popup></div>
+        <div class="p in1"><topic-popup name="hlp_grid_resolution">Grid resolution buttons</topic-popup></div>
+      </td>
+    </tr>
+  </table>
+</ng-template>
 <ng-template topic-name="hlp_cost">
   <h1>Cost of the design</h1>
   <div class="p">
@@ -872,8 +917,8 @@
   <div class="p"><span class="i">Support Cost</span></div>
   <div class="p">
     When you select the type of <topic-popup name="glos_abutment">abutments</topic-popup>,
-    <topic-popup name="glos_pier">piers</topic-popup>, and cable
-    <topic-popup name="glos_anchorages">anchorages</topic-popup> used in your bridge, the
+    <topic-popup name="glos_pier">piers</topic-popup>, and
+    <topic-popup name="glos_cable_anchorages">cable anchorages</topic-popup> used in your bridge, the
     <span class="bd-emph">Bridge Designer</span> determines the costs associated with constructing these supports. Each
     support configuration has its own unique cost. For a given type of
     <topic-popup name="glos_abutment">abutment</topic-popup> (standard or arch), the cost tends to increase with span
@@ -1138,8 +1183,8 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The delete button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It can also be
-    accessed from the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
+    The delete button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It's also available
+    in the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
   </div>
   <div class="p">
     You can use the <span class="b">delete key</span> on your keyboard to perform exactly the same function as the
@@ -1202,8 +1247,9 @@
           <topic-popup name="glos_abutment">abutments</topic-popup> (simple supports) or
           <topic-popup name="glos_arch_abutments">arch abutments</topic-popup> (arch supports). If necessary, the bridge
           may also use one intermediate <topic-popup name="glos_pier">pier</topic-popup> located near the center of the
-          valley. If necessary, the bridge may also use cable
-          <topic-popup name="glos_anchorages">anchorages</topic-popup>, located 8 meters behind one or both abutments.
+          valley. If necessary, the bridge may also use
+          <topic-popup name="glos_cable_anchorages">cable anchorages</topic-popup>, located 8 meters behind one or both
+          abutments.
         </li>
         <li>
           Each main truss can have no more than 100 <topic-popup name="glos_joints">joints</topic-popup> and no more
@@ -1624,8 +1670,8 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The drawing board button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It can also be
-    accessed from the <topic-link name="hlp_menu_bar">test menu</topic-link>.
+    The drawing board button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It's also
+    available in the <topic-link name="hlp_menu_bar">test menu</topic-link>.
   </div>
   <div class="p">
     The drawing board button and <topic-popup name="hlp_load_test_button">load test button</topic-popup> work as a pair.
@@ -1836,7 +1882,7 @@
     expensive than a single long one.
   </div>
   <div class="p">
-    Cable <topic-popup name="glos_anchorages">anchorages</topic-popup> are also expensive, but they provide for
+    <topic-popup name="glos_cable_anchorages">Cable anchorages</topic-popup> are also expensive, but they provide for
     additional support and thus can reduce the truss cost significantly. An example is the cable supports of a
     cable-stayed bridge.
   </div>
@@ -1944,8 +1990,8 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The go forward button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It can also be
-    accessed from the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
+    The go forward button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It's also
+    available in the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
   </div>
   <div class="p">
     The go forward button is only activated after you have used the
@@ -2402,8 +2448,8 @@
       alt="Exaggeration"
       src="img/help/chekmark.png"
     />
-    The <b>Exaggeration</b>check box is in the
-    <topic-link name="hlp_animation_controls">animation controls</topic-link>. If switched on, the bending of the bridge
+    The <b>exaggeration</b>check box is in the
+    <topic-link name="hlp_animation_settings">animation settings</topic-link>. If switched on, the bending of the bridge
     is exaggerated by a factor of 20, to show more clearly how truss
     <topic-popup name="glos_members">members</topic-popup> shorten and elongate as they carry load. If this option is
     off, <topic-popup name="glos_displacement">displacements</topic-popup> are not exaggerated.
@@ -2414,12 +2460,11 @@
       src="img/help/chekmark.png"
     />
     The <b>member colors</b>check box is in the
-    <topic-link name="hlp_animation_controls">animation controls palette</topic-link>. If switched on, members change
-    color during the animation to show the magnitude of the
-    <topic-popup name="glos_member_force">member force</topic-popup>: <span class="c5b">red</span> for
-    <topic-popup name="glos_compression">compression</topic-popup> and <span class="c1b">blue</span> for
-    <topic-popup name="glos_tension">tension</topic-popup>. The more intense the color, the closer the member is to
-    failure. When switched off, the members do not change color during the animation.
+    <topic-link name="hlp_animation_settings">animation settings</topic-link>. If switched on, members change color
+    during the animation to show the magnitude of the <topic-popup name="glos_member_force">member force</topic-popup>:
+    <span class="c5b">red</span> for <topic-popup name="glos_compression">compression</topic-popup> and
+    <span class="c1b">blue</span> for <topic-popup name="glos_tension">tension</topic-popup>. The more intense the
+    color, the closer the member is to failure. When switched off, the members do not change color during the animation.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
@@ -2776,8 +2821,8 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The member tool is located on the <topic-popup name="hlp_design_tools">design tools palette</topic-popup>. It can
-    also be accessed from the <topic-link name="hlp_menu_bar">tools menu</topic-link>.
+    The member tool is located on the <topic-popup name="hlp_design_tools">design tools palette</topic-popup>. It's also
+    available in the <topic-link name="hlp_menu_bar">tools menu</topic-link>.
   </div>
   <div class="p">
     When the member tool is selected, the mouse pointer appears as a pencil
@@ -2822,7 +2867,7 @@
   <div class="p in1"><topic-popup name="hlp_remember_my_work">Remember my work</topic-popup></div>
   <div class="p">View</div>
   <div class="p in1"><topic-popup name="hlp_view_tools">Design tools</topic-popup></div>
-  <div class="p in1"><topic-popup name="hlp_view_animation_controls">Animation controls</topic-popup></div>
+  <div class="p in1"><topic-popup name="hlp_view_animation_settings">Animation settings</topic-popup></div>
   <div class="p in1"><topic-popup name="hlp_view_member_list">Member list</topic-popup></div>
   <div class="p in1"><topic-popup name="hlp_view_rulers">Rulers</topic-popup></div>
   <div class="p in1"><topic-popup name="hlp_view_title">Title block</topic-popup></div>
@@ -2986,8 +3031,8 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The new design button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It can also be
-    accessed from the <topic-link name="hlp_menu_bar">file menu</topic-link>.
+    The new design button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It's also
+    available in the <topic-link name="hlp_menu_bar">file menu</topic-link>.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_not_realistic">
@@ -3112,8 +3157,8 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The open file button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It can also be
-    accessed from the <topic-link name="hlp_menu_bar">file menu</topic-link>.
+    The open file button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It's also
+    available in the <topic-link name="hlp_menu_bar">file menu</topic-link>.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_optimize_configuration">
@@ -3640,13 +3685,16 @@
       alt="Redo button"
       src="img/help/btnredo.png"
     />
-    Click the <span class="b">Redo button</span> to
+    Click the <span class="b">redo button</span> to
     <topic-link name="hlp_using_undo">restore a change to your structural model</topic-link> that was previously undone.
+  </div>
+  <div class="p">
+    Redo multiple changes at once by clicking the down arrow at the right and selecting a previous change.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The redo button is located on the <topic-link name="hlp_toolbars">Main Toolbar</topic-link>. It can also be found in
-    the <topic-link name="hlp_menu_bar">Edit menu</topic-link>.
+    The redo button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It can also be found in
+    the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
   </div>
   <div class="p">The redo button works together with the <topic-popup name="hlp_undo">undo button</topic-popup>.</div>
 </ng-template>
@@ -3794,7 +3842,7 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The currently selected member is also highlighted in the member table and drawing board. Check it out!
+    The currently selected member is also highlighted in the member list and drawing board. Check it out!
   </div>
   <div class="p">
     When the top of either force range in the data spike is higher than the corresponding strength, the member fails.
@@ -3899,7 +3947,7 @@
     </li>
     <li>
       You can walk or ride through the test using the
-      <topic-link name="hlp_animation_view_controls">animation view controls.</topic-link>
+      <topic-link name="hlp_animation_controls">animation controls.</topic-link>
     </li>
     <li>
       When ready, click the
@@ -4143,10 +4191,7 @@
     <li>Height of arch abutments (if used)</li>
     <li>Choice of a <topic-popup name="glos_pier">pier</topic-popup> or no pier</li>
     <li>Height of pier (if used)</li>
-    <li>
-      Choice of zero, one, or two <topic-popup name="glos_cable_anchorages">cable anchorages</topic-popup>. Also, see
-      <topic-popup name="glos_anchorages">anchorages</topic-popup> for more info.
-    </li>
+    <li>Choice of zero, one, or two <topic-popup name="glos_cable_anchorages">cable anchorages</topic-popup>.</li>
   </ul>
   <div class="p">
     Each of these selections affects the <topic-popup name="glos_site_cost">site cost</topic-popup>, which is displayed
@@ -4247,8 +4292,8 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The select tool is located on the <topic-popup name="hlp_design_tools">design tools palette</topic-popup>. It can
-    also be accessed from the <topic-link name="hlp_menu_bar">tools menu</topic-link>.
+    The select tool is located on the <topic-popup name="hlp_design_tools">design tools palette</topic-popup>. It's also
+    available in the <topic-link name="hlp_menu_bar">tools menu</topic-link>.
   </div>
   <div class="p">
     When the select tool is in use, the mouse pointer appears as an arrow
@@ -4853,7 +4898,6 @@
     <topic-popup name="hlp_view_title">view title block</topic-popup> menu entry.
   </div>
 </ng-template>
-<!-- edited -->
 <ng-template topic-name="hlp_toolbars">
   <h1>Toolbars</h1>
   <div class="p">
@@ -4912,7 +4956,12 @@
   <div class="p in1"><topic-popup name="hlp_grid_resolution">Grid resolution buttons</topic-popup></div>
   <h2>Palettes</h2>
   <div class="p"><topic-popup name="hlp_design_tools">Design tools</topic-popup></div>
-  <div class="p"><topic-popup name="hlp_animation_controls">Animation controls</topic-popup></div>
+  <div class="p"><topic-popup name="hlp_animation_settings">Animation settings</topic-popup></div>
+  <h2 class="btop">Notes and tips</h2>
+  <div class="p">
+    Many toolbar controls are available more quickly via
+    <topic-link name="hlp_context_widgets">context widgets</topic-link>.
+  </div>
 </ng-template>
 <ng-template topic-name="hlp_truss_configuration">
   <h1>Decide on a truss configuration</h1>
@@ -4944,19 +4993,19 @@
     >
   </div>
   <div class="p btop">
-    Once you have selected a site configuration, you must decide on the overall configuration of your truss bridge. The
-    <span class="bd-emph">Bridge Designer</span> allows you to use <span class="i">any</span> truss configuration, as
-    long as the structural model you create is <topic-link name="hlp_structural_stability">stable</topic-link>.
+    Once you've selected a site configuration, you must decide on the overall configuration of your bridge. The
+    <span class="bd-emph">Bridge Designer</span> allows <span class="i">any</span> truss configuration, as long as it's
+    <topic-link name="hlp_structural_stability">stable</topic-link>.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
     Developing a stable <topic-popup name="glos_structural_model">structural model</topic-popup> can be tricky. We
-    highly recommend that new and inexperienced users start with a
+    recommend that new and inexperienced users start with a
     <topic-link name="hlp_standard_truss">standard truss configuration</topic-link>.
   </div>
   <div class="p">
     If you decide to use a standard truss configuration, you can
-    <topic-link name="hlp_load_a_template">load and display a template</topic-link> to help you correctly draw the
+    <topic-link name="hlp_load_a_template">load and display a template</topic-link> to help correctly draw the
     <topic-popup name="glos_joints">joints</topic-popup> and <topic-popup name="glos_members">members</topic-popup>.
   </div>
 </ng-template>
@@ -4964,9 +5013,9 @@
   <h1>Trusses and truss bridges</h1>
   <h2>What is a truss?</h2>
   <div class="p">
-    A truss is an arrangement of structural <topic-popup name="glos_members">members</topic-popup> that are connected
-    together to form a rigid framework. In most trusses, members are arranged in interconnected triangles, as shown in
-    the example below:
+    A truss is an arrangement of structural <topic-popup name="glos_members">members</topic-popup> connected together to
+    form a rigid framework. In most trusses, members are arranged in interconnected triangles, as shown in the example
+    below:
   </div>
   <div class="p in1">
     <img
@@ -4985,14 +5034,13 @@
   <div class="p">
     Trusses have been used extensively in bridges since the early 19th Century. Early truss bridges were made of wood.
     The classic American covered bridges are all trusses, though the wooden truss members are covered by walls and a
-    roof, for protection from the elements. Later truss bridges were made of cast iron and wrought iron. Most modern
+    roof for protection from the elements. Later truss bridges were made of cast iron and wrought iron. Most modern
     trusses are made of structural steel. Truss bridges can be found in many different
     <topic-link name="hlp_standard_truss">configurations,</topic-link> but virtually all have the same basic
     <topic-link name="hlp_component_parts">component parts</topic-link>.
   </div>
   <div class="p">
-    There are many other types of bridges. These include beam bridges, arches, suspension bridges, and cable-stayed
-    bridges.
+    There are many other types of bridges: beam bridges, arches, suspension bridges, and cable-stayed bridges.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_try_new_configuration">
@@ -5025,82 +5073,82 @@
     >
   </div>
   <div class="p btop">
-    Design is inherently an iterative process. To achieve a truly optimal design, you will probably need to try many
-    different truss configurations. As you might guess, however, there are
-    <span class="i">millions</span> of possible configurations, and you probably won't have time to try them all! How
-    can you find the optimum, without modeling and testing every possible truss configuration? One approach is to
-    consider alternative configurations in a very systematic way. Select a configuration, optimize its
+    Design is an iterative process. To achieve an optimal design, you will probably need to try many different truss
+    configurations. As you might guess, there are
+    <span class="i">millions</span> of possible configurations. You probably won't have time to try them all! How can
+    you find the optimum without modeling and testing every possible truss configuration? One approach is to consider
+    alternative configurations in a very systematic way. Select a configuration, optimize its
     <topic-popup name="glos_member_properties">member properties</topic-popup>, and carefully observe how changes in the
     configuration affected the cost of your design. Keep track of which changes produce reductions in cost and which do
-    not. Then use these observations to guide the selection of your next alternative configuration.
+    not. Then use these observations to guide the selection of your next configuration.
   </div>
   <h2>To find the optimum truss configuration:</h2>
   <ol>
     <li>
       Try a different <topic-popup name="glos_deck">deck</topic-popup> location. If your first design was a
       <topic-popup name="hlp_deck_truss">deck truss</topic-popup>, try the corresponding
-      <topic-popup name="hlp_through_truss">through truss</topic-popup> configuration, and vice versa.
+      <topic-popup name="hlp_through_truss">through truss</topic-popup> and vice versa.
     </li>
     <li>
       Try a different <topic-link name="hlp_standard_truss">standard truss configuration</topic-link>. For example, if
       your first design was a Pratt truss, try a Howe or Warren configuration.
     </li>
     <li>
-      Try reducing the length of the <topic-popup name="glos_compression">compression</topic-popup>
+      Try reducing the lengths of <topic-popup name="glos_compression">compression</topic-popup>
       <topic-popup name="glos_members">members</topic-popup> in the truss. The
       <topic-link name="hlp_compressive_strength">compressive strength</topic-link> of a member is a function of its
-      length. As a member gets longer, its compressive strength decreases substantially--it has much less resistance to
+      length. As a member gets longer, its compressive strength decreases substantially. It has much less resistance to
       <topic-popup name="glos_buckling">buckling</topic-popup>. For this reason, the cost of a truss design can
       sometimes be reduced by shortening one or more compression members.
-      <div class="p in2">For example, let's start with a standard Warren through truss:</div>
-      <div class="p in3">
+      <div class="p">For example, let's start with a standard Warren through truss:</div>
+      <div class="p in1">
         <img
           src="img/help/warren.png"
-          alt="To find the optimum truss configuration:"
+          alt="Warren truss"
         />
       </div>
-      <div class="p in2">
+      <div class="p">
         Because the top <topic-popup name="glos_chords">chords</topic-popup> of a simple-span truss bridge are always in
         compression, we might be able to reduce the cost of the Warren truss by subdividing its top chord members, like
         this:
       </div>
-      <div class="p in3">
+      <div class="p in1">
         <img
           src="img/help/warren_c.png"
-          alt="To find the optimum truss configuration:"
+          alt="Warren truss with divided compression members"
         />
       </div>
-      <div class="p in2">Now consider a standard Pratt through truss:</div>
-      <div class="p in3">
+      <div class="p">Now consider a standard Pratt through truss:</div>
+      <div class="p in1">
         <img
           src="img/help/pratt.png"
-          alt="To find the optimum truss configuration:"
+          alt="Pratt truss"
         />
       </div>
-      <div class="p in2">
+      <div class="p">
         In this configuration, the top chords <span class="i">and</span> the
-        <topic-popup name="glos_verticals">verticals</topic-popup> are normally in compression. Thus, we could subdivide
-        <span class="i">both</span> the top chords and the verticals, like this:
+        <topic-popup name="glos_verticals">verticals</topic-popup> are normally in compression. We could subdivide
+        <span class="i">both</span> the top chords and verticals like this:
       </div>
-      <div class="p in3">
+      <div class="p in1">
         <img
           src="img/help/pratt_c1.png"
-          alt="To find the optimum truss configuration:"
+          alt="Pratt truss with divided compression members"
         />
       </div>
-      <div class="p in2">
-        Note that, in both examples, the length of each compression member is reduced by half. This reduction in length
-        will usually allow the designer to use a substantially smaller
-        <topic-popup name="glos_member_size">member size</topic-popup> to achieve the required compressive strength.
+      <div class="p">
+        With the length of each compression member is reduced by half, the designer will usually be able to use a much
+        smaller <topic-popup name="glos_member_size">member size</topic-popup> to achieve the required compressive
+        strength.
       </div>
-      <div class="p in2">
-        Note also that, when you subdivide a member, you will always need to add additional
-        <topic-popup name="glos_joints">joints</topic-popup> and members to maintain the
-        <topic-link name="hlp_structural_stability">stability</topic-link> of the truss. To be stable, a truss generally
-        must be made up of a series of interconnected triangles.
+      <div class="p">
+        Note also that when you subdivide a member, you will always need to add additional
+        <topic-popup name="glos_joints">joints</topic-popup> and members to maintain
+        <topic-link name="hlp_structural_stability">stability</topic-link>. To be stable, a truss generally must be made
+        up of a series of interconnected triangles.
       </div>
-      <div class="p in2">
-        To subdivide a compression member in the <span class="bd-emph">Bridge Designer</span>, you must:
+      <div class="p">
+        To subdivide a compression member in the <span class="bd-emph">Bridge Designer</span>, you must normally:
       </div>
     </li>
     <li><topic-link name="hlp_delete_member">delete the compression member</topic-link> you want to subdivide,</li>
@@ -5112,7 +5160,7 @@
     <li>add additional members to ensure <topic-link name="hlp_structural_stability">stability,</topic-link> and</li>
     <li>
       <topic-link name="hlp_optimize_member_selection">optimize the member properties</topic-link> of all new members.
-      <div class="p in2">
+      <div class="p">
         Reducing the length of compression members may or may not reduce the total cost of your design, depending on
         whether the cost saving from using smaller member sizes is enough to offset the increased cost of the additional
         joints and members.
@@ -5122,80 +5170,85 @@
       Try reducing the number of joints. The <topic-link name="hlp_cost">cost of your design</topic-link> includes a
       fixed cost per joint. Thus you may be able to reduce the total cost by reducing the number of joints in your
       <topic-popup name="glos_structural_model">structural model</topic-popup>.
-      <div class="p in2">For example, consider the standard Howe Deck Truss:</div>
-      <div class="p in3">
+      <div class="p">For example, consider the standard Howe deck truss:</div>
+      <div class="p in1">
         <img
           src="img/help/dhowe.png"
-          alt="To find the optimum truss configuration:"
+          alt="Howe deck truss"
         />
       </div>
-      <div class="p in2">
+      <div class="p">
         This configuration can be improved by simply removing the joint at the midpoint of the bottom chord, like this:
       </div>
-      <div class="p in3">
+      <div class="p in1">
         <img
           src="img/help/dhowe_b.png"
-          alt="To find the optimum truss configuration:"
+          alt="Howe deck truss, bottom joint removed"
         />
       </div>
-      <div class="p in2">
+      <div class="p">
         When you <topic-link name="hlp_delete_joint">delete this joint,</topic-link> all three attached members will be
         deleted as well. You will need to add a single new member to replace the two bottom chord members you deleted.
       </div>
-      <div class="p in2">
-        This modification is often effective for <topic-popup name="glos_tension">tension</topic-popup> members (like
-        the bottom chord members in the example above), because
+      <div class="p">
+        This modification is often effective for <topic-popup name="glos_tension">tension</topic-popup> members, like
+        the bottom chord members in this example, because
         <topic-link name="hlp_tensile_strength">tensile strength</topic-link> is <span class="i">not</span> a function
-        of length. However, removing a joint from the top chord of a truss, as shown below, is less likely to be
-        effective.
+        of length. Removing a joint from the top chord of a truss, as shown below, is less likely to be effective.
       </div>
-      <div class="p in3">
+      <div class="p in1">
         <img
           src="img/help/pratt_t2.png"
           alt="To find the optimum truss configuration:"
         />
       </div>
-      <div class="p in2">
+      <div class="p">
         By deleting a top chord joint and replacing two chord members with one, you would double the length of a
-        compression member, making it <span class="i">much</span> weaker. You would need to use a substantially larger
-        member size to make this member strong enough to pass the
-        <topic-popup name="glos_load_test">load test</topic-popup>. Thus any benefit from the reduced number of joints
-        would probably be lost.
+        compression member, making it <span class="i">much</span> weaker. You would need a much larger size of steel to
+        make this member strong enough to pass the <topic-popup name="glos_load_test">load test</topic-popup>. Any
+        benefit from the reduced number of joints would probably be lost.
       </div>
     </li>
     <li>
       Try inventing your own truss configuration, or copy the configuration of an actual bridge. Here are some examples
-      of actual bridge configurations you might consider:
-      <div class="p in3">
+      of real bridge configurations you might consider:
+      <div class="p in1">
         <img
           src="img/help/alt1.png"
-          alt="To find the optimum truss configuration:"
+          alt="Alternative truss configuration, alternating diagonas"
         />
       </div>
-      <div class="p in3">
+      <div class="p in1">
         <img
           src="img/help/alt2.png"
-          alt="To find the optimum truss configuration:"
+          alt="Alternative truss configuration, X diagonals"
         />
       </div>
-      <div class="p in3">
+      <div class="p in1">
         <img
           src="img/help/alt3.png"
-          alt="To find the optimum truss configuration:"
+          alt="Alternative truss configuration, multi-panel diagonals"
         />
       </div>
-      <div class="p in3">
+      <div class="p in1">
         <img
           src="img/help/alt4.png"
-          alt="To find the optimum truss configuration:"
+          alt="Alternative truss configuration, multi-panel X diagonals"
         />
       </div>
-      <div class="p in2">
-        Recognize that each of these <topic-popup name="hlp_through_truss">through trusses</topic-popup> could also be
-        designed as a <topic-popup name="hlp_deck_truss">deck truss</topic-popup> <span class="i">.</span>
+      <div class="p">
+        While <topic-popup name="hlp_through_truss">through trusses</topic-popup> are shown, each could also be designed
+        as a <topic-popup name="hlp_deck_truss">deck truss</topic-popup> <span class="i">.</span>
       </div>
     </li>
   </ol>
+  <h2 class="btop">Notes and tips</h2>
+  <div class="p">
+    If you're confident you can place a new joint <span class="i">exactly</span> on a member to divide it, go ahead.
+    <span class="bd-emph">Bridge Designer</span> will automatically split the member at the new joint. You can verify
+    this by watching the <topic-link name="hlp_member_list">member list</topic-link>. Otherwise, use the delete and add
+    procedure above.
+  </div>
 </ng-template>
 <ng-template topic-name="hlp_undo">
   <h1>Undo button</h1>
@@ -5204,39 +5257,44 @@
       alt="Undo button"
       src="img/help/btnundo.png"
     />
-    Click the <span class="b">Undo button</span> to <topic-link name="hlp_using_undo">undo</topic-link> the most recent
+    Click the <span class="b">undo button</span> to <topic-link name="hlp_using_undo">undo</topic-link> the most recent
     change to your <topic-popup name="glos_structural_model">structural model</topic-popup>.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The Undo button is located on the <topic-link name="hlp_toolbars">Main Toolbar</topic-link>. It can also be accessed
-    from the <topic-link name="hlp_menu_bar">Edit menu</topic-link>.
+    The undo button is located on the <topic-link name="hlp_toolbars">main toolbar</topic-link>. It's also available in
+    the <topic-link name="hlp_menu_bar">edit menu</topic-link>.
   </div>
   <div class="p">
-    The Undo button works in conjunction with the <topic-popup name="hlp_redo">Redo button</topic-popup>.
+    Undo multiple changes at once by clicking the down arrow at the right and selecting a previous change.
+  </div>
+  <div class="p">
+    The undo button works in conjunction with the <topic-popup name="hlp_redo">redo button</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_using_undo">
   <h1>Using undo and redo</h1>
   <div class="p">
-    Anytime you make a mistake while creating or editing your
+    If you make a mistake while creating or editing your
     <topic-popup name="glos_structural_model">structural model</topic-popup>, you can click the
-    <topic-popup name="hlp_undo">Undo button</topic-popup> to undo the error. If you mistakenly undo a change to your
-    structural model, you can restore it using the <topic-popup name="hlp_redo">redo button</topic-popup>.
+    <topic-popup name="hlp_undo">undo button</topic-popup> to undo the error. If you mistakenly undo a change, you can
+    restore it using the <topic-popup name="hlp_redo">redo button</topic-popup>.
+  </div>
+  <div class="p">
+    Undo or redo multiple changes at once by clicking the respective down arrow and selecting a previous change.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">The following actions can be undone:</div>
   <ul>
-    <li>draw a joint</li>
-    <li>draw a member</li>
+    <li>add a joint or member</li>
     <li>move a joint</li>
-    <li>change the properties of a member</li>
-    <li>delete or erase a joint</li>
-    <li>delete or erase a member</li>
+    <li>change properties of a member</li>
+    <li>delete a joint or member</li>
+    <li>move drawing labels</li>
   </ul>
   <div class="p">Any action that can be undone can also be restored using redo.</div>
   <div class="p">
-    The <span class="bd-emph">Bridge Designer</span> allows 100 levels of undo. That is, you can undo the 100 most
+    The <span class="bd-emph">Bridge Designer</span> allows 1000 levels of undo. That is, you can undo the 1000 most
     recent changes to your structural model.
   </div>
   <div class="p">
@@ -5246,25 +5304,24 @@
     <topic-link name="hlp_undo_vs_go_back">what's the difference between go back and undo?</topic-link>
   </div>
 </ng-template>
-<ng-template topic-name="hlp_view_animation_controls">
-  <h1>View animation controls button</h1>
+<ng-template topic-name="hlp_view_animation_settings">
+  <h1>View animation settings button</h1>
   <div class="p">
     <img
       height="24"
       src="img/help/animationctls.png"
       width="24"
-      alt="View Design Tools button"
+      alt="View animation settings button"
     />
-    Click the <span class="b">View Animation Controls button</span> in the
-    <topic-link name="hlp_menu_bar">View menu</topic-link> to display or hide the
-    <topic-link name="hlp_animation_controls">Animation Controls</topic-link>. This button functions as a
-    &quot;toggle.&quot; If the Animation Controls is currently visible, clicking the button will hide it. If the
-    controls are hidden, clicking the button will display them.
+    Show or hide the animation settings by clicking the pale gear in the
+    <topic-link name="hlp_animation_controls">animation controls</topic-link> while the
+    <topic-link name="hlp_load_test3">load test animation</topic-link> is in progress. Alternately, click the
+    <span class="b">animation settings button</span> in the <topic-link name="hlp_menu_bar">view menu</topic-link>.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    You won't be able to show the Animation Controls while the
-    <topic-link name="hlp_drawing_board_button">Drawing Board</topic-link> is in use.
+    You won't be able to show or the animation settings while the
+    <topic-link name="hlp_drawing_board_button">drawing board</topic-link> is in use.
   </div>
   <div class="p"></div>
 </ng-template>
@@ -5275,54 +5332,44 @@
       alt="Grid Resolution buttons"
       src="img/help/rez.png"
     />
-    Use the <span class="b">Grid Resolution buttons</span> to set the resolution of the
+    Use the <span class="b">grid resolution buttons</span> to set the resolution of the
     <topic-popup name="glos_drawing_grid">drawing grid</topic-popup>.
   </div>
   <div class="p">
-    The <topic-link name="hlp_drawing_board">Drawing Board</topic-link> is covered by a grid. (You can't see it, but
-    it's there.) When you draw or move <topic-popup name="glos_joints">joints</topic-popup>, your mouse
-    &quot;snaps&quot; to the grid line intersections, which are called
-    <topic-popup name="glos_snap_points">snap points</topic-popup>. Joints can only be drawn at the snap points.
+    The <topic-link name="hlp_drawing_board">drawing board</topic-link> is covered by an invisible grid. When you draw
+    or move <topic-popup name="glos_joints">joints</topic-popup>, the mouse &quot;snaps&quot; to grid intersections.
   </div>
   <div class="p">
-    The Grid Resolution buttons are used to set the drawing grid to low, medium, or high resolution. At the
-    low-resolution setting, you can place joints at 1.0 meter intervals. At the medium- and high-resolution settings,
-    you can place joints at 0.5 meter and 0.25 meter intervals, respectively.
-  </div>
-  <div class="p">
-    These three buttons work like "radio buttons." Only one of the three can be depressed at any given time When you
-    click one, it remains depressed until you click either of the other two.
+    Select low, medium, or high resolution by pressing the respective button. At the low-resolution setting, the grid
+    has 1.0 meter spacing. Medium- and high-resolution are 0.5 meter and 0.25 meters respectively.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The Grid Resolution buttons are located on the <topic-link name="hlp_toolbars">Display Toolbar</topic-link>. They
-    can also be accessed from the <topic-link name="hlp_menu_bar">View menu</topic-link>.
+    The grid resolution buttons are located on the <topic-link name="hlp_toolbars">display toolbar</topic-link>. They're
+    also available in the <topic-link name="hlp_menu_bar">view menu</topic-link> and
+    <topic-link name="hlp_context_widgets">context menu</topic-link>.
   </div>
   <div class="p">
-    When you click any of the Grid Resolution buttons, the <topic-popup name="hlp_rulers">Rulers</topic-popup> on the
-    Drawing Board will be updated to reflect the new grid resolution. For example, at low grid resolution, the rulers
-    will only display markings at 1.0 meter intervals. At high grid resolution, markings will be displayed at 0.25 meter
-    intervals.
+    When you click a grid resolution button, tick marks on <topic-popup name="hlp_rulers">rulers</topic-popup> of the
+    drawing are updated to show the corresponding grid spacing.
   </div>
   <div class="p">
-    It is generally best to <span class="i">create</span> your
-    <topic-popup name="glos_structural_model">structural model</topic-popup> using the low-resolution grid, because it
-    is easier to control the placement of joints in this mode. Once you begin <span class="i">optimizing</span> your
-    design, you might want to switch to the medium- or high-resolution grid setting to refine the shape of your
-    structural model more precisely.
+    It's often best to <span class="i">create</span> your
+    <topic-popup name="glos_structural_model">structural model</topic-popup> using the low-resolution grid. It's easier
+    to control joint and member placement in this mode. When you begin <span class="i">optimizing</span> your design,
+    you might switch to the medium- or high-resolution to refine the shape of your structural model more precisely.
   </div>
   <div class="p">
-    When editing your structural model, you can use the keyboard arrows to
-    <topic-link name="hlp_move_joint">move joints</topic-link> at 0.25 meter intervals--regardless of the current grid
-    resolution setting. Thus you can take advantage of the high-resolution grid, even without using the Grid Resolution
-    buttons.
+    You can always select a joint and then use the keyboard arrows to
+    <topic-link name="hlp_move_joint">move it</topic-link> in 0.25 meter increments. This allows small adjustments
+    regardless of the current grid resolution setting.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_view_member_list">
-  <h1>Member list hide or restore</h1>
+  <h1>Member list hide and restore</h1>
   <div class="p">
-    The <topic-link name="hlp_member_list">member list</topic-link> can be hidden to provide more information for
-    drafting your bridge design. Use the close button
+    The <topic-link name="hlp_member_list">member list</topic-link> can be hidden to provide more space for drawing your
+    bridge design. Use the close button
     <img
       alt="Close button"
       src="img/help/close.png"
@@ -5336,7 +5383,7 @@
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The view member list menu item
+    The view menu's member list item
     <img
       alt="View member list menu item"
       src="img/help/btnmlist.png"
@@ -5351,16 +5398,14 @@
       alt="View member numbers button"
       src="img/help/btnmnum.png"
     />
-    Click the <span class="b">View Member Numbers button</span> to display or hide the
+    Click the <span class="b">view member numbers button</span> to display or hide the
     <topic-popup name="glos_member_numbers">member numbers</topic-popup> on the
-    <topic-link name="hlp_drawing_board">Drawing Board</topic-link>. This button functions as a &quot;toggle.&quot; If
-    the member numbers are currently visible, clicking the button will hide them. If the member numbers are hidden,
-    clicking the button will display them.
+    <topic-link name="hlp_drawing_board">drawing board</topic-link>.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The View Member Numbers button is located on the <topic-link name="hlp_toolbars">Display Toolbar</topic-link>. It
-    can also be accessed from the <topic-link name="hlp_menu_bar">View menu</topic-link>.
+    The view member numbers button is located on the <topic-link name="hlp_toolbars">display toolbar</topic-link>. It's
+    also available in the <topic-link name="hlp_menu_bar">view menu</topic-link>.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_view_rulers">
@@ -5370,21 +5415,16 @@
       alt="View rulers button"
       src="img/help/btnruler.png"
     />
-    Click the <span class="b">View Rulers button</span> to display or hide the
-    <topic-link name="hlp_rulers">rulers</topic-link>. This button functions as a &quot;toggle.&quot; If the rulers are
-    currently visible, clicking the button will hide them. If the rulers are hidden, clicking the button will display
-    them.
+    Click the <span class="b">view rulers button</span> to display or hide the
+    <topic-link name="hlp_rulers">rulers</topic-link>. Hiding them increases space available to draw your bridge.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The View Rulers button is located on the <topic-link name="hlp_toolbars">Display Toolbar</topic-link>. It can also
-    be accessed from the <topic-link name="hlp_menu_bar">View menu</topic-link>.
+    The view rulers button is available in the <topic-link name="hlp_menu_bar">view menu</topic-link>.
   </div>
-  <div class="p">If you hide the rulers, the Drawing Board becomes slightly larger.</div>
 </ng-template>
 <ng-template topic-name="hlp_view_symmetry">
   <h1>View symmetry guides button</h1>
-  <div class="p"></div>
   <table
     cellspacing="0"
     cellpadding="4"
@@ -5393,22 +5433,18 @@
       <td>
         <div class="p">
           <img
-            alt="View Symmetry Guides button"
+            alt="View symmetry guides button"
             src="img/help/symm.png"
           />
-          Click the <span class="b">View Symmetry Guides button</span> to display or hide a set of two vertical and one
-          horizontal guide lines on the <topic-link name="hlp_drawing_board">Drawing Board</topic-link>. Use these
-          guides when drawing or moving <topic-popup name="glos_joints">joints</topic-popup>, to ensure that your
+          Click the <span class="b">view symmetry guides button</span> to display or hide a set of two vertical and one
+          horizontal guide lines on the <topic-link name="hlp_drawing_board">drawing board</topic-link>. Use these when
+          drawing or moving <topic-popup name="glos_joints">joints</topic-popup> to ensure that your
           <topic-popup name="glos_structural_model">structural model</topic-popup> is
-          <topic-popup name="glos_symmetrical">symmetrical</topic-popup>. The guides can be moved by dragging handles
-          located at the left side of the horizontal guide and at the bottom of one vertical guide. If the horizontal
-          and left-hand vertical guides are positioned so that they intersect over a particular joint, then the
-          intersection of the horizontal and right-hand vertical guides marks the location of a symmetrical joint on the
-          opposite side of the truss.
+          <topic-popup name="glos_symmetrical">symmetrical</topic-popup>.
         </div>
         <div class="p">
-          The View Symmetry Guides button functions as a &quot;toggle.&quot; If the guides are visible, clicking the
-          button will hide them. If the guides are hidden, clicking the button will display them.
+          Move them by dragging the handles located at the left side and bottom of the drawing. When they're positioned
+          over any joint, the opposite intersection shows the symmetrical joint location on the other side of the truss.
         </div>
       </td>
       <td><img src="img/help/symguides.png" /></td>
@@ -5416,18 +5452,13 @@
   </table>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The View Symmetry Guides button is located on the <topic-link name="hlp_toolbars">Display Toolbar</topic-link>. It
-    can also be accessed from the <topic-link name="hlp_menu_bar">View menu</topic-link>.
-  </div>
-  <div class="p">
-    The View Symmetry Guides button is only available when the
-    <topic-popup name="hlp_joint_tool">Joint tool</topic-popup> or the
-    <topic-popup name="hlp_select_tool">Select tool</topic-popup> is active.
+    The view symmetry guides button is located on the <topic-link name="hlp_toolbars">display toolbar</topic-link>. It's
+    also available in the <topic-link name="hlp_menu_bar">view menu</topic-link>.
   </div>
   <div class="p">
     Several site configurations have a <topic-popup name="glos_pier">pier</topic-popup> that is
-    <span class="i">not</span> located along the centerline of the bridge In these cases, an optimal structural design
-    is not likely to be symmetrical.
+    <span class="i">not</span> located along the centerline of the bridge. In these cases, an optimal design probably
+    won't be symmetrical.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_view_template">
@@ -5437,24 +5468,19 @@
       alt="View template button"
       src="img/help/btntempl.png"
     />
-    Click the <span class="b">View template button</span> to display or hide the current
+    Click the <span class="b">view template button</span> to hide or display the current
     <topic-popup name="glos_template">template</topic-popup> on the
-    <topic-link name="hlp_drawing_board">Drawing Board</topic-link>. This button functions as a &quot;toggle.&quot; If
-    the template is visible, clicking the button will hide it. If the template is hidden, clicking the button will
-    display it.
+    <topic-link name="hlp_drawing_board">drawing board</topic-link>.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    The View Template button is located on the <topic-link name="hlp_toolbars">Display Toolbar</topic-link>. It can also
-    be accessed from the <topic-link name="hlp_menu_bar">View menu</topic-link>.
+    The view template button is located on the <topic-link name="hlp_toolbars">display toolbar</topic-link>. It's also
+    available in the <topic-link name="hlp_menu_bar">view menu</topic-link>.
   </div>
-  <div class="p">
-    The View Template button is only enabled when a template is loaded. See
-    <topic-link name="hlp_load_a_template">Load and Display a Template</topic-link> for more information.
-  </div>
+  <div class="p">Whenever a new template is loaded, the view template button is toggled to display it.</div>
   <div class="p">
     A template is always displayed <span class="i">behind</span> the
-    <topic-popup name="glos_structural_model">structural model</topic-popup> on the Drawing Board.
+    <topic-popup name="glos_structural_model">structural model</topic-popup> on the drawing board.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_view_title">
@@ -5465,13 +5491,12 @@
       src="img/help/btntitle.png"
     />
     Click the <span class="b">view title block</span> menu entry to hide or display the
-    <topic-link name="hlp_titleblock">title block</topic-link>. This button functions as a &quot;toggle.&quot; If the
-    title block is currently visible, clicking will hide it and vice versa.
+    <topic-link name="hlp_titleblock">title block</topic-link>.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    Hiding the title block may be useful if your computer has a small screen. It allows more space to edit your
-    <topic-popup name="glos_structural_model">structural model</topic-popup>.
+    If your computer has a small screen, the title block can interfere with drawing your bridge. Hiding it can fix this
+    problem.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_view_tools">
@@ -5481,63 +5506,59 @@
       height="24"
       src="img/help/tools.png"
       width="24"
-      alt="View Design Tools button"
+      alt="View design tools button"
     />
-    Click the <span class="b">View Design Tools button</span> in the
-    <topic-link name="hlp_menu_bar">View menu</topic-link> to display or hide the
-    <topic-link name="hlp_design_tools">Design Tools Palette</topic-link>. This button functions as a
-    &quot;toggle.&quot; If the Design Tools Palette is currently visible, clicking the button will hide it. If the
-    palette is hidden, clicking the button will display it.
+    Click the <span class="b">view design tools button</span> in the
+    <topic-link name="hlp_menu_bar">view menu</topic-link> to display or hide the
+    <topic-link name="hlp_design_tools">design tools palette</topic-link>.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    You won't be able to show the Design Tools Palette while the
-    <topic-link name="hlp_load_test3">Load Test Animation</topic-link> is in progress.
+    You won't be able to show or hide the design tools palette while the
+    <topic-link name="hlp_load_test3">load test animation</topic-link> is in progress.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_design_iteration">
   <h1>What is a design iteration?</h1>
   <div class="p">
     Anytime you make one or more changes to your
-    <topic-popup name="glos_structural_model">structural model</topic-popup>, then run the
+    <topic-popup name="glos_structural_model">structural model</topic-popup> then run the
     <topic-popup name="glos_load_test">load test</topic-popup>, you have performed one
-    <span class="b">design iteration</span>. The <span class="bd-emph">Bridge Designer</span> saves all design
-    iterations created during the current <topic-popup name="glos_session">session</topic-popup> and provides the
-    capability for you to revert to previous iterations at any time during the session.
+    <span class="b">design iteration</span>. The <span class="bd-emph">Bridge Designer</span> saves iterations created
+    during the current <topic-popup name="glos_session">session</topic-popup> and allows switching among them at any
+    time during the session.
   </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    To revert to a previous design iteration, click the
-    <topic-popup name="hlp_go_back">Go back button</topic-popup> or the
-    <topic-popup name="hlp_go_to">Go To Iteration button</topic-popup>.
+    To switch to a different design iteration, click the
+    <topic-popup name="hlp_go_back">go back button</topic-popup>,
+    <topic-popup name="hlp_go_forward">go forward button</topic-popup>, or the
+    <topic-popup name="hlp_go_to">go to iteration button</topic-popup>.
   </div>
   <div class="p">
     The current design iteration number is always displayed on the
-    <topic-link name="hlp_toolbars">Main Toolbar</topic-link>. The number is incremented at the
-    <span class="i">start</span> of each new iteration--whenever you make the <span class="i">first</span> change to
-    your structural model after a load test.
+    <topic-link name="hlp_toolbars">main toolbar</topic-link>. The number is incremented at the
+    <span class="i">start</span> of each new iteration, when you make the first change to your structural model after a
+    load test.
   </div>
   <div class="p">
-    Design iteration numbers are never duplicated, and the design iterations themselves are never overwritten, even when
-    you revert to a previous iteration. For example, suppose you are working on design iteration 10
-    <span class="i">,</span> then decide to go back to to iteration 6. The design iteration number displayed on the Main
-    Toolbar will change from 10 to 6 accordingly. But as soon as you make <span class="i">any</span> change to the
-    structural model, the design iteration number will update to 11, since you now have initiated a
-    <span class="i">new</span> iteration. In this way, all of your previous iterations--6, 7, 8, 9, and 10--are
-    preserved for future use.
+    Design iteration numbers are never duplicated, and the associated designs never change, even when you revert to a
+    previous iteration. For example, suppose you are working on iteration 10, then decide to go back to 6. The iteration
+    number displayed on the toolbar will change from 10 to 6. But, as soon as you make a change to the structural model,
+    the iteration number will update to 11. You have initiated a new iteration. Iterations 1 through 10 remain
+    unchanged.
   </div>
-  <div class="p">You can see how design iterations are related using the <span class="b">Tree View</span> tab.</div>
+  <div class="p">You can see how design iterations are related using the <span class="b">tree view</span> tab.</div>
   <div class="p">
-    Reverting to a previous design iteration can be particularly useful when you are optimizing your design. The
-    optimization process is never linear; it is always marked by dead ends and unexpected outcomes. Some of your
-    attempts at optimization will be successful and others will not. After an unsuccessful attempt, you can simply
-    revert to a previous successful design iteration and try again.
+    Reverting to a previous design iteration can be particularly useful when optimizing your design. The optimization
+    process is seldom linear. There are always dead ends and unexpected outcomes. Some of your attempts will be
+    successful. Others will not. After an unsuccessful attempt, you can simply revert to a previous good iteration and
+    try again.
   </div>
   <div class="p">
-    Previous design iterations are only preserved until the end of the current session. When you start a new design or
-    exit the <span class="bd-emph">Bridge Designer</span>, previous iterations are deleted. Thus the
-    <topic-popup name="hlp_go_to">Design Iteration Browser</topic-popup> can <span class="i">only</span> display
-    iterations created during the current session.
+    Only the final design iteration is saved in bridge design files. When you load a file, the
+    <topic-popup name="hlp_go_to">design iteration browser</topic-popup> shows only that iteration. The forward and back
+    buttons are disabled.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_whats_new">
@@ -5556,7 +5577,7 @@
     millions of users since 2002, the <span class="bd-emph">Bridge Designer</span> is one of the most successful
     educational software technologies in the world. The new edition is an update designed to enable Bridge Designer
     learning for anyone with access to a web browser. Get started right now with your
-    <topic-link name="hlp_purposes">introductory engineering experience</topic-link> working alone, on a team team, or
+    <topic-link name="hlp_purposes">introductory engineering experience</topic-link>, working alone, on a team team, or
     with a teacher.
   </div>
   <h2>New Features</h2>
@@ -5564,33 +5585,33 @@
   <ul>
     <li>
       <span class="b">No installation required! </span> <span class="bd-emph">Bridge Designer</span> now works with
-      recent versions of most browsers. Just hit the web site. Chrome, Edge, or Firefox that have been updated during
-      2024 or later are recommended.
+      recent versions of most browsers. Just hit the web site. Versions of Chrome, Edge, or Firefox from 2024 or later
+      are recommended.
     </li>
     <li>
       <span class="b">Export a 3D model of your design!</span> In addition to the beautiful blueprint-style printed
-      version of your bridge that has long been part of <span class="bd-emph">Bridge Designer</span>, it can now export
+      version of your bridge that has long been part of <span class="bd-emph">Bridge Designer</span>, you can now export
       OBJ files suitable for your favorite 3d printer.
     </li>
     <li>
       <span class="b">Member analysis report.</span> An upgrade of the old member details tab, this interactive explorer
       supplements the members list with dynamically updated engineering information about member cross-sections,
-      materials, lengths, costs, forces, and strength. You can dig deep into what makes your bridge work.
+      materials, lengths, costs, forces, and strength. Use it to dig deep into what makes your bridge work.
     </li>
     <li>
       Late updates of previous <span class="bd-emph">Bridge Designer</span> versions are still there:
       <ul>
         <li>
           <span class="b">3D walk-through of completed bridges.</span> Walk and fly under, around, and through the
-          animation of your completed bridge to observe its performance while the truck load drives over the deck.
+          animation of your completed bridge and observe its performance while the truck load drives over the deck.
         </li>
         <li>
-          <span class="b">Deep undo.</span> The old limit of 5 is now 100. Undo and redo
-          <span class="i">your last hundred edits</span> for the current design iteration.
+          <span class="b">Deep undo.</span> The old limit of 5 is now 1000. Undo and redo
+          <span class="i">your last thousand edits</span> for the current design iteration.
         </li>
         <li>
           <span class="b">Iterations tree view.</span> Track your design iterations with a view that shows the history
-          of each one. The chronological list is also still available.
+          of each one. The chronological list is still there, too.
         </li>
         <li>
           <span class="b">Click and drag member list selections.</span> Click and drag to select a group of members in
@@ -5600,29 +5621,28 @@
     </li>
   </ul>
 </ng-template>
+<!-- edited -->
 <ng-template topic-name="hlp_undo_vs_go_back">
   <h1>What's the difference between undo and go back?</h1>
   <div class="p">
-    At first glance, the <topic-popup name="hlp_go_back">Go back button</topic-popup> and the
-    <topic-popup name="hlp_undo">Undo button</topic-popup> might appear to be performing the same function. In practice,
-    the two functions are closely related, but there are important distinctions between the two:
+    At first glance, the <topic-popup name="hlp_go_back">go back</topic-popup> and
+    <topic-popup name="hlp_undo">undo</topic-popup> buttons might appear to do the same thing. Not really.
   </div>
   <ul>
     <li>
-      Use Undo to correct any mistakes you make while working on the <span class="i">current</span>
-      <topic-link name="hlp_design_iteration">design iteration</topic-link>. Use Go Back to revert to a
-      <span class="i">previous</span> design iteration. The Go Back function is normally used as part of the
-      optimization process, rather than to correct drawing or editing errors.
+      Use undo to correct mistakes while working on the current
+      <topic-link name="hlp_design_iteration">design iteration</topic-link>. Use go back to revert to a
+      <span class="i">previous</span> design iteration. Go back is normally used to optimize your bridge.
     </li>
     <li>
-      Undo is only available for the 100 most recent changes to your
-      <topic-popup name="glos_structural_model">structural model</topic-popup>, but you can Go Back to
+      Undo is only available for the 1000 most recent changes to your
+      <topic-popup name="glos_structural_model">structural model</topic-popup>, but you can go back to
       <span class="i">any</span> previous design iteration created during the current
       <topic-popup name="glos_session">session</topic-popup>.
     </li>
     <li>
-      Because Undo only applies to the current design iteration, the Undo function is disabled whenever you Go Back to a
-      previous iteration. Undo is enabled again as soon as you make any new changes to the structural model.
+      Because undo applies only to the current design iteration, it is disabled whenever you go back to a previous
+      iteration. Undo is enabled again as soon as you make any new changes to the structural model.
     </li>
   </ul>
 </ng-template>
@@ -5640,14 +5660,6 @@
     bridge <topic-popup name="glos_span">span</topic-popup>. The abutment also acts as a retaining wall, holding back
     the earth embankments at the approaches to the bridge. An abutment is part of the
     <topic-popup name="glos_substructure">substructure</topic-popup> of a bridge.
-  </div>
-</ng-template>
-<ng-template topic-name="glos_anchorages">
-  <h1>Anchorages</h1>
-  <div class="p">
-    An anchorage is a foundation structure to which the cables of a suspension bridge are connected. Because the cables
-    support most of the weight of a suspension bridge, anchorages are generally very massive and often extend far below
-    the surface of the earth. In the Bridge Designer, anchorages are represented by pinned supports.
   </div>
 </ng-template>
 <ng-template topic-name="glos_arch_abutments">
@@ -5677,17 +5689,17 @@
 <ng-template topic-name="glos_astm">
   <h1>ASTM</h1>
   <div class="p">
-    The American Society for Testing Materials (ASTM) is a not-for-profit organization, through which manufacturers,
-    consumers, researchers, and government officials write standards for the production, testing, and use of building
-    materials. ASTM standards ensure that all materials have uniformly understood engineering properties and an
+    The American Society for Testing Materials (ASTM) is a not-for-profit organization of manufacturers, consumers,
+    researchers, and government officials. Its purpose is to write standards for production, testing, and use of
+    building materials. ASTM standards ensure that all materials have uniformly understood engineering properties and an
     appropriate level of quality.
   </div>
 </ng-template>
 <ng-template topic-name="glos_bearing">
   <h1>Bearing</h1>
   <div class="p">
-    A bearing is another word for a support. Supports are <topic-popup name="glos_joints">joints</topic-popup> at which
-    a structure is attached to its foundation.
+    Bearing is another word for a support. Supports are <topic-popup name="glos_joints">joints</topic-popup> where a
+    structure is attached to its foundation.
   </div>
 </ng-template>
 <ng-template topic-name="glos_bridge_design_file">
@@ -5700,7 +5712,7 @@
 <ng-template topic-name="glos_buckling">
   <h1>Buckling</h1>
   <div class="p">
-    Buckling is the principal failure mode of a member that is loaded in
+    Buckling is the principal failure mode of a member loaded in
     <topic-popup name="glos_compression">compression</topic-popup>. When a member buckles, it bends sideways as it is
     compressed axially. The failure is usually sudden and catastrophic. Members that are long and slender are
     particularly susceptible to buckling.
@@ -5709,9 +5721,9 @@
 <ng-template topic-name="glos_cable_anchorages">
   <h1>Cable anchorages</h1>
   <div class="p">
-    A cable anchorage is a foundation structure to which the cables of a suspension bridge are connected. Because the
-    cables support most of the weight of a suspension bridge, anchorages are generally very massive and often extend far
-    below the surface of the earth. In the Bridge Designer, cable anchorages are represented by pinned supports.
+    A cable anchorage is a foundation structure where the cables of a suspension bridge are connected. Because the
+    cables support most of the weight of a suspension bridge, anchorages are massive and often extend far below the
+    surface of the earth. In the Bridge Designer, cable anchorages are represented by pinned supports.
   </div>
 </ng-template>
 <ng-template topic-name="glos_chords">
@@ -5725,7 +5737,7 @@
 <ng-template topic-name="glos_client">
   <h1>Client</h1>
   <div class="p">
-    A client is a person or organization that hires a professional (like an engineer, a doctor, or a lawyer) to perform
+    A client is a person or organization that hires a professional, like an engineer, a doctor, or a lawyer, to perform
     a specialized service.
   </div>
 </ng-template>
@@ -5739,17 +5751,17 @@
 <ng-template topic-name="glos_concrete">
   <h1>Concrete</h1>
   <div class="p">
-    Concrete is a mixture of portland cement, sand, gravel, and water. When concrete hardens, it forms a solid,
-    rock-like substance that can be used to build many kinds of structures.
+    Concrete is a mixture of portland cement, sand, gravel, water, and perhaps special additives. When concrete hardens,
+    it forms a solid, rock-like substance used to build many kinds of structures.
   </div>
 </ng-template>
 <ng-template topic-name="glos_connections">
   <h1>Connections</h1>
   <div class="p">
     A connection is an assembly of steel plates, bolts, and/or welds that attach two or more
-    <topic-popup name="glos_members">members</topic-popup> together in an actual structure. Connections in a real
-    structure are represented by <topic-popup name="glos_joints">joints</topic-popup> in a
-    <topic-popup name="glos_structural_model">structural model</topic-popup>.
+    <topic-popup name="glos_members">members</topic-popup> together in a structure. Connections in a real structure are
+    represented by <topic-popup name="glos_joints">joints</topic-popup> in <span class="bd-emph">Bridge Designer </span>
+    <topic-popup name="glos_structural_model">structural models</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_cut">
@@ -5761,22 +5773,22 @@
 <ng-template topic-name="glos_deck">
   <h1>Deck</h1>
   <div class="p">
-    The deck is the floor of a bridge. It directly supports the vehicles and pedestrians that cross the bridge. Bridge
+    The deck is the floor of a bridge. It directly supports the vehicles and pedestrians crossing the bridge. Bridge
     decks are usually made of reinforced <topic-popup name="glos_concrete">concrete</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_deck_truss">
   <h1>Deck truss</h1>
   <div class="p">
-    A <topic-popup name="glos_deck">deck</topic-popup> truss is a truss with its deck is located at the top chord.
-    Vehicles crossing deck trusses are supported above the trusses.
+    A <topic-popup name="glos_deck">deck</topic-popup> truss has its deck located at the top chord. Vehicles are
+    supported above the trusses as they cross the bridge.
   </div>
 </ng-template>
 <ng-template topic-name="glos_diagonals">
   <h1>Diagonals</h1>
   <div class="p">
-    Diagonals are truss <topic-popup name="glos_members">members</topic-popup> that are oriented diagonally. Usually
-    they connect the top and bottom <topic-popup name="glos_chords">chords</topic-popup> together.
+    Diagonals are truss <topic-popup name="glos_members">members</topic-popup> that are oriented diagonally. They
+    usually connect top and bottom <topic-popup name="glos_chords">chords</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_displacement">
@@ -5789,21 +5801,21 @@
 <ng-template topic-name="glos_drawing_grid">
   <h1>Drawing grid</h1>
   <div class="p">
-    The drawing grid is like a piece of graph paper on your Drawing Board. The grid is made up of two sets of parallel
-    lines, one horizontal and one vertical. The lines are spaced 0.25, 0.5, or 1.0 meters apart, depending on the
-    current grid resolution setting. The intersections of the grid lines are called
-    <topic-popup name="glos_snap_points">snap points</topic-popup>. The grid lines are not visible, but their locations
-    are indicated by the marks on the vertical and horizontal rulers located on the left and bottom edges of the Drawing
-    Board.
+    The drawing grid is an invisible set of <topic-popup name="glos_snap_points">snap points</topic-popup> on the
+    drawing board. They lie at the intersections of two sets of parallel lines, one horizontal and one vertical. The
+    lines are spaced 0.25, 0.5, or 1.0 meters apart, depending on the current
+    <topic-popup name="hlp_grid_resolution">grid resolution</topic-popup>.
+    <topic-popup name="glos_joints">Joints</topic-popup> can be located only at snap points. Grid locations are
+    indicated by ticks on the vertical and horizontal rulers located on the left and bottom edges of the drawing board.
   </div>
 </ng-template>
 <ng-template topic-name="glos_dynamic_load_allowance">
   <h1>Dynamic load allowance</h1>
   <div class="p">
-    The Dynamic Load Allowance is a factor used in bridge design to represent the effect of moving
-    <topic-popup name="glos_loads">loads</topic-popup>. The Bridge Designer uses a Dynamic Load Allowance of 33%. This
-    means that a moving truck causes 33% more force in the bridge
-    <topic-popup name="glos_members">members</topic-popup> than a stationary truck would cause.
+    The dynamic load allowance is a factor used in bridge design to represent the effect of moving
+    <topic-popup name="glos_loads">loads</topic-popup>. The <span class="bd-emph">Bridge Designer</span> uses a dynamic
+    load allowance of 33%. This means that a moving truck causes 33% more force in the bridge
+    <topic-popup name="glos_members">members</topic-popup> than a stationary truck.
   </div>
 </ng-template>
 <ng-template topic-name="glos_floor_beams">
@@ -5819,30 +5831,31 @@
   <h1>Footing</h1>
   <div class="p">
     A footing is the base of an <topic-popup name="glos_abutment">abutment</topic-popup> or
-    <topic-popup name="glos_pier">pier</topic-popup>--the portion a foundation that rests directly on the soil and
-    transmits load from the structure to the soil.
+    <topic-popup name="glos_pier">pier</topic-popup>, a foundation that rests directly on the soil and transmits load
+    from the structure to the soil.
   </div>
 </ng-template>
 <ng-template topic-name="glos_forces">
   <h1>Forces</h1>
   <div class="p">
     A force is a push or a pull. Weight is a common example of a force. Force is measured in pounds in the US system of
-    measurement or newtons in the SI system. In the <span class="bd-emph">Bridge Designer</span>, all forces are
-    reported in kilonewtons (kN).
+    measurement or newtons in the SI system. In the <span class="bd-emph">Bridge Designer</span>, all forces are in
+    kilonewtons (kN).
   </div>
 </ng-template>
 <ng-template topic-name="glos_joints">
   <h1>Joints</h1>
   <div class="p">
-    A joint is a point at which the ends of two or more <topic-popup name="glos_members">members</topic-popup> are
-    connected together. In a truss, a joint is assumed to act like a frictionless pin or hinge; it does not prevent the
-    connected members from rotating with respect to each other.
+    A joint is a point where the ends of two or more <topic-popup name="glos_members">members</topic-popup> are
+    connected. In a truss, a joint is assumed to act like a frictionless pin or hinge. It allows the connected members
+    to rotate.
   </div>
 </ng-template>
 <ng-template topic-name="glos_kilonewton">
   <h1>Kilonewton</h1>
   <div class="p">
-    A kilonewton (kN) is a measurement of force in the SI (metric) system. A kilonewton is 1000 newtons.
+    A kilonewton (kN) is a measurement of force in the SI (metric) system. A kilonewton is 1000 newtons. It's equivalent
+    to about 225 pounds.
   </div>
 </ng-template>
 <ng-template topic-name="glos_kn">
@@ -5855,25 +5868,25 @@
 <ng-template topic-name="glos_load_factors">
   <h1>Load factors</h1>
   <div class="p">
-    A load factor is a number (normally greater than 1) which is multiplied by a design load in order to represent an
-    extreme loading experienced by a structure. For example, the load factor 1.75 is multiplied by the standard
-    <topic-popup name="glos_aashto">AASHTO</topic-popup> H25 Truck Loading to represent an extremely heavy truck. In
-    fact, it represents the heaviest truck that might reasonably be expected to cross the bridge in its lifetime.
+    A load factor is a number greater than one multiplied by a design load in order to represent an extreme loading of a
+    structure. For example, the load factor 1.75 is multiplied by the standard
+    <topic-popup name="glos_aashto">AASHTO</topic-popup> H25 Truck Loading to represent an extremely heavy truck. This
+    represents the heaviest truck that might reasonably be expected to cross the bridge in its lifetime.
   </div>
   <div class="p">
-    Different kinds of <topic-popup name="glos_loads">loads</topic-popup> have different load factors, because some
-    loads are more unpredictable than others. For example, the weight of the bridge is more predictable than the weight
-    of a heavy truck, so the load factor for bridge weight is much lower.
+    Different kinds of <topic-popup name="glos_loads">loads</topic-popup> have different load factors because some loads
+    are more unpredictable than others. For example, the weight of the bridge is more predictable than the weight of a
+    heavy truck, so the load factor for bridge weight is much lower.
   </div>
 </ng-template>
 <ng-template topic-name="glos_load_test">
   <h1>Load test</h1>
   <div class="p">
-    In the Bridge Designer, the load test is a simulated test of how well your design would perform if it were built and
-    placed into service. In the load test, your bridge is subjected to its own self-weight and to the weight of a
-    standard <topic-popup name="glos_aashto">AASHTO</topic-popup> H25 truck loading, and every member in the
-    <topic-popup name="glos_structural_model">structural model</topic-popup> is checked for structural
-    <topic-popup name="glos_safe">safety</topic-popup>.
+    In the <span class="bd-emph">Bridge Designer</span>, the load test is a simulation that shows how well your design
+    would perform if it were built and placed into service. In the load test, your bridge is subjected to its own
+    self-weight and to the weight of a standard <topic-popup name="glos_aashto">AASHTO</topic-popup> H25 truck loading.
+    Every member in the <topic-popup name="glos_structural_model">structural model</topic-popup> is checked for
+    structural <topic-popup name="glos_safe">safety</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_loads">
@@ -5881,7 +5894,7 @@
   <div class="p">
     Loads are <topic-popup name="glos_forces">forces</topic-popup> applied to a structure. On a highway bridge, the
     loads include the weight of vehicles that cross the bridge, the weight of the bridge itself, and, in some cases, the
-    weight of snow and ice on the structure, and the forces caused by high winds and earthquakes.
+    weight of snow and ice on the structure and the forces caused by high winds and earthquakes.
   </div>
 </ng-template>
 <ng-template topic-name="glos_mass_density">
@@ -5906,43 +5919,42 @@
   <div class="p">
     Every member in your <topic-popup name="glos_structural_model">structural model</topic-popup> has a member number.
     The numbers are assigned in the order that you create the <topic-popup name="glos_members">members</topic-popup>.
-    They have no other physical significance. Member numbers are used only for reference--member properties and
-    <topic-popup name="glos_load_test">load test</topic-popup> results are reported by member number in the Member List.
+    They have no physical significance. Member numbers are used for reference. Member properties and
+    <topic-popup name="glos_load_test">load test</topic-popup> results are reported by member number.
   </div>
 </ng-template>
 <ng-template topic-name="glos_member_properties">
   <h1>Member properties</h1>
   <div class="p">
-    The properties of a member are (1) the material it is made of, (2) the type of cross-section, and (3) the
-    <topic-popup name="glos_member_size">member size</topic-popup>.
+    The properties of a member are (1) the material it is made of, (2) the type of cross-section (e.g solid or tube),
+    and (3) the cross-section <topic-popup name="glos_member_size">size</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_member_size">
   <h1>Member size</h1>
-  <div class="p">The size of a member is represented by the dimensions of its cross-section, in millimeters.</div>
+  <div class="p">The size of a member is the dimensions of its cross-section in millimeters.</div>
 </ng-template>
 <ng-template topic-name="glos_members">
   <h1>Members</h1>
   <div class="p">
-    Members are the individual structural elements that make up a truss. Members are connected to each other at
+    Members are the individual structural elements that make up a truss. They are connected at
     <topic-popup name="glos_joints">joints</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_modulus_of_elasticity">
   <h1>Modulus of elasticity</h1>
   <div class="p">
-    The modulus of elasticity is a measure of a material's stiffness--its resistance to deformation. A material with a
-    high modulus of elasticity deforms very little when loaded. Modulus of elasticity is represented by the symbol E and
-    is expressed in units of force per unit area.
+    The modulus of elasticity is a measure of a material's stiffness, its resistance to deformation. A material with a
+    high modulus of elasticity deforms very little when loaded and vice versa. Modulus of elasticity is represented by
+    the symbol E and is expressed in units of force per unit area.
   </div>
 </ng-template>
 <ng-template topic-name="glos_moment_of_inertia">
   <h1>Moment of inertia</h1>
   <div class="p">
     The moment of inertia is a measure of a member's resistance to bending and
-    <topic-popup name="glos_buckling">buckling</topic-popup>. It is a function only of the shape and dimensions of the
-    cross-section. Moment of inertia is represented by the symbol I and is expressed in units of length, raised to the
-    4th power.
+    <topic-popup name="glos_buckling">buckling</topic-popup>. It is a function of the shape and dimensions of the member
+    cross-section, represented by the symbol I. It is expressed in units of length raised to the fourth power.
   </div>
 </ng-template>
 <ng-template topic-name="glos_pier">
@@ -5955,36 +5967,36 @@
 <ng-template topic-name="glos_reinforced_concrete">
   <h1>Reinforced concrete</h1>
   <div class="p">
-    Reinforced concrete is concrete with steel reinforcing rods embedded inside it for added strength. Concrete is very
-    strong in <topic-popup name="glos_compression">compression</topic-popup>, but comparatively weak in
-    <topic-popup name="glos_tension">tension</topic-popup>. The reinforcing bars can substantially increase the ability
-    of reinforced concrete to carry tension.
+    Reinforced concrete is concrete with steel rods embedded inside it for added strength. Concrete is very strong in
+    <topic-popup name="glos_compression">compression</topic-popup>, but comparatively weak in
+    <topic-popup name="glos_tension">tension</topic-popup>. Reinforcing bars substantially increase the ability of
+    concrete to carry tension.
   </div>
 </ng-template>
 <ng-template topic-name="glos_resistance_factor">
   <h1>Resistance factor</h1>
   <div class="p">
-    A resistance factor is a dimensionless number used in the calculation of tensile strength and compressive strength
-    for structural <topic-popup name="glos_members">members</topic-popup>. The resistance factor provides a margin of
+    A resistance factor is a dimensionless number used in the calculation of tensile and compressive strength for
+    structural <topic-popup name="glos_members">members</topic-popup>. The resistance factor provides a margin of
     <topic-popup name="glos_safe">safety</topic-popup> for the design. It accounts for uncertainty in material strength,
-    member dimensions, and construction quality. A resistance factor is always less than or equal to 1.
+    member dimensions, and construction quality. A resistance factor is always less than or equal to one.
   </div>
 </ng-template>
 <ng-template topic-name="glos_safe">
   <h1>Safe</h1>
   <div class="p">
     A member is safe when the internal <topic-popup name="glos_member_force">member force</topic-popup> is less than the
-    strength of the member, in both <topic-popup name="glos_tension">tension</topic-popup> and
+    strength of the member in both <topic-popup name="glos_tension">tension</topic-popup> and
     <topic-popup name="glos_compression">compression</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_session">
   <h1>Session</h1>
   <div class="p">
-    You initiate a new session anytime you start new design, load a sample design, or open an existing
+    You initiate a new session anytime you start a new design, load a sample design, or open an existing
     <topic-popup name="glos_bridge_design_file">bridge design file</topic-popup>. Within a given session, all of your
     design iterations are preserved. You can revert to a previous design iteration at any time during the session by
-    clicking the Go back button.
+    clicking the go back button.
   </div>
 </ng-template>
 <ng-template topic-name="glos_simple_supports">
@@ -5992,9 +6004,10 @@
   <h1>Simple supports</h1>
   <div class="p">
     Simple supports consist of a pin at one end of the <topic-popup name="glos_span">span</topic-popup> and a roller at
-    the other end. The roller allows for lateral expansion and contraction of the bridge, due to
-    <topic-popup name="glos_loads">loads</topic-popup> and temperature changes. In the Bridge Designer, standard
-    <topic-popup name="glos_abutment">abutments</topic-popup> use simple supports.
+    the other end. The roller allows for lateral expansion and contraction of the bridge due to
+    <topic-popup name="glos_loads">loads</topic-popup> and temperature changes. In the
+    <span class="bd-emph">Bridge Designer</span>, standard <topic-popup name="glos_abutment">abutments</topic-popup> use
+    simple supports.
   </div>
 </ng-template>
 <ng-template topic-name="glos_site_cost">
@@ -6003,7 +6016,7 @@
     In the Bridge Designer, the site cost includes the cost of the
     <topic-popup name="glos_substructure">substructure</topic-popup> (the
     <topic-popup name="glos_abutment">abutments</topic-popup> and <topic-popup name="glos_pier">piers</topic-popup> that
-    support the bridge) and the cost of the <topic-popup name="glos_concrete">concrete</topic-popup>
+    support the bridge) and the cost of the <topic-popup name="glos_concrete">concrete </topic-popup>
     <topic-popup name="glos_deck">deck</topic-popup>. The site cost must be added to the truss cost to determine the
     total project cost.
   </div>
@@ -6012,29 +6025,28 @@
   <h1>Slenderness ratio</h1>
   <div class="p">
     The slenderness ratio is a number that describes the &quot;thickness&quot; of a member. Members that are long in
-    comparison to their <topic-popup name="hlp_crossxsection">cross-sections</topic-popup> have larger slenderness
-    ratios than those that are shorter. Very slender members are more likely to buckle or to be damaged during handling.
-    A <topic-link name="hlp_slenderness">slenderness check</topic-link> ensures that all members have slenderness ratios
+    comparison to their <topic-popup name="hlp_crossxsection">cross-sections</topic-popup> have higher slenderness
+    ratios and vice versa. Very slender members are likely to buckle or to be damaged during handling. A
+    <topic-link name="hlp_slenderness">slenderness check</topic-link> ensures that all members have slenderness ratios
     of no more than 300. Any overly slender member causes the bridge to fail.
   </div>
 </ng-template>
 <ng-template topic-name="glos_slope">
   <h1>Slope</h1>
   <div class="p">
-    The slope of a roadway or embankment is a measure of its steepness, expressed as a ratio of vertical distance to
-    horizontal distance. For example, a river bank with a slope of 2:1 rises 2 meters for every 1 meter of horizontal
-    distance.
+    The slope of a roadway or embankment is a measure of its steepness expressed as a ratio of vertical to horizontal
+    distance. For example, a river bank with a slope of 2:1 rises two meters for every one meter of horizontal distance.
   </div>
 </ng-template>
 <ng-template topic-name="glos_snap_points">
   <h1>Snap points</h1>
   <div class="p">
-    A snap point is the intersection of two grid lines on the
+    A snap point is the intersection of two grid lines of the
     <topic-popup name="glos_drawing_grid">drawing grid</topic-popup>. Joints can only be drawn at the snap points; thus,
     when you draw or move <topic-popup name="glos_joints">joints</topic-popup> in your
     <topic-popup name="glos_structural_model">structural model</topic-popup>, the mouse pointer automatically
-    &quot;snaps&quot; to the nearest snap point. The grid lines are actually not visible, but their locations are
-    indicated by marks on the vertical and horizontal rulers located on the left and bottom edges of the Drawing Board.
+    &quot;snaps&quot; to the nearest one. The grid lines are invisible, but their locations are indicated by ticks on
+    the vertical and horizontal rulers at the left and bottom edges of the drawing board.
   </div>
 </ng-template>
 <ng-template topic-name="glos_span">
@@ -6044,7 +6056,7 @@
 <ng-template topic-name="glos_standard_abutments">
   <h1>Standard abutments</h1>
   <div class="p">
-    In the Bridge Designer, standard abutments are
+    In the <span class="bd-emph">Bridge Designer</span>, standard abutments are
     <topic-popup name="glos_substructure">substructure</topic-popup> elements that use
     <topic-popup name="glos_simple_supports">simple supports</topic-popup> to hold up the bridge and transmit its weight
     to the soil below.
@@ -6054,32 +6066,31 @@
   <h1>Structural analysis</h1>
   <div class="p">
     A structural analysis is a mathematical analysis of a
-    <topic-popup name="glos_structural_model">structural model</topic-popup>, to determine all of the
-    <topic-popup name="glos_members">members</topic-popup>
+    <topic-popup name="glos_structural_model">structural model</topic-popup>, to determine all
+    <topic-popup name="glos_members">member </topic-popup>
     <topic-popup name="glos_forces">forces</topic-popup> resulting from a given set of
-    <topic-popup name="glos_loads">loads</topic-popup>. The Bridge Designer uses a structural analysis formulation
-    called the Direct Stiffness Method.
+    <topic-popup name="glos_loads">loads</topic-popup>. The <span class="bd-emph">Bridge Designer</span> uses a
+    structural analysis formulation called the direct stiffness method.
   </div>
 </ng-template>
 <ng-template topic-name="glos_structural_model">
   <h1>Structural model</h1>
   <div class="p">
     A structural model is a mathematical idealization of an actual structure. The model allows us to predict how the
-    actual structure will behave when it is loaded. A structural model of a truss has the following idealized
-    characteristics:
+    actual structure will behave when loaded. A structural model of a truss has the following idealized characteristics:
   </div>
   <ol>
     <li>
-      It is composed of <topic-popup name="glos_members">members</topic-popup>, interconnected at
+      It is composed of <topic-popup name="glos_members">members</topic-popup> interconnected at
       <topic-popup name="glos_joints">joints</topic-popup>.
     </li>
     <li>Each member is connected to exactly two joints, one at each end.</li>
     <li>
-      The joints are assumed to act like hinges; that is, they hold the members together, but do not prevent the ends of
-      the members from rotating with respect to each other.
+      The joints are assumed to act like hinges. They hold the members together, but do not prevent them from rotating
+      with respect to each other.
     </li>
     <li>
-      The members only carry axial force--either <topic-popup name="glos_compression">compression</topic-popup> or
+      The members carry only axial force, either <topic-popup name="glos_compression">compression</topic-popup> or
       <topic-popup name="glos_tension">tension</topic-popup>. They do not bend.
     </li>
     <li>Loads can be applied to the structure only at the joints.</li>
@@ -6097,26 +6108,26 @@
 <ng-template topic-name="glos_supports">
   <h1>Supports</h1>
   <div class="p">
-    A support is a joint at which a structure is attached to its foundation. A truss bridge can have two different types
-    of supports: (1) pinned supports, which restrain both horizontal and vertical movement of the associated joint, and
-    (2) roller supports, which restrain vertical movement but allow horizontal expansion of the structure.
+    A support is a joint where a structure is attached to its foundation. A truss bridge can have two different types of
+    supports: (1) pinned supports, which restrain both horizontal and vertical movement of the associated joint, and (2)
+    roller supports, which restrain vertical movement but allow horizontal expansion of the structure.
   </div>
 </ng-template>
 <ng-template topic-name="glos_symmetrical">
   <h1>Symmetrical</h1>
   <div class="p">
     The term &quot;symmetrical&quot; can apply to both a structure and its loading. In a symmetrical structure, the
-    left-hand and right-hand sides of the structure are exact mirror images of each other. In a symmetrical loading, the
+    left- and right-hand sides of the structure are mirror images of each other. In a symmetrical loading, the
     <topic-popup name="glos_loads">loads</topic-popup> applied on either side of the bridge centerline are identical.
   </div>
 </ng-template>
 <ng-template topic-name="glos_template">
   <h1>Template</h1>
   <div class="p">
-    In the Bridge Designer, a template is a diagram depicting a standard truss configuration. If you load a template, it
-    is displayed on the Drawing Board in light grey dotted lines. The template will show you where to locate
-    <topic-popup name="glos_joints">joints</topic-popup> and <topic-popup name="glos_members">members</topic-popup> to
-    create a stable truss design.
+    In the <span class="bd-emph">Bridge Designer</span>, a template is a diagram depicting a standard truss
+    configuration. If you load a template, it is displayed on the Drawing Board in gray. The template shows where to
+    locate <topic-popup name="glos_joints">joints</topic-popup> and
+    <topic-popup name="glos_members">members</topic-popup> to create a stable truss.
   </div>
 </ng-template>
 <ng-template topic-name="glos_tension">
@@ -6129,8 +6140,8 @@
 <ng-template topic-name="glos_through_truss">
   <h1>Through truss</h1>
   <div class="p">
-    A through truss is a truss with its <topic-popup name="glos_deck">deck</topic-popup> located at the bottom chord. On
-    a through truss, vehicles truss pass between the two main trusses as they cross the bridge.
+    A through truss has its <topic-popup name="glos_deck">deck</topic-popup> located at the bottom chord. Vehicles pass
+    between the two main trusses as they cross the bridge.
   </div>
 </ng-template>
 <ng-template topic-name="glos_unsafe">
@@ -6138,7 +6149,7 @@
   <div class="p">
     A member is unsafe when the internal <topic-popup name="glos_member_force">member force</topic-popup> exceeds the
     strength of the member. A member is unsafe in <topic-popup name="glos_tension">tension</topic-popup> if the maximum
-    tension force exceeds the tensile strength. A member is unsafe in
+    tension force exceeds the tensile strength. It is unsafe in
     <topic-popup name="glos_compression">compression</topic-popup> if the maximum compression force exceeds the
     compressive strength.
   </div>
@@ -6146,23 +6157,23 @@
 <ng-template topic-name="glos_verticals">
   <h1>Verticals</h1>
   <div class="p">
-    Verticals are truss <topic-popup name="glos_members">members</topic-popup> that are oriented vertically. Usually
-    they connect the top and bottom <topic-popup name="glos_chords">chords</topic-popup> together.
+    Verticals are truss <topic-popup name="glos_members">members</topic-popup> oriented vertically. They usually connect
+    the top and bottom <topic-popup name="glos_chords">chords</topic-popup>.
   </div>
 </ng-template>
 <ng-template topic-name="glos_wearing_surface">
   <h1>Wearing surface</h1>
   <div class="p">
-    A wearing surface is a layer of pavement material--normally
-    <topic-popup name="glos_asphalt">asphalt</topic-popup> or
-    <topic-popup name="glos_concrete">concrete</topic-popup>--placed on top of a bridge
-    <topic-popup name="glos_deck">deck</topic-popup> to protect the deck from being damaged by automobile traffic.
+    A wearing surface is a layer of pavement material, normally
+    <topic-popup name="glos_asphalt">asphalt</topic-popup> or <topic-popup name="glos_concrete">concrete</topic-popup>,
+    placed on top of a bridge <topic-popup name="glos_deck">deck</topic-popup> to protect it from damage by vehicle
+    traffic.
   </div>
 </ng-template>
 <ng-template topic-name="glos_yield_stress">
   <h1>Yield stress</h1>
   <div class="p">
-    The yield stress is the strength of a metal. It is the force per unit area at which the metal fails by
+    The yield stress is the strength of a metal. It is the force per unit area where the metal fails by
     <topic-popup name="glos_yielding">yielding</topic-popup>.
   </div>
 </ng-template>
@@ -6180,7 +6191,6 @@
   <div class="p">
     <topic-popup name="glos_aashto">AASHTO</topic-popup><br />
     <topic-popup name="glos_abutment">abutment</topic-popup><br />
-    <topic-popup name="glos_anchorages">anchorages</topic-popup><br />
     <topic-popup name="glos_arch_abutments">arch abutments</topic-popup><br />
     <topic-popup name="glos_arch_supports">arch supports</topic-popup><br />
     <topic-popup name="glos_asphalt">asphalt</topic-popup><br />

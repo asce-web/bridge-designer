@@ -6,15 +6,17 @@
 ## Master TODO
 
 - Complete help edit
-  - @ 60%
+  - @ 80%
 - Make `EventBrokerService` type safe for `EventInfo.data`.
 
 ## Issues
 
-- Defer loading of late/intermittent use code: help, print, fly-through.
+- Add selector and toggle state to session storage.
+- Disable template view controls when no template loaded.
 
 # Fixed issues
 
+- Defer loading of late/intermittent use code: help, print, fly-through.
 - Central texture manager. Should initiate loading all at startup.
 - Add browser checks. Disable features or entire app. See features.js for ideas.
 - Dirty edit save behavior missing for samples
