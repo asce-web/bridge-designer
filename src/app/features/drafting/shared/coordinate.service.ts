@@ -6,6 +6,7 @@ import { Geometry, Point2D, Point2DInterface } from '../../../shared/classes/gra
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { DesignGrid, DesignGridService } from '../../../shared/services/design-grid.service';
 
+/** Drawing panel coordinate queries. */
 @Injectable({ providedIn: 'root' })
 export class CoordinateService {
   constructor(
@@ -24,7 +25,7 @@ export class CoordinateService {
   private static readonly SEARCH_RADIUS_METERS: number = 8;
 
   /**
-   * Search the grid in the direction [dx,dy] for the valid point nearest the source point 
+   * Searches the grid in the direction [dx,dy] for the valid point nearest the source point 
    * that is not already occupied by a joint. Valid means it's inside the river banks and not on a high
    * pier. If the search fails, the destination is set equal to the source. All coordinates are world.
    *
@@ -63,9 +64,9 @@ export class CoordinateService {
   }
 
   /**
-   * Set the destination point to be the grid point closest to a given source point that is valid.
+   * Sets destination point to be the valid grid point closest to a given source point.
    * Valid means within the design space including river banks and not interfering with
-   * abutments or the high pier, if any.
+   * abutments or the high pier, if any. This doesn't include avoiding existing joints.
    *
    * @param dst destination point in world coordinates
    * @param dstGrid destination point in grid coordinates

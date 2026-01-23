@@ -18,7 +18,7 @@ import { CustomCursor, StandardCursor, WidgetHelper } from '../../../shared/clas
 export type HotElement = GuideKnob | Joint | Labels | Member | undefined;
 export type HotElementClass = typeof GuideKnob | typeof Joint | typeof Labels | typeof Member;
 
-/** Manages graphic elements that "light up" on mouse rollover, optionally be dragged by the pointer. */
+/** Manages graphic elements that "light up" on mouse rollover. */
 @Injectable({ providedIn: 'root' })
 export class HotElementService {
   private _hotElement: HotElement;
@@ -34,6 +34,7 @@ export class HotElementService {
     private readonly viewportTransform: ViewportTransform2D,
   ) {}
 
+  /** Returns the current hot element. Undefined if none. */
   public get hotElement(): HotElement {
     return this._hotElement;
   }
@@ -127,7 +128,7 @@ export class HotElementService {
     } else if (options.invalidate) {
       this.render(ctx, this._hotElement);
     }
-    // TODO: If this is too expensive, track current setting to avoid redundant per-move-event setting.
+    // PERF: If this is too expensive, track current setting to avoid redundant per-move-event setting.
     WidgetHelper.setPointerCursor(ctx, pointerCursor);
   }
 

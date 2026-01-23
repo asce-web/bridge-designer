@@ -20,6 +20,7 @@ export class GuideKnob {
   ) {}
 }
 
+/** Rendering and control of symmetry guides. */
 @Injectable({ providedIn: 'root' })
 export class GuidesService implements DraggableService {
   private static readonly HORIZONTAL_GUIDE_KNOB = 'img/hguideknob.png';

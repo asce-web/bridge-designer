@@ -112,7 +112,7 @@ export class ElementSelectorService {
     return wasSelected;
   }
 
-  /** Restores a formerly stash selection. */
+  /** Restores a formerly stashed selection. */
   public restoreSelection(stash: SelectionStash, origin: EventOrigin): void {
     const selectedElements = this.selectedElementsService.selectedElements;
     selectedElements.selectedJoints.clear();

@@ -16,6 +16,7 @@ export class Version {
     return new Version(major, minor, build, mod);
   }
 
+  /** Returns a standard version string with fixed-width build number. */
   public toString(): string {
     return `${this.major}.${this.minor}.${String(this.build).padStart(4, '0')}${this.mod}`;
   }
