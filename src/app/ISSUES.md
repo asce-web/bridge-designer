@@ -5,16 +5,16 @@
 
 ## Master TODO
 
-- Complete help edit
-  - @ 80%
 - Make `EventBrokerService` type safe for `EventInfo.data`.
 
-## Issues
+## To fix
 
-- Disable template view controls when no template loaded.
+- None for now.
 
 # Fixed issues
 
+- Complete help edit
+- Disable template view controls when no template loaded.
 - Add selector and toggle state to session storage.
 - Defer loading of late/intermittent use code: help, print, fly-through.
 - Central texture manager. Should initiate loading all at startup.
