@@ -31,10 +31,11 @@ import { WidgetHelper } from '../../../shared/classes/widget-helper';
 export class Print3dDialogComponent implements AfterViewInit {
   modelInfo: Print3dModelInfo = new Print3dModelInfo();
   scaleSlider!: jqxSliderComponent;
-  minFeatureSizeMm: string = '1.2' // 3 * .4mm typical print width
+  minFeatureSizeMm: string = '1.2'; // 3 * .4mm typical print width
   wiggleMm: string = '0.2'; // Reasonable join slop for Prusa Original
   modelMmPerWorldM: number = 5.6; // 250mm / 44M rounded to 0.2
   baseFileName: string = DEFAULT_SAVE_FILE_NAME;
+  isDialogDisabled: boolean = false;
 
   @ViewChild('dialog') dialog!: jqxWindowComponent;
   @ViewChild('minFeatureSizeInput') minFeatureSizeInput!: jqxNumberInputComponent;
@@ -82,6 +83,22 @@ export class Print3dDialogComponent implements AfterViewInit {
     return this.printing3dService.trussesFileContents;
   }
 
+  /** Sets up dialog fields for current bridge and its edit state. */
+  async handleDialogOpen(): Promise<void> {
+    // Assume the dialog is enabled. Manifold failures set it to true.
+    this.isDialogDisabled = false;
+    // Initialize the default export file name base from the save file name.
+    const initBaseFileName = this.saveMarkService.savedFileName || DEFAULT_SAVE_FILE_NAME;
+    this.baseFileName = initBaseFileName.replace(/\.bdc$/, '');
+    try {
+      this.unscaledModelInfo = await this.printing3dService.getUnscaledModelInfo();
+      this.modelInfo = this.unscaledModelInfo.applyScale(this.modelMmPerWorldM);
+    } catch (err) {
+      this.isDialogDisabled = true;
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
   /** Shows help for the dialog. */
   handleHelpButtonClick() {
     this.eventBrokerService.helpRequest.next({
@@ -92,23 +109,18 @@ export class Print3dDialogComponent implements AfterViewInit {
 
   /** Prints OBJ files for the current bridge and config. */
   async handleOkButtonClick(): Promise<void> {
-    this.dialog.close();
-    await this.printing3dService.emit3dPrint(
-      this.modelMmPerWorldM,
-      Number.parseFloat(this.minFeatureSizeMm),
-      Number.parseFloat(this.wiggleMm),
-      this.baseFileName,
-    );
-  }
-
-  /** Sets up dialog fields for current bridge and its edit state. */
-  async handleDialogOpen(): Promise<void> {
-    // Initialize the default export file name base from the save file name.
-    const initBaseFileName = this.saveMarkService.savedFileName || DEFAULT_SAVE_FILE_NAME;
-    this.baseFileName = initBaseFileName.replace(/\.bdc$/, '');
-    this.unscaledModelInfo = await this.printing3dService.getUnscaledModelInfo();
-    this.modelInfo = this.unscaledModelInfo.applyScale(this.modelMmPerWorldM);
-    this.changeDetectorRef.detectChanges();
+    try {
+      await this.printing3dService.emit3dPrint(
+        this.modelMmPerWorldM,
+        Number.parseFloat(this.minFeatureSizeMm),
+        Number.parseFloat(this.wiggleMm),
+        this.baseFileName,
+      );
+      this.dialog.close();
+    } catch (err) {
+      this.isDialogDisabled = true;
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   handleScaleSliderChange(): void {
@@ -116,6 +128,8 @@ export class Print3dDialogComponent implements AfterViewInit {
     if (this.unscaledModelInfo === undefined) {
       return;
     }
+    // Re-enable because a bigger scale might succeed.
+    this.isDialogDisabled = false;
     this.modelInfo = this.unscaledModelInfo.applyScale(this.modelMmPerWorldM);
     this.changeDetectorRef.detectChanges();
   }

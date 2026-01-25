@@ -6,7 +6,7 @@
   [isModal]="true"
   [autoOpen]="false"
   [width]="720"
-  [height]="428"
+  [height]="444"
   [initContent]="initDialogContent"
   (onOpen)="handleDialogOpen()"
 >
@@ -139,6 +139,13 @@
         </table>
       </div>
     </div>
+    <div class="error-block">
+      @if (isDialogDisabled) {
+        Sorry. The bridge is too complex. Exported files aren't valid. See Help.
+      } @else {
+        &nbsp;
+      }
+    </div>
     <div class="buttons">
       <jqxButton
         style="margin-bottom: 4px; margin-top: 8px; margin-right: 4px"
@@ -155,6 +162,7 @@
       <jqxButton
         style="margin-bottom: 4px; margin-top: 8px"
         (onClick)="handleOkButtonClick()"
+        [disabled]="isDialogDisabled"
         [width]="'120px'"
         >Ok</jqxButton
       >

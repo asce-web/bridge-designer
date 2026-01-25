@@ -1797,10 +1797,15 @@
     For a multi-colored bridge, e.g one color for trusses, another for cross-members, and a third for the deck, you can
     also organize objects per intended color.
   </div>
+  <h2>Errors</h2>
+  <div class="p">
+    A few kinds of bridges are too complex to export. Often the cause is very short members. When it happens, the dialog
+    will display an error.
+  </div>
   <h2 class="btop">Notes and tips</h2>
   <div class="p">
-    See <topic-link name="hlp_3dprint_assembly">tips for assembling your bridge model</topic-link> for important details
-    after you've printed all parts.
+    When your bridge is too complex to export, try increasing the scale as far as your printer allows. For example, use
+    the diagonal of the bed as described below. In some cases, this will allow the export to succeed.
   </div>
   <div class="p">
     The biggest pieces in the model are usually the trusses. If your goal is to make the biggest possible model, try
@@ -1809,6 +1814,10 @@
   <div class="p">
     For minimum feature size, consider using a multiple of your printer's nozzle size that's at least one millimeter.
     For example, if the nozzle is 0.4mm, then try 1.2 or 1.6.
+  </div>
+  <div class="p">
+    See <topic-link name="hlp_3dprint_assembly">tips for assembling your bridge model</topic-link> for important details
+    after you've printed all parts.
   </div>
 </ng-template>
 <ng-template topic-name="hlp_find_opt_substructure">
