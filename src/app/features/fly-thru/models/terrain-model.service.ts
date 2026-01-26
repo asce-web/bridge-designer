@@ -389,8 +389,10 @@ export class TerrainModelService {
     const metersPerGrid = TerrainModelService.METERS_PER_GRID;
     const x = (j - halfGridCount) * metersPerGrid;
     const z = (i - halfGridCount) * metersPerGrid;
-    // Mark the roadway excluding the area between abutments invisible.
-    let isVisible = Math.abs(z) > SiteConstants.DECK_HALF_WIDTH || Math.abs(x) < 0.5 * conditions.spanLength;
+    // Mark the roadway excluding the area between abutments invisible. Treats an extra grid under the abutment
+    // as visible so triangles spanning abutment to water aren't elided.
+    const bridgeHalfWidth = 0.5 * conditions.spanLength + metersPerGrid;
+    let isVisible = Math.abs(z) > SiteConstants.DECK_HALF_WIDTH || Math.abs(x) < bridgeHalfWidth;
     // Distance to river center line.
     const tWater = getDistanceToRiver(x, z);
     // Distance to center of road.
