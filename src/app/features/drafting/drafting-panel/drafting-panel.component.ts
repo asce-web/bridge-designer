@@ -38,13 +38,14 @@ import { Utility } from '../../../shared/classes/utility';
 import { ToastComponent } from '../../toast/toast/toast.component';
 import { ToastError } from '../../toast/toast/toast-error';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
+import { ElementSelectorService } from '../shared/element-selector.service';
 
 @Component({
-    selector: 'drafting-panel',
-    templateUrl: './drafting-panel.component.html',
-    styleUrl: './drafting-panel.component.scss',
-    imports: [CursorOverlayComponent, FormsModule, ToastComponent, ToolSelectorComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'drafting-panel',
+  templateUrl: './drafting-panel.component.html',
+  styleUrl: './drafting-panel.component.scss',
+  imports: [CursorOverlayComponent, FormsModule, ToastComponent, ToolSelectorComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DraftingPanelComponent implements AfterViewInit {
   width: number = screen.availWidth * devicePixelRatio;
@@ -59,6 +60,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     private readonly changeDetector: ChangeDetectorRef,
     private readonly designGridService: DesignGridService,
     private readonly designRenderingService: DesignRenderingService,
+    private readonly elementSelectionService: ElementSelectorService,
     private readonly eventBrokerService: EventBrokerService,
     private readonly guideService: GuidesService,
     private readonly labelsService: LabelsService,
@@ -80,7 +82,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.viewportTransform.setWindow(this.bridgeService.siteInfo.drawingWindow);
     this.eventBrokerService.draftingPanelInvalidation.next({ origin: EventOrigin.DRAFTING_PANEL, data: 'viewport' });
   }
-  
+
   /** Suppresses context menu. */
   ignore(): boolean {
     return false;
@@ -116,7 +118,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.render();
   }
 
-  addJointRequestHandler(joint: Joint): void {
+  handleAddJointRequest(joint: Joint): void {
     if (this.bridgeService.bridge.joints.length >= DesignConditions.MAX_JOINT_COUNT) {
       throw new ToastError('tooManyJointsError');
     }
@@ -131,7 +133,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.undoManagerService.do(command);
   }
 
-  addMemberRequestHandler(member: Member): void {
+  handleAddMemberRequest(member: Member): void {
     if (this.bridgeService.getMemberWithJoints(member.a, member.b)) {
       throw new ToastError('duplicateMemberError');
     }
@@ -146,7 +148,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.undoManagerService.do(command);
   }
 
-  deleteRequestHandler(element: Joint | Member): void {
+  handleDeleteRequest(element: Joint | Member): void {
     const bridge = this.bridgeService.bridge;
     const selectedElements = this.selectedElementsService.selectedElements;
     const command: EditCommand =
@@ -156,7 +158,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.undoManagerService.do(command);
   }
 
-  deleteSelectionRequestHandler(): void {
+  handleDeleteSelectionRequest(): void {
     if (this.selectedElementsService.isSelectionEmpty) {
       return;
     }
@@ -167,14 +169,16 @@ export class DraftingPanelComponent implements AfterViewInit {
       ? new DeleteJointCommand(joint, bridge, selectedElements)
       : DeleteMembersCommand.forSelectedMembers(selectedElements, this.bridgeService);
     this.undoManagerService.do(command);
+    // We just deleted the selection. Everyone else needs to know.
+    this.elementSelectionService.sendSelectedElementsChange(EventOrigin.DRAFTING_PANEL);
   }
 
   /** Handles reports from cursor overlay at start and end of draggable dragging. */
-  dragCursorActive(draggable: Draggable | undefined) {
+  handleDragCursorActive(draggable: Draggable | undefined) {
     this.render(draggable);
   }
 
-  moveJointRequestHandler({ joint, newLocation }: { joint: Joint; newLocation: Point2D }): void {
+  handleMoveJointRequest({ joint, newLocation }: { joint: Joint; newLocation: Point2D }): void {
     // Quietly do nothing for zero displacement move attempt.
     if (Geometry.areColocated2D(newLocation, joint)) {
       throw new ToastError('noError');
@@ -196,7 +200,7 @@ export class DraftingPanelComponent implements AfterViewInit {
   // IMPORTANT: Following 2 methods rely on the coincidence that selector indices are the same as density enum values.
 
   /** Sets the design grid density from the selection widget (menu or button) index. */
-  selectGridDensityHandler(selectorIndex: number) {
+  handleSelectGridDensity(selectorIndex: number) {
     if (
       DesignGridDensity.COARSE <= selectorIndex &&
       selectorIndex <= DesignGridDensity.FINE &&
@@ -221,18 +225,18 @@ export class DraftingPanelComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     new ResizeObserver(() => this.handleResize()).observe(this.wrapper.nativeElement);
-    this.eventBrokerService.deleteSelectionRequest.subscribe(_eventInfo => this.deleteSelectionRequestHandler());
-    this.eventBrokerService.draftingPanelInvalidation.subscribe(_eventInfo => this.render());
-    this.eventBrokerService.gridDensitySelection.subscribe(eventInfo => this.selectGridDensityHandler(eventInfo.data));
+    this.eventBrokerService.deleteSelectionRequest.subscribe(() => this.handleDeleteSelectionRequest());
+    this.eventBrokerService.draftingPanelInvalidation.subscribe(() => this.render());
+    this.eventBrokerService.gridDensitySelection.subscribe(eventInfo => this.handleSelectGridDensity(eventInfo.data));
     this.eventBrokerService.loadBridgeRequest.subscribe(eventInfo =>
       this.loadBridge(eventInfo.data.bridge, eventInfo.data.draftingPanelState),
     );
     this.eventBrokerService.loadSketchRequest.subscribe(eventInfo => this.loadSketch(eventInfo.data));
-    this.eventBrokerService.selectedElementsChange.subscribe(_eventInfo => this.render());
+    this.eventBrokerService.selectedElementsChange.subscribe(() => this.render());
     this.eventBrokerService.titleBlockToggle.subscribe(eventInfo => {
       this.titleBlock.nativeElement.style.display = eventInfo.data ? '' : 'none';
     });
-    this.eventBrokerService.editCommandCompletion.subscribe(_eventInfo => this.render());
+    this.eventBrokerService.editCommandCompletion.subscribe(() => this.render());
     this.handleResize();
   }
 }

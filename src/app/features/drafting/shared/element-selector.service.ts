@@ -122,7 +122,8 @@ export class ElementSelectorService {
     this.sendSelectedElementsChange(origin);
   }
 
-  private sendSelectedElementsChange(origin: EventOrigin): void {
+  /** Sends a notification that selected elements have changed. For e.g. when the selection is deleted. */
+  public sendSelectedElementsChange(origin: EventOrigin): void {
     this.eventBrokerService.selectedElementsChange.next({
       origin: origin,
       data: this.selectedElementsService.selectedElements,

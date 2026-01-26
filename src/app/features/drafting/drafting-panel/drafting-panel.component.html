@@ -20,11 +20,11 @@
     class="cursor"
     [width]="width"
     [height]="height"
-    (addJointRequest)="addJointRequestHandler($event)"
-    (addMemberRequest)="addMemberRequestHandler($event)"
-    (deleteRequest)="deleteRequestHandler($event)"
-    (moveJointRequest)="moveJointRequestHandler($event)"
-    (dragCursorActive)="dragCursorActive($event)"
+    (addJointRequest)="handleAddJointRequest($event)"
+    (addMemberRequest)="handleAddMemberRequest($event)"
+    (deleteRequest)="handleDeleteRequest($event)"
+    (moveJointRequest)="handleMoveJointRequest($event)"
+    (dragCursorActive)="handleDragCursorActive($event)"
   ></cursor-overlay>
   <div
     #titleBlock
