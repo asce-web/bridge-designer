@@ -70,7 +70,6 @@ export class TextureService {
       .invokeAfterLoaded((images: { [url: string]: HTMLImageElement }) => {
         const gl = this.glService.gl;
         for (const [url, image] of Object.entries(images)) {
-          gl.generateMipmap(gl.TEXTURE_2D);
           const texture = Utility.assertNotUndefined(this.textures.get(url as TextureUrl));
           gl.bindTexture(gl.TEXTURE_2D, texture);
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);

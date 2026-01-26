@@ -148,10 +148,13 @@ export class BridgePdfRenderingService {
   private drawJoint(doc: jsPDF, gusset: Gusset): void {
     const joint = gusset.joint;
     // Gusset hull.
-    const hullPoints = gusset.hull.map(offset => [this.tX(offset.x + joint.x), this.tY(offset.y + joint.y)]);
-    const path = [{ op: 'm', c: hullPoints[0] }, hullPoints.slice(1).map(c => ({ op: 'l', c })), { op: 'h' }].flat();
     doc.setFillColor('white');
-    doc.path(path).fillStroke();
+    // Pier joint can have zero members, which manifests as zero depth.
+    if (gusset.halfDepthM > 0) {
+      const hullPoints = gusset.hull.map(offset => [this.tX(offset.x + joint.x), this.tY(offset.y + joint.y)]);
+      const path = [{ op: 'm', c: hullPoints[0] }, hullPoints.slice(1).map(c => ({ op: 'l', c })), { op: 'h' }].flat();
+      doc.path(path).fillStroke();
+    }
     // Pin.
     doc.circle(this.tX(joint.x), this.tY(joint.y), 0.04 * this.scale, 'FD');
   }
@@ -171,11 +174,11 @@ export class BridgePdfRenderingService {
 
     // Draw box parallel to member axis offset by half width. Fill for appearance of crossing members.
     const path = [
-      {op: 'm', c: [this.tX(ax + perpDx), this.tY(ay + perpDy)]},
-      {op: 'l', c: [this.tX(bx + perpDx), this.tY(by + perpDy)]},
-      {op: 'l', c: [this.tX(bx - perpDx), this.tY(by - perpDy)]},
-      {op: 'l', c: [this.tX(ax - perpDx), this.tY(ay - perpDy)]},
-      {op: 'h'}
+      { op: 'm', c: [this.tX(ax + perpDx), this.tY(ay + perpDy)] },
+      { op: 'l', c: [this.tX(bx + perpDx), this.tY(by + perpDy)] },
+      { op: 'l', c: [this.tX(bx - perpDx), this.tY(by - perpDy)] },
+      { op: 'l', c: [this.tX(ax - perpDx), this.tY(ay - perpDy)] },
+      { op: 'h' },
     ];
     doc.setFillColor('white');
     doc.path(path).fillStroke();

@@ -114,6 +114,10 @@ export class Print3dModelService {
     const hole: SimplePolygon = gmy.pinHole.map(v => [modelMmPerWorldM * v[0], modelMmPerWorldM * v[1]] as Vec2);
     // Pad gusset min member size by a few percent to make things easier for slicers.
     for (const gusset of this.gussetsService.createGussets(gmy.pinHoleSize * 1100)) {
+      // Skip gussets with zero members. Probably must be the pier joint.
+      if (gusset.halfDepthM === 0) {
+        continue;
+      }
       const polygon: SimplePolygon = gusset.hull.map(pt => transformVec2(xyTransform, pt.x, pt.y, 0));
       if (isReverseWinding(xyTransform)) polygon.reverse();
       const [gx, gy] = transformVec2(xyTransform, gusset.joint.x, gusset.joint.y);

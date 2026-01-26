@@ -58,7 +58,10 @@ function buildMemberGeometry(gussetJoint: Joint, member: Member, minMemberSizeMm
   return { x0, y0, x1, y1, x2, y2, ux, uy, upx, upy, halfSizeM };
 }
 
-/** A gusset covering the intersection of members at a joint. */
+/** 
+ * A gusset covering the intersection of members at a joint. 
+ * A gusset for a joint with zero members will have `halfDepthM` of zero.
+ */
 export type Gusset = {
   joint: Joint;
   memberGeometries?: MemberGeometry[]; // Temporary accumulator deleted after gusset is complete.
@@ -130,14 +133,14 @@ export class GussetsService {
             this.convexHullService.add(intersection.x + altGeometry.upx * 2, intersection.y + altGeometry.upy * 2);
           }
         }
-        // Add a diamond around the pin ensuring at least minMemberSizeMm of thickness (for 3d prints).
-        if (minMemberSizeMm > 0) {
-          const r = minMemberSizeMm * 0.001;
-          this.convexHullService.add(0, r);
-          this.convexHullService.add(0, -r);
-          this.convexHullService.add(r, 0);
-          this.convexHullService.add(-r, 0);
-        }
+      }
+      // Add a diamond around the pin ensuring at least minMemberSizeMm of thickness (for 3d prints).
+      if (minMemberSizeMm > 0) {
+        const r = minMemberSizeMm * 0.001;
+        this.convexHullService.add(0, r);
+        this.convexHullService.add(0, -r);
+        this.convexHullService.add(r, 0);
+        this.convexHullService.add(-r, 0);
       }
       // Create a hull around all points to determine gusset vertices. Delete member geometries no longer needed.
       this.convexHullService.createHull(gusset.hull);
