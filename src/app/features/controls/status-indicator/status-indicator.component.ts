@@ -29,11 +29,20 @@ export class StatusIndicatorComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    // A freshly loaded bridge hasn't yet been analyzed.
+    this.eventBrokerService.loadBridgeCompletion.subscribe(() => {
+      this.setIcon(AnalysisStatus.NONE);
+    });
+    // New analysis status needs to be displayed.
     this.eventBrokerService.analysisCompletion.subscribe(eventInfo => {
       this.setIcon(eventInfo.data);
     });
-    this.eventBrokerService.loadBridgeCompletion.subscribe(_eventInfo => this.setIcon(AnalysisStatus.NONE));
-    this.eventBrokerService.editCommandCompletion.subscribe(_eventInfo => {
+    // Analysis completion event during re-hydration is too early to be handled above.
+    this.eventBrokerService.sessionStateRestoreCompletion.subscribe(() => {
+      this.setIcon(this.analysisService.status);
+    });
+    // Any edit command is a potential status change.
+    this.eventBrokerService.editCommandCompletion.subscribe(() => {
       if (this.analysisValidityService.isLastAnalysisValid) {
         this.setIcon(this.analysisService.status);
       } else {

@@ -22,7 +22,6 @@ import { DesignSketchRenderingService } from '../../../shared/services/design-sk
   selector: 'sample-selection-dialog',
   imports: [jqxListBoxModule, jqxWindowModule, jqxButtonModule],
   /** Component-level injections of stateful services. Root versions are hidden. */
-  // TODO: Bug. We see sketches in sample preview that shouldn't be there. Maybe missing a sketch provider?
   providers: [
     BridgeService,
     { provide: BridgeServiceSessionStateKey, useValue: { key: undefined } },
