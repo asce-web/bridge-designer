@@ -93,10 +93,11 @@ export class Print3dDialogComponent implements AfterViewInit {
     try {
       this.unscaledModelInfo = await this.printing3dService.getUnscaledModelInfo();
       this.modelInfo = this.unscaledModelInfo.applyScale(this.modelMmPerWorldM);
-    } catch (err: any) {
-      if (err instanceof ManifoldError) {
-        this.error = err.summary;
+    } catch (error: any) {
+      if (error instanceof ManifoldError) {
+        this.error = error.part;
         this.scaleSlider.disabled(true);
+        console.error(error.name, error.summary);
       }
     }
     this.changeDetectorRef.detectChanges();
@@ -120,9 +121,10 @@ export class Print3dDialogComponent implements AfterViewInit {
         this.baseFileName,
       );
       this.dialog.close();
-    } catch (err: any) {
-      if (err instanceof ManifoldError) {
-        this.error = err.summary;
+    } catch (error: any) {
+      if (error instanceof ManifoldError) {
+        this.error = error.part;
+        console.error(error.name, error.summary);
       }
     }
   }
