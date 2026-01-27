@@ -192,6 +192,9 @@ export class MemberTableComponent implements AfterViewInit {
     const state = this.grid.savestate();
     this.grid.updatebounddata();
     this.grid.loadstate(state);
+    // jqxWidgets puts a key in local storage and never cleans it up.
+    // This is undocumented (reverse engineered) and therefore fragile.
+    localStorage.removeItem('jqxGrid' + this.grid.host.context.id);
   }
 
   /** Adjust the grid row selection to match selected members (i.e. those selected graphically). */
