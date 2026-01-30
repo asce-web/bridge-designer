@@ -399,7 +399,7 @@ export class UiStateService {
 
   /**
    * Rehydrates state. Where state and broker keys don't match, 
-   * state is not restored without exception.
+   * state is quietly not restored.
    */
   private rehydrate(state: State): void {
     const subjectsByName = this.eventBrokerService.subjectsByName;
