@@ -96,7 +96,7 @@ describe('UndoManagerSessionStateService', () => {
     expect(dehydrated.undone.length).toBe(0);
 
     // Undo the final splitting joint insertion.
-    undoManagerService.undo();
+    undoManagerService.undo(1);
 
     checkBridge('undo');
     expect(undoManagerService.done.length).toBe(3);
@@ -114,7 +114,7 @@ describe('UndoManagerSessionStateService', () => {
     service.rehydrate(dehydratedUndo);
 
     // Redo the joint add with splitting.
-    undoManagerService.redo();
+    undoManagerService.redo(1);
 
     checkBridge('redo');
     expect(undoManagerService.done.length).toBe(4);

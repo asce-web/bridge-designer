@@ -49,9 +49,9 @@ export class WorkflowManagementService {
       const status = eventInfo.data;
       let isValidForAnimation = false;
       if (status === AnalysisStatus.UNSTABLE) {
-        eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE });
+        eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
       } else if (status === AnalysisStatus.FAILS_SLENDERNESS) {
-        eventBrokerService.slendernessFailDialogOpenRequest.next({ origin: EventOrigin.SERVICE });
+        eventBrokerService.slendernessFailDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
       } else {
         isValidForAnimation = true;
       }
@@ -133,7 +133,7 @@ export class WorkflowManagementService {
     });
 
     // Inventory selection (by user) completion.
-    eventBrokerService.inventorySelectionCompletion.subscribe(eventInfo => {
+    eventBrokerService.inventorySelectionChange.subscribe(eventInfo => {
       const selectedMembers = selectedElementsService.selectedElements.selectedMembers;
       if (selectedMembers.size === 0) {
         return;

@@ -8,7 +8,7 @@ import { jqxTabsComponent, jqxTabsModule } from 'jqwidgets-ng/jqxtabs';
 import { jqxTreeGridComponent, jqxTreeGridModule } from 'jqwidgets-ng/jqxtreegrid';
 import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxButtonComponent, jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
-import { EventBrokerService, EventInfo } from '../../../shared/services/event-broker.service';
+import { EventBrokerService } from '../../../shared/services/event-broker.service';
 import { BridgeService, BridgeServiceSessionStateKey } from '../../../shared/services/bridge.service';
 import { DesignBridgeRenderingService } from '../../../shared/services/design-bridge-rendering.service';
 import { DesignJointRenderingService } from '../../../shared/services/design-joint-rendering.service';
@@ -225,9 +225,7 @@ export class DesignIterationDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.loadDesignIterationRequest.subscribe((_eventInfo: EventInfo): void => {
-      this.dialog.open();
-    });
+    this.eventBrokerService.loadDesignIterationRequest.subscribe(() => this.dialog.open());
     const w = this.preview.nativeElement.width / DesignIterationDialogComponent.PREVIEW_SCALE;
     const h = this.preview.nativeElement.height / DesignIterationDialogComponent.PREVIEW_SCALE;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);

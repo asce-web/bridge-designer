@@ -10,7 +10,7 @@ import {
   BridgeServiceSessionStateKey,
   RootBridgeService,
 } from '../../../shared/services/bridge.service';
-import { EventBrokerService, EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
 import { jqxButtonComponent, jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { BridgeSketchService } from '../../../shared/services/bridge-sketch.service';
@@ -119,9 +119,7 @@ export class TemplateSelectionDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.loadTemplateRequest.subscribe((_eventInfo: EventInfo): void => {
-      this.dialog.open();
-    });
+    this.eventBrokerService.loadTemplateRequest.subscribe(() => this.dialog.open());
     const w = this.preview.nativeElement.width;
     const h = this.preview.nativeElement.height;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);

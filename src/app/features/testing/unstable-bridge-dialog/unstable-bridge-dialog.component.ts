@@ -22,7 +22,7 @@ export class UnstableBridgeDialogComponent implements AfterViewInit {
   constructor(private readonly eventBrokerService: EventBrokerService) {}
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.unstableBridgeDialogOpenRequest.subscribe(_eventInfo => {
+    this.eventBrokerService.unstableBridgeDialogOpenRequest.subscribe(() => {
       this.dialog.open();
       this.exampleTabs.host.jqxTabs('render');
     });

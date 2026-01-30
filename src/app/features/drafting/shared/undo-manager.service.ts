@@ -24,8 +24,8 @@ export class UndoManagerService {
   public readonly undone: Deque<EditCommand> = new Deque<EditCommand>();
 
   constructor(private readonly eventBrokerService: EventBrokerService) {
-    eventBrokerService.undoRequest.subscribe(eventInfo => this.undo(eventInfo.data));
-    eventBrokerService.redoRequest.subscribe(eventInfo => this.redo(eventInfo.data));
+    eventBrokerService.undoRequest.subscribe(info => this.undo(info.data));
+    eventBrokerService.redoRequest.subscribe(info => this.redo(info.data));
     eventBrokerService.loadBridgeRequest.subscribe(() => this.clear());
   }
 
@@ -70,7 +70,8 @@ export class UndoManagerService {
     return commands[-1 - index];
   }
 
-  undo(count: number = 1): void {
+  // visible-for-testing
+  undo(count: number): void {
     let effectsMask: number = 0;
     while (count-- > 0) {
       const editCommand = this.done.popLeft();
@@ -84,7 +85,8 @@ export class UndoManagerService {
     this.emitCommandCompletion('undo', effectsMask);
   }
 
-  redo(count: number = 1): void {
+  // visible-for-testing
+  redo(count: number): void {
     let effectsMask: number = 0;
     while (count-- > 0) {
       const editCommand = this.undone.popLeft();

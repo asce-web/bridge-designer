@@ -67,7 +67,7 @@ export class LoadTestReportDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.analysisReportRequest.subscribe(_eventInfo => this.dialog.open());
+    this.eventBrokerService.analysisReportRequest.subscribe(() => this.dialog.open());
   }
 }
 

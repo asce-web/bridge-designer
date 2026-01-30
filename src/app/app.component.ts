@@ -134,7 +134,7 @@ export class AppComponent implements AfterViewInit {
   /** Takes the welcome step of the startup tip+welcome sequence. */
   handleTipDialogClose(kind: TipDialogKind) {
     if (kind === 'startup') {
-      this.eventBrokerService.welcomeRequest.next({ origin: EventOrigin.APP });
+      this.eventBrokerService.welcomeRequest.next({ origin: EventOrigin.APP, data: undefined });
     }
   }
 

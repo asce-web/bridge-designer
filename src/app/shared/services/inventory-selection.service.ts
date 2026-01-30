@@ -2,7 +2,7 @@
    SPDX-License-Identifier: GPL-3.0-or-later */
 
 import { Injectable } from '@angular/core';
-import { EventBrokerService, EventInfo, EventOrigin } from './event-broker.service';
+import { EventBrokerService, EventOrigin, EventInfo } from './event-broker.service';
 import { CrossSection, InventoryService, Material, Shape, StockId } from './inventory.service';
 
 /** Injectable mirror of the state of the toolbar and member edit material selectors. */
@@ -16,30 +16,29 @@ export class InventorySelectionService {
     this._material = inventoryService.materials[0];
     this._crossSection = inventoryService.crossSections[0];
     this._shape = inventoryService.getShape(0, 22);
-    const that = this;
-    const updateState = (eventInfo: EventInfo): boolean => {
+    const updateState = (eventInfo: EventInfo<StockId>): boolean => {
       const stockId = eventInfo.data as StockId;
       // Array references return undefined for indices oob.
       const material = inventoryService.materials[stockId.materialIndex];
       const crossSection = inventoryService.crossSections[stockId.sectionIndex];
       const shape = inventoryService.getShape(stockId.sectionIndex, stockId.sizeIndex);
-      if (material === that._material && crossSection === that._crossSection && shape === that._shape) {
+      if (material === this._material && crossSection === this._crossSection && shape === this._shape) {
         return false;
       }
-      that._material = material;
-      that._crossSection = crossSection;
-      that._shape = shape;
+      this._material = material;
+      this._crossSection = crossSection;
+      this._shape = shape;
       return true;
     };
-    eventBrokerService.inventorySelectionChange.subscribe(eventInfo => {
+    eventBrokerService.inventorySelectionChangeRequest.subscribe(eventInfo => {
       if (updateState(eventInfo)) {
         // The completion event should cause updates to selected members.
-        eventBrokerService.inventorySelectionCompletion.next({
+        eventBrokerService.inventorySelectionChange.next({
           origin: EventOrigin.SERVICE,
           data: {
-            material: that._material,
-            crossSection: that._crossSection,
-            shape: that._shape,
+            material: this._material,
+            crossSection: this._crossSection,
+            shape: this._shape,
             stockId: eventInfo.data,
           },
         });

@@ -15,7 +15,7 @@ import {
 } from '@angular/core';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
-import { EventBrokerService, EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { HotElementService } from '../shared/hot-element.service';
 import { JointCursorService } from '../shared/joint-cursor.service';
 import { InputEventDelegator } from './input-handler';
@@ -114,18 +114,18 @@ export class CursorOverlayComponent implements AfterViewInit {
     // Manage selection clearing here so setters don't undo selection rehydration.
     switch (i) {
       case CursorMode.JOINTS:
-        this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.CURSOR_OVERLAY });
+        this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.CURSOR_OVERLAY, data: undefined });
         this.setJointsMode();
         break;
       case CursorMode.MEMBERS:
-        this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.CURSOR_OVERLAY });
+        this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.CURSOR_OVERLAY, data: undefined });
         this.setMembersMode();
         break;
       case CursorMode.SELECT:
         this.setSelectMode();
         break;
       case CursorMode.ERASE:
-        this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.CURSOR_OVERLAY });
+        this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.CURSOR_OVERLAY, data: undefined });
         this.setEraseMode();
         break;
     }
@@ -152,11 +152,11 @@ export class CursorOverlayComponent implements AfterViewInit {
     this.modalInputEventDelegator.register(this.canvas);
     this.dragInputEventDelegator.handlerSet = this.hotElementDragService.initialize(this.ctx, this.dragCursorActive);
     this.setJointsMode();
-    this.eventBrokerService.editModeSelection.subscribe((eventInfo: EventInfo) =>
-      this.setCursorModeByControlSelectedIndex(eventInfo.data),
+    this.eventBrokerService.editModeSelection.subscribe(info =>
+      this.setCursorModeByControlSelectedIndex(info.data),
     );
     // Clear the hot element prior to viewport changes, since this makes the cursor layer invalid.
-    this.eventBrokerService.draftingViewportPendingChange.subscribe(_eventInfo =>
+    this.eventBrokerService.draftingViewportPendingChange.subscribe(() =>
       this.hotElementService.clearRenderedHotElement(this.ctx),
     );
   }

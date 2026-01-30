@@ -24,8 +24,8 @@ export class ElementSelectorService {
     private readonly eventBrokerService: EventBrokerService,
     private readonly viewportTransform: ViewportTransform2D,
   ) {
-    eventBrokerService.selectAllRequest.subscribe(_eventInfo => this.selectAllMembers(_eventInfo.data));
-    eventBrokerService.selectNoneRequest.subscribe(eventInfo => this.clear(eventInfo.origin));
+    eventBrokerService.selectAllRequest.subscribe(info => this.selectAllMembers(info.origin));
+    eventBrokerService.selectNoneRequest.subscribe(info => this.clear(info.origin));
     // If there was a rehydrated selection, update the UI.
     eventBrokerService.sessionStateRestoreCompletion.subscribe(() => {
       const selectedElements = this.selectedElementsService.selectedElements;

@@ -80,7 +80,7 @@ export class DesignConditions {
   private static readonly STANDARD_ABUTMENT_COST_PER_DECK_PANEL = 500;
 
   public readonly abutmentCost: number = 0;
-  public readonly abutmentJointIndices: number[] = [];
+  public readonly supportedJointIndices: number[] = [];
   public readonly allowableSlenderness: number = 0;
   public readonly archHeight: number = 0;
   public readonly archJointIndex: number = 0;
@@ -289,7 +289,7 @@ export class DesignConditions {
     this.abutmentCost *= 0.5; // Steve's calcs are for both abutments. UI presents unit cost.
 
     // Abutment joints.
-    this.abutmentJointIndices = isArch
+    this.supportedJointIndices = isArch
       ? [0, this.panelCount, this.archJointIndex, this.archJointIndex + 1]
       : this.isPier
         ? [0, this.panelCount, this.pierJointIndex]

@@ -34,8 +34,8 @@ export class MemberEditDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.memberEditRequest.subscribe(eventInfo =>
-      this.open(eventInfo.data.x, eventInfo.data.y),
+    this.eventBrokerService.memberEditRequest.subscribe(info =>
+      this.open(info.data.x, info.data.y),
     );
     // On delete, close the dialog. There's no selection to edit further.
     this.eventBrokerService.deleteSelectionRequest.subscribe(_eventInfo => this.dialog.close());
@@ -43,16 +43,19 @@ export class MemberEditDialogComponent implements AfterViewInit {
       this.increaseSizeButton,
       EventOrigin.MEMBER_EDIT_DIALOG,
       this.eventBrokerService.memberSizeIncreaseRequest,
+      undefined
     );
     this.uiStateService.registerPlainButton(
       this.decreaseSizeButton,
       EventOrigin.MEMBER_EDIT_DIALOG,
       this.eventBrokerService.memberSizeDecreaseRequest,
+      undefined
     );
     this.uiStateService.registerPlainButton(
       this.deleteSelectionButton,
       EventOrigin.MEMBER_EDIT_DIALOG,
       this.eventBrokerService.deleteSelectionRequest,
+      undefined
     );
     this.uiStateService.registerToggleButton(
       this.memberListToggleButton,

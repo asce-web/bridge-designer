@@ -5,11 +5,10 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import {
   EventBrokerService,
-  EventInfo,
   EventOrigin,
   SelectData,
   ToggleData,
-  TypedEventInfo,
+  EventInfo,
 } from '../../../shared/services/event-broker.service';
 import { jqxToggleButtonComponent } from 'jqwidgets-ng/jqxtogglebutton';
 import { jqxMenuComponent } from 'jqwidgets-ng/jqxmenu';
@@ -25,7 +24,6 @@ export const enum ModifierMask {
 
 /** Allowed UI modes to which disable overrides can be attached. */
 export type UiMode = 'initial' | 'drafting' | 'animation' | 'unknown';
-
 
 /**
  * Info paired with a subject to connote UI modes where it should be disabled
@@ -55,17 +53,19 @@ type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
 export class UiStateService {
   // Workaround for jqxMenu limitation: menu item click handlers aren't allowed, only the
   // global itemclicked() handler. So can't hang this info there, which would be simpler.
-  private readonly selectMenuItemInfosById: { [id: string]: [number, Subject<TypedEventInfo<SelectData>>] } = {};
-  private readonly toggleMenuItemInfosById: { [id: string]: [HTMLSpanElement, Subject<TypedEventInfo<ToggleData>>] } =
-    {};
-  private readonly plainMenuItemInfosById: { [id: string]: [Subject<EventInfo>, any] } = {};
+  private readonly selectMenuItemInfosById: { [id: string]: [SelectData, Subject<EventInfo<SelectData>>] } = {};
+  private readonly toggleMenuItemInfosById: { [id: string]: [HTMLSpanElement, Subject<EventInfo<ToggleData>>] } = {};
+  private readonly plainMenuItemInfosById: { [id: string]: [Subject<EventInfo<any>>, any] } = {};
   private readonly widgetDisablersBySubject = new Map<Subject<any>, ((disable: boolean) => void)[]>();
-  private readonly keyInfosByKey: { [key: string]: [boolean, Subject<EventInfo>, any] } = {};
+  private readonly keyInfosByKey: { [key: string]: [boolean, Subject<EventInfo<any>>, any] } = {};
   private uiMode: UiMode = 'unknown';
   /** De- and rehydration state for disable overrides. */
   private readonly disableOverridesBySubject = new Map<Subject<any>, DisableOverride>();
   /** De- and rehydration state for select and toggle subject-driven widgets. */
-  private readonly selectAndToggleValuesBySubject = new Map<Subject<EventInfo>, number | boolean>();
+  private readonly selectAndToggleValuesBySubject = new Map<
+    Subject<EventInfo<SelectData | ToggleData>>,
+    SelectData | ToggleData
+  >();
   private readonly registeredSelectAndToggleCaptureSubjects = new Set<Subject<any>>();
   /** Subjects designated unusable due to environment limitations, never to be re-enabled. */
   private readonly globallyDisabledSubjects = new Set<Subject<any>>();
@@ -114,7 +114,7 @@ export class UiStateService {
     this.addDisableOverrides(eventBrokerService.designModeSelection, initial);
     this.addDisableOverrides(eventBrokerService.gridDensitySelection, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.guidesToggle, initialAndAnimation);
-    this.addDisableOverrides(eventBrokerService.inventorySelectionChange, initialAndAnimation);
+    this.addDisableOverrides(eventBrokerService.inventorySelectionChangeRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.loadDesignIterationRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.loadTemplateRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.memberDetailsReportRequest, initial, true);
@@ -158,16 +158,16 @@ export class UiStateService {
     }
   }
 
-  public registerSelectMenuItems<T>(
+  public registerSelectMenuItems(
     menu: jqxMenuComponent,
     itemIds: string[],
-    subject: Subject<TypedEventInfo<T>>,
+    subject: Subject<EventInfo<SelectData>>,
   ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => itemIds.forEach(id => menu.disable(id, disable)));
     itemIds.forEach((id, index) => (this.selectMenuItemInfosById[id] = [index, subject]));
     const menuItems = itemIds.map(UiStateService.queryMenuMark);
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe((eventInfo: EventInfo<SelectData>) => {
       menuItems.forEach((menuItem, menuItemIndex) =>
         UiStateService.setMenuItemCheck(menuItem, eventInfo.data === menuItemIndex),
       );
@@ -177,7 +177,7 @@ export class UiStateService {
   public registerSelectToolbarButtons(
     buttonItems: jqwidgets.ToolBarToolItem[],
     indices: number[],
-    subject: Subject<TypedEventInfo<SelectData>>,
+    subject: Subject<EventInfo<SelectData>>,
   ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable =>
@@ -189,7 +189,7 @@ export class UiStateService {
         subject.next({ origin: EventOrigin.TOOLBAR, data: buttonItemIndex });
       }),
     );
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe((eventInfo: EventInfo<SelectData>) => {
       buttonItems.forEach((buttonItem, buttonItemIndex) =>
         buttonItem.tool.jqxToggleButton(
           'toggled',
@@ -206,7 +206,7 @@ export class UiStateService {
    */
   public registerSelectButtons(
     buttons: jqxToggleButtonComponent[],
-    subject: Subject<TypedEventInfo<SelectData>>,
+    subject: Subject<EventInfo<SelectData>>,
     skipStateCapture?: boolean,
   ): void {
     if (!skipStateCapture) {
@@ -218,23 +218,19 @@ export class UiStateService {
         subject.next({ origin: EventOrigin.TOOLBAR, data: buttonIndex });
       }),
     );
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe((eventInfo: EventInfo<SelectData>) => {
       buttons.forEach((button, buttonIndex) =>
         button.toggled(eventInfo.origin !== EventOrigin.TOOLBAR && eventInfo.data === buttonIndex),
       );
     });
   }
 
-  public registerToggleMenuItem(
-    menu: jqxMenuComponent,
-    itemId: string,
-    subject: Subject<TypedEventInfo<ToggleData>>,
-  ): void {
+  public registerToggleMenuItem(menu: jqxMenuComponent, itemId: string, subject: Subject<EventInfo<ToggleData>>): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => menu.disable(itemId, disable));
     const menuItem = UiStateService.queryMenuMark(itemId);
     this.toggleMenuItemInfosById[itemId] = [menuItem, subject];
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe((eventInfo: EventInfo<ToggleData>) => {
       if (eventInfo.origin != EventOrigin.MENU) {
         UiStateService.setMenuItemCheck(menuItem, eventInfo.data);
       }
@@ -243,14 +239,14 @@ export class UiStateService {
 
   public registerToggleToolbarButton(
     buttonItem: jqwidgets.ToolBarToolItem,
-    subject: Subject<TypedEventInfo<ToggleData>>,
+    subject: Subject<EventInfo<ToggleData>>,
   ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => buttonItem.tool.jqxToggleButton({ disabled: disable }));
     buttonItem.tool.on('click', () => {
       subject.next({ origin: EventOrigin.TOOLBAR, data: buttonItem.tool.jqxToggleButton('toggled') });
     });
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe((eventInfo: EventInfo<ToggleData>) => {
       if (eventInfo.origin !== EventOrigin.TOOLBAR) {
         buttonItem.tool.jqxToggleButton('toggled', eventInfo.data);
       }
@@ -260,14 +256,14 @@ export class UiStateService {
   public registerToggleButton(
     button: jqxToggleButtonComponent,
     origin: EventOrigin,
-    subject: Subject<EventInfo>,
+    subject: Subject<EventInfo<ToggleData>>,
   ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => button.disabled(disable));
     button.elementRef.nativeElement.addEventListener('click', () => {
       subject.next({ origin, data: button.toggled() });
     });
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe((eventInfo: EventInfo<ToggleData>) => {
       if (eventInfo.origin !== origin) {
         button.toggled(eventInfo.data);
       }
@@ -277,28 +273,33 @@ export class UiStateService {
   public registerPlainMenuEntry<T>(
     menu: jqxMenuComponent,
     itemId: string,
-    subject: Subject<TypedEventInfo<T>>,
+    subject: Subject<EventInfo<T>>,
     data?: T,
   ): void {
     this.addWidgetDisabler(subject, disable => menu.disable(itemId, disable));
     this.plainMenuItemInfosById[itemId] = [subject, data];
   }
 
-  public registerPlainToolbarButton(buttonItem: jqwidgets.ToolBarToolItem, subject: Subject<EventInfo>, data?: any) {
+  public registerPlainToolbarButton<T>(buttonItem: jqwidgets.ToolBarToolItem, subject: Subject<EventInfo<T>>, data: T) {
     this.addWidgetDisabler(subject, disable => buttonItem.tool.jqxButton({ disabled: disable }));
     buttonItem.tool.on('click', () => {
       subject.next({ origin: EventOrigin.TOOLBAR, data });
     });
   }
 
-  public registerPlainButton(button: jqxButtonComponent, origin: EventOrigin, subject: Subject<EventInfo>, data?: any) {
+  public registerPlainButton<T>(
+    button: jqxButtonComponent,
+    origin: EventOrigin,
+    subject: Subject<EventInfo<T>>,
+    data: T,
+  ) {
     this.addWidgetDisabler(subject, disable => button.disabled(disable));
     button.elementRef.nativeElement.addEventListener('click', () => subject.next({ origin, data }));
   }
 
-  public registerKey(key: string, modifierMask: number, subject: Subject<EventInfo>, data?: any): void {
+  public registerKey(key: string, modifierMask: number, subject: Subject<EventInfo<any>>, data?: any): void {
     const lookupKey = `${key}|${modifierMask}`;
-    const info: [boolean, Subject<EventInfo>, any] = [false, subject, data];
+    const info: [boolean, Subject<EventInfo<any>>, any] = [false, subject, data];
     this.keyInfosByKey[lookupKey] = info;
     this.addWidgetDisabler(subject, disable => {
       info[0] = disable;
@@ -374,7 +375,7 @@ export class UiStateService {
     return document.querySelector(`li#${id} > span.menu-mark`) as HTMLSpanElement;
   }
 
-  private registerForStateCapture<T>(subject: Subject<TypedEventInfo<T>>): void {
+  private registerForStateCapture(subject: Subject<EventInfo<any>>): void {
     if (this.registeredSelectAndToggleCaptureSubjects.has(subject)) {
       return;
     }

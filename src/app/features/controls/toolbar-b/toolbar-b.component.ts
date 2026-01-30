@@ -80,7 +80,10 @@ export class ToolbarBComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgToggleButton('Use fine drawing grid', 'img/finegrid.png', tool);
         break;
       case Tools.MEMBER_TABLE:
-        WidgetHelper.initToolbarImgToggleButton('Hide member table', 'img/close.png', tool, { toggled: true, height: 16 });
+        WidgetHelper.initToolbarImgToggleButton('Hide member table', 'img/close.png', tool, {
+          toggled: true,
+          height: 16,
+        });
         tool.css({ position: 'absolute', right: '0', bottom: '1px' });
         break;
     }
@@ -92,8 +95,9 @@ export class ToolbarBComponent implements AfterViewInit {
     const gridTools = [Tools.COARSE_GRID, Tools.MEDIUM_GRID, Tools.FINE_GRID];
     const uiState = this.uiStateService;
     uiState.registerSelectToolbarButtons(tools, gridTools, this.eventBrokerService.gridDensitySelection);
-    uiState.registerPlainToolbarButton(tools[Tools.SIZE_DOWN], this.eventBrokerService.memberSizeDecreaseRequest);
-    uiState.registerPlainToolbarButton(tools[Tools.SIZE_UP], this.eventBrokerService.memberSizeIncreaseRequest);
+    const _ = undefined;
+    uiState.registerPlainToolbarButton(tools[Tools.SIZE_DOWN], this.eventBrokerService.memberSizeDecreaseRequest, _);
+    uiState.registerPlainToolbarButton(tools[Tools.SIZE_UP], this.eventBrokerService.memberSizeIncreaseRequest, _);
     uiState.registerToggleToolbarButton(tools[Tools.MEMBER_NUMBERS], this.eventBrokerService.memberNumbersToggle);
     uiState.registerToggleToolbarButton(tools[Tools.GUIDES], this.eventBrokerService.guidesToggle);
     uiState.registerToggleToolbarButton(tools[Tools.TEMPLATE], this.eventBrokerService.templateToggle);

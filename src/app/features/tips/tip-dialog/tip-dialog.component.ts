@@ -67,8 +67,8 @@ export class TipDialogComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.tipCount = this.tips.nativeElement.childElementCount;
-    this.eventBrokerService.tipRequest.subscribe(eventInfo => {
-      this.kind = eventInfo.data;
+    this.eventBrokerService.tipRequest.subscribe(info => {
+      this.kind = info.data;
       if (!this.showAtStartupCheckbox.checked()) {
         this.onClose.emit(this.kind); // Simulate tip dialog that didn't happen.
       } else {

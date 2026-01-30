@@ -69,7 +69,7 @@ export class InventorySelectorComponent implements AfterViewInit {
     WidgetHelper.setDropdownListSelection(this.materialSelector, stockId.materialIndex);
     WidgetHelper.setDropdownListSelection(this.crossSectionSelector, stockId.sectionIndex);
     WidgetHelper.setDropdownListSelection(this.sizeSelector, stockId.sizeIndex);
-    // The event handlers arem't reliably triggered by the above.
+    // The event handlers aren't reliably triggered by the above.
     this.sendStockId();
   }
 
@@ -81,8 +81,9 @@ export class InventorySelectorComponent implements AfterViewInit {
     );
   }
 
+  /** Sends a request to all inventory selectors to update themselves. */
   private sendStockId(): void {
-    this.eventBrokerService.inventorySelectionChange.next({
+    this.eventBrokerService.inventorySelectionChangeRequest.next({
       origin: this.eventOrigin,
       data: this.stockId,
     });
@@ -100,10 +101,10 @@ export class InventorySelectorComponent implements AfterViewInit {
       () => this.dehydrate(),
       state => this.rehydrate(state),
     );
-    this.eventBrokerService.loadInventorySelectorRequest.subscribe(eventInfo =>
-      this.load(eventInfo.data),
+    this.eventBrokerService.loadInventorySelectorRequest.subscribe(info =>
+      this.load(info.data),
     );
-    this.uiStateService.addWidgetDisabler(this.eventBrokerService.inventorySelectionChange, disable =>
+    this.uiStateService.addWidgetDisabler(this.eventBrokerService.inventorySelectionChangeRequest, disable =>
       this.disable(disable),
     );
   }

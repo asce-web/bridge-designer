@@ -5,7 +5,7 @@
 
 ## Master TODO
 
-- Make `EventBrokerService` type safe for `EventInfo.data`.
+- None for now.
 
 ## To fix
 

@@ -74,7 +74,7 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   handleResize(): void {
-    this.eventBrokerService.draftingViewportPendingChange.next({ origin: EventOrigin.DRAFTING_PANEL });
+    this.eventBrokerService.draftingViewportPendingChange.next({ origin: EventOrigin.DRAFTING_PANEL, data: undefined });
     const parent = Utility.assertNotNull(this.draftingPanel.nativeElement.parentElement);
     const w = parent.clientWidth;
     const h = parent.clientHeight;
@@ -100,7 +100,7 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   loadBridge(bridge: BridgeModel, draftingPanelState: DraftingPanelState): void {
-    this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.DRAFTING_PANEL });
+    this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.DRAFTING_PANEL, data: undefined });
     const bridgeGridDensity = DesignGridService.getDensityOfWorldPoints(bridge.joints);
     this.selectGridDensity(bridgeGridDensity);
     this.bridgeService.setBridge(bridge, draftingPanelState);
@@ -207,7 +207,7 @@ export class DraftingPanelComponent implements AfterViewInit {
       selectorIndex != this.designGridService.grid.density
     ) {
       this.designGridService.grid.density = selectorIndex;
-      this.eventBrokerService.gridDensityChange.next({ origin: EventOrigin.DRAFTING_PANEL });
+      this.eventBrokerService.gridDensityChange.next({ origin: EventOrigin.DRAFTING_PANEL, data: undefined });
     }
   }
 
@@ -227,14 +227,14 @@ export class DraftingPanelComponent implements AfterViewInit {
     new ResizeObserver(() => this.handleResize()).observe(this.wrapper.nativeElement);
     this.eventBrokerService.deleteSelectionRequest.subscribe(() => this.handleDeleteSelectionRequest());
     this.eventBrokerService.draftingPanelInvalidation.subscribe(() => this.render());
-    this.eventBrokerService.gridDensitySelection.subscribe(eventInfo => this.handleSelectGridDensity(eventInfo.data));
-    this.eventBrokerService.loadBridgeRequest.subscribe(eventInfo =>
-      this.loadBridge(eventInfo.data.bridge, eventInfo.data.draftingPanelState),
+    this.eventBrokerService.gridDensitySelection.subscribe(info => this.handleSelectGridDensity(info.data));
+    this.eventBrokerService.loadBridgeRequest.subscribe(info =>
+      this.loadBridge(info.data.bridge, info.data.draftingPanelState),
     );
-    this.eventBrokerService.loadSketchRequest.subscribe(eventInfo => this.loadSketch(eventInfo.data));
+    this.eventBrokerService.loadSketchRequest.subscribe(info => this.loadSketch(info.data));
     this.eventBrokerService.selectedElementsChange.subscribe(() => this.render());
-    this.eventBrokerService.titleBlockToggle.subscribe(eventInfo => {
-      this.titleBlock.nativeElement.style.display = eventInfo.data ? '' : 'none';
+    this.eventBrokerService.titleBlockToggle.subscribe(info => {
+      this.titleBlock.nativeElement.style.display = info.data ? '' : 'none';
     });
     this.eventBrokerService.editCommandCompletion.subscribe(() => this.render());
     this.handleResize();
