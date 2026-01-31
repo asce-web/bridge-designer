@@ -33,20 +33,23 @@ export type UiMode = 'initial' | 'drafting' | 'animation' | 'unknown';
  */
 type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
 
+/** Hack to support omitting optional parameter if its generic type is `undefined`. */
+type OptionalArg<T> = T extends undefined ? [] : [T];
+
 /**
  * Container for logic that synchronizes multiple UI elements having the same purpose.
- * 
+ *
  * Three kinds of elements are supported:
- *   - Selects: Selector of integers in [0..n).
+ *   - Select: Selector of integers in [0..n).
  *     - UI collections of buttons with radio behavior, moving check menu item sets.
- *   - Toggles: Toggle between boolean false and true.
+ *   - Toggle: Toggle between boolean false and true.
  *     - UI stateful buttons, checked menu items.
- *   - Buttons: Simple actuator with bound per instance data of arbitrary type.
+ *   - Plain: Simple actuator with bound per instance data of arbitrary type.
  *     - UI buttons, menu items, overlays, hot keys.
- * 
+ *
  * Each element is associated with a `Subject`. Users subscribe for change notifications.
  * Subjects are dis- and re-enabled to affect all associated elements. Sending events on
- * select or toggle subject affects all associated elements.  
+ * select or toggle subject affects all associated elements.
  *
  * This class tracks the state of toggle and select subjects partially to support session de-
  * and rehydration followed by restoring widget states. Users must subscribe to respective
@@ -54,7 +57,7 @@ type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
  *
  * "Disable override" state is also maintained here. An override, as the name implies, causes
  * its element to be disabled regardless of its normal enable/disable state based on UI states
- * specified at registration time. When the UI leaves the disabled state, the element's 
+ * specified at registration time. When the UI leaves the disabled state, the element's
  * enable/disable state is restored. This service necessarily tracks the normal states for
  * this purpose.
  *
@@ -91,12 +94,15 @@ export class UiStateService {
     addEventListener('keydown', (event: KeyboardEvent): void => {
       let modifierMask = (+event.shiftKey << 3) | (+event.metaKey << 2) | (+event.ctrlKey << 1) | +event.altKey;
       const info = this.keyInfosByKey[`${event.key}|${modifierMask}`];
-      if (!info || info[0]) {
+      if (!info) {
         return;
       }
-      // Stop <input> from grabbing focus back on control keys.
-      event.preventDefault();
-      info[1].next({ origin: EventOrigin.TOOLBAR, data: info[2] });
+      const [isDisabled, subject, data] = info;
+      if (!isDisabled) {
+        // Stop <input> from grabbing focus back on control keys.
+        event.preventDefault();
+        subject.next({ origin: EventOrigin.TOOLBAR, data });
+      }
     });
     eventBrokerService.uiModeRequest.subscribe(info => {
       this.uiMode = info.data;
@@ -287,27 +293,29 @@ export class UiStateService {
     menu: jqxMenuComponent,
     itemId: string,
     subject: Subject<EventInfo<T>>,
-    data?: T,
+    ...args: OptionalArg<T>
   ): void {
     this.addWidgetDisabler(subject, disable => menu.disable(itemId, disable));
-    this.plainMenuItemInfosById[itemId] = [subject, data];
+    this.plainMenuItemInfosById[itemId] = [subject, args[0]];
   }
 
-  public registerPlainToolbarButton<T>(buttonItem: jqwidgets.ToolBarToolItem, subject: Subject<EventInfo<T>>, data: T) {
+  public registerPlainToolbarButton<T>(
+    buttonItem: jqwidgets.ToolBarToolItem,
+    subject: Subject<EventInfo<T>>,
+    ...args: OptionalArg<T>
+  ) {
     this.addWidgetDisabler(subject, disable => buttonItem.tool.jqxButton({ disabled: disable }));
-    buttonItem.tool.on('click', () => {
-      subject.next({ origin: EventOrigin.TOOLBAR, data });
-    });
+    buttonItem.tool.on('click', () => subject.next({ origin: EventOrigin.TOOLBAR, data: args[0]! }));
   }
 
   public registerPlainButton<T>(
     button: jqxButtonComponent,
     origin: EventOrigin,
     subject: Subject<EventInfo<T>>,
-    data: T,
+    ...args: OptionalArg<T>
   ) {
     this.addWidgetDisabler(subject, disable => button.disabled(disable));
-    button.elementRef.nativeElement.addEventListener('click', () => subject.next({ origin, data }));
+    button.elementRef.nativeElement.addEventListener('click', () => subject.next({ origin, data: args[0]! }));
   }
 
   public registerKey<T>(key: string, modifierMask: number, subject: Subject<EventInfo<T>>, data: T): void {

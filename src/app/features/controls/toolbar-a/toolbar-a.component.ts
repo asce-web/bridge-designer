@@ -169,21 +169,20 @@ export class ToolbarAComponent implements AfterViewInit {
       [Tools.DESIGN, Tools.LOAD_TEST],
       eventBroker.designModeSelection,
     );
-    const _ = undefined;
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.BACK_ITERATION], eventBroker.designIterationBackRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.COST_REPORT], eventBroker.costReportRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.DELETE], eventBroker.deleteSelectionRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.FORWARD_ITERATION], eventBroker.designIterationForwardRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.GOTO_ITERATION], eventBroker.loadDesignIterationRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.LOAD_TEST_REPORT], eventBroker.analysisReportRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.MEMBER_DETAILS_REPORT], eventBroker.memberDetailsReportRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.NEW], eventBroker.newDesignRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.OPEN], eventBroker.loadBridgeFileRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.PRINT], eventBroker.printRequest, _);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.PRINT_3D], eventBroker.print3dRequest, _);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.BACK_ITERATION], eventBroker.designIterationBackRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.COST_REPORT], eventBroker.costReportRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.DELETE], eventBroker.deleteSelectionRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.FORWARD_ITERATION], eventBroker.designIterationForwardRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.GOTO_ITERATION], eventBroker.loadDesignIterationRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.LOAD_TEST_REPORT], eventBroker.analysisReportRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.MEMBER_DETAILS_REPORT], eventBroker.memberDetailsReportRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.NEW], eventBroker.newDesignRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.OPEN], eventBroker.loadBridgeFileRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.PRINT], eventBroker.printRequest);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.PRINT_3D], eventBroker.print3dRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.REDO], eventBroker.redoRequest, 1);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.SAVE], eventBroker.saveBridgeFileRequest, false);
-    this.uiStateService.registerPlainToolbarButton(tools[Tools.SELECT_ALL], eventBroker.selectAllRequest, _);
+    this.uiStateService.registerPlainToolbarButton(tools[Tools.SELECT_ALL], eventBroker.selectAllRequest);
     this.uiStateService.registerPlainToolbarButton(tools[Tools.UNDO], eventBroker.undoRequest, 1);
     this.uiStateService.addWidgetDisabler(eventBroker.redoRequest, disable => {
       const tools = this.toolbar.getTools();

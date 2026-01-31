@@ -10,11 +10,11 @@ import { jqxToggleButtonComponent, jqxToggleButtonModule } from 'jqwidgets-ng/jq
 import { UiStateService } from '../../controls/management/ui-state.service';
 
 @Component({
-    selector: 'member-edit-dialog',
-    imports: [InventorySelectorComponent, jqxToggleButtonModule, jqxWindowModule, jqxButtonModule],
-    templateUrl: './member-edit-dialog.component.html',
-    styleUrl: './member-edit-dialog.component.css',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'member-edit-dialog',
+  imports: [InventorySelectorComponent, jqxToggleButtonModule, jqxWindowModule, jqxButtonModule],
+  templateUrl: './member-edit-dialog.component.html',
+  styleUrl: './member-edit-dialog.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MemberEditDialogComponent implements AfterViewInit {
   @ViewChild('dialog') dialog!: jqxWindowComponent;
@@ -34,28 +34,23 @@ export class MemberEditDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.memberEditRequest.subscribe(info =>
-      this.open(info.data.x, info.data.y),
-    );
+    this.eventBrokerService.memberEditRequest.subscribe(info => this.open(info.data.x, info.data.y));
     // On delete, close the dialog. There's no selection to edit further.
     this.eventBrokerService.deleteSelectionRequest.subscribe(() => this.dialog.close());
     this.uiStateService.registerPlainButton(
       this.increaseSizeButton,
       EventOrigin.MEMBER_EDIT_DIALOG,
       this.eventBrokerService.memberSizeIncreaseRequest,
-      undefined
     );
     this.uiStateService.registerPlainButton(
       this.decreaseSizeButton,
       EventOrigin.MEMBER_EDIT_DIALOG,
       this.eventBrokerService.memberSizeDecreaseRequest,
-      undefined
     );
     this.uiStateService.registerPlainButton(
       this.deleteSelectionButton,
       EventOrigin.MEMBER_EDIT_DIALOG,
       this.eventBrokerService.deleteSelectionRequest,
-      undefined
     );
     this.uiStateService.registerToggleButton(
       this.memberListToggleButton,

@@ -45,8 +45,8 @@ export const enum EventOrigin {
   WELCOME_DIALOG,
 }
 
-/** Event information with optional data field. */
-export type EventInfo<T = void> = { origin: EventOrigin; data: T };
+/** Event information with associated data. */
+export type EventInfo<T = undefined> = { origin: EventOrigin; data: T };
 
 // Subject broadcast message parameter types force senders to agree with consumers.
 export type DesignIterationChangeData = {
