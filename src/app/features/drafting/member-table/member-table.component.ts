@@ -210,10 +210,10 @@ export class MemberTableComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.analysisCompletion.subscribe(_eventInfo => this.updateGridContent());
-    this.eventBrokerService.editCommandCompletion.subscribe(eventInfo => {
+    this.eventBrokerService.analysisCompletion.subscribe(() => this.updateGridContent());
+    this.eventBrokerService.editCommandCompletion.subscribe(info => {
       if (
-        eventInfo.data.effectsMask & EditEffect.MEMBERS ||
+        info.data.effectsMask & EditEffect.MEMBERS ||
         // Analysis validity right now doesn't match last rendered.
         this.analysisValidityService.isLastAnalysisValid !== this.isLastAnalysisValid
       ) {
@@ -221,8 +221,8 @@ export class MemberTableComponent implements AfterViewInit {
       }
     });
     this.eventBrokerService.loadBridgeCompletion.subscribe(() => this.updateGridContent());
-    this.eventBrokerService.selectedElementsChange.subscribe(eventInfo => {
-      if (eventInfo.origin !== EventOrigin.MEMBER_TABLE) {
+    this.eventBrokerService.selectedElementsChange.subscribe(info => {
+      if (info.origin !== EventOrigin.MEMBER_TABLE) {
         this.updateGridSelection();
       }
     });

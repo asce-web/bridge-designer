@@ -23,7 +23,7 @@ export class AnalysisValidityService {
     sessionStateService: SessionStateService,
     private readonly undoManagerService: UndoManagerService,
   ) {
-    eventBrokerService.analysisCompletion.subscribe(_eventInfo => {
+    eventBrokerService.analysisCompletion.subscribe(() => {
       this.currentAnalysisToken = undoManagerService.stateToken;
     });
     // Must follow subscription above for rehydration.

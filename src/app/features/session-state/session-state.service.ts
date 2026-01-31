@@ -24,8 +24,8 @@ export class SessionStateService {
     if (params.get('reset') !== null) {
       localStorage.clear();
     }
-    eventBrokerService.sessionStateEnableToggle.subscribe(eventInfo => {
-      this.isEnabled = eventInfo.data !== false;
+    eventBrokerService.sessionStateEnableToggle.subscribe(info => {
+      this.isEnabled = info.data !== false;
     });
     this.register(
       SessionStateService.SESSION_KEY,
@@ -109,7 +109,7 @@ export class SessionStateService {
     const saveSubject = isEssential
       ? this.eventBrokerService.sessionStateSaveEssentialRequest
       : this.eventBrokerService.sessionStateSaveRequest;
-    saveSubject.subscribe(_eventInfo => this.recordState(key, dehydrator()));
+    saveSubject.subscribe(() => this.recordState(key, dehydrator()));
     const state = this.getSavedState(key);
     if (state) {
       rehydrator(state as T);

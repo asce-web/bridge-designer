@@ -34,8 +34,8 @@ export class StatusIndicatorComponent implements AfterViewInit {
       this.setIcon(AnalysisStatus.NONE);
     });
     // New analysis status needs to be displayed.
-    this.eventBrokerService.analysisCompletion.subscribe(eventInfo => {
-      this.setIcon(eventInfo.data);
+    this.eventBrokerService.analysisCompletion.subscribe(info => {
+      this.setIcon(info.data);
     });
     // Analysis completion event during re-hydration is too early to be handled above.
     this.eventBrokerService.sessionStateRestoreCompletion.subscribe(() => {

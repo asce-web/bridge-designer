@@ -71,20 +71,20 @@ export class ToolSelectorComponent implements AfterViewInit {
       this.eventBrokerService.editModeSelection,
       true, // Skip state capture.
     );
-    this.eventBrokerService.toolsToggle.subscribe(eventInfo => {
-      this.toolsToggleValue = eventInfo.data;
+    this.eventBrokerService.toolsToggle.subscribe(info => {
+      this.toolsToggleValue = info.data;
       this.setVisibility();
     });
-    this.eventBrokerService.uiModeRequest.subscribe(eventInfo => {
-      this.uiMode = eventInfo.data;
+    this.eventBrokerService.uiModeRequest.subscribe(info => {
+      this.uiMode = info.data;
       this.setVisibility();
     });
     // Split the usual registration in order to wait until the app view is hydrated for restoring selected tool.
     // This ensures all listeners are subscribed. Their AfterViewInit methods are complete.
-    this.eventBrokerService.sessionStateSaveRequest.subscribe(_eventInfo =>
+    this.eventBrokerService.sessionStateSaveRequest.subscribe(() =>
       this.sessionStateService.recordState(ToolSelectorComponent.SESSION_STATE_KEY, this.dehydrated),
     );
-    this.eventBrokerService.sessionStateRestoreCompletion.subscribe(_eventInfo => {
+    this.eventBrokerService.sessionStateRestoreCompletion.subscribe(() => {
       const state = this.sessionStateService.getSavedState(ToolSelectorComponent.SESSION_STATE_KEY) as State;
       this.rehydrate(state);
     });

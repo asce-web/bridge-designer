@@ -108,8 +108,8 @@ export class AppComponent implements AfterViewInit {
     this.eventBrokerService.memberTableToggle.subscribe(info => {
       this.memberTable.visible = info.data;
     });
-    this.eventBrokerService.uiModeRequest.subscribe(eventInfo =>
-      this.showDraftingPanelCover(eventInfo.data === 'initial'),
+    this.eventBrokerService.uiModeRequest.subscribe(info =>
+      this.showDraftingPanelCover(info.data === 'initial'),
     );
     // Let everyone know if session management is enabled. E.g. the menu checked status.
     this.sessionStateService.restoreSessionManagementEnabled();

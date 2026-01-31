@@ -32,8 +32,8 @@ export class FlyThruSettingsService {
 
   constructor(eventBrokerService: EventBrokerService) {
     this.updateTruckSpeedInfo();
-    eventBrokerService.flyThruSettingsChange.subscribe(eventInfo => {
-      Object.assign(this.settings, eventInfo.data);
+    eventBrokerService.flyThruSettingsChange.subscribe(info => {
+      Object.assign(this.settings, info.data);
       this.updateTruckSpeedInfo();
     });
   }

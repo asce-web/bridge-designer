@@ -167,9 +167,9 @@ export class UiStateService {
     this.addWidgetDisabler(subject, disable => itemIds.forEach(id => menu.disable(id, disable)));
     itemIds.forEach((id, index) => (this.selectMenuItemInfosById[id] = [index, subject]));
     const menuItems = itemIds.map(UiStateService.queryMenuMark);
-    subject.subscribe((eventInfo: EventInfo<SelectData>) => {
+    subject.subscribe(info => {
       menuItems.forEach((menuItem, menuItemIndex) =>
-        UiStateService.setMenuItemCheck(menuItem, eventInfo.data === menuItemIndex),
+        UiStateService.setMenuItemCheck(menuItem, info.data === menuItemIndex),
       );
     });
   }
@@ -189,12 +189,12 @@ export class UiStateService {
         subject.next({ origin: EventOrigin.TOOLBAR, data: buttonItemIndex });
       }),
     );
-    subject.subscribe((eventInfo: EventInfo<SelectData>) => {
+    subject.subscribe(info => {
       buttonItems.forEach((buttonItem, buttonItemIndex) =>
         buttonItem.tool.jqxToggleButton(
           'toggled',
           // EventOrigin test needed for jqwidgets toggle logic: clicked button can't be already toggled.
-          eventInfo.origin !== EventOrigin.TOOLBAR && eventInfo.data === buttonItemIndex,
+          info.origin !== EventOrigin.TOOLBAR && info.data === buttonItemIndex,
         ),
       );
     });
@@ -218,9 +218,9 @@ export class UiStateService {
         subject.next({ origin: EventOrigin.TOOLBAR, data: buttonIndex });
       }),
     );
-    subject.subscribe((eventInfo: EventInfo<SelectData>) => {
+    subject.subscribe(info => {
       buttons.forEach((button, buttonIndex) =>
-        button.toggled(eventInfo.origin !== EventOrigin.TOOLBAR && eventInfo.data === buttonIndex),
+        button.toggled(info.origin !== EventOrigin.TOOLBAR && info.data === buttonIndex),
       );
     });
   }
@@ -230,9 +230,9 @@ export class UiStateService {
     this.addWidgetDisabler(subject, disable => menu.disable(itemId, disable));
     const menuItem = UiStateService.queryMenuMark(itemId);
     this.toggleMenuItemInfosById[itemId] = [menuItem, subject];
-    subject.subscribe((eventInfo: EventInfo<ToggleData>) => {
-      if (eventInfo.origin != EventOrigin.MENU) {
-        UiStateService.setMenuItemCheck(menuItem, eventInfo.data);
+    subject.subscribe(info => {
+      if (info.origin != EventOrigin.MENU) {
+        UiStateService.setMenuItemCheck(menuItem, info.data);
       }
     });
   }
@@ -246,9 +246,9 @@ export class UiStateService {
     buttonItem.tool.on('click', () => {
       subject.next({ origin: EventOrigin.TOOLBAR, data: buttonItem.tool.jqxToggleButton('toggled') });
     });
-    subject.subscribe((eventInfo: EventInfo<ToggleData>) => {
-      if (eventInfo.origin !== EventOrigin.TOOLBAR) {
-        buttonItem.tool.jqxToggleButton('toggled', eventInfo.data);
+    subject.subscribe(info => {
+      if (info.origin !== EventOrigin.TOOLBAR) {
+        buttonItem.tool.jqxToggleButton('toggled', info.data);
       }
     });
   }
@@ -263,9 +263,9 @@ export class UiStateService {
     button.elementRef.nativeElement.addEventListener('click', () => {
       subject.next({ origin, data: button.toggled() });
     });
-    subject.subscribe((eventInfo: EventInfo<ToggleData>) => {
-      if (eventInfo.origin !== origin) {
-        button.toggled(eventInfo.data);
+    subject.subscribe(info => {
+      if (info.origin !== origin) {
+        button.toggled(info.data);
       }
     });
   }
@@ -398,7 +398,7 @@ export class UiStateService {
   }
 
   /**
-   * Rehydrates state. Where state and broker keys don't match, 
+   * Rehydrates state. Where state and broker keys don't match,
    * state is quietly not restored.
    */
   private rehydrate(state: State): void {

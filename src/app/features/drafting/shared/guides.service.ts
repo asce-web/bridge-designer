@@ -66,15 +66,15 @@ export class GuidesService implements DraggableService {
       GuidesService.HORIZONTAL_GUIDE_KNOB,
       GuidesService.VERTICAL_GUILE_KNOB,
     ]);
-    this.eventBrokerService.draftingPanelInvalidation.subscribe(eventInfo => {
-      if (eventInfo.data === 'viewport') {
+    this.eventBrokerService.draftingPanelInvalidation.subscribe(info => {
+      if (info.data === 'viewport') {
         // Re-run the locators to clamp guide coordinates with new conditions/view.
         this.locateVerticalGuideWorld(this.x0World);
         this.locateHorizontalGuideWorld(this.yWorld);
       }
     });
-    this.eventBrokerService.guidesToggle.subscribe(eventInfo => {
-      this.isVisible = eventInfo.data;
+    this.eventBrokerService.guidesToggle.subscribe(info => {
+      this.isVisible = info.data;
       this.eventBrokerService.draftingPanelInvalidation.next({ origin: EventOrigin.SERVICE, data: 'graphic' });
     });
   }

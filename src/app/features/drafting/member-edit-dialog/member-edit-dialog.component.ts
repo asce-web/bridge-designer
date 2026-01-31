@@ -38,7 +38,7 @@ export class MemberEditDialogComponent implements AfterViewInit {
       this.open(info.data.x, info.data.y),
     );
     // On delete, close the dialog. There's no selection to edit further.
-    this.eventBrokerService.deleteSelectionRequest.subscribe(_eventInfo => this.dialog.close());
+    this.eventBrokerService.deleteSelectionRequest.subscribe(() => this.dialog.close());
     this.uiStateService.registerPlainButton(
       this.increaseSizeButton,
       EventOrigin.MEMBER_EDIT_DIALOG,

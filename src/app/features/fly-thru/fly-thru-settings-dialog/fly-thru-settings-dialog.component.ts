@@ -216,7 +216,7 @@ export class FlyThruSettingsDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.animationControlsToggle.subscribe(eventInfo => this.openOrClose(eventInfo.data));
+    this.eventBrokerService.animationControlsToggle.subscribe(info => this.openOrClose(info.data));
     this.eventBrokerService.uiModeChange.subscribe(() => this.openOrClose());
     this.sessionStateService.register(
       'flythrusettings.component',

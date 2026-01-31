@@ -16,8 +16,8 @@ export class InventorySelectionService {
     this._material = inventoryService.materials[0];
     this._crossSection = inventoryService.crossSections[0];
     this._shape = inventoryService.getShape(0, 22);
-    const updateState = (eventInfo: EventInfo<StockId>): boolean => {
-      const stockId = eventInfo.data as StockId;
+    const updateState = (info: EventInfo<StockId>): boolean => {
+      const stockId = info.data as StockId;
       // Array references return undefined for indices oob.
       const material = inventoryService.materials[stockId.materialIndex];
       const crossSection = inventoryService.crossSections[stockId.sectionIndex];
@@ -30,8 +30,8 @@ export class InventorySelectionService {
       this._shape = shape;
       return true;
     };
-    eventBrokerService.inventorySelectionChangeRequest.subscribe(eventInfo => {
-      if (updateState(eventInfo)) {
+    eventBrokerService.inventorySelectionChangeRequest.subscribe(info => {
+      if (updateState(info)) {
         // The completion event should cause updates to selected members.
         eventBrokerService.inventorySelectionChange.next({
           origin: EventOrigin.SERVICE,
@@ -39,7 +39,7 @@ export class InventorySelectionService {
             material: this._material,
             crossSection: this._crossSection,
             shape: this._shape,
-            stockId: eventInfo.data,
+            stockId: info.data,
           },
         });
       }
