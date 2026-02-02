@@ -26,10 +26,10 @@ export class ElementSelectorService {
   ) {
     eventBrokerService.selectAllRequest.subscribe(info => this.selectAllMembers(info.origin));
     eventBrokerService.selectNoneRequest.subscribe(info => this.clear(info.origin));
-    // If there was a rehydrated selection, update the UI.
+    // If there was a rehydrated selection, apply it and update the UI. Delayed because
+    // other re-hydrations need the selection empty. E.g., the inventory selector.
     eventBrokerService.sessionStateRestoreCompletion.subscribe(() => {
-      const selectedElements = this.selectedElementsService.selectedElements;
-      if (selectedElements.selectedMembers.size + selectedElements.selectedJoints.size > 0) {
+      if (selectedElementsService.applyRehydration()) {
         this.sendSelectedElementsChange(EventOrigin.SERVICE);
       }
     });

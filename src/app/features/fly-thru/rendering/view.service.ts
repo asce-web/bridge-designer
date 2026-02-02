@@ -130,7 +130,6 @@ export class ViewService {
     const zEye = 1.5 * Math.max(aspect * extent.width, extent.height) + SiteConstants.DECK_HALF_WIDTH;
 
     // Always put eye at height of a person on the road.
-    // Swivel eye right a bit to account for slant of river.
     vec3.set(this.eye, xCenter, 2, zEye);
 
     // Direct gaze at middle of vertical extent.
