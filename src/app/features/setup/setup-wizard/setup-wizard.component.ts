@@ -285,7 +285,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
       origin: EventOrigin.SETUP_DIALOG,
       data: { bridge: this.bridgeService.bridge, draftingPanelState: this.bridgeService.draftingPanelState },
     });
-    this.eventBrokerService.loadSketchRequest.next({
+    this.eventBrokerService.attachSketchRequest.next({
       origin: EventOrigin.SETUP_DIALOG,
       data: this.bridgeService.sketch,
     });

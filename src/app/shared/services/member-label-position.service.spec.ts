@@ -4,7 +4,7 @@
 import { MemberLabelPositionService } from './member-label-position.service';
 import { BridgeService } from './bridge.service';
 import { Member } from '../classes/member.model';
-import { projectLocalMatchers } from '../test/jasmine-matchers';
+import { projectLocalMatchers } from '../ts-test/jasmine-matchers';
 
 describe('MemberLabelPositionService', () => {
   let service: MemberLabelPositionService;

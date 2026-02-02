@@ -71,7 +71,7 @@ export class TemplateSelectionDialogComponent implements AfterViewInit {
 
   okClickHandler(): void {
     this.dialog.close();
-    this.eventBrokerService.loadSketchRequest.next({
+    this.eventBrokerService.attachSketchRequest.next({
       origin: EventOrigin.TEMPLATE_DIALOG,
       data: this.bridgeService.sketch,
     });

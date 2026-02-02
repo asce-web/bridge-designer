@@ -92,10 +92,11 @@ export class AppComponent implements AfterViewInit {
     this.draftingAreaCover.nativeElement.style.display = value ? 'block' : 'none';
   }
 
-  @HostListener('window:beforeunload')
-  handleBeforeUnload(): void {
+  @HostListener('document:visibilitychange', ['$event'])
+  handleVisibilityChange(event: Event): void {
+    console.log(JSON.stringify(event));
     // Don't save state until the user has begun work on a bridge.
-    if (this.bridgeService.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS) {
+    if (document.hidden && this.bridgeService.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS) {
       this.sessionStateService.saveState();
     }
   }
@@ -108,9 +109,7 @@ export class AppComponent implements AfterViewInit {
     this.eventBrokerService.memberTableToggle.subscribe(info => {
       this.memberTable.visible = info.data;
     });
-    this.eventBrokerService.uiModeRequest.subscribe(info =>
-      this.showDraftingPanelCover(info.data === 'initial'),
-    );
+    this.eventBrokerService.uiModeRequest.subscribe(info => this.showDraftingPanelCover(info.data === 'initial'));
     // Let everyone know if session management is enabled. E.g. the menu checked status.
     this.sessionStateService.restoreSessionManagementEnabled();
     // Manage the welcome sequence if there is one. Send a completion event if we're rehydrating.

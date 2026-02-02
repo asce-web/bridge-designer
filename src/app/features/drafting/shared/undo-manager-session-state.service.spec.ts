@@ -10,7 +10,7 @@ import { SelectedElementsService } from './selected-elements-service';
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { AddJointCommand } from '../../controls/edit-command/add-joint.command';
 import { Joint } from '../../../shared/classes/joint.model';
-import { validateBridge } from '../../../shared/test/validation';
+import { validateBridge } from '../../../shared/ts-test/validation';
 import { Member } from '../../../shared/classes/member.model';
 import { AddMemberCommand } from '../../controls/edit-command/add-member.command';
 

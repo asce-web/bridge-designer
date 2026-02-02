@@ -26,6 +26,9 @@ export class AnalysisValidityService {
     eventBrokerService.analysisCompletion.subscribe(() => {
       this.currentAnalysisToken = undoManagerService.stateToken;
     });
+    eventBrokerService.loadBridgeRequest.subscribe(() => {
+      this.currentAnalysisToken = undefined;
+    });
     // Must follow subscription above for rehydration.
     sessionStateService.register(
       'analysisValidity.service',
@@ -44,7 +47,7 @@ export class AnalysisValidityService {
 
   private rehydrate(state: State) {
     if (state.isLastAnalysisValid) {
-      this.analysisService.analyze({ populateBridgeMembers: true });
+      this.analysisService.analyzeAndNotify({ populateBridgeMembers: true });
     }
   }
 }

@@ -122,6 +122,7 @@ export class UiStateService {
     // By-UI mode disablement setup. Must be complete before session state registration.
     // Options specify app modes causing override of normal state to disabled state.
     const initial: UiMode[] = ['initial']; // Enabled only when a design is in progress.
+    const animation: UiMode[] = ['animation']; // Enabled initially and when a design is in progress.
     const initialAndAnimation: UiMode[] = ['initial', 'animation']; // Enabled for drafting.
     const initialAndDrafting: UiMode[] = ['initial', 'drafting']; // Enabled for animation.
     this.addDisableOverrides(eventBrokerService.analysisReportRequest, initial, true);
@@ -141,6 +142,7 @@ export class UiStateService {
     this.addDisableOverrides(eventBrokerService.memberSizeDecreaseRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.memberSizeIncreaseRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.memberTableToggle, initialAndAnimation);
+    this.addDisableOverrides(eventBrokerService.newDesignRequest, animation);
     this.addDisableOverrides(eventBrokerService.redoRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.rulersToggle, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.selectAllRequest, initialAndAnimation);
@@ -396,8 +398,15 @@ export class UiStateService {
     return document.querySelector(`li#${id} > span.menu-mark`) as HTMLSpanElement;
   }
 
+  /**
+   * Registers select and toggle subject state capture for de- and rehydration.
+   * `EventBrokerService` defines a list to omit, so rehydrated state is always the default.
+   */
   private registerForStateCapture(subject: Subject<EventInfo<any>>): void {
-    if (this.registeredSelectAndToggleCaptureSubjects.has(subject)) {
+    if (
+      this.registeredSelectAndToggleCaptureSubjects.has(subject) ||
+      this.eventBrokerService.noDehydrateSubjects.includes(subject)
+    ) {
       return;
     }
     subject.subscribe(info => {

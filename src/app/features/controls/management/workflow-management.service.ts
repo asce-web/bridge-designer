@@ -97,7 +97,8 @@ export class WorkflowManagementService {
           if (autoFix) {
             bridgeAutoFixService.autoFix();
           }
-          analysisService.analyze({ populateBridgeMembers: true });
+          // Analysis completion chains to animation or back to drafting panel.
+          analysisService.analyzeAndNotify({ populateBridgeMembers: true });
           break;
       }
     });

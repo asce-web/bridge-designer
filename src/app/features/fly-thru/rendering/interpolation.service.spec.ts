@@ -6,7 +6,7 @@ import { BridgeService } from '../../../shared/services/bridge.service';
 import { AnalysisService } from '../../../shared/services/analysis.service';
 import { TerrainModelService, CenterlinePost } from '../models/terrain-model.service';
 import { vec2 } from 'gl-matrix';
-import { projectLocalMatchers } from '../../../shared/test/jasmine-matchers';
+import { projectLocalMatchers } from '../../../shared/ts-test/jasmine-matchers';
 import { SiteConstants } from '../../../shared/classes/site-constants';
 import { FlyThruSettingsService } from './fly-thru-settings.service';
 

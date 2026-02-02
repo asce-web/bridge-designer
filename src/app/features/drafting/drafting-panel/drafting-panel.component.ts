@@ -231,7 +231,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.loadBridgeRequest.subscribe(info =>
       this.loadBridge(info.data.bridge, info.data.draftingPanelState),
     );
-    this.eventBrokerService.loadSketchRequest.subscribe(info => this.loadSketch(info.data));
+    this.eventBrokerService.attachSketchRequest.subscribe(info => this.loadSketch(info.data));
     this.eventBrokerService.selectedElementsChange.subscribe(() => this.render());
     this.eventBrokerService.titleBlockToggle.subscribe(info => {
       this.titleBlock.nativeElement.style.display = info.data ? '' : 'none';
