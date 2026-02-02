@@ -92,9 +92,8 @@ export class AppComponent implements AfterViewInit {
     this.draftingAreaCover.nativeElement.style.display = value ? 'block' : 'none';
   }
 
-  @HostListener('document:visibilitychange', ['$event'])
-  handleVisibilityChange(event: Event): void {
-    console.log(JSON.stringify(event));
+  @HostListener('document:visibilitychange')
+  handleVisibilityChange(): void {
     // Don't save state until the user has begun work on a bridge.
     if (document.hidden && this.bridgeService.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS) {
       this.sessionStateService.saveState();
