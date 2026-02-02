@@ -13,7 +13,6 @@ import { GlService } from './gl.service';
 import { Geometry } from '../../../shared/classes/graphics';
 import { TRUCK_CAB_MESH_DATA } from '../models/truck-cab';
 import { BridgeService } from '../../../shared/services/bridge.service';
-import { LoadType } from '../../../shared/services/design-conditions.service';
 
 @Injectable({ providedIn: 'root' })
 export class TruckRenderingService {
@@ -57,7 +56,7 @@ export class TruckRenderingService {
     m = this.uniformService.pushModelMatrix();
     const truckPosition = this.simulationStateService.wayPoint;
     const truckRotation = this.simulationStateService.rotation;
-    const truckZ = this.bridgeService.designConditions.loadType === LoadType.STANDARD_TRUCK ? 2.5 : 0;
+    const truckZ = this.bridgeService.centerlineZ;
     mat4.translate(m, m, vec3.set(this.offset, truckPosition[0], truckPosition[1], truckZ));
     Geometry.rotateZ(m, m, truckRotation[1], truckRotation[0]);
     if (cabOnly) {

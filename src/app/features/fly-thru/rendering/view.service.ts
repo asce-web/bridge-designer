@@ -194,17 +194,18 @@ export class ViewService {
       const driverLookDir = this.simulationStateService.rotation;
       mat4.fromXRotation(this.driverRotation, -this.phiDriverHead);
       mat4.rotateY(this.driverRotation, this.driverRotation, this.thetaDriverHead);
+      const driverZ = this.bridgeService.centerlineZ;
       vec3.set(
         this.eyeDriver,
         truckPosition[0] + ViewService.DRIVER_EYE_LEAD,
         truckPosition[1] + ViewService.DRIVER_EYE_HEIGHT,
-        0,
+        driverZ,
       );
       vec3.set(
         this.centerDriver,
         truckPosition[0] + driverLookDir[0],
         truckPosition[1] + driverLookDir[1] + ViewService.DRIVER_EYE_HEIGHT,
-        0,
+        driverZ,
       );
       mat4.lookAt(m, this.eyeDriver, this.centerDriver, this.up);
       return mat4.multiply(m, this.driverRotation, m);
