@@ -194,30 +194,17 @@ export class Utility {
     return a;
   }
 
-  public static clearLocalStorageByPrefix(prefix: string): void {
+  public static clearLocalStorageByPrefix(keyPrefix: string): void {
+    // Removing a key reorders them. So fetch all names, then remove.
+    const keys: string[] = [];
     for (let i = 0; i < localStorage.length; ++i) {
       const key = localStorage.key(i);
-      if (key?.startsWith(prefix)) {
-        localStorage.removeItem(key);
+      if (key?.startsWith(keyPrefix)) {
+        keys.push(key);
       }
+    }
+    for (const key of keys) {
+      localStorage.removeItem(key);
     }
   }
-
-  /* TODO: Not currently used. Remove?
-  public static setsEqual<T>(a: Set<T>, b: Set<T>) {
-    if (a.size !== b.size) {
-      return false;
-    }
-    for (const element of a) {
-      if (!b.has(element)) {
-        return false;
-      }
-    }
-    return true;
-  }*/
-
-  /* TODO: Not currently used. Remove?
-  public static arraysEqual<T>(a: T[], b: T[]): boolean {
-    return a.length === b.length && a.every((aElement, index) => aElement === b[index]);
-  }*/
 }
