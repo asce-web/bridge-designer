@@ -65,7 +65,7 @@ export class DesignSaverLoaderComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.saveBridgeFileRequest.subscribe(eventInfo => this.saveBridgeFileSafely(eventInfo.data));
-    this.eventBrokerService.loadBridgeFileRequest.subscribe(eventInfo => this.loadBridgeFileSafely(eventInfo.data));
+    this.eventBrokerService.saveBridgeFileRequest.subscribe(info => this.saveBridgeFileSafely(info.data));
+    this.eventBrokerService.loadBridgeFileRequest.subscribe(info => this.loadBridgeFileSafely(info.data));
   }
 }

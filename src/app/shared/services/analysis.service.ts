@@ -144,21 +144,22 @@ export class AnalysisService {
   }
 
   /**
-   * Analyzes the bridge provided by BridgeService.
+   * Analyzes the bridge provided by BridgeService and notifies of completion.
    *
    * Optionally populates the bridge with UI info and degrades selected members for failure animation.
    *
    * @param bridge bridge to analyze
    * @param failureStatus status of failed members: FAILED, NOT_FAILED, base member getLength, which implies FAILED.
    */
-  public analyze(options?: { degradeMembersMask?: Uint8Array; populateBridgeMembers?: boolean }): void {
-    this.analyzeImpl(options || {});
+  public analyzeAndNotify(options?: { degradeMembersMask?: Uint8Array; populateBridgeMembers?: boolean }): void {
+    this.analyzeQuietly(options || {});
     if (options?.populateBridgeMembers) {
       this.eventBrokerService.analysisCompletion.next({ origin: EventOrigin.SERVICE, data: this.status });
     }
   }
 
-  private analyzeImpl(options: { degradeMembersMask?: Uint8Array; populateBridgeMembers?: boolean }): void {
+  /** Same as `analyze()`, but does not notify of completion. */
+  public analyzeQuietly(options: { degradeMembersMask?: Uint8Array; populateBridgeMembers?: boolean }): void {
     const bridge = this.bridgeService.bridge;
     const conditions = this.bridgeService.designConditions;
     this.status = AnalysisStatus.NONE;

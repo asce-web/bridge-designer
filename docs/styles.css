@@ -11,8 +11,14 @@ body {
   margin: 0 0 0 0;
 }
 
-div {
+body div {
   margin-left: 16px;
+  margin-right: 16px;
+}
+
+li div {
+  margin-top: 1ex;
+  margin-left: 0;
   margin-right: 16px;
 }
 
@@ -35,6 +41,11 @@ h2 {
 }
 
 .para {
+  margin-top: 1ex;
+}
+
+.list-para {
+  margin-left: 0;
   margin-top: 1ex;
 }
 

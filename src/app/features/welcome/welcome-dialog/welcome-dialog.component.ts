@@ -20,26 +20,24 @@ export class WelcomeDialogComponent implements AfterViewInit {
   @ViewChild('loadSampleButton') loadSampleButton!: jqxRadioButtonComponent;
   @ViewChild('openButton') openButton!: jqxRadioButtonComponent;
 
-  constructor(
-    private readonly eventBrokerService: EventBrokerService,
-  ) {}
+  constructor(private readonly eventBrokerService: EventBrokerService) {}
 
   handleOkButton(): void {
     this.dialog.close();
     if (this.newButton.checked()) {
-      this.eventBrokerService.newDesignRequest.next({ origin: EventOrigin.WELCOME_DIALOG });
+      this.eventBrokerService.newDesignRequest.next({ origin: EventOrigin.WELCOME_DIALOG, data: undefined });
     } else if (this.loadSampleButton.checked()) {
-      this.eventBrokerService.loadSampleRequest.next({ origin: EventOrigin.WELCOME_DIALOG });
+      this.eventBrokerService.loadSampleRequest.next({ origin: EventOrigin.WELCOME_DIALOG, data: undefined });
     } else if (this.openButton.checked()) {
-      this.eventBrokerService.loadBridgeFileRequest.next({ origin: EventOrigin.WELCOME_DIALOG });
+      this.eventBrokerService.loadBridgeFileRequest.next({ origin: EventOrigin.WELCOME_DIALOG, data: undefined });
     }
   }
 
   handleAboutButton(): void {
-    this.eventBrokerService.aboutRequest.next({ origin: EventOrigin.WELCOME_DIALOG });
+    this.eventBrokerService.aboutRequest.next({ origin: EventOrigin.WELCOME_DIALOG, data: undefined });
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.welcomeRequest.subscribe(_eventInfo => this.dialog.open());
+    this.eventBrokerService.welcomeRequest.subscribe(() => this.dialog.open());
   }
 }

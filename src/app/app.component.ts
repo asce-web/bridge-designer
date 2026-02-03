@@ -92,10 +92,10 @@ export class AppComponent implements AfterViewInit {
     this.draftingAreaCover.nativeElement.style.display = value ? 'block' : 'none';
   }
 
-  @HostListener('window:beforeunload')
-  handleBeforeUnload(): void {
+  @HostListener('document:visibilitychange')
+  handleVisibilityChange(): void {
     // Don't save state until the user has begun work on a bridge.
-    if (this.bridgeService.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS) {
+    if (document.hidden && this.bridgeService.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS) {
       this.sessionStateService.saveState();
     }
   }
@@ -108,9 +108,7 @@ export class AppComponent implements AfterViewInit {
     this.eventBrokerService.memberTableToggle.subscribe(info => {
       this.memberTable.visible = info.data;
     });
-    this.eventBrokerService.uiModeRequest.subscribe(eventInfo =>
-      this.showDraftingPanelCover(eventInfo.data === 'initial'),
-    );
+    this.eventBrokerService.uiModeRequest.subscribe(info => this.showDraftingPanelCover(info.data === 'initial'));
     // Let everyone know if session management is enabled. E.g. the menu checked status.
     this.sessionStateService.restoreSessionManagementEnabled();
     // Manage the welcome sequence if there is one. Send a completion event if we're rehydrating.
@@ -134,7 +132,7 @@ export class AppComponent implements AfterViewInit {
   /** Takes the welcome step of the startup tip+welcome sequence. */
   handleTipDialogClose(kind: TipDialogKind) {
     if (kind === 'startup') {
-      this.eventBrokerService.welcomeRequest.next({ origin: EventOrigin.APP });
+      this.eventBrokerService.welcomeRequest.next({ origin: EventOrigin.APP, data: undefined });
     }
   }
 

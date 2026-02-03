@@ -8,7 +8,7 @@ import { Joint } from '../classes/joint.model';
 import { Member } from '../classes/member.model';
 import { SiteModel } from '../classes/site.model';
 import { SiteConstants } from '../classes/site-constants';
-import { DesignConditions, DesignConditionsService } from './design-conditions.service';
+import { DesignConditions, DesignConditionsService, LoadType } from './design-conditions.service';
 import { AllowedShapeChangeMask, InventoryService, StockId } from './inventory.service';
 import { BridgeSketchModel } from '../classes/bridge-sketch.model';
 import { DraftingPanelState, PersistenceService, SaveSet } from './persistence.service';
@@ -128,6 +128,11 @@ export class BridgeService {
   /** Gets a rectangle exactly containing all the bridge's joints. */
   public getWorldExtent(extent: Rectangle2D = Rectangle2D.createEmpty()): Rectangle2D {
     return extent.setToExtent(this.bridge.joints);
+  }
+
+  /** Returns the z-coordinate of the right-bound traffic lane. */
+  public get centerlineZ(): number {
+    return this.designConditions.loadType === LoadType.STANDARD_TRUCK ? 0.5 * SiteConstants.DECK_HALF_WIDTH : 0;
   }
 
   /** Returns the stock (or one of them if more than one) used for the most members in the bridge, else EMPTY if none. */

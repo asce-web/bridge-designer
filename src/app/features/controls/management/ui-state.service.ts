@@ -3,7 +3,13 @@
 
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { EventBrokerService, EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
+import {
+  EventBrokerService,
+  EventOrigin,
+  SelectData,
+  ToggleData,
+  EventInfo,
+} from '../../../shared/services/event-broker.service';
 import { jqxToggleButtonComponent } from 'jqwidgets-ng/jqxtogglebutton';
 import { jqxMenuComponent } from 'jqwidgets-ng/jqxmenu';
 import { jqxButtonComponent } from 'jqwidgets-ng/jqxbuttons';
@@ -27,17 +33,33 @@ export type UiMode = 'initial' | 'drafting' | 'animation' | 'unknown';
  */
 type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
 
+/** Hack to support omitting optional parameter if its generic type is `undefined`. */
+type OptionalArg<T> = T extends undefined ? [] : [T];
+
 /**
  * Container for logic that synchronizes multiple UI elements having the same purpose.
  *
- * This class tracks the state of toggle and select subjects to support session de- and
- * rehydration followed by restoring widget states.
+ * Three kinds of elements are supported:
+ *   - Select: Selector of integers in [0..n).
+ *     - UI collections of buttons with radio behavior, moving check menu item sets.
+ *   - Toggle: Toggle between boolean false and true.
+ *     - UI stateful buttons, checked menu items.
+ *   - Plain: Simple actuator with bound per instance data of arbitrary type.
+ *     - UI buttons, menu items, overlays, hot keys.
  *
- * An exception is UI elements with registered "disable overrides." An override, as the name
- * implies, causes its element to be disabled regardless of its normal enable/disable state
- * based on UI states specified at registration time. When the UI leaves the disabled state,
- * the element's enable/disable state is restored. This service necessarily tracks the
- * normal states for this purpose.
+ * Each element is associated with a `Subject`. Users subscribe for change notifications.
+ * Subjects are dis- and re-enabled to affect all associated elements. Sending events on
+ * select or toggle subject affects all associated elements.
+ *
+ * This class tracks the state of toggle and select subjects partially to support session de-
+ * and rehydration followed by restoring widget states. Users must subscribe to respective
+ * subjects to obtain current control state.
+ *
+ * "Disable override" state is also maintained here. An override, as the name implies, causes
+ * its element to be disabled regardless of its normal enable/disable state based on UI states
+ * specified at registration time. When the UI leaves the disabled state, the element's
+ * enable/disable state is restored. This service necessarily tracks the normal states for
+ * this purpose.
  *
  * A global disablement feature is also supported to accommodate browsers lacking capabilities
  * that selected features require. Topics placed on the global list are immediately disabled
@@ -47,16 +69,19 @@ type DisableOverride = { isDisabled: boolean; disabledModes: UiMode[] };
 export class UiStateService {
   // Workaround for jqxMenu limitation: menu item click handlers aren't allowed, only the
   // global itemclicked() handler. So can't hang this info there, which would be simpler.
-  private readonly selectMenuItemInfosById: { [id: string]: [number, Subject<EventInfo>] } = {};
-  private readonly toggleMenuItemInfosById: { [id: string]: [HTMLSpanElement, Subject<EventInfo>] } = {};
-  private readonly plainMenuItemInfosById: { [id: string]: [Subject<EventInfo>, any] } = {};
+  private readonly selectMenuItemInfosById: { [id: string]: [SelectData, Subject<EventInfo<SelectData>>] } = {};
+  private readonly toggleMenuItemInfosById: { [id: string]: [HTMLSpanElement, Subject<EventInfo<ToggleData>>] } = {};
+  private readonly plainMenuItemInfosById: { [id: string]: [Subject<EventInfo<any>>, any] } = {};
   private readonly widgetDisablersBySubject = new Map<Subject<any>, ((disable: boolean) => void)[]>();
-  private readonly keyInfosByKey: { [key: string]: [boolean, Subject<EventInfo>, any] } = {};
+  private readonly keyInfosByKey: { [key: string]: [boolean, Subject<EventInfo<any>>, any] } = {};
   private uiMode: UiMode = 'unknown';
   /** De- and rehydration state for disable overrides. */
   private readonly disableOverridesBySubject = new Map<Subject<any>, DisableOverride>();
   /** De- and rehydration state for select and toggle subject-driven widgets. */
-  private readonly selectAndToggleValuesBySubject = new Map<Subject<EventInfo>, number | boolean>();
+  private readonly selectAndToggleValuesBySubject = new Map<
+    Subject<EventInfo<SelectData | ToggleData>>,
+    SelectData | ToggleData
+  >();
   private readonly registeredSelectAndToggleCaptureSubjects = new Set<Subject<any>>();
   /** Subjects designated unusable due to environment limitations, never to be re-enabled. */
   private readonly globallyDisabledSubjects = new Set<Subject<any>>();
@@ -69,12 +94,15 @@ export class UiStateService {
     addEventListener('keydown', (event: KeyboardEvent): void => {
       let modifierMask = (+event.shiftKey << 3) | (+event.metaKey << 2) | (+event.ctrlKey << 1) | +event.altKey;
       const info = this.keyInfosByKey[`${event.key}|${modifierMask}`];
-      if (!info || info[0]) {
+      if (!info) {
         return;
       }
-      // Stop <input> from grabbing focus back on control keys.
-      event.preventDefault();
-      info[1].next({ origin: EventOrigin.TOOLBAR, data: info[2] });
+      const [isDisabled, subject, data] = info;
+      if (!isDisabled) {
+        // Stop <input> from grabbing focus back on control keys.
+        event.preventDefault();
+        subject.next({ origin: EventOrigin.TOOLBAR, data });
+      }
     });
     eventBrokerService.uiModeRequest.subscribe(info => {
       this.uiMode = info.data;
@@ -94,6 +122,7 @@ export class UiStateService {
     // By-UI mode disablement setup. Must be complete before session state registration.
     // Options specify app modes causing override of normal state to disabled state.
     const initial: UiMode[] = ['initial']; // Enabled only when a design is in progress.
+    const animation: UiMode[] = ['animation']; // Enabled initially and when a design is in progress.
     const initialAndAnimation: UiMode[] = ['initial', 'animation']; // Enabled for drafting.
     const initialAndDrafting: UiMode[] = ['initial', 'drafting']; // Enabled for animation.
     this.addDisableOverrides(eventBrokerService.analysisReportRequest, initial, true);
@@ -105,7 +134,7 @@ export class UiStateService {
     this.addDisableOverrides(eventBrokerService.designModeSelection, initial);
     this.addDisableOverrides(eventBrokerService.gridDensitySelection, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.guidesToggle, initialAndAnimation);
-    this.addDisableOverrides(eventBrokerService.inventorySelectionChange, initialAndAnimation);
+    this.addDisableOverrides(eventBrokerService.inventorySelectionChangeRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.loadDesignIterationRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.loadTemplateRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.memberDetailsReportRequest, initial, true);
@@ -113,6 +142,7 @@ export class UiStateService {
     this.addDisableOverrides(eventBrokerService.memberSizeDecreaseRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.memberSizeIncreaseRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.memberTableToggle, initialAndAnimation);
+    this.addDisableOverrides(eventBrokerService.newDesignRequest, animation);
     this.addDisableOverrides(eventBrokerService.redoRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.rulersToggle, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.selectAllRequest, initialAndAnimation);
@@ -149,14 +179,18 @@ export class UiStateService {
     }
   }
 
-  public registerSelectMenuItems(menu: jqxMenuComponent, itemIds: string[], subject: Subject<EventInfo>): void {
+  public registerSelectMenuItems(
+    menu: jqxMenuComponent,
+    itemIds: string[],
+    subject: Subject<EventInfo<SelectData>>,
+  ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => itemIds.forEach(id => menu.disable(id, disable)));
     itemIds.forEach((id, index) => (this.selectMenuItemInfosById[id] = [index, subject]));
     const menuItems = itemIds.map(UiStateService.queryMenuMark);
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe(info => {
       menuItems.forEach((menuItem, menuItemIndex) =>
-        UiStateService.setMenuItemCheck(menuItem, eventInfo.data === menuItemIndex),
+        UiStateService.setMenuItemCheck(menuItem, info.data === menuItemIndex),
       );
     });
   }
@@ -164,7 +198,7 @@ export class UiStateService {
   public registerSelectToolbarButtons(
     buttonItems: jqwidgets.ToolBarToolItem[],
     indices: number[],
-    subject: Subject<EventInfo>,
+    subject: Subject<EventInfo<SelectData>>,
   ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable =>
@@ -176,12 +210,12 @@ export class UiStateService {
         subject.next({ origin: EventOrigin.TOOLBAR, data: buttonItemIndex });
       }),
     );
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe(info => {
       buttonItems.forEach((buttonItem, buttonItemIndex) =>
         buttonItem.tool.jqxToggleButton(
           'toggled',
           // EventOrigin test needed for jqwidgets toggle logic: clicked button can't be already toggled.
-          eventInfo.origin !== EventOrigin.TOOLBAR && eventInfo.data === buttonItemIndex,
+          info.origin !== EventOrigin.TOOLBAR && info.data === buttonItemIndex,
         ),
       );
     });
@@ -193,7 +227,7 @@ export class UiStateService {
    */
   public registerSelectButtons(
     buttons: jqxToggleButtonComponent[],
-    subject: Subject<EventInfo>,
+    subject: Subject<EventInfo<SelectData>>,
     skipStateCapture?: boolean,
   ): void {
     if (!skipStateCapture) {
@@ -205,34 +239,37 @@ export class UiStateService {
         subject.next({ origin: EventOrigin.TOOLBAR, data: buttonIndex });
       }),
     );
-    subject.subscribe((eventInfo: EventInfo) => {
+    subject.subscribe(info => {
       buttons.forEach((button, buttonIndex) =>
-        button.toggled(eventInfo.origin !== EventOrigin.TOOLBAR && eventInfo.data === buttonIndex),
+        button.toggled(info.origin !== EventOrigin.TOOLBAR && info.data === buttonIndex),
       );
     });
   }
 
-  public registerToggleMenuItem(menu: jqxMenuComponent, itemId: string, subject: Subject<EventInfo>): void {
+  public registerToggleMenuItem(menu: jqxMenuComponent, itemId: string, subject: Subject<EventInfo<ToggleData>>): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => menu.disable(itemId, disable));
     const menuItem = UiStateService.queryMenuMark(itemId);
     this.toggleMenuItemInfosById[itemId] = [menuItem, subject];
-    subject.subscribe((eventInfo: EventInfo) => {
-      if (eventInfo.origin != EventOrigin.MENU) {
-        UiStateService.setMenuItemCheck(menuItem, eventInfo.data);
+    subject.subscribe(info => {
+      if (info.origin != EventOrigin.MENU) {
+        UiStateService.setMenuItemCheck(menuItem, info.data);
       }
     });
   }
 
-  public registerToggleToolbarButton(buttonItem: jqwidgets.ToolBarToolItem, subject: Subject<EventInfo>): void {
+  public registerToggleToolbarButton(
+    buttonItem: jqwidgets.ToolBarToolItem,
+    subject: Subject<EventInfo<ToggleData>>,
+  ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => buttonItem.tool.jqxToggleButton({ disabled: disable }));
     buttonItem.tool.on('click', () => {
       subject.next({ origin: EventOrigin.TOOLBAR, data: buttonItem.tool.jqxToggleButton('toggled') });
     });
-    subject.subscribe((eventInfo: EventInfo) => {
-      if (eventInfo.origin !== EventOrigin.TOOLBAR) {
-        buttonItem.tool.jqxToggleButton('toggled', eventInfo.data);
+    subject.subscribe(info => {
+      if (info.origin !== EventOrigin.TOOLBAR) {
+        buttonItem.tool.jqxToggleButton('toggled', info.data);
       }
     });
   }
@@ -240,40 +277,52 @@ export class UiStateService {
   public registerToggleButton(
     button: jqxToggleButtonComponent,
     origin: EventOrigin,
-    subject: Subject<EventInfo>,
+    subject: Subject<EventInfo<ToggleData>>,
   ): void {
     this.registerForStateCapture(subject);
     this.addWidgetDisabler(subject, disable => button.disabled(disable));
     button.elementRef.nativeElement.addEventListener('click', () => {
       subject.next({ origin, data: button.toggled() });
     });
-    subject.subscribe((eventInfo: EventInfo) => {
-      if (eventInfo.origin !== origin) {
-        button.toggled(eventInfo.data);
+    subject.subscribe(info => {
+      if (info.origin !== origin) {
+        button.toggled(info.data);
       }
     });
   }
 
-  public registerPlainMenuEntry(menu: jqxMenuComponent, itemId: string, subject: Subject<EventInfo>, data?: any): void {
+  public registerPlainMenuEntry<T>(
+    menu: jqxMenuComponent,
+    itemId: string,
+    subject: Subject<EventInfo<T>>,
+    ...args: OptionalArg<T>
+  ): void {
     this.addWidgetDisabler(subject, disable => menu.disable(itemId, disable));
-    this.plainMenuItemInfosById[itemId] = [subject, data];
+    this.plainMenuItemInfosById[itemId] = [subject, args[0]];
   }
 
-  public registerPlainToolbarButton(buttonItem: jqwidgets.ToolBarToolItem, subject: Subject<EventInfo>, data?: any) {
+  public registerPlainToolbarButton<T>(
+    buttonItem: jqwidgets.ToolBarToolItem,
+    subject: Subject<EventInfo<T>>,
+    ...args: OptionalArg<T>
+  ) {
     this.addWidgetDisabler(subject, disable => buttonItem.tool.jqxButton({ disabled: disable }));
-    buttonItem.tool.on('click', () => {
-      subject.next({ origin: EventOrigin.TOOLBAR, data });
-    });
+    buttonItem.tool.on('click', () => subject.next({ origin: EventOrigin.TOOLBAR, data: args[0]! }));
   }
 
-  public registerPlainButton(button: jqxButtonComponent, origin: EventOrigin, subject: Subject<EventInfo>, data?: any) {
+  public registerPlainButton<T>(
+    button: jqxButtonComponent,
+    origin: EventOrigin,
+    subject: Subject<EventInfo<T>>,
+    ...args: OptionalArg<T>
+  ) {
     this.addWidgetDisabler(subject, disable => button.disabled(disable));
-    button.elementRef.nativeElement.addEventListener('click', () => subject.next({ origin, data }));
+    button.elementRef.nativeElement.addEventListener('click', () => subject.next({ origin, data: args[0]! }));
   }
 
-  public registerKey(key: string, modifierMask: number, subject: Subject<EventInfo>, data?: any): void {
+  public registerKey<T>(key: string, modifierMask: number, subject: Subject<EventInfo<T>>, data: T): void {
     const lookupKey = `${key}|${modifierMask}`;
-    const info: [boolean, Subject<EventInfo>, any] = [false, subject, data];
+    const info: [boolean, Subject<EventInfo<any>>, any] = [false, subject, data];
     this.keyInfosByKey[lookupKey] = info;
     this.addWidgetDisabler(subject, disable => {
       info[0] = disable;
@@ -349,8 +398,15 @@ export class UiStateService {
     return document.querySelector(`li#${id} > span.menu-mark`) as HTMLSpanElement;
   }
 
-  private registerForStateCapture(subject: Subject<EventInfo>): void {
-    if (this.registeredSelectAndToggleCaptureSubjects.has(subject)) {
+  /**
+   * Registers select and toggle subject state capture for de- and rehydration.
+   * `EventBrokerService` defines a list to omit, so rehydrated state is always the default.
+   */
+  private registerForStateCapture(subject: Subject<EventInfo<any>>): void {
+    if (
+      this.registeredSelectAndToggleCaptureSubjects.has(subject) ||
+      this.eventBrokerService.noDehydrateSubjects.includes(subject)
+    ) {
       return;
     }
     subject.subscribe(info => {
@@ -371,15 +427,22 @@ export class UiStateService {
     return state;
   }
 
+  /**
+   * Rehydrates state. Where state and broker keys don't match,
+   * state is quietly not restored.
+   */
   private rehydrate(state: State): void {
     const subjectsByName = this.eventBrokerService.subjectsByName;
     for (const subjectName in state.disablers) {
-      const subject = subjectsByName.get(subjectName)!;
-      const override = this.disableOverridesBySubject.get(subject)!;
+      const subject = subjectsByName.get(subjectName);
+      if (!subject) continue;
+      const override = this.disableOverridesBySubject.get(subject);
+      if (!override) continue;
       override.isDisabled = state.disablers[subjectName];
     }
     for (const subjectName in state.values) {
-      const subject = subjectsByName.get(subjectName)!;
+      const subject = subjectsByName.get(subjectName);
+      if (!subject) continue;
       this.selectAndToggleValuesBySubject.set(subject, state.values[subjectName]);
     }
   }

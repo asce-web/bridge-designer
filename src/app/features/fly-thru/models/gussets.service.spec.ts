@@ -8,7 +8,7 @@ import { ConvexHullService } from '../../../shared/services/convex-hull.service'
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { Point2DInterface } from '../../../shared/classes/graphics';
-import { projectLocalMatchers } from '../../../shared/test/jasmine-matchers';
+import { projectLocalMatchers } from '../../../shared/ts-test/jasmine-matchers';
 
 describe('GussetsService', () => {
   let service: GussetsService;

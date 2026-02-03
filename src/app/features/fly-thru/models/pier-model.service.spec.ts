@@ -3,7 +3,7 @@
 
 import { TestBed } from '@angular/core/testing';
 import { PierModelService } from './pier-model.service';
-import { projectLocalMatchers } from '../../../shared/test/jasmine-matchers';
+import { projectLocalMatchers } from '../../../shared/ts-test/jasmine-matchers';
 import { BridgeService } from '../../../shared/services/bridge.service';
 
 describe('PierModelService', () => {

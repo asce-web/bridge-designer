@@ -51,6 +51,6 @@ export class SlendernessFailDialogComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.partCount = this.textBox.nativeElement.childElementCount;
     this.selectPart(0);
-    this.eventBrokerService.slendernessFailDialogOpenRequest.subscribe(_eventInfo => this.dialog.open());
+    this.eventBrokerService.slendernessFailDialogOpenRequest.subscribe(() => this.dialog.open());
   }
 }

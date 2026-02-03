@@ -12,6 +12,7 @@ import { SimulationStateService } from './simulation-state.service';
 import { GlService } from './gl.service';
 import { Geometry } from '../../../shared/classes/graphics';
 import { TRUCK_CAB_MESH_DATA } from '../models/truck-cab';
+import { BridgeService } from '../../../shared/services/bridge.service';
 
 @Injectable({ providedIn: 'root' })
 export class TruckRenderingService {
@@ -22,6 +23,7 @@ export class TruckRenderingService {
   private cabInteriorMesh!: Mesh;
 
   constructor(
+    private readonly bridgeService: BridgeService,
     private readonly glService: GlService,
     private readonly meshRenderingService: MeshRenderingService,
     private readonly simulationStateService: SimulationStateService,
@@ -54,7 +56,8 @@ export class TruckRenderingService {
     m = this.uniformService.pushModelMatrix();
     const truckPosition = this.simulationStateService.wayPoint;
     const truckRotation = this.simulationStateService.rotation;
-    mat4.translate(m, m, vec3.set(this.offset, truckPosition[0], truckPosition[1], 0));
+    const truckZ = this.bridgeService.centerlineZ;
+    mat4.translate(m, m, vec3.set(this.offset, truckPosition[0], truckPosition[1], truckZ));
     Geometry.rotateZ(m, m, truckRotation[1], truckRotation[0]);
     if (cabOnly) {
       gl.disable(gl.CULL_FACE);

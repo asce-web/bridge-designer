@@ -45,13 +45,13 @@ export class WorkflowManagementService {
     // Alpha order by subject.
 
     // Analysis completion.
-    eventBrokerService.analysisCompletion.subscribe(eventInfo => {
-      const status = eventInfo.data;
+    eventBrokerService.analysisCompletion.subscribe(info => {
+      const status = info.data;
       let isValidForAnimation = false;
       if (status === AnalysisStatus.UNSTABLE) {
-        eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE });
+        eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
       } else if (status === AnalysisStatus.FAILS_SLENDERNESS) {
-        eventBrokerService.slendernessFailDialogOpenRequest.next({ origin: EventOrigin.SERVICE });
+        eventBrokerService.slendernessFailDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
       } else {
         isValidForAnimation = true;
       }
@@ -67,27 +67,27 @@ export class WorkflowManagementService {
     });
 
     // Animation option to show or not.
-    eventBrokerService.animationToggle.subscribe(eventInfo => {
-      showAnimation = eventInfo.data;
+    eventBrokerService.animationToggle.subscribe(info => {
+      showAnimation = info.data;
     });
 
     // Auto-fix option to fix or not.
-    eventBrokerService.autoCorrectToggle.subscribe(eventInfo => {
-      autoFix = eventInfo.data;
+    eventBrokerService.autoCorrectToggle.subscribe(info => {
+      autoFix = info.data;
     });
 
     // Design iterations change.
-    eventBrokerService.designIterationChange.subscribe(eventInfo => {
-      uiStateService.disable(eventBrokerService.designIterationBackRequest, eventInfo.data.inProgressIndex <= 0);
+    eventBrokerService.designIterationChange.subscribe(info => {
+      uiStateService.disable(eventBrokerService.designIterationBackRequest, info.data.inProgressIndex <= 0);
       uiStateService.disable(
         eventBrokerService.designIterationForwardRequest,
-        eventInfo.data.inProgressIndex >= eventInfo.data.iterationCount - 1,
+        info.data.inProgressIndex >= info.data.iterationCount - 1,
       );
     });
 
     // Design mode selection: drafting or test.
-    eventBrokerService.designModeSelection.subscribe(eventInfo => {
-      switch (eventInfo.data) {
+    eventBrokerService.designModeSelection.subscribe(info => {
+      switch (info.data) {
         case 0: // drafting
           eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'drafting' });
           // Refresh drafting panel in case analysis changed member coloring.
@@ -97,21 +97,22 @@ export class WorkflowManagementService {
           if (autoFix) {
             bridgeAutoFixService.autoFix();
           }
-          analysisService.analyze({ populateBridgeMembers: true });
+          // Analysis completion chains to animation or back to drafting panel.
+          analysisService.analyzeAndNotify({ populateBridgeMembers: true });
           break;
       }
     });
 
     // Edit command completion.
-    eventBrokerService.editCommandCompletion.subscribe(eventInfo => {
+    eventBrokerService.editCommandCompletion.subscribe(info => {
       const disableReports = !analysisValidityService.isLastAnalysisValid || !isAnalysisValidForReport();
       uiStateService.disable(eventBrokerService.analysisReportRequest, disableReports);
       uiStateService.disable(eventBrokerService.memberDetailsReportRequest, disableReports);
-      uiStateService.disable(eventBrokerService.undoRequest, eventInfo.data.doneCount === 0);
-      uiStateService.disable(eventBrokerService.redoRequest, eventInfo.data.undoneCount === 0);
+      uiStateService.disable(eventBrokerService.undoRequest, info.data.doneCount === 0);
+      uiStateService.disable(eventBrokerService.redoRequest, info.data.undoneCount === 0);
       // Update the inventory selector only if members have been changed (not added).
       const membersChange = EditEffect.MEMBERS | EditEffect.CHANGE;
-      if ((eventInfo.data.effectsMask & membersChange) === membersChange) {
+      if ((info.data.effectsMask & membersChange) === membersChange) {
         disableMemberSizeIncrementWidgets();
         const selectedMembers = selectedElementsService.selectedElements.selectedMembers;
         eventBrokerService.loadInventorySelectorRequest.next({
@@ -122,9 +123,9 @@ export class WorkflowManagementService {
     });
 
     // Edit mode change.
-    eventBrokerService.editModeChange.subscribe(eventInfo => {
+    eventBrokerService.editModeChange.subscribe(info => {
       // Complete the inventory selector if one more more stock selection items are undefined.
-      if (eventInfo.data == CursorMode.MEMBERS && !inventorySelectionService.isValid) {
+      if (info.data == CursorMode.MEMBERS && !inventorySelectionService.isValid) {
         eventBrokerService.loadInventorySelectorRequest.next({
           origin: EventOrigin.SERVICE,
           data: bridgeService.getMostCommonStockId(),
@@ -133,13 +134,13 @@ export class WorkflowManagementService {
     });
 
     // Inventory selection (by user) completion.
-    eventBrokerService.inventorySelectionCompletion.subscribe(eventInfo => {
+    eventBrokerService.inventorySelectionChange.subscribe(info => {
       const selectedMembers = selectedElementsService.selectedElements.selectedMembers;
       if (selectedMembers.size === 0) {
         return;
       }
       // Stock ID can be partial, so merge populated fields with each selected member.
-      const stockId: StockId = eventInfo.data.stockId;
+      const stockId: StockId = info.data.stockId;
       const members = bridgeService.bridge.members;
       const updatedMembers: Member[] = [];
       for (const index of selectedMembers) {

@@ -102,7 +102,7 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
   source: any[] = SAMPLE_BRIDGES;
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.loadSampleRequest.subscribe(_eventInfo => this.loadSampleSafely());
+    this.eventBrokerService.loadSampleRequest.subscribe(() => this.loadSampleSafely());
     const w = this.preview.nativeElement.width / SampleSelectionDialogComponent.PREVIEW_SCALE;
     const h = this.preview.nativeElement.height / SampleSelectionDialogComponent.PREVIEW_SCALE;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);

@@ -99,30 +99,30 @@ export class DesignIterationService {
       () => this.dehydrate(),
       state => this.rehydrate(state),
     );
-    eventBrokerService.sessionStateRestoreCompletion.subscribe(_eventInfo => {
+    eventBrokerService.sessionStateRestoreCompletion.subscribe(() => {
       if (this.iterations.length > 0) {
         this.sendChangeEvent();
       }
     });
-    eventBrokerService.loadBridgeRequest.subscribe(eventInfo => {
-      if (eventInfo.origin !== EventOrigin.DESIGN_ITERATION_DIALOG) {
+    eventBrokerService.loadBridgeRequest.subscribe(info => {
+      if (info.origin !== EventOrigin.DESIGN_ITERATION_DIALOG) {
         this.clearIterations();
-        this.createInProgressIteration(eventInfo.data.bridge, eventInfo.data.draftingPanelState);
+        this.createInProgressIteration(info.data.bridge, info.data.draftingPanelState);
         this._inProgressIndex = 0;
       }
     });
-    eventBrokerService.analysisCompletion.subscribe(eventInfo => {
-      this.inProgress.closeOrUpdateClosedIteration(bridgeCostService.allCosts, eventInfo.data);
+    eventBrokerService.analysisCompletion.subscribe(info => {
+      this.inProgress.closeOrUpdateClosedIteration(bridgeCostService.allCosts, info.data);
     });
-    eventBrokerService.editCommandCompletion.subscribe(_eventInfo => {
+    eventBrokerService.editCommandCompletion.subscribe(() => {
       if (!this.inProgress.isOpen) {
         const bridge = this.bridgeService.bridge;
         this.createInProgressIteration(bridge, this.bridgeService.draftingPanelState);
         bridge.iterationNumber = ++this.maxIterationNumber;
       }
     });
-    eventBrokerService.designIterationForwardRequest.subscribe(_eventInfo => this.chooseRelative(+1));
-    eventBrokerService.designIterationBackRequest.subscribe(_eventInfo => this.chooseRelative(-1));
+    eventBrokerService.designIterationForwardRequest.subscribe(() => this.chooseRelative(+1));
+    eventBrokerService.designIterationBackRequest.subscribe(() => this.chooseRelative(-1));
     if (this.iterations.length === 0) {
       // Skip if rehydrated.
       this.createInProgressIteration(bridgeService.bridge, bridgeService.draftingPanelState); // Placeholder.

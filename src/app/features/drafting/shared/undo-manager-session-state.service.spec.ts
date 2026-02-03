@@ -10,7 +10,7 @@ import { SelectedElementsService } from './selected-elements-service';
 import { InventoryService } from '../../../shared/services/inventory.service';
 import { AddJointCommand } from '../../controls/edit-command/add-joint.command';
 import { Joint } from '../../../shared/classes/joint.model';
-import { validateBridge } from '../../../shared/test/validation';
+import { validateBridge } from '../../../shared/ts-test/validation';
 import { Member } from '../../../shared/classes/member.model';
 import { AddMemberCommand } from '../../controls/edit-command/add-member.command';
 
@@ -96,7 +96,7 @@ describe('UndoManagerSessionStateService', () => {
     expect(dehydrated.undone.length).toBe(0);
 
     // Undo the final splitting joint insertion.
-    undoManagerService.undo();
+    undoManagerService.undo(1);
 
     checkBridge('undo');
     expect(undoManagerService.done.length).toBe(3);
@@ -114,7 +114,7 @@ describe('UndoManagerSessionStateService', () => {
     service.rehydrate(dehydratedUndo);
 
     // Redo the joint add with splitting.
-    undoManagerService.redo();
+    undoManagerService.redo(1);
 
     checkBridge('redo');
     expect(undoManagerService.done.length).toBe(4);

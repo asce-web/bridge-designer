@@ -7,7 +7,7 @@ import { jqxWindowComponent, jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { Subject } from 'rxjs';
 import { Deque } from '../../../shared/core/deque';
 import { EditCommand, EditCommandPlaceholder } from '../../../shared/classes/editing';
-import { EventInfo, EventOrigin } from '../../../shared/services/event-broker.service';
+import { EventOrigin, EventInfo } from '../../../shared/services/event-broker.service';
 
 @Component({
     selector: 'undo-redo-dropdown',
@@ -20,7 +20,7 @@ export class UndoRedoDropdownComponent implements AfterViewInit {
   private static readonly CANCEL_ITEM: EditCommand = new EditCommandPlaceholder('Cancel');
 
   @Input({ required: true }) operation!: string;
-  @Input({ required: true }) actionEmitter!: Subject<EventInfo>;
+  @Input({ required: true }) actionEmitter!: Subject<EventInfo<number>>;
   @ViewChild('dropdown', { static: true }) dropdown!: jqxWindowComponent;
   @ViewChild('listBox', { static: true }) listBox!: jqxListBoxComponent;
 

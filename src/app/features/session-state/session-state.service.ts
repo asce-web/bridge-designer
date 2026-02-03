@@ -4,13 +4,14 @@
 import { Injectable } from '@angular/core';
 import { EventBrokerService, EventOrigin } from '../../shared/services/event-broker.service';
 import { VERSION } from '../../shared/classes/version';
+import { Utility } from '../../shared/classes/utility';
 
 const LOCAL_STORAGE_PREFIX = 'bridge-designer';
 
 @Injectable({ providedIn: 'root' })
 export class SessionStateService {
   /** Local storage key that advances for every build via `npm run build`. */
-  private static readonly LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_PREFIX}.v${VERSION}`;
+  private static readonly LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_PREFIX}.v${VERSION.buildNumber}`;
   private static readonly SESSION_KEY = 'session.service';
   private stateAccumulator: { [key: string]: Object } | undefined;
   private isEnabled: boolean = true;
@@ -24,8 +25,8 @@ export class SessionStateService {
     if (params.get('reset') !== null) {
       localStorage.clear();
     }
-    eventBrokerService.sessionStateEnableToggle.subscribe(eventInfo => {
-      this.isEnabled = eventInfo.data !== false;
+    eventBrokerService.sessionStateEnableToggle.subscribe(info => {
+      this.isEnabled = info.data !== false;
     });
     this.register(
       SessionStateService.SESSION_KEY,
@@ -45,7 +46,7 @@ export class SessionStateService {
       this.eventBrokerService.sessionStateSaveRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
     }
     this.eventBrokerService.sessionStateSaveEssentialRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
-    this.clearSavedState();
+    Utility.clearLocalStorageByPrefix(LOCAL_STORAGE_PREFIX);
     localStorage.setItem(SessionStateService.LOCAL_STORAGE_KEY, JSON.stringify(this.stateAccumulator));
     // Add token to session storage for new physical session sensing.
     sessionStorage.setItem(SessionStateService.LOCAL_STORAGE_KEY, Date.now().toString());
@@ -109,7 +110,7 @@ export class SessionStateService {
     const saveSubject = isEssential
       ? this.eventBrokerService.sessionStateSaveEssentialRequest
       : this.eventBrokerService.sessionStateSaveRequest;
-    saveSubject.subscribe(_eventInfo => this.recordState(key, dehydrator()));
+    saveSubject.subscribe(() => this.recordState(key, dehydrator()));
     const state = this.getSavedState(key);
     if (state) {
       rehydrator(state as T);
@@ -129,16 +130,6 @@ export class SessionStateService {
       this.stateAccumulator = JSON.parse(json);
     } catch (error) {
       this.stateAccumulator = undefined;
-    }
-  }
-
-  /** Clear all old state, but keep other local storage key prefixes. Declutters storage on version bump. */
-  private clearSavedState() {
-    for (let i = 0; i < localStorage.length; ++i) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith(LOCAL_STORAGE_PREFIX)) {
-        localStorage.removeItem(key);
-      }
     }
   }
 

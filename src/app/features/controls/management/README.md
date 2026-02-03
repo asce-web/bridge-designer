@@ -9,11 +9,12 @@ drafting panel state-setting. It's not. Rather, that's considered to be owned by
 
 ## Type safety of UiStateService
 
-Currently any RxJs subject that participates in UiStateService can only be typed as `Subject<EventInfo>`. The `data`
-field embedded in `EventInfo` is type `any`, so it's up to the user to ensure senders and receivers agree on what's
-there. This is super fragile.
+RxJs `Subject`s have type `Subject<EventInfo<T>>` where `T` is the event payload type. Consequently, event senders and
+handlers are type safe for payloads. Internally, `UiStateService` throws away type information because it needs to
+maintain lists and maps containing subject types. This collides head-on with the well-known aggregate of invariant
+generics problem.
 
-An attempt to add stronger typing turned up a need for existential generic types. Typescript doesn't support these
+An attempt to maintain stronger typing turned up a need for existential generic types. Typescript doesn't support these
 natively, but can "simulate" them by representing objects with generic parameters as wrappers that accept a callback and
 return the object. The callback signature then transmits the parameter type. Example for future reference:
 

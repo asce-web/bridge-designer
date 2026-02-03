@@ -7,6 +7,7 @@ import { jqxMenuComponent, jqxMenuModule } from 'jqwidgets-ng/jqxmenu';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
 import { ModifierMask, UiStateService } from '../management/ui-state.service';
 import { HelpTab } from '../../help/help-dialog/types';
+import { TipDialogKind } from '../../tips/tip-dialog/tip-dialog.component';
 
 /** Component for handling all menu selections and global hot keys by sending brokered events. */
 @Component({
@@ -58,16 +59,16 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'open', this.eventBrokerService.loadBridgeFileRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'print', this.eventBrokerService.printRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'print3d', this.eventBrokerService.print3dRequest);
-    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'redo', this.eventBrokerService.redoRequest);
-    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'save', this.eventBrokerService.saveBridgeFileRequest);
+    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'redo', this.eventBrokerService.redoRequest, 1);
+    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'save', this.eventBrokerService.saveBridgeFileRequest, false);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'saveAs', this.eventBrokerService.saveBridgeFileRequest, true);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'searchHelp', this.eventBrokerService.helpRequest, {topic: 'hlp_how_to', tab: HelpTab.SEARCH});
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'selectAll', this.eventBrokerService.selectAllRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'sizedown', this.eventBrokerService.memberSizeDecreaseRequest);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'sizeup', this.eventBrokerService.memberSizeIncreaseRequest);
-    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'tip', this.eventBrokerService.tipRequest);
+    this.uiStateService.registerPlainMenuEntry<TipDialogKind>(this.mainMenu, 'tip', this.eventBrokerService.tipRequest, 'user');
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'topics', this.eventBrokerService.helpRequest, {topic: 'glos_aashto', tab: HelpTab.TOPICS});
-    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'undo', this.eventBrokerService.undoRequest);
+    this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'undo', this.eventBrokerService.undoRequest, 1);
     this.uiStateService.registerPlainMenuEntry(this.mainMenu, 'whatsNew', this.eventBrokerService.helpRequest, {topic: 'hlp_whats_new'});
     
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'animation', this.eventBrokerService.animationToggle);
@@ -82,10 +83,10 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'titleBlock', this.eventBrokerService.titleBlockToggle);
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'tools', this.eventBrokerService.toolsToggle);
 
-    this.uiStateService.registerKey('Delete', 0, this.eventBrokerService.deleteSelectionRequest);
-    this.uiStateService.registerKey('a', ModifierMask.CTRL, this.eventBrokerService.selectAllRequest);
-    this.uiStateService.registerKey('y', ModifierMask.CTRL, this.eventBrokerService.redoRequest);
-    this.uiStateService.registerKey('z', ModifierMask.CTRL, this.eventBrokerService.undoRequest);
-    this.uiStateService.registerKey('s', ModifierMask.CTRL, this.eventBrokerService.saveBridgeFileRequest);
+    this.uiStateService.registerKey('Delete', 0, this.eventBrokerService.deleteSelectionRequest, undefined);
+    this.uiStateService.registerKey('a', ModifierMask.CTRL, this.eventBrokerService.selectAllRequest, undefined);
+    this.uiStateService.registerKey('y', ModifierMask.CTRL, this.eventBrokerService.redoRequest, 1);
+    this.uiStateService.registerKey('z', ModifierMask.CTRL, this.eventBrokerService.undoRequest, 1);
+    this.uiStateService.registerKey('s', ModifierMask.CTRL, this.eventBrokerService.saveBridgeFileRequest, false);
   }
 }

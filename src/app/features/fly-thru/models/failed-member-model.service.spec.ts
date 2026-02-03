@@ -4,7 +4,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
-import { projectLocalMatchers } from '../../../shared/test/jasmine-matchers';
+import { projectLocalMatchers } from '../../../shared/ts-test/jasmine-matchers';
 import { GlService } from '../rendering/gl.service';
 import { SimulationStateService } from '../rendering/simulation-state.service';
 import { FailedMemberModelService, parabolaPoints } from './failed-member-model.service';

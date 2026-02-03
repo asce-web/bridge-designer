@@ -31,6 +31,7 @@ export class SelectedElementsService {
     selectedJoints: new Set<number>(),
     selectedMembers: new Set<number>(),
   };
+  private rehydratedState?: State;
 
   constructor(sessionStateKey: SelectedElementsServiceSessionStateKey, sessionStateService: SessionStateService) {
     sessionStateService.register(
@@ -74,6 +75,19 @@ export class SelectedElementsService {
     }
   }
 
+  /** Lazily apply rehydrated state and return whether any was found. */
+  public applyRehydration(): boolean {
+    const state = this.rehydratedState;
+    if (!state || state.selectedJoints.length + state.selectedMembers.length === 0) {
+      return false;
+    }
+    const elements = this.selectedElements;
+    state.selectedJoints.forEach(index => elements.selectedJoints.add(index));
+    state.selectedMembers.forEach(index => elements.selectedMembers.add(index));
+    this.rehydratedState = undefined;
+    return true;
+  }
+
   dehydrate(): State {
     const elements = this.selectedElements;
     return {
@@ -83,9 +97,7 @@ export class SelectedElementsService {
   }
 
   rehydrate(state: State): void {
-    const elements = this.selectedElements;
-    state.selectedJoints.forEach(index => elements.selectedJoints.add(index));
-    state.selectedMembers.forEach(index => elements.selectedMembers.add(index));
+    this.rehydratedState = state;
   }
 }
 

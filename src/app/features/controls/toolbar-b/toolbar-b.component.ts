@@ -80,7 +80,10 @@ export class ToolbarBComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgToggleButton('Use fine drawing grid', 'img/finegrid.png', tool);
         break;
       case Tools.MEMBER_TABLE:
-        WidgetHelper.initToolbarImgToggleButton('Hide member table', 'img/close.png', tool, { toggled: true, height: 16 });
+        WidgetHelper.initToolbarImgToggleButton('Hide member table', 'img/close.png', tool, {
+          toggled: true,
+          height: 16,
+        });
         tool.css({ position: 'absolute', right: '0', bottom: '1px' });
         break;
     }

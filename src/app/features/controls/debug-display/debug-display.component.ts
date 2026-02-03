@@ -21,10 +21,10 @@ export class DebugDisplayComponent implements AfterViewInit {
   eraseTimeout: any;
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.displayDebugTextRequest.subscribe(eventInfo => {
-      this.text = eventInfo.data;
+    this.eventBrokerService.displayDebugTextRequest.subscribe(info => {
+      this.text = info.data;
       this.changeDetectorRef.detectChanges();
-      // Clear the last timeout (if any) and create a new one to 
+      // Clear the last timeout (if any) and create a new one to
       // erase the display after no new requests for a while.
       clearTimeout(this.eraseTimeout);
       this.eraseTimeout = setTimeout(() => {

@@ -193,8 +193,9 @@ export class MemberTableComponent implements AfterViewInit {
     this.grid.updatebounddata();
     this.grid.loadstate(state);
     // jqxWidgets puts a key in local storage and never cleans it up.
-    // This is undocumented (reverse engineered) and therefore fragile.
-    localStorage.removeItem('jqxGrid' + this.grid.host.context.id);
+    // This is undocumented (reverse engineered) and therefore fragile. The exact
+    // key varies between dev and prod, but the prefix is the same.
+    Utility.clearLocalStorageByPrefix('jqxGrid');
   }
 
   /** Adjust the grid row selection to match selected members (i.e. those selected graphically). */
@@ -210,10 +211,10 @@ export class MemberTableComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.analysisCompletion.subscribe(_eventInfo => this.updateGridContent());
-    this.eventBrokerService.editCommandCompletion.subscribe(eventInfo => {
+    this.eventBrokerService.analysisCompletion.subscribe(() => this.updateGridContent());
+    this.eventBrokerService.editCommandCompletion.subscribe(info => {
       if (
-        eventInfo.data.effectsMask & EditEffect.MEMBERS ||
+        info.data.effectsMask & EditEffect.MEMBERS ||
         // Analysis validity right now doesn't match last rendered.
         this.analysisValidityService.isLastAnalysisValid !== this.isLastAnalysisValid
       ) {
@@ -221,8 +222,8 @@ export class MemberTableComponent implements AfterViewInit {
       }
     });
     this.eventBrokerService.loadBridgeCompletion.subscribe(() => this.updateGridContent());
-    this.eventBrokerService.selectedElementsChange.subscribe(eventInfo => {
-      if (eventInfo.origin !== EventOrigin.MEMBER_TABLE) {
+    this.eventBrokerService.selectedElementsChange.subscribe(info => {
+      if (info.origin !== EventOrigin.MEMBER_TABLE) {
         this.updateGridSelection();
       }
     });

@@ -26,6 +26,6 @@ export class ToastComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.toastRequest.subscribe(eventInfo => this.show(eventInfo.data));
+    this.eventBrokerService.toastRequest.subscribe(info => this.show(info.data));
   }
 }

@@ -106,6 +106,6 @@ export class CostReportDialogComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.eventBrokerService.costReportRequest.subscribe(_eventInfo => this.dialog.open());
+    this.eventBrokerService.costReportRequest.subscribe(() => this.dialog.open());
   }
 }

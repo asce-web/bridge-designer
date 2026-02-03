@@ -106,8 +106,8 @@ export class FlyThruPaneComponent implements AfterViewInit {
     this.glService.initialize(this.flyThruCanvas.nativeElement);
     // Must follow glService initialization above.
     this.textureService.loadAllTextures();
-    this.eventBrokerService.uiModeRequest.subscribe(eventInfo => {
-      this.isVisible = eventInfo.data === 'animation';
+    this.eventBrokerService.uiModeRequest.subscribe(info => {
+      this.isVisible = info.data === 'animation';
     });
   }
 }

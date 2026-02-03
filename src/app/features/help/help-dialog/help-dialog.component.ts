@@ -69,7 +69,7 @@ export class HelpDialogComponent implements AfterViewInit {
         break;
       case Tools.PRINT:
         WidgetHelper.initToolbarImgButton('Forward one topic', 'img/print.png', tool);
-        tool.css({position: 'absolute', right: '0'});
+        tool.css({ position: 'absolute', right: '0' });
         tool.on('click', () => this.currentTopicService.printCurrentTopicRequest.next());
         break;
     }
@@ -97,10 +97,10 @@ export class HelpDialogComponent implements AfterViewInit {
     this.currentTopicService.currentTopicIdChange.subscribe(_id => {
       this.enableAndDisableButtons();
     });
-    this.eventBrokerService.helpRequest.subscribe(eventInfo => {
-      if (eventInfo.data) {
-        this.currentTopicService.goToTopicId(eventInfo.data.topic, { stack: null });
-        this.tabIndex = eventInfo.data.tab;
+    this.eventBrokerService.helpRequest.subscribe(info => {
+      if (info.data) {
+        this.currentTopicService.goToTopicId(info.data.topic, { stack: null });
+        this.tabIndex = info.data.tab;
       }
       if (this.dialog.isOpen()) {
         this.handleDialogOpen();
