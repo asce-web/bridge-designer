@@ -60,7 +60,7 @@ export class SiteModel {
     }
     // Extra 4 shows bottom of lowest abutment position.
     this.drawingWindow.y0 = this.yGradeLevel - SiteConstants.WATER_BELOW_GRADE - 4;
-    this.drawingWindow.height = this.yGradeLevel + SiteConstants.OVERHEAD_CLEARANCE + 1.5 - this.drawingWindow.y0;
+    this.drawingWindow.height = this.yGradeLevel + SiteConstants.OVERHEAD_CLEARANCE - this.drawingWindow.y0;
     this.designConditions = conditions;
   }
 
