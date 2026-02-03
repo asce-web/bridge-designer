@@ -10,7 +10,7 @@ const LOCAL_STORAGE_PREFIX = 'bridge-designer';
 @Injectable({ providedIn: 'root' })
 export class SessionStateService {
   /** Local storage key that advances for every build via `npm run build`. */
-  private static readonly LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_PREFIX}.v${VERSION}`;
+  private static readonly LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_PREFIX}.v${VERSION.buildNumber}`;
   private static readonly SESSION_KEY = 'session.service';
   private stateAccumulator: { [key: string]: Object } | undefined;
   private isEnabled: boolean = true;
