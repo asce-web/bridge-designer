@@ -194,6 +194,15 @@ export class Utility {
     return a;
   }
 
+  public static clearLocalStorageByPrefix(prefix: string): void {
+    for (let i = 0; i < localStorage.length; ++i) {
+      const key = localStorage.key(i);
+      if (key?.startsWith(prefix)) {
+        localStorage.removeItem(key);
+      }
+    }
+  }
+
   /* TODO: Not currently used. Remove?
   public static setsEqual<T>(a: Set<T>, b: Set<T>) {
     if (a.size !== b.size) {

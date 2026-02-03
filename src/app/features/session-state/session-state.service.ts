@@ -4,6 +4,7 @@
 import { Injectable } from '@angular/core';
 import { EventBrokerService, EventOrigin } from '../../shared/services/event-broker.service';
 import { VERSION } from '../../shared/classes/version';
+import { Utility } from '../../shared/classes/utility';
 
 const LOCAL_STORAGE_PREFIX = 'bridge-designer';
 
@@ -45,7 +46,7 @@ export class SessionStateService {
       this.eventBrokerService.sessionStateSaveRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
     }
     this.eventBrokerService.sessionStateSaveEssentialRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
-    this.clearSavedState();
+    Utility.clearLocalStorageByPrefix(LOCAL_STORAGE_PREFIX);
     localStorage.setItem(SessionStateService.LOCAL_STORAGE_KEY, JSON.stringify(this.stateAccumulator));
     // Add token to session storage for new physical session sensing.
     sessionStorage.setItem(SessionStateService.LOCAL_STORAGE_KEY, Date.now().toString());
@@ -129,16 +130,6 @@ export class SessionStateService {
       this.stateAccumulator = JSON.parse(json);
     } catch (error) {
       this.stateAccumulator = undefined;
-    }
-  }
-
-  /** Clear all old state, but keep other local storage key prefixes. Declutters storage on version bump. */
-  private clearSavedState() {
-    for (let i = 0; i < localStorage.length; ++i) {
-      const key = localStorage.key(i);
-      if (key && key.startsWith(LOCAL_STORAGE_PREFIX)) {
-        localStorage.removeItem(key);
-      }
     }
   }
 
