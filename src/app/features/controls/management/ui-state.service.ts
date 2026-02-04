@@ -135,6 +135,7 @@ export class UiStateService {
     this.addDisableOverrides(eventBrokerService.gridDensitySelection, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.guidesToggle, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.inventorySelectionChangeRequest, initialAndAnimation);
+    this.addDisableOverrides(eventBrokerService.loadBridgeFileRequest, animation);
     this.addDisableOverrides(eventBrokerService.loadDesignIterationRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.loadTemplateRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.memberDetailsReportRequest, initial, true);
