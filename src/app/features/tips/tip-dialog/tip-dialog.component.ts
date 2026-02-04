@@ -69,10 +69,10 @@ export class TipDialogComponent implements AfterViewInit {
     this.tipCount = this.tips.nativeElement.childElementCount;
     this.eventBrokerService.tipRequest.subscribe(info => {
       this.kind = info.data;
-      if (!this.showAtStartupCheckbox.checked()) {
-        this.onClose.emit(this.kind); // Simulate tip dialog that didn't happen.
-      } else {
+      if (info.data === 'user' || this.showAtStartupCheckbox.checked()) {
         this.dialog.open();
+      } else {
+        this.onClose.emit(this.kind); // Simulate tip dialog that didn't happen.
       }
     });
     this.sessionStateService.register(
