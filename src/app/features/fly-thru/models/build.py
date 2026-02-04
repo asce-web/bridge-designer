@@ -129,6 +129,7 @@ class Processor:
         self.normals = [()]
         # A quad consists of indices: (vertex, texcoord, normal, material).
         self.quads = [()]
+        # Index from quad to its index in the quads array.
         self.quad_index = {}
         self.faces = [()]
         self.material_lib = None
@@ -138,6 +139,8 @@ class Processor:
         return self.material_lib and self.material_lib.get(name)
 
     def triangulate(self, face):
+        """Flattener of simple polygons to triangles using only the ear clipping
+        algorithm. Handles concavities but not holes or self-crossings."""
         if len(face) <= 3:
             return [face]
         triangles = []
@@ -164,6 +167,7 @@ class Processor:
 
     def process(self, in_file, out_file, ignore_tex_coords=True):
         print(f"{in_file.name} -> {out_file.name}:")
+        # Current material to paint faces.
         material = {}
         for line in in_file:
             option_match = re.match(r"#\s*option:\s*(\w+)\s*=\s*(\w+)", line)
