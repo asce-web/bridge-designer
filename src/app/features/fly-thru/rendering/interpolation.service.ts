@@ -78,7 +78,6 @@ class SourceInterpolator implements Interpolator {
   private readonly post: CenterlinePost = { elevation: 0, xNormal: 0, yNormal: 1 };
   private readonly tmpJointA = vec2.create();
   private readonly tmpJointB = vec2.create();
-  private readonly tmpDiff = vec2.create();
   private readonly tmpContext: InterpolatorContext = {} as InterpolatorContext;
 
   // Member status info is cached here upon advancing the parameter to save redundant
@@ -172,12 +171,12 @@ class SourceInterpolator implements Interpolator {
       this.getExaggeratedDisplacedJointLocation(this.tmpJointA, leftIndex);
       this.getExaggeratedDisplacedJointLocation(this.tmpJointB, leftIndex + 1);
       vec2.lerp(out, this.tmpJointA, this.tmpJointB, ctx.tPanel);
-      // Offset result by deck height along the member perpendicular.
-      const diff = this.tmpDiff;
-      vec2.sub(diff, this.tmpJointB, this.tmpJointA);
-      const s = SiteConstants.DECK_TOP_HEIGHT / vec2.length(diff);
-      out[0] -= diff[1] * s;
-      out[1] += diff[0] * s;
+      // Adjust for height of deck above interpolated point. This will be a tad too low when the
+      // deck isn't horizontal, but exact calculation is too expensive for what it does. Extreme
+      // tilts where the inaccuracy is noticeable are unrealistic anyway. This just makes it a
+      // bit more. nb: Offsetting normal to deck results in obvious jerkiness at joints between
+      // panels with different tilts.
+      out[1] += SiteConstants.DECK_TOP_HEIGHT;
     } else {
       out[0] = ctx.t;
       out[1] = this.service.terrainModelService.getRoadCenterlinePostAtX(this.post, ctx.t).elevation;
@@ -262,9 +261,9 @@ class SourceInterpolator implements Interpolator {
 }
 
 /*
- * Interpolator operating on bi-source wrapping no load and dead load sources 
+ * Interpolator operating on bi-source wrapping no load and dead load sources
  * to drive the dead loading animation. Same as a normal source interpolator
- * except for new `setParameter()` semantics. Parameter value is delegated to 
+ * except for new `setParameter()` semantics. Parameter value is delegated to
  * the bi-source. Therefore truck stays in initial position while member forces
  * change.
  */
