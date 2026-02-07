@@ -135,7 +135,7 @@ export class ViewService {
     // Direct gaze at middle of vertical extent.
     vec3.set(this.center, xCenter, extent.y0 + 0.5 * extent.height, 0);
     // Follow river's path with eye.
-    this.eye[0] += this.eye[2] * 0.1;
+    this.eye[0] -= this.eye[2] * 0.05;
     this.yEyeVelocity = 0;
 
     // The angles are actually the independent values, so compute them here.
