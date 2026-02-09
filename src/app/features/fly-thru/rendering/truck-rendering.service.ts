@@ -14,6 +14,9 @@ import { Geometry } from '../../../shared/classes/graphics';
 import { TRUCK_CAB_MESH_DATA } from '../models/truck-cab';
 import { BridgeService } from '../../../shared/services/bridge.service';
 
+/** Radius of tire from model. */
+const TIRE_RADIUS = 0.5;
+
 @Injectable({ providedIn: 'root' })
 export class TruckRenderingService {
   private readonly offset = vec3.create();
@@ -73,7 +76,7 @@ export class TruckRenderingService {
       // Right front.
       m = this.uniformService.pushModelMatrix();
 
-      mat4.translate(m, m, vec3.set(this.offset, 0, 0.5, 0.95));
+      mat4.translate(m, m, vec3.set(this.offset, 0, TIRE_RADIUS, 0.95));
       mat4.rotateZ(m, m, -wheelRotation);
       this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.wheelMesh);
@@ -83,7 +86,7 @@ export class TruckRenderingService {
       // Right rear.
       m = this.uniformService.pushModelMatrix();
 
-      mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, 1.05));
+      mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, TIRE_RADIUS, 1.05));
       mat4.rotateZ(m, m, -wheelRotation);
       this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.dualWheelMesh);
@@ -93,7 +96,7 @@ export class TruckRenderingService {
       // Left front.
       m = this.uniformService.pushModelMatrix();
 
-      mat4.translate(m, m, vec3.set(this.offset, 0, 0.5, -0.95));
+      mat4.translate(m, m, vec3.set(this.offset, 0, TIRE_RADIUS, -0.95));
       mat4.rotateX(m, m, Math.PI);
       mat4.rotateZ(m, m, wheelRotation);
       this.uniformService.updateTransformsUniform(matrices);
@@ -104,7 +107,7 @@ export class TruckRenderingService {
       // Left rear.
       m = this.uniformService.pushModelMatrix();
 
-      mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, 0.5, -1.05));
+      mat4.translate(m, m, vec3.set(this.offset, wheelbaseOffset, TIRE_RADIUS, -1.05));
       mat4.rotateX(m, m, Math.PI);
       mat4.rotateZ(m, m, wheelRotation);
       this.uniformService.updateTransformsUniform(matrices);
