@@ -171,7 +171,7 @@ export class DesignIterationDialogComponent implements AfterViewInit {
     this.renderPreview();
   }
 
-  handleDialogOpen(_event: any): void {
+  handleDialogOpen(): void {
     // Make sure the service's current iteration data (e.g. cost) is current.
     this.designIterationService.refreshInProgress();
     this.selectedIndex = this.designIterationService.inProgressIndex;
@@ -210,7 +210,7 @@ export class DesignIterationDialogComponent implements AfterViewInit {
     this.dialog.close();
   }
 
-  handleRowDoubleClick(_event: any): void {
+  handleRowDoubleClick(): void {
     this.handleOkClick();
   }
 

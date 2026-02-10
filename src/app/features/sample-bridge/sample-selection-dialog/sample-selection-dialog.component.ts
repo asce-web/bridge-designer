@@ -79,7 +79,7 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
     });
   }
 
-  handleDialogOpen(_event: any): void {
+  handleDialogOpen(): void {
     this.renderPreview();
     this.sampleList.focus();
   }
@@ -90,7 +90,7 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
     }
   }
 
-  handleSelect(_event: any): void {
+  handleSelect(): void {
     this.renderPreview();
   }
 

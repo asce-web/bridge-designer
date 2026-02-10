@@ -94,7 +94,8 @@
               }
             ],
             "styles": ["./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css", "src/styles.scss"],
-            "scripts": []
+            "scripts": [],
+            "karmaConfig": "karma.conf.js"
           }
         }
       }

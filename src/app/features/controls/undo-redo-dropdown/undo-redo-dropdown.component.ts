@@ -36,7 +36,7 @@ export class UndoRedoDropdownComponent implements AfterViewInit {
   public initialize(toolbarButton: any, commandBuffer: Deque<EditCommand>) {
     this.commandBuffer = commandBuffer;
     this.toolbarButton = toolbarButton;
-    toolbarButton.on('click', (_event: any) => {
+    toolbarButton.on('click', () => {
       if (toolbarButton.jqxToggleButton('toggled')) {
         const bounds: DOMRect = toolbarButton[0].getBoundingClientRect();
         this.dropdown.move(bounds.left, bounds.bottom);
@@ -54,7 +54,7 @@ export class UndoRedoDropdownComponent implements AfterViewInit {
     });
   }
 
-  handleDropdownOpen(_event: any) {
+  handleDropdownOpen() {
     if (!this.commandBuffer) {
       throw new Error('Dropdown not initialized.');
     }
@@ -74,7 +74,7 @@ export class UndoRedoDropdownComponent implements AfterViewInit {
       );
   }
 
-  handleDropdownClose(_event: any) {
+  handleDropdownClose() {
     this.toolbarButton.jqxToggleButton('toggled', false);
     // Remove content so it doesn't render briefly before open
     // handler replaces it. One item avoids item width weirdness.
@@ -104,8 +104,8 @@ export class UndoRedoDropdownComponent implements AfterViewInit {
     this.listBox.updateAt({ label: prompt }, toastIndex);
   }
 
-  @HostListener('document:mousedown', ['$event'])
-  onMouseDown(_event: MouseEvent) {
+  @HostListener('document:mousedown')
+  onMouseDown() {
     this.dropdown.close();
   }
 

@@ -8,7 +8,7 @@ import { GlService } from './gl.service';
 import { Mesh, MeshRenderingService } from './mesh-rendering.service';
 import { ProjectionService } from './projection.service';
 import { DisplayMatrices, UniformService } from './uniform.service';
-import { ViewService } from './view.service';
+import { ViewMode, ViewService } from './view.service';
 import { TruckRenderingService } from './truck-rendering.service';
 import { TerrainModelService } from '../models/terrain-model.service';
 import { UtilityLineRenderingService } from './utility-line-rendering.service';
@@ -125,7 +125,7 @@ export class RenderingService {
     // Advance clock-based state.
     this.simulationStateService.advance(clockMillis);
 
-    this.viewService.updateWalkingView(elapsedNowMillis * 0.001);
+    this.viewService.advanceView(elapsedNowMillis * 0.001);
 
     // Assumed defaults.
     const gl = this.glService.gl;
@@ -186,7 +186,7 @@ export class RenderingService {
     }
     this.bridgeRenderingService.render(this.matrices);
     if (!this.flyThruSettingsService.settings.noTruck) {
-      this.truckRenderingService.render(this.matrices, this.viewService.isDriving);
+      this.truckRenderingService.render(this.matrices, this.viewService.mode === ViewMode.Driving);
     }
 
     // Set target back to display.
@@ -197,7 +197,7 @@ export class RenderingService {
   private renderDisplayBuffer(nowMillis: number): void {
     // Put the context in display drawing mode.
     const gl = this.glService.setForDisplayBuffer;
-    
+
     // Set up view and projection matrices for normal or debugging view.
     const m = this.matrices;
     switch (this.keyboardService.debugState.projectionType) {
@@ -255,7 +255,7 @@ export class RenderingService {
     }
     // Models that use blending (transparency) must be last.
     if (!this.flyThruSettingsService.settings.noTruck) {
-      this.truckRenderingService.render(this.matrices, this.viewService.isDriving);
+      this.truckRenderingService.render(this.matrices, this.viewService.mode === ViewMode.Driving);
     }
     this.animationControlsOverlayService.render();
   }

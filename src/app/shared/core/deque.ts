@@ -47,6 +47,12 @@ export class Deque<T> {
     return this.left.peekLast(this.right);
   }
 
+  /** Gets an item given its left-to-right index. */
+  public get(i: number): T | undefined {
+    const leftLength = this.left.length;
+    return i < leftLength ? this.left.get(leftLength - 1 - i) : this.right.get(i - leftLength);
+  }
+
   /** Clears the deque. */
   public clear(): void {
     this.left.data.length = this.right.data.length = this.left.base = this.right.base = 0;
@@ -74,25 +80,14 @@ export class Deque<T> {
     }
     return list;
   }
- 
+
   /** Iterates over current deque contents. Not safe for mutations during iteration. */
   [Symbol.iterator](): Iterator<T> {
-    const left = this.left;
-    const right = this.right;
-    // Negative i points to left[-1-i]. Non-negative points to right[i]; 
-    let i: number = this.left.data.length > this.left.base ? -this.left.data.length : this.right.base;
+    const deque = this;
+    let i: number = 0;
     return {
-      next(): { value: T, done: boolean } {
-        if (i < 0) {
-          const value = left.data[-1 - i];
-          i = -1 - i === left.base ? right.base : i + 1;
-          return { value, done: false };
-        }
-        if (i < right.data.length) {
-          const value = right.data[i++];
-          return { value, done: false };
-        }
-        return { value: undefined as T, done: true };
+      next(): { value: T; done: boolean } {
+        return i < deque.length ? { value: deque.get(i++)!, done: false } : { value: undefined as T, done: true };
       },
     };
   }
@@ -114,6 +109,10 @@ class Side<T> {
 
   get length(): number {
     return this.data.length - this.base;
+  }
+
+  get(i: number): T | undefined {
+    return this.data[i + this.base];
   }
 
   push(item: T, otherSide: Side<T>): void {

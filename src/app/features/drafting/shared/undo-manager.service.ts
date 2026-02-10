@@ -47,27 +47,24 @@ export class UndoManagerService {
 
   /** Returns an index identifying the given state token in the undo/redo buffer. */
   public findStateTokenIndex(token: UndoStateToken): number | undefined {
-    const commands = this.done.copyTo([]);
-    const doneIndex = commands.indexOf(token as EditCommand);
-    if (doneIndex >= 0) {
-      return doneIndex;
+    const doneLength = this.done.length;
+    for (let i = 0; i < doneLength; ++i) {
+      if (this.done.get(i) === token) {
+        return i;
+      }
     }
-    this.undone.copyTo(commands);
-    const undoneIndex = commands.indexOf(token as EditCommand);
-    if (undoneIndex >= 0) {
-      return -1 - undoneIndex;
+    const undoneLength = this.undone.length;
+    for (let i = 0; i < undoneLength; ++i) {
+      if (this.undone.get(i) === token) {
+        return -1 - i;
+      }
     }
     return undefined;
   }
 
   /** Uses index from `findStateTokenIndex` to fetch corresponding state token in the undo/redo buffer. */
   public getStateToken(index: number): UndoStateToken | undefined {
-    if (index >= 0) {
-      const commands = this.done.copyTo([]);
-      return commands[index];
-    }
-    const commands = this.undone.copyTo([]);
-    return commands[-1 - index];
+    return index >= 0 ? this.done.get(index) : this.undone.get(-1 - index);
   }
 
   // visible-for-testing

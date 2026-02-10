@@ -155,7 +155,7 @@ describe('Deque', () => {
     expect(Array.from(deque)).toEqual([2, 4, 5, 6]);
   });
 
-  it('peeks undefined on empty deque', ()=> {
+  it('peeks undefined on empty deque', () => {
     expect(deque.peekLeft()).toBe(undefined);
     expect(deque.peekRight()).toBe(undefined);
   });
@@ -172,5 +172,15 @@ describe('Deque', () => {
     deque.pushRight(1);
     expect(deque.peekRight()).toBe(1);
     expect(deque.peekLeft()).toBe(2);
+  });
+
+  it('gets correctly on the left', () => {
+    deque.pushLeft(1);
+    deque.pushLeft(2);
+    deque.pushLeft(3);
+    deque.popRight();
+    expect(deque.get(0)).toBe(3);
+    expect(deque.get(1)).toBe(2);
+    expect(deque.get(2)).toBe(undefined);
   });
 });

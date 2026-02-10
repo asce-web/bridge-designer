@@ -36,7 +36,7 @@ export class HelpSearchComponent {
     this.searchTermInput.nativeElement.value = '';
   }
   
-  handleSearchTermInputInput(_event: Event): void {
+  handleSearchTermInputInput(): void {
     const searchTerm = this.searchTermInput.nativeElement.value;
     if (searchTerm.length <= 1) {
       this.source = HelpSearchComponent.NOTHING_YET;

@@ -13,6 +13,12 @@ import { EventBrokerService, EventOrigin } from '../../../shared/services/event-
 import { UNIT_LIGHT_DIRECTION } from './constants';
 import { SiteConstants } from '../../../shared/classes/site-constants';
 
+export const enum ViewMode {
+  Walking,
+  Driving,
+  Orbiting,
+}
+
 /** Container for the fly-thru and driver view transforms and associated update logic. */
 @Injectable({ providedIn: 'root' })
 export class ViewService {
@@ -29,14 +35,19 @@ export class ViewService {
   /** Pixel to world tilt rate ratio. */
   private static readonly UI_RATE_TILT = Math.PI / 800.0;
 
-  public readonly eye = vec3.create();
-  private readonly up = vec3.fromValues(0, 1, 0);
-  private readonly center = vec3.create();
-  private readonly eyeMin = vec3.create();
-  private readonly eyeMax = vec3.create();
-  private readonly eyeDriver = vec3.create();
   private readonly centerDriver = vec3.create();
   private readonly driverRotation = mat4.create();
+  private readonly eyeDriver = vec3.create();
+  private readonly eyeMax = vec3.create();
+  private readonly eyeMin = vec3.create();
+  //private readonly eyeOrbit= vec3.create();
+  //private readonly centerOrbit= vec3.create();
+  private readonly up = vec3.fromValues(0, 1, 0);
+
+  /** Integration state for controlling view with force model. */
+  private readonly state = new Float64Array(12);
+  private readonly center: vec3 = this.state.subarray(3, 6);
+  public readonly eye: vec3 = this.state.subarray(0, 3);
 
   private thetaEye: number = 0;
   private phiEye: number = 0;
@@ -44,12 +55,14 @@ export class ViewService {
   private phiEyeRate: number = 0;
   private xzEyeVelocity: number = 0;
   private yEyeVelocity: number = 0;
+
   private phiDriverHead: number = 0;
   private thetaDriverHead: number = 0;
   private showControls: boolean = false;
   public isIgnoringBoundaries: boolean = false;
   public isMovingLaterally: boolean = false;
-  public isDriving: boolean = false;
+  private orbitPendingTimer: any;
+  public mode: ViewMode = ViewMode.Walking;
 
   constructor(
     private readonly bridgeService: BridgeService,
@@ -68,17 +81,16 @@ export class ViewService {
     const walk = handlerSets[OverlayIcon.WALK];
     walk.handlePointerDown = () => {
       this.isMovingLaterally = false;
-      this.isDriving = false;
+      this.mode = ViewMode.Walking;
     };
     walk.handlePointerDrag = (dx: number, dy: number) => {
       this.xzEyeVelocity = dy * ViewService.UI_RATE_LINEAR;
       this.thetaEyeRate = dx * ViewService.UI_RATE_ROTATIONAL;
     };
-
     const pan = handlerSets[OverlayIcon.HAND];
     pan.handlePointerDown = () => {
       this.isMovingLaterally = true;
-      this.isDriving = false;
+      this.mode = ViewMode.Walking;
     };
     pan.handlePointerDrag = (dx: number, dy: number) => {
       this.xzEyeVelocity = dx * ViewService.UI_RATE_LINEAR;
@@ -87,7 +99,7 @@ export class ViewService {
     const head = handlerSets[OverlayIcon.HEAD];
     head.handlePointerDown = () => {
       this.isMovingLaterally = false;
-      this.isDriving = false;
+      this.mode = ViewMode.Walking;
     };
     head.handlePointerDrag = (dx: number, dy: number) => {
       this.phiEyeRate = dy * ViewService.UI_RATE_ROTATIONAL;
@@ -95,12 +107,12 @@ export class ViewService {
     };
     const home = handlerSets[OverlayIcon.HOME];
     home.handlePointerDown = () => {
-      this.isDriving = false;
+      this.mode = ViewMode.Walking;
       this.resetView();
     };
     const truck = handlerSets[OverlayIcon.TRUCK];
     truck.handlePointerDown = () => {
-      this.isDriving = true;
+      this.mode = ViewMode.Driving;
     };
     truck.handlePointerDrag = (dx: number, dy: number) => {
       this.phiDriverHead = Utility.clamp(dy * ViewService.UI_RATE_TILT, -Math.PI * 0.25, Math.PI * 0.1);
@@ -110,33 +122,15 @@ export class ViewService {
     settings.handlePointerDown = () => {
       this.eventBrokerService.animationControlsToggle.next({ origin: EventOrigin.SERVICE, data: !this.showControls });
     };
+    //
+    this.startOrbitPendingTimer(15);
   }
 
-  /** Apply a heuristic to set a reasonable view of the current bridge. */
+  /** Give a reasonable view of the whole current bridge. */
   public resetView(): void {
-    const extent = this.bridgeService.getWorldExtent();
-    // Don't let the view cut off the top of the truck.
-    const truckHeight = 3.3;
-    if (extent.y1 < truckHeight) {
-      extent.height += truckHeight - extent.y1;
-    }
+    this.setFullBridgeView(this.eye, this.center);
 
-    const xCenter = extent.x0 + 0.5 * extent.width;
-
-    // The vertical view angle is 45 degrees. So z setback to include vertical extent is h * 1/(2 tan 22.5deg).
-    // Use window aspect as proxy for viewport because this needs to work before canvas is visible.
-    const aspect = (window.innerHeight - 107) / window.innerWidth;
-    // 1.5 is the factor above and bit more for padding.
-    const zEye = 1.5 * Math.max(aspect * extent.width, extent.height) + SiteConstants.DECK_HALF_WIDTH;
-
-    // Always put eye at height of a person on the road.
-    vec3.set(this.eye, xCenter, 2, zEye);
-
-    // Direct gaze at middle of vertical extent.
-    vec3.set(this.center, xCenter, extent.y0 + 0.5 * extent.height, 0);
-    // Follow river's path with eye.
-    this.eye[0] -= this.eye[2] * 0.05;
-    this.yEyeVelocity = 0;
+    this.yEyeVelocity = this.xzEyeVelocity = 0;
 
     // The angles are actually the independent values, so compute them here.
     this.thetaEye = Math.atan2(this.center[0] - this.eye[0], this.eye[2] - this.center[2]);
@@ -156,7 +150,8 @@ export class ViewService {
     this.eyeMax[2] = 100.0;
   }
 
-  public updateWalkingView(elapsedSecs: number) {
+  /** Advances view based on the number of seconds elapsed. */
+  public advanceView(elapsedSecs: number) {
     this.phiEye = Utility.clamp(
       this.phiEye + this.phiEyeRate * elapsedSecs,
       -ViewService.MAX_TILT,
@@ -189,28 +184,30 @@ export class ViewService {
   }
 
   public getLookAtMatrix(m: mat4 = mat4.create()): mat4 {
-    if (this.isDriving) {
-      const truckPosition = this.simulationStateService.wayPoint;
-      const driverLookDir = this.simulationStateService.rotation;
-      mat4.fromXRotation(this.driverRotation, -this.phiDriverHead);
-      mat4.rotateY(this.driverRotation, this.driverRotation, this.thetaDriverHead);
-      const driverZ = this.bridgeService.centerlineZ;
-      vec3.set(
-        this.eyeDriver,
-        truckPosition[0] + ViewService.DRIVER_EYE_LEAD,
-        truckPosition[1] + ViewService.DRIVER_EYE_HEIGHT,
-        driverZ,
-      );
-      vec3.set(
-        this.centerDriver,
-        truckPosition[0] + driverLookDir[0],
-        truckPosition[1] + driverLookDir[1] + ViewService.DRIVER_EYE_HEIGHT,
-        driverZ,
-      );
-      mat4.lookAt(m, this.eyeDriver, this.centerDriver, this.up);
-      return mat4.multiply(m, this.driverRotation, m);
+    switch (this.mode) {
+      case ViewMode.Driving:
+        const truckPosition = this.simulationStateService.wayPoint;
+        const driverLookDir = this.simulationStateService.rotation;
+        mat4.fromXRotation(this.driverRotation, -this.phiDriverHead);
+        mat4.rotateY(this.driverRotation, this.driverRotation, this.thetaDriverHead);
+        const driverZ = this.bridgeService.centerlineZ;
+        vec3.set(
+          this.eyeDriver,
+          truckPosition[0] + ViewService.DRIVER_EYE_LEAD,
+          truckPosition[1] + ViewService.DRIVER_EYE_HEIGHT,
+          driverZ,
+        );
+        vec3.set(
+          this.centerDriver,
+          truckPosition[0] + driverLookDir[0],
+          truckPosition[1] + driverLookDir[1] + ViewService.DRIVER_EYE_HEIGHT,
+          driverZ,
+        );
+        mat4.lookAt(m, this.eyeDriver, this.centerDriver, this.up);
+        return mat4.multiply(m, this.driverRotation, m);
+      default:
+        return mat4.lookAt(m, this.eye, this.center, this.up);
     }
-    return mat4.lookAt(m, this.eye, this.center, this.up);
   }
 
   /** Gets look-at matrix for parallel light with constant y-axis up vector. */
@@ -227,5 +224,39 @@ export class ViewService {
       -ex * id,  -ey * ez * id, ez, 0,
       0       ,  0            ,  0, 1,
     )
+  }
+
+  /** Sets eye and center points heuristically to a pleasant view of the whole bridge. */
+  private setFullBridgeView(eye: vec3, center: vec3): void {
+    const extent = this.bridgeService.getWorldExtent();
+    // Don't let the view cut off the top of the truck.
+    const truckHeight = 3.3;
+    if (extent.y1 < truckHeight) {
+      extent.height += truckHeight - extent.y1;
+    }
+
+    const xCenter = extent.x0 + 0.5 * extent.width;
+
+    // The vertical view angle is 45 degrees. So z setback to include vertical extent is h * 1/(2 tan 22.5deg).
+    // Use window aspect as proxy for viewport because this needs to work before canvas is visible.
+    const aspect = (window.innerHeight - 107) / window.innerWidth;
+    // 1.5 is the factor above and bit more for padding.
+    const zEye = 1.5 * Math.max(aspect * extent.width, extent.height) + SiteConstants.DECK_HALF_WIDTH;
+
+    // Always put eye at height of a person on the road.
+    vec3.set(eye, xCenter, 2, zEye);
+
+    // Direct gaze at middle of vertical extent.
+    vec3.set(center, xCenter, extent.y0 + 0.5 * extent.height, 0);
+  }
+
+  private startOrbitPendingTimer(timeLeft: number): void {
+    if (this.orbitPendingTimer !== undefined) {
+      clearTimeout(this.orbitPendingTimer);
+    }
+    this.orbitPendingTimer = setTimeout(() => {
+      this.orbitPendingTimer = undefined;
+      this.mode = ViewMode.Orbiting;
+    }, timeLeft);
   }
 }

@@ -39,7 +39,7 @@ export class ToolSelectorComponent implements AfterViewInit {
   ) {}
 
   /** Adjusts UI when user closes with the X. */
-  handleClose(_event: any): void {
+  handleClose(): void {
     // Hack to mitigate event containing no info on programmatic vs. user-based closes.
     if (this.isUserClose) {
       this.eventBrokerService.toolsToggle.next({ origin: EventOrigin.TOOL_SELECTOR, data: false });

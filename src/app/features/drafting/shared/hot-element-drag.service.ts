@@ -78,7 +78,7 @@ export class HotElementDragService {
     this.dragging = undefined;
   }
 
-  handlePointerLeave(_event: PointerEvent): void {
+  handlePointerLeave(): void {
     this.hotElementService.clearRenderedHotElement(this.ctx);
   }
 
