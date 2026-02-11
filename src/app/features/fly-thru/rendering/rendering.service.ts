@@ -62,10 +62,12 @@ export class RenderingService {
     private readonly windTurbineRenderingService: WindTurbineRenderingService,
   ) {}
 
-  /** Sets the rendered view to default. Includes movement limits for the eye. */
+  /** 
+   * Sets the rendered view to default. Includes movement limits for the 
+   * eye and (re)starting the auto-orbit of the view's eye coordinate.
+   */
   public setDefaultView(): void {
-    this.viewService.setFixedViewLimits();
-    this.viewService.resetView();
+    this.viewService.initializeForBridge();
   }
 
   /** Prepares for rendering frames before every animation start. */
