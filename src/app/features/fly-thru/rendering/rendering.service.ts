@@ -188,7 +188,7 @@ export class RenderingService {
     }
     this.bridgeRenderingService.render(this.matrices);
     if (!this.flyThruSettingsService.settings.noTruck) {
-      this.truckRenderingService.render(this.matrices, this.viewService.mode === ViewMode.Driving);
+      this.truckRenderingService.render(this.matrices, this.viewService.mode === ViewMode.DRIVING);
     }
 
     // Set target back to display.
@@ -257,7 +257,7 @@ export class RenderingService {
     }
     // Models that use blending (transparency) must be last.
     if (!this.flyThruSettingsService.settings.noTruck) {
-      this.truckRenderingService.render(this.matrices, this.viewService.mode === ViewMode.Driving);
+      this.truckRenderingService.render(this.matrices, this.viewService.mode === ViewMode.DRIVING);
     }
     this.animationControlsOverlayService.render();
   }

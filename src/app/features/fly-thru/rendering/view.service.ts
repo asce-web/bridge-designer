@@ -16,9 +16,9 @@ import { Rectangle2D } from '../../../shared/classes/graphics';
 
 /** Algorithms for determining eye and center positions. */
 export const enum ViewMode {
-  Walking,
-  Driving,
-  Orbiting,
+  WALKING,
+  DRIVING,
+  ORBITING,
 }
 
 /** Height of driver's eye above road surface. */
@@ -32,7 +32,7 @@ const ORBIT_POINT_COUNT = 128;
 /** Orbit speed in meters per second. */
 const ORBIT_SPEED = 5;
 /** How quickly orbit coord is incorporated as eye position. */
-const EYE_ORBIT_BLEND_PER_SEC = 0.2;
+const EYE_ORBIT_BLEND_PER_SEC = 0.25;
 /** Number of truck passes over the bridge before triggering orbit.  */
 const PRE_ORBIT_TRUCK_PASSES = 3;
 /** Pixel to world linear travel rate ratio. */
@@ -61,10 +61,11 @@ export class ViewService {
 
   private isIgnoringBoundaries: boolean = false;
   private isMovingLaterally: boolean = false;
+  private isOrbitAllowed: boolean = true;
   private orbit: Orbit | undefined;
   private sOrbit: number = 0;
   /**
-   * Number of times truck has passed over bridge in simulation. Set to 
+   * Number of times truck has passed over bridge in simulation. Set to
    * more than PRE_ORBIT_TRUCK_PASSES to disable orbits.
    */
   private truckPassCount: number = 0;
@@ -80,7 +81,7 @@ export class ViewService {
   private yEyeVelocity: number = 0;
   private orbitTimeout: any;
 
-  public mode: ViewMode = ViewMode.Walking;
+  public mode: ViewMode = ViewMode.WALKING;
 
   constructor(
     private readonly bridgeService: BridgeService,
@@ -94,12 +95,6 @@ export class ViewService {
     // Start the eye's orbit around the bridge if
     eventBrokerService.simulationPhaseChange.subscribe(info => {
       switch (info.data) {
-        case SimulationPhase.DEAD_LOADING:
-          // Allow orbits after failure restart.
-          this.cancelOrbit();
-          this.resetView();
-          this.truckPassCount = 0;
-          break;
         case SimulationPhase.FADING_IN:
           this.truckPassCount++;
           // Orbit starting with the truck's third pass.
@@ -112,6 +107,9 @@ export class ViewService {
           break;
       }
     });
+    eventBrokerService.simulationReplayRequest.subscribe(() => {
+      this.cancelOrbits();
+    });
   }
 
   public provideUiHandlers(overlayUi: OverlayUi): void {
@@ -119,9 +117,9 @@ export class ViewService {
     const handlerSets = overlayUi.iconHandlerSets;
     const walk = handlerSets[OverlayIcon.WALK];
     walk.handlePointerDown = () => {
-      this.cancelOrbit();
+      this.cancelOrbits();
       this.isMovingLaterally = false;
-      this.mode = ViewMode.Walking;
+      this.mode = ViewMode.WALKING;
     };
     walk.handlePointerDrag = (dx: number, dy: number) => {
       this.xzEyeVelocity = dy * UI_RATE_LINEAR;
@@ -129,9 +127,9 @@ export class ViewService {
     };
     const pan = handlerSets[OverlayIcon.HAND];
     pan.handlePointerDown = () => {
-      this.cancelOrbit();
+      this.cancelOrbits();
       this.isMovingLaterally = true;
-      this.mode = ViewMode.Walking;
+      this.mode = ViewMode.WALKING;
     };
     pan.handlePointerDrag = (dx: number, dy: number) => {
       this.xzEyeVelocity = dx * UI_RATE_LINEAR;
@@ -139,9 +137,9 @@ export class ViewService {
     };
     const head = handlerSets[OverlayIcon.HEAD];
     head.handlePointerDown = () => {
-      this.cancelOrbit();
+      this.cancelOrbits();
       this.isMovingLaterally = false;
-      this.mode = ViewMode.Walking;
+      this.mode = ViewMode.WALKING;
     };
     head.handlePointerDrag = (dx: number, dy: number) => {
       this.phiEyeRate = dy * UI_RATE_ROTATIONAL;
@@ -149,14 +147,13 @@ export class ViewService {
     };
     const home = handlerSets[OverlayIcon.HOME];
     home.handlePointerDown = () => {
-      this.cancelOrbit();
-      this.mode = ViewMode.Walking;
+      this.cancelOrbits();
       this.resetView();
     };
     const truck = handlerSets[OverlayIcon.TRUCK];
     truck.handlePointerDown = () => {
-      this.cancelOrbit();
-      this.mode = ViewMode.Driving;
+      this.cancelOrbits();
+      this.mode = ViewMode.DRIVING;
     };
     truck.handlePointerDrag = (dx: number, dy: number) => {
       this.phiDriverHead = Utility.clamp(dy * UI_RATE_TILT, -Math.PI * 0.25, Math.PI * 0.1);
@@ -178,14 +175,14 @@ export class ViewService {
     this.eyeMin[2] = -100.0;
     this.eyeMax[2] = 100.0;
 
-    this.mode = ViewMode.Walking;
     this.truckPassCount = 0;
+    this.isOrbitAllowed = true;
     this.resetView();
   }
 
   /** Advances view based on the number of seconds elapsed. */
   public advanceView(elapsedSecs: number) {
-    if (this.mode === ViewMode.Orbiting && this.orbit) {
+    if (this.mode === ViewMode.ORBITING && this.orbit) {
       this.sOrbit += elapsedSecs * ORBIT_SPEED;
       this.sOrbit = this.orbit.getForArcLength(this.eyeOrbit, this.sOrbit);
       // Cause eye to gradually catch up with orbit.
@@ -225,7 +222,7 @@ export class ViewService {
 
   public getLookAtMatrix(m: mat4 = mat4.create()): mat4 {
     switch (this.mode) {
-      case ViewMode.Driving:
+      case ViewMode.DRIVING:
         const truckPosition = this.simulationStateService.wayPoint;
         const driverLookDir = this.simulationStateService.rotation;
         mat4.fromXRotation(this.driverRotation, -this.phiDriverHead);
@@ -263,6 +260,7 @@ export class ViewService {
 
   /** Give a reasonable view of the whole current bridge. */
   private resetView(): void {
+    this.mode = ViewMode.WALKING;
     this.setFullBridgeView(this.eye, this.center);
     this.yEyeVelocity = this.xzEyeVelocity = 0;
     // The angles are actually the independent values, so compute them here.
@@ -300,19 +298,24 @@ export class ViewService {
     return extent;
   }
 
-  private cancelOrbit(): void {
-    this.truckPassCount = PRE_ORBIT_TRUCK_PASSES + 1;
+  /** Cancel orbits for this animation. */
+  private cancelOrbits(): void {
+    this.isOrbitAllowed = false;
     clearTimeout(this.orbitTimeout);
-    this.mode = ViewMode.Walking;
+    // Orbit lets the eye on the orbit. Let user navigate from a known good place.
+    if (this.mode === ViewMode.ORBITING) {
+      this.resetView();
+    }
+    this.mode = ViewMode.WALKING;
   }
 
   private startOrbit(): void {
     // Do nothing if orbit has already been cancelled.
-    if (this.truckPassCount > PRE_ORBIT_TRUCK_PASSES) {
+    if (!this.isOrbitAllowed) {
       return;
     }
-    // Interpolation logic assumes default view at start.
-    this.mode = ViewMode.Orbiting;
+    this.resetView();
+    this.mode = ViewMode.ORBITING;
     const extent = this.extentOfInterest;
     this.centerOrbit[0] = extent.x0 + 0.5 * extent.width; // middle of span
     this.centerOrbit[1] = 4; // fixed height above deck
