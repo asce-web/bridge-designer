@@ -62,6 +62,7 @@ export class AbutmentModelService {
       };
       // Left bottom of abutment.
       addRearFacePoint(leftX, waterY);
+      const rearTopLeftIndex = positions.length;
       // Wear surface
       for (let j = leftIndex, x = leftX; j < halfGridCount; ++j, x += TerrainModelService.METERS_PER_GRID) {
         if (x >= insetX) {
@@ -133,6 +134,24 @@ export class AbutmentModelService {
       addShelfFacePointPair(-faceX);
       indices.push(positionCount4, positionCount4 + 3, positionCount4 + 2);
       indices.push(positionCount4 + 3, positionCount4, positionCount4 + 1);
+
+      // Left face to cover for anchorage depressions, which expose it.
+      if (this.bridgeService.designConditions.isLeftAnchorage || this.bridgeService.designConditions.isRightAnchorage) {
+        const addLeftFacePointPair = (y: number) => {
+          positions.push(leftX, y, -halfDepth, leftX, y, halfDepth);
+          normals.push(-1, 0, 0, -1, 0, 0);
+          const texRearX = texScale * (rearFaceTexOriginS + leftX)
+          const texFrontX = texScale * (frontFaceTexOriginS + leftX)
+          const texY = texScale * y;
+          texCoords.push(texRearX, texY, texFrontX, texY);
+        }
+        const positionCount5 = positions.length / 3;
+        const topY = positions[rearTopLeftIndex + 1];
+        addLeftFacePointPair(topY);
+        addLeftFacePointPair(topY - 2);
+        indices.push(positionCount5, positionCount5 + 2, positionCount5 + 3);
+        indices.push(positionCount5, positionCount5 + 3, positionCount5 + 1);
+      }
 
       return {
         indices: new Uint16Array(indices),
