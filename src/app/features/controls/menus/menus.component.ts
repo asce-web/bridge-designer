@@ -83,9 +83,10 @@ export class MenusComponent implements AfterViewInit {
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'titleBlock', this.eventBrokerService.titleBlockToggle);
     this.uiStateService.registerToggleMenuItem(this.mainMenu, 'tools', this.eventBrokerService.toolsToggle);
 
+    // nb: Hot keys are active when dialog <input>s have focus. Modifier keys required.
     this.uiStateService.registerKey('Delete', 0, this.eventBrokerService.deleteSelectionRequest, undefined);
-    this.uiStateService.registerKey(' ', 0, this.eventBrokerService.designModeSelection, 0);
-    this.uiStateService.registerKey('t', 0, this.eventBrokerService.designModeSelection, 1);
+    this.uiStateService.registerKey('d', ModifierMask.ALT, this.eventBrokerService.designModeSelection, 0);
+    this.uiStateService.registerKey('t', ModifierMask.ALT, this.eventBrokerService.designModeSelection, 1);
     this.uiStateService.registerKey('a', ModifierMask.CTRL, this.eventBrokerService.selectAllRequest, undefined);
     this.uiStateService.registerKey('y', ModifierMask.CTRL, this.eventBrokerService.redoRequest, 1);
     this.uiStateService.registerKey('z', ModifierMask.CTRL, this.eventBrokerService.undoRequest, 1);
