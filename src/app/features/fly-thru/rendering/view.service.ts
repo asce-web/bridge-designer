@@ -183,12 +183,12 @@ export class ViewService {
   /** Set all view limits except for minimum y, which depends on terrain at the current eye location. */
   public initializeForBridge(): void {
     const conditions = this.bridgeService.designConditions;
-    this.eyeMin[0] = -100.0;
-    this.eyeMax[0] = 100 + conditions.spanLength;
+    this.eyeMin[0] = -120.0;
+    this.eyeMax[0] = 120 + conditions.spanLength;
 
     this.eyeMax[1] = conditions.overMargin + 25.0;
-    this.eyeMin[2] = -100.0;
-    this.eyeMax[2] = 100.0;
+    this.eyeMin[2] = -120.0;
+    this.eyeMax[2] = 120.0;
 
     this.truckPassCount = 0;
     this.isOrbitAllowed = true;
