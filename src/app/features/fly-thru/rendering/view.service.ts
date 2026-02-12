@@ -45,24 +45,39 @@ const UI_RATE_TILT = Math.PI / 800.0;
 /** Container for the fly-thru and driver view transforms and associated update logic. */
 @Injectable({ providedIn: 'root' })
 export class ViewService {
-  /** Integration state for controlling view with force model. */
+  /** Walking and orbiting view center point. */
   private readonly center: vec3 = vec3.create();
+  /** Driving view center point. */
   private readonly centerDriver = vec3.create();
+  /** Fixed center point of orbit view. */
   private readonly centerOrbit = vec3.create();
+  /** Reset view center point same distance from eye as `centerOrbit` for interpolation. */
   private readonly centerOrbitStart = vec3.create();
+  /** Rotation matrix up/down of the driver's head. */
   private readonly driverRotation = mat4.create();
+  /** Walk and orbit view eye point. */
   private readonly eye: vec3 = vec3.create();
+  /** Driver's eye position. */
   private readonly eyeDriver = vec3.create();
+  /** Maximum point of walking eye point boundary. */
   private readonly eyeMax = vec3.create();
+  /** Minimum point of walking eye point boundary. */
   private readonly eyeMin = vec3.create();
+  /** Interpolated eye point on the orbit path. */
   private readonly eyeOrbit = vec3.create();
+  /** Reset view eye point for interpolation. */
   private readonly eyeOrbitStart = vec3.create();
+  /** Constant up vector for all views. */
   private readonly up = vec3.fromValues(0, 1, 0);
-
+  /** Whether eye point boundaries are being enforced. True only for debugging. */
   private isIgnoringBoundaries: boolean = false;
+  /** Whether we're panning or, when false, walking. */
   private isMovingLaterally: boolean = false;
+  /** Whether orbiting is still possible. Disabled by user navigation input. */
   private isOrbitAllowed: boolean = true;
+  /** A container for bridge-specific orbit geometry. */
   private orbit: Orbit | undefined;
+  /** The arc length parameter for the current orbit point. */
   private sOrbit: number = 0;
   /**
    * Number of times truck has passed over bridge in simulation. Set to
@@ -328,7 +343,7 @@ export class ViewService {
   }
 }
 
-/** An orbital path in 3d. Eye traversing the path has interesting views of the bridge. */
+/** An orbital path in 3d. An eye traversing the path has interesting views of the bridge. */
 class Orbit {
   /** Orbit points with start duplicated at end. */
   private points = new Float64Array(3 * (1 + ORBIT_POINT_COUNT));
