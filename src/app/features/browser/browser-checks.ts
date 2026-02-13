@@ -39,7 +39,7 @@ const SUPPORTED_BROWSERS: Browser[] = ['Chrome', 'Edge (chromium)', 'Firefox', '
 /** A report on whether needed features are present in the current browser. */
 export const BROWSER_FEATURES: BrowserFeatures = getFeatures(document);
 
-/** Features that must be present, else Bridge Designer is likely to fail or be unusable. */
+/** Features that must be present, else ASCE Bridge Designer is likely to fail or be unusable. */
 type Mandatory =
   | 'addEventListener'
   | 'async'
@@ -97,13 +97,13 @@ export function areBrowserFeaturesMissing(): boolean {
     return false;
   }
   const wantsHelp = confirm(`Oops. Looks like your browser is missing some bits 
-needed by the Bridge Designer:
+needed by the ASCE Bridge Designer:
 ${missing.map(item => ` - ${item}`).join('\n')}
 This means likely problems or failure if you continue.
 
-Click OK for information about Bridge Designer's 
+Click OK for information about ASCE Bridge Designer's 
 browser requirements or Cancel to continue 
-running Bridge Designer anyway.
+running ASCE Bridge Designer anyway.
  
 NOTE: If you Cancel, this warning won't reappear unless something changes.`);
   if (!wantsHelp) {

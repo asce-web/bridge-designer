@@ -334,14 +334,14 @@
               class="tip-icon"
               src="img/tipicon.png"
             />
-            The bridge designer {{ edition }} will help you satisfy these design requirements.
+            The ASCE Bridge Designer {{ edition }} will help you satisfy these design requirements.
           </div>
           <div class="paragraph">
             The deck elevation and support configuration (which you will choose in Step&nbsp;3) will be automatically
-            set on the drawing board. The Bridge Designer will also provide a simulated load test to check your bridge
-            for structural safety using the deck weight and standard truck loading that you will choose in Step&nbsp;4.
-            If your structure is not strong enough to carry the required loads, the Bridge Designer will highlight
-            members that need more strength.
+            set on the drawing board. The ASCE Bridge Designer will also provide a simulated load test to check your
+            bridge for structural safety using the deck weight and standard truck loading that you will choose in
+            Step&nbsp;4. If your structure is not strong enough to carry the required loads, the ASCE Bridge Designer
+            will highlight members that need more strength.
           </div>
         </div>
         <div class="card-2">
@@ -350,7 +350,7 @@
               class="tip-icon"
               src="img/tipicon.png"
             />
-            If you are participating in a local contest using a Local Contest Code furnished by the Bridge Designer
+            If you are participating in a local contest using a Local Contest Code furnished by the ASCE Bridge Designer
             team, you may only use the specific design project (i.e., site configuration and load case) designated for
             that particular local contest.
           </div>
@@ -457,7 +457,9 @@
           <div>
             <div class="cost-summary-line">
               <div class="deck-cost">
-                <ng-container *ngIf="siteCostExpander.disabled(); else siteCostEnabled">{{ toDollars(0) }}</ng-container>
+                <ng-container *ngIf="siteCostExpander.disabled(); else siteCostEnabled">{{
+                  toDollars(0)
+                }}</ng-container>
                 <ng-template #siteCostEnabled>{{ toDollars(siteCosts.totalFixedCost) }}</ng-template>
               </div>
               <div class="deck-cost-comment">(Includes cost of deck, excavation, and supports; not steel)</div>
@@ -473,8 +475,7 @@
               <tr>
                 <td>Deck cost</td>
                 <td>
-                  ({{ siteCosts.panelCount }} each 4-meter panels) × ({{ toDollars(siteCosts.deckCostRate) }} per
-                  panel)
+                  ({{ siteCosts.panelCount }} each 4-meter panels) × ({{ toDollars(siteCosts.deckCostRate) }} per panel)
                 </td>
                 <td>=</td>
                 <td>{{ toDollars(siteCosts.deckCost) }}</td>

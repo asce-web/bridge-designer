@@ -13,6 +13,7 @@
   "java.debug.settings.onBuildFailureProceed": true,
   "latex-workshop.formatting.latex": "tex-fmt",
   "cSpell.words": [
+    "ASCE",
     "ASTM",
     "BDCE",
     "blueification",

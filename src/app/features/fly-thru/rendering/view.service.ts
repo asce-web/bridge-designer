@@ -127,6 +127,7 @@ export class ViewService {
     });
   }
 
+  /** Attaches handlers to the given overlay UI. */
   public provideUiHandlers(overlayUi: OverlayUi): void {
     // Install the animation controls handlers that vary the view via overlay icons.
     const handlerSets = overlayUi.iconHandlerSets;
@@ -235,6 +236,7 @@ export class ViewService {
     this.center[2] = this.eye[2] + dz;
   }
 
+  /** Returns the look-at matrix for the current view. */
   public getLookAtMatrix(m: mat4 = mat4.create()): mat4 {
     switch (this.mode) {
       case ViewMode.DRIVING:
@@ -303,6 +305,7 @@ export class ViewService {
     vec3.set(center, xCenter, extent.y0 + 0.5 * extent.height, 0);
   }
 
+  /** The x-y extent of the bridge with heuristic adjustments to show all we want. */
   private get extentOfInterest(): Rectangle2D {
     const extent = this.bridgeService.getWorldExtent();
     // Don't let the view cut off the top of the truck.
@@ -313,7 +316,7 @@ export class ViewService {
     return extent;
   }
 
-  /** Cancel orbits for this animation. */
+  /** Cancels orbits for this animation. */
   private cancelOrbits(): void {
     this.isOrbitAllowed = false;
     clearTimeout(this.orbitTimeout);
@@ -324,6 +327,10 @@ export class ViewService {
     this.mode = ViewMode.WALKING;
   }
 
+  /** 
+   * Changes to orbit mode and start the interpolation 
+   * from default view to the rotating orbit point.
+   */
   private startOrbit(): void {
     // Do nothing if orbit has already been cancelled.
     if (!this.isOrbitAllowed) {
