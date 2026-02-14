@@ -137,7 +137,7 @@ export class UiStateService {
     this.addDisableOverrides(eventBrokerService.inventorySelectionChangeRequest, initialAndAnimation);
     this.addDisableOverrides(eventBrokerService.loadBridgeFileRequest, animation);
     this.addDisableOverrides(eventBrokerService.loadDesignIterationRequest, initialAndAnimation);
-    this.addDisableOverrides(eventBrokerService.loadSampleRequest, initialAndAnimation);
+    this.addDisableOverrides(eventBrokerService.loadSampleRequest, animation);
     this.addDisableOverrides(eventBrokerService.loadTemplateRequest, animation);
     this.addDisableOverrides(eventBrokerService.memberDetailsReportRequest, initial, true);
     this.addDisableOverrides(eventBrokerService.memberNumbersToggle, initialAndAnimation);
