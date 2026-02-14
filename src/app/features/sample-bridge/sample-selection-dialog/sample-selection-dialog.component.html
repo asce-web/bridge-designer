@@ -7,7 +7,7 @@
   [autoOpen]="false"
   [width]="640"
   [height]="590"
-  (onOpen)="handleDialogOpen($event)"
+  (onOpen)="handleDialogOpen()"
 >
   <div
     #header
@@ -30,7 +30,7 @@
         [source]="source"
         [selectedIndex]="0"
         [displayMember]="'description'"
-        (onSelect)="handleSelect($event)"
+        (onSelect)="handleSelect()"
       >
       </jqxListBox>
       <div class="dialog-topic">Preview:</div>

@@ -58,7 +58,9 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           ' click icon drag turn head standing still home click move back starting view whole bridge truck view' +
           ' click icon see truck driver traverses bridge drag turn head click walk pan head turn home quit truc' +
           'k view pause/play click pause unpause animation test failed click see failure settings click show hi' +
-          'de settings dialog selecting animation settings view menu'
+          'de settings dialog selecting animation settings view menu dont touch navigation controls truck makes' +
+          ' two complete passes seconds bridge fails view automatically start orbit meters terrain touching nav' +
+          'igation control cancels orbit puts back control retest bridge orbit'
   },
   {
     id: 'hlp_animation_settings',
@@ -578,16 +580,17 @@ export const HELP_INDEX_DATA: HelpIndexData[] = [
           'k three files sent browsers downloads folder base_file_name trusses.obj base_file_name abutments.obj' +
           ' base_file_name cross members.obj base_file_name substituted name dialog file contains collection pi' +
           'eces placed theyre likely fit print volume however guaranteed may want arrange print batches differe' +
-          'ntly use youre slicer software printer usual import obj files print parts item file separate object ' +
-          'obj file format slicer software let position individually delete ones dont fit single print necessar' +
-          'y sometimes splitting command required see separate objects prusa slicer example requires highlight ' +
-          'import press button multi colored bridge e.g one color trusses another cross members third deck also' +
-          ' organize objects per intended color errors kinds bridges complex export often cause short members h' +
-          'appens dialog display error notes tips bridge complex export try increasing scale far printer allows' +
-          ' example use diagonal bed described cases allow export succeed biggest pieces model usually trusses ' +
-          'goal make biggest possible model try printing trusses one time oriented diagonally printer bed minim' +
-          'um feature size consider using multiple printers nozzle size thats least one millimeter. example noz' +
-          'zle 0.4mm try 1.2 1.6 see tips assembling bridge model important details youve printed parts'
+          'ntly use slicer software printer usual import obj files print parts item file separate object obj fi' +
+          'le format slicer software let position individually delete ones dont fit single print necessary some' +
+          'times splitting command required see separate objects prusa slicer example requires highlight import' +
+          ' press button multi colored bridge e.g one color trusses another cross members third deck also organ' +
+          'ize objects per intended color parts thin brims extra material added help printer bed adhesion must ' +
+          'trimmed away prior use errors kinds bridges complex export often cause short members happens dialog ' +
+          'display error notes tips bridge complex export try increasing scale far printer allows example use d' +
+          'iagonal bed described cases allow export succeed biggest pieces model usually trusses goal make bigg' +
+          'est possible model try printing trusses one time oriented diagonally printer bed minimum feature siz' +
+          'e consider using multiple printers nozzle size thats least one millimeter. example nozzle 0.4mm try ' +
+          '1.2 1.6 see tips assembling bridge model important details youve printed parts'
   },
   {
     id: 'hlp_find_opt_substructure',

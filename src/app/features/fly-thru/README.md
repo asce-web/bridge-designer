@@ -78,7 +78,7 @@ Static models don't change during the animation. Dynamic ones change geometry or
 | Transmission line tower | Stored       | Static  | OBJ file. Four copies.                                                        |
 | Truck body              | Stored       | Static  | Multiple colors. Translate and rotate.                                        |
 | Wheels                  | Programmatic | Dynamic | Rotate and translate in 4 copies. Extra tire for dual rears.                  |
-| Wind turbine rotor      | Stored       | Dynamic | OBJ file. Simple rotation.                                                     |
+| Wind turbine rotor      | Stored       | Dynamic | OBJ file. Simple rotation.                                                    |
 | Wind turbine tower      | Stored       | Static  | OBJ file.                                                                     |
 
 ## Transformations
@@ -196,3 +196,30 @@ Used for several models.
 - diffuseIntensity = clamp(dotNormalLight + inLight.ambientIntensity, 1, 0)
 - diffuseColor = material.color \* diffuseIntensity \* inLight.color \* (1 - specularIntensity)
 - fragmentColor = specularColor + diffuseColor
+
+## View control
+
+Implemented by `ViewService`. Three modes:
+
+- Walking. Normal POV. Eye point with DOV vector.
+  - Walk forward/backward: Advance in/opposite direction-of-view (DOV) with speed control.
+  - Turn left/right: Slew DOV left/right with rate control while walking forward/backward.
+- Truck.
+  - Eye point inside truck cab.
+  - Neutral DOV aligned with truck wheelbase.
+  - Adjust DOV absolute rotation up/down/left/right wrt neutral.
+- Orbit.
+  - Automatic after no user interaction.
+    - Two passes of truck if bridge is successful.
+    - A few seconds if bridge fails.
+  - Desired effect is walking a path around the bridge, looking at it from many angles.
+  - 3d elliptical path. Major axis is x-axis. Minor is z-axis offset right to center of extent.
+  - y follows a few meters above terrain level (including deck).
+  - Interpolated by arc length for smoothness.
+  - Eye at center of span x-z extent and a few meters above deck.
+  - Smooth transition from default view is needed, since that's high above the river for designs with high decks.
+    Instant transition to orbit path is jarring. This is implemented by interpolating between the default and orbit view
+    during the first few sections of motion.
+- Control option not implemented: Eye point and DOV are tethered by springs to control point and vector. This would
+  prevent jumpiness when following terrain and avoid the interpolated transition. Too complex. And force integrators can
+  always become unstable.

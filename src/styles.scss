@@ -22,7 +22,6 @@ body {
   padding-right: 0;
 }
 
-
 .jqx-cell {
   padding-top: 0;
   padding-bottom: 0;
@@ -32,13 +31,19 @@ body {
   height: 100vh;
   overflow: hidden;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .loading-img {
   width: 319px;
-  height: 102.5px;
+  margin-top: 48px;
+}
+
+.splash-img {
+  width: 600px;
+  border-collapse: collapse;
 }
 
 // Cause window.print() to include entire document.

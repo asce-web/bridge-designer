@@ -132,7 +132,7 @@ export class AnimationControlsOverlayService {
 
     // Attach handlers for the overlay and its UI.
     // Cause next render to re-compute and push icon positions because they're viewport bottom relative.
-    this.eventBrokerService.flyThruViewportChange.subscribe(_info => {
+    this.eventBrokerService.flyThruViewportChange.subscribe(() => {
       this.overlay.arePositionsDirty = true;
     });
     // Conditionally show the pause, play, or replay button based on button presses and animation state.

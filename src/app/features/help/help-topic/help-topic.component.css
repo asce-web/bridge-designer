@@ -5,6 +5,11 @@
   display: block;
 }
 
+.bd-emph {
+  color: #005DAB;
+  font-weight: bold;
+}
+
 .pane-content {
   overflow: auto;
   padding: 8px;

@@ -80,7 +80,7 @@ export class TemplateSelectionDialogComponent implements AfterViewInit {
     this.eventBrokerService.templateToggle.next({ origin: EventOrigin.TEMPLATE_DIALOG, data: true });
   }
 
-  dialogOpenHandler(_event: any): void {
+  dialogOpenHandler(): void {
     // Transfer design (root injector) bridge to our local instance.
     const rootBridgeService = this.rootBridgeService.instance;
     this.bridgeService.setBridge(rootBridgeService.bridge, rootBridgeService.draftingPanelState);
@@ -114,7 +114,7 @@ export class TemplateSelectionDialogComponent implements AfterViewInit {
     }
   }
 
-  selectHandler(_event: any): void {
+  selectHandler(): void {
     this.renderPreview();
   }
 

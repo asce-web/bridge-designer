@@ -6,50 +6,97 @@ import { mat4, vec3 } from 'gl-matrix';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { Utility } from '../../../shared/classes/utility';
 import { TerrainModelService } from '../models/terrain-model.service';
-import { SimulationStateService } from './simulation-state.service';
+import { SimulationPhase, SimulationStateService } from './simulation-state.service';
 import { OverlayUi } from './overlay.service';
 import { OverlayIcon } from './animation-controls-overlay.service';
 import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
 import { UNIT_LIGHT_DIRECTION } from './constants';
 import { SiteConstants } from '../../../shared/classes/site-constants';
+import { Rectangle2D } from '../../../shared/classes/graphics';
+
+/** Algorithms for determining eye and center positions. */
+export const enum ViewMode {
+  WALKING,
+  DRIVING,
+  ORBITING,
+}
+
+/** Height of driver's eye above road surface. */
+const DRIVER_EYE_HEIGHT = 2.4;
+/** Distance from front axel (reference point) forward to driver's eye. */
+const DRIVER_EYE_LEAD = 0.6;
+/** Max radians of look up-down angle. */
+const MAX_TILT = 0.5 * Math.PI * 0.75;
+/** Number of points in the orbiting eye path. */
+const ORBIT_POINT_COUNT = 128;
+/** Orbit speed in meters per second. */
+const ORBIT_SPEED = 5;
+/** How quickly orbit coord is incorporated as eye position. */
+const EYE_ORBIT_BLEND_PER_SEC = 0.25;
+/** Number of truck passes over the bridge before triggering orbit.  */
+const PRE_ORBIT_TRUCK_PASSES = 3;
+/** Pixel to world linear travel rate ratio. */
+const UI_RATE_LINEAR = 10.0 / 100.0;
+/** Pixel to world rotation rate ratio. */
+const UI_RATE_ROTATIONAL = (0.05 * 2.0 * Math.PI) / 100.0;
+/** Pixel to world tilt rate ratio. */
+const UI_RATE_TILT = Math.PI / 800.0;
 
 /** Container for the fly-thru and driver view transforms and associated update logic. */
 @Injectable({ providedIn: 'root' })
 export class ViewService {
-  /** Max radians of look up-down angle. */
-  private static readonly MAX_TILT = 0.5 * Math.PI * 0.75;
-  /** Height of driver's eye above road surface. */
-  private static readonly DRIVER_EYE_HEIGHT = 2.4;
-  /** Distance from front axel (reference point) forward to driver's eye. */
-  private static readonly DRIVER_EYE_LEAD = 0.6;
-  /** Pixel to world linear travel rate ratio. */
-  private static readonly UI_RATE_LINEAR = 10.0 / 100.0;
-  /** Pixel to world rotation rate ratio. */
-  private static readonly UI_RATE_ROTATIONAL = (0.05 * 2.0 * Math.PI) / 100.0;
-  /** Pixel to world tilt rate ratio. */
-  private static readonly UI_RATE_TILT = Math.PI / 800.0;
-
-  public readonly eye = vec3.create();
-  private readonly up = vec3.fromValues(0, 1, 0);
-  private readonly center = vec3.create();
-  private readonly eyeMin = vec3.create();
-  private readonly eyeMax = vec3.create();
-  private readonly eyeDriver = vec3.create();
+  /** Walking and orbiting view center point. */
+  private readonly center: vec3 = vec3.create();
+  /** Driving view center point. */
   private readonly centerDriver = vec3.create();
+  /** Fixed center point of orbit view. */
+  private readonly centerOrbit = vec3.create();
+  /** Reset view center point same distance from eye as `centerOrbit` for interpolation. */
+  private readonly centerOrbitStart = vec3.create();
+  /** Rotation matrix up/down of the driver's head. */
   private readonly driverRotation = mat4.create();
-
-  private thetaEye: number = 0;
+  /** Walk and orbit view eye point. */
+  private readonly eye: vec3 = vec3.create();
+  /** Driver's eye position. */
+  private readonly eyeDriver = vec3.create();
+  /** Maximum point of walking eye point boundary. */
+  private readonly eyeMax = vec3.create();
+  /** Minimum point of walking eye point boundary. */
+  private readonly eyeMin = vec3.create();
+  /** Interpolated eye point on the orbit path. */
+  private readonly eyeOrbit = vec3.create();
+  /** Reset view eye point for interpolation. */
+  private readonly eyeOrbitStart = vec3.create();
+  /** Constant up vector for all views. */
+  private readonly up = vec3.fromValues(0, 1, 0);
+  /** Whether eye point boundaries are being enforced. True only for debugging. */
+  private isIgnoringBoundaries: boolean = false;
+  /** Whether we're panning or, when false, walking. */
+  private isMovingLaterally: boolean = false;
+  /** Whether orbiting is still possible. Disabled by user navigation input. */
+  private isOrbitAllowed: boolean = true;
+  /** A container for bridge-specific orbit geometry. */
+  private orbit: Orbit | undefined;
+  /** The arc length parameter for the current orbit point. */
+  private sOrbit: number = 0;
+  /**
+   * Number of times truck has passed over bridge in simulation. Set to
+   * more than PRE_ORBIT_TRUCK_PASSES to disable orbits.
+   */
+  private truckPassCount: number = 0;
+  private phiDriverHead: number = 0;
   private phiEye: number = 0;
-  private thetaEyeRate: number = 0;
   private phiEyeRate: number = 0;
+  private showControls: boolean = false;
+  private tBlend: number = 0;
+  private thetaDriverHead: number = 0;
+  private thetaEye: number = 0;
+  private thetaEyeRate: number = 0;
   private xzEyeVelocity: number = 0;
   private yEyeVelocity: number = 0;
-  private phiDriverHead: number = 0;
-  private thetaDriverHead: number = 0;
-  private showControls: boolean = false;
-  public isIgnoringBoundaries: boolean = false;
-  public isMovingLaterally: boolean = false;
-  public isDriving: boolean = false;
+  private orbitTimeout: any;
+
+  public mode: ViewMode = ViewMode.WALKING;
 
   constructor(
     private readonly bridgeService: BridgeService,
@@ -60,51 +107,73 @@ export class ViewService {
     eventBrokerService.animationControlsToggle.subscribe(info => {
       this.showControls = info.data;
     });
+    // Start the eye's orbit around the bridge if
+    eventBrokerService.simulationPhaseChange.subscribe(info => {
+      switch (info.data) {
+        case SimulationPhase.FADING_IN:
+          this.truckPassCount++;
+          // Orbit starting with the truck's third pass.
+          if (this.truckPassCount === PRE_ORBIT_TRUCK_PASSES) {
+            this.startOrbit();
+          }
+          break;
+        case SimulationPhase.COLLAPSING:
+          this.orbitTimeout = setTimeout(() => this.startOrbit(), 5000);
+          break;
+      }
+    });
+    eventBrokerService.simulationReplayRequest.subscribe(() => {
+      this.cancelOrbits();
+    });
   }
 
+  /** Attaches handlers to the given overlay UI. */
   public provideUiHandlers(overlayUi: OverlayUi): void {
     // Install the animation controls handlers that vary the view via overlay icons.
     const handlerSets = overlayUi.iconHandlerSets;
     const walk = handlerSets[OverlayIcon.WALK];
     walk.handlePointerDown = () => {
+      this.cancelOrbits();
       this.isMovingLaterally = false;
-      this.isDriving = false;
+      this.mode = ViewMode.WALKING;
     };
     walk.handlePointerDrag = (dx: number, dy: number) => {
-      this.xzEyeVelocity = dy * ViewService.UI_RATE_LINEAR;
-      this.thetaEyeRate = dx * ViewService.UI_RATE_ROTATIONAL;
+      this.xzEyeVelocity = dy * UI_RATE_LINEAR;
+      this.thetaEyeRate = dx * UI_RATE_ROTATIONAL;
     };
-
     const pan = handlerSets[OverlayIcon.HAND];
     pan.handlePointerDown = () => {
+      this.cancelOrbits();
       this.isMovingLaterally = true;
-      this.isDriving = false;
+      this.mode = ViewMode.WALKING;
     };
     pan.handlePointerDrag = (dx: number, dy: number) => {
-      this.xzEyeVelocity = dx * ViewService.UI_RATE_LINEAR;
-      this.yEyeVelocity = dy * ViewService.UI_RATE_LINEAR;
+      this.xzEyeVelocity = dx * UI_RATE_LINEAR;
+      this.yEyeVelocity = dy * UI_RATE_LINEAR;
     };
     const head = handlerSets[OverlayIcon.HEAD];
     head.handlePointerDown = () => {
+      this.cancelOrbits();
       this.isMovingLaterally = false;
-      this.isDriving = false;
+      this.mode = ViewMode.WALKING;
     };
     head.handlePointerDrag = (dx: number, dy: number) => {
-      this.phiEyeRate = dy * ViewService.UI_RATE_ROTATIONAL;
-      this.thetaEyeRate = dx * ViewService.UI_RATE_ROTATIONAL;
+      this.phiEyeRate = dy * UI_RATE_ROTATIONAL;
+      this.thetaEyeRate = dx * UI_RATE_ROTATIONAL;
     };
     const home = handlerSets[OverlayIcon.HOME];
     home.handlePointerDown = () => {
-      this.isDriving = false;
+      this.cancelOrbits();
       this.resetView();
     };
     const truck = handlerSets[OverlayIcon.TRUCK];
     truck.handlePointerDown = () => {
-      this.isDriving = true;
+      this.cancelOrbits();
+      this.mode = ViewMode.DRIVING;
     };
     truck.handlePointerDrag = (dx: number, dy: number) => {
-      this.phiDriverHead = Utility.clamp(dy * ViewService.UI_RATE_TILT, -Math.PI * 0.25, Math.PI * 0.1);
-      this.thetaDriverHead = Utility.clamp(1.5 * dx * ViewService.UI_RATE_TILT, -Math.PI * 0.3, Math.PI * 0.3);
+      this.phiDriverHead = Utility.clamp(dy * UI_RATE_TILT, -Math.PI * 0.25, Math.PI * 0.1);
+      this.thetaDriverHead = Utility.clamp(1.5 * dx * UI_RATE_TILT, -Math.PI * 0.3, Math.PI * 0.3);
     };
     const settings = handlerSets[OverlayIcon.SETTINGS];
     settings.handlePointerDown = () => {
@@ -112,56 +181,35 @@ export class ViewService {
     };
   }
 
-  /** Apply a heuristic to set a reasonable view of the current bridge. */
-  public resetView(): void {
-    const extent = this.bridgeService.getWorldExtent();
-    // Don't let the view cut off the top of the truck.
-    const truckHeight = 3.3;
-    if (extent.y1 < truckHeight) {
-      extent.height += truckHeight - extent.y1;
-    }
-
-    const xCenter = extent.x0 + 0.5 * extent.width;
-
-    // The vertical view angle is 45 degrees. So z setback to include vertical extent is h * 1/(2 tan 22.5deg).
-    // Use window aspect as proxy for viewport because this needs to work before canvas is visible.
-    const aspect = (window.innerHeight - 107) / window.innerWidth;
-    // 1.5 is the factor above and bit more for padding.
-    const zEye = 1.5 * Math.max(aspect * extent.width, extent.height) + SiteConstants.DECK_HALF_WIDTH;
-
-    // Always put eye at height of a person on the road.
-    vec3.set(this.eye, xCenter, 2, zEye);
-
-    // Direct gaze at middle of vertical extent.
-    vec3.set(this.center, xCenter, extent.y0 + 0.5 * extent.height, 0);
-    // Follow river's path with eye.
-    this.eye[0] -= this.eye[2] * 0.05;
-    this.yEyeVelocity = 0;
-
-    // The angles are actually the independent values, so compute them here.
-    this.thetaEye = Math.atan2(this.center[0] - this.eye[0], this.eye[2] - this.center[2]);
-    this.thetaEyeRate = 0;
-    this.phiEye = Math.atan2(this.center[1] - this.eye[1], this.eye[2] - this.center[2]);
-    this.phiEyeRate = 0;
-  }
-
   /** Set all view limits except for minimum y, which depends on terrain at the current eye location. */
-  public setFixedViewLimits(): void {
+  public initializeForBridge(): void {
     const conditions = this.bridgeService.designConditions;
-    this.eyeMin[0] = -100.0;
-    this.eyeMax[0] = 100 + conditions.spanLength;
+    this.eyeMin[0] = -120.0;
+    this.eyeMax[0] = 120 + conditions.spanLength;
 
     this.eyeMax[1] = conditions.overMargin + 25.0;
-    this.eyeMin[2] = -100.0;
-    this.eyeMax[2] = 100.0;
+    this.eyeMin[2] = -120.0;
+    this.eyeMax[2] = 120.0;
+
+    this.truckPassCount = 0;
+    this.isOrbitAllowed = true;
+    this.resetView();
   }
 
-  public updateWalkingView(elapsedSecs: number) {
-    this.phiEye = Utility.clamp(
-      this.phiEye + this.phiEyeRate * elapsedSecs,
-      -ViewService.MAX_TILT,
-      ViewService.MAX_TILT,
-    );
+  /** Advances view based on the number of seconds elapsed. */
+  public advanceView(elapsedSecs: number) {
+    if (this.mode === ViewMode.ORBITING && this.orbit) {
+      this.sOrbit += elapsedSecs * ORBIT_SPEED;
+      this.sOrbit = this.orbit.getForArcLength(this.eyeOrbit, this.sOrbit);
+      // Cause eye to gradually catch up with orbit.
+      if (this.tBlend < 1) {
+        this.tBlend = Math.min(1, this.tBlend + elapsedSecs * EYE_ORBIT_BLEND_PER_SEC);
+      }
+      vec3.lerp(this.center, this.centerOrbitStart, this.centerOrbit, this.tBlend);
+      vec3.lerp(this.eye, this.eyeOrbitStart, this.eyeOrbit, this.tBlend);
+      return;
+    }
+    this.phiEye = Utility.clamp(this.phiEye + this.phiEyeRate * elapsedSecs, -MAX_TILT, MAX_TILT);
     const dy = Math.sin(this.phiEye);
     const cosPhiEye = Math.cos(this.phiEye);
     this.thetaEye = Utility.normalizeAngle(this.thetaEye + this.thetaEyeRate * elapsedSecs);
@@ -188,29 +236,27 @@ export class ViewService {
     this.center[2] = this.eye[2] + dz;
   }
 
+  /** Returns the look-at matrix for the current view. */
   public getLookAtMatrix(m: mat4 = mat4.create()): mat4 {
-    if (this.isDriving) {
-      const truckPosition = this.simulationStateService.wayPoint;
-      const driverLookDir = this.simulationStateService.rotation;
-      mat4.fromXRotation(this.driverRotation, -this.phiDriverHead);
-      mat4.rotateY(this.driverRotation, this.driverRotation, this.thetaDriverHead);
-      const driverZ = this.bridgeService.centerlineZ;
-      vec3.set(
-        this.eyeDriver,
-        truckPosition[0] + ViewService.DRIVER_EYE_LEAD,
-        truckPosition[1] + ViewService.DRIVER_EYE_HEIGHT,
-        driverZ,
-      );
-      vec3.set(
-        this.centerDriver,
-        truckPosition[0] + driverLookDir[0],
-        truckPosition[1] + driverLookDir[1] + ViewService.DRIVER_EYE_HEIGHT,
-        driverZ,
-      );
-      mat4.lookAt(m, this.eyeDriver, this.centerDriver, this.up);
-      return mat4.multiply(m, this.driverRotation, m);
+    switch (this.mode) {
+      case ViewMode.DRIVING:
+        const truckPosition = this.simulationStateService.wayPoint;
+        const driverLookDir = this.simulationStateService.rotation;
+        mat4.fromXRotation(this.driverRotation, -this.phiDriverHead);
+        mat4.rotateY(this.driverRotation, this.driverRotation, this.thetaDriverHead);
+        const driverZ = this.bridgeService.centerlineZ;
+        vec3.set(this.eyeDriver, truckPosition[0] + DRIVER_EYE_LEAD, truckPosition[1] + DRIVER_EYE_HEIGHT, driverZ);
+        vec3.set(
+          this.centerDriver,
+          truckPosition[0] + driverLookDir[0],
+          truckPosition[1] + driverLookDir[1] + DRIVER_EYE_HEIGHT,
+          driverZ,
+        );
+        mat4.lookAt(m, this.eyeDriver, this.centerDriver, this.up);
+        return mat4.multiply(m, this.driverRotation, m);
+      default:
+        return mat4.lookAt(m, this.eye, this.center, this.up);
     }
-    return mat4.lookAt(m, this.eye, this.center, this.up);
   }
 
   /** Gets look-at matrix for parallel light with constant y-axis up vector. */
@@ -227,5 +273,150 @@ export class ViewService {
       -ex * id,  -ey * ez * id, ez, 0,
       0       ,  0            ,  0, 1,
     )
+  }
+
+  /** Give a reasonable view of the whole current bridge. */
+  private resetView(): void {
+    this.mode = ViewMode.WALKING;
+    this.setFullBridgeView(this.eye, this.center);
+    this.yEyeVelocity = this.xzEyeVelocity = 0;
+    // The angles are actually the independent values, so compute them here.
+    this.thetaEye = Math.atan2(this.center[0] - this.eye[0], this.eye[2] - this.center[2]);
+    this.thetaEyeRate = 0;
+    this.phiEye = Math.atan2(this.center[1] - this.eye[1], this.eye[2] - this.center[2]);
+    this.phiEyeRate = 0;
+  }
+
+  /**
+   * Sets eye and center points heuristically to a pleasant view of the whole bridge.
+   * If both args are the same buffer, you'll get the center.
+   */
+  private setFullBridgeView(eye: vec3, center: vec3): void {
+    const extent = this.extentOfInterest;
+    const xCenter = extent.x0 + 0.5 * extent.width;
+    // The vertical view angle is 45 degrees. So z setback to include vertical extent is h * 1/(2 tan 22.5deg).
+    // Use window aspect as proxy for viewport because this needs to work before canvas is visible.
+    const aspect = (window.innerHeight - 107) / window.innerWidth;
+    // 1.5 is the factor above and bit more for padding.
+    const zEye = 1.5 * Math.max(aspect * extent.width, extent.height) + SiteConstants.DECK_HALF_WIDTH;
+    // Always put eye at height of a person on the road.
+    vec3.set(eye, xCenter, 2, zEye);
+    // Direct gaze at middle of vertical extent.
+    vec3.set(center, xCenter, extent.y0 + 0.5 * extent.height, 0);
+  }
+
+  /** The x-y extent of the bridge with heuristic adjustments to show all we want. */
+  private get extentOfInterest(): Rectangle2D {
+    const extent = this.bridgeService.getWorldExtent();
+    // Don't let the view cut off the top of the truck.
+    const truckHeight = 3.3;
+    if (extent.y1 < truckHeight) {
+      extent.height += truckHeight - extent.y1;
+    }
+    return extent;
+  }
+
+  /** Cancels orbits for this animation. */
+  private cancelOrbits(): void {
+    this.isOrbitAllowed = false;
+    clearTimeout(this.orbitTimeout);
+    // Orbit lets the eye on the orbit. Let user navigate from a known good place.
+    if (this.mode === ViewMode.ORBITING) {
+      this.resetView();
+    }
+    this.mode = ViewMode.WALKING;
+  }
+
+  /** 
+   * Changes to orbit mode and start the interpolation 
+   * from default view to the rotating orbit point.
+   */
+  private startOrbit(): void {
+    // Do nothing if orbit has already been cancelled.
+    if (!this.isOrbitAllowed) {
+      return;
+    }
+    this.resetView();
+    this.mode = ViewMode.ORBITING;
+    const extent = this.extentOfInterest;
+    this.centerOrbit[0] = extent.x0 + 0.5 * extent.width; // middle of span
+    this.centerOrbit[1] = 4; // fixed height above deck
+    this.centerOrbit[2] = 0; // roadway centerline
+    this.setFullBridgeView(this.eyeOrbitStart, this.centerOrbitStart);
+    const a = extent.width; // major x-axis
+    const b = this.eyeOrbitStart[2]; // minor z-axis
+    this.orbit = new Orbit(this.center[0], 0, a, b, this.terrainService);
+    this.sOrbit = this.tBlend = 0;
+  }
+}
+
+/** An orbital path in 3d. An eye traversing the path has interesting views of the bridge. */
+class Orbit {
+  /** Orbit points with start duplicated at end. */
+  private points = new Float64Array(3 * (1 + ORBIT_POINT_COUNT));
+  private arcLengths = new Float64Array(1 + ORBIT_POINT_COUNT);
+
+  constructor(x0: number, y0: number, a: number, b: number, terrain: TerrainModelService) {
+    // Build elliptical path around bridge center, a fixed distance above ground level.
+    const dTheta = (2 * Math.PI) / ORBIT_POINT_COUNT;
+    let jLast = 0;
+    const orbit = this.points;
+    let runningArcLength = 0;
+    for (let theta = 0.5 * Math.PI, i = 0, j = 0; i <= ORBIT_POINT_COUNT; theta += dTheta, ++i, j += 3) {
+      const x = x0 + Math.cos(theta) * a;
+      const z = y0 + Math.sin(theta) * b;
+      // Consider terrain to left and right of path to avoid eye being occluded by river banks.
+      const y =
+        3 +
+        Math.max(
+          terrain.getElevationAtXZ(x, z),
+          terrain.getElevationAtXZ(x - 8, z),
+          terrain.getElevationAtXZ(x + 8, z),
+        );
+      orbit[j] = x;
+      orbit[j + 1] = y;
+      orbit[j + 2] = z;
+      runningArcLength += Math.hypot(x - orbit[jLast], y - orbit[jLast + 1], z - orbit[jLast + 2]);
+      this.arcLengths[i] = runningArcLength;
+      jLast = j;
+    }
+  }
+
+  /**
+   * Sets the interpolated point at given arc length along the path,
+   * which is normalized to orbit length and returned.
+   */
+  getForArcLength(r: vec3, s: number): number {
+    const arcLength = this.arcLengths[ORBIT_POINT_COUNT];
+    if (arcLength === 0) {
+      return s;
+    }
+    while (s < 0) s += arcLength;
+    while (s >= arcLength) s -= arcLength;
+    // Binary search to find the indices of the segment containing s.
+    let lo: number = 0;
+    let hi: number = ORBIT_POINT_COUNT;
+    while (lo < hi - 1) {
+      const mid = (lo + hi) >>> 1;
+      const sMid = this.arcLengths[mid];
+      if (s < sMid) {
+        hi = mid;
+      } else if (s >= sMid) {
+        lo = mid;
+      }
+    }
+    if (lo !== hi - 1) {
+      return s;
+    }
+    const s0 = this.arcLengths[lo];
+    const s1 = this.arcLengths[hi];
+    const t = (s - s0) / (s1 - s0);
+    const tp = 1 - t;
+    const i0 = 3 * lo;
+    const p = this.points;
+    r[0] = tp * p[i0] + t * p[i0 + 3];
+    r[1] = tp * p[i0 + 1] + t * p[i0 + 4];
+    r[2] = tp * p[i0 + 2] + t * p[i0 + 5];
+    return s;
   }
 }
