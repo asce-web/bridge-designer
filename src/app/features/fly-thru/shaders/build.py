@@ -77,7 +77,8 @@ def main(noCompress, noProcessDefines):
             if not noCompress:
                 text = re.sub(r"#line.*", "", text)  # elide line directive
                 text = re.sub(r"#ifndef[\s\S]*?#endif", "", text)  # assume ifndef false
-                text = re.sub(r"//[^\n]*\n", " ", text)  # elide comments
+                text = re.sub(r"//[^\n]*\n", " ", text)  # elide line comments
+                text = re.sub(r'/\*.*?\*/', " ", text, flags=re.DOTALL)  # elide block comments
                 text = re.sub(r"(#.*)", r"\1@", text)  # protect directive newlines
                 text = re.sub(r"\s+", " ", text)  # compress spaces including newlines
                 text = re.sub(r"\s?([=,*+\-/{}()])\s?", r"\1", text)  # unneeded spaces

@@ -1,7 +1,8 @@
 // This file is generated. Edit .vert and .frag files instead.
 export const BUCKLED_MEMBER_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+precision mediump float;
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -53,7 +54,8 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const COLORED_MESH_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+precision mediump float;
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -107,7 +109,8 @@ fragmentColor=vec4(light.brightness*color,light.globalAlpha);}`;
 
 export const COLORED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+precision mediump float;
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -129,7 +132,7 @@ materialRef=inMaterialRef;}`;
 
 export const DEPTH_TEXTURE_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/precision mediump float;
+precision mediump float;
 layout(location=0)in vec2 inTexCoord;
 out vec2 texCoord;
 void main(){
@@ -159,7 +162,7 @@ void main(){
 
 export const INSTANCE_COLORED_MESH_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -210,7 +213,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const OVERLAY_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/precision mediump float;
+precision mediump float;
 layout(location=0)in vec4 inPosition;
 layout(location=2)in float inAlpha;
 layout(location=3)in vec2 inTexCoord;
@@ -238,7 +241,8 @@ fragmentColor.a*=alpha;}`;
 
 export const RIVER_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+precision mediump float;
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -291,7 +295,8 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const SKY_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform SkyboxTransforms{
+precision mediump float;
+layout(std140)uniform SkyboxTransforms{
 mat4 viewRotationProjection;}transforms;
 layout(location=0)in vec3 inPosition;
 out vec3 texCoord;
@@ -311,7 +316,7 @@ fragmentColor=texture(skybox,texCoord);}`;
 
 export const TERRAIN_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -358,7 +363,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const TEXTURED_MESH_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -403,7 +408,7 @@ fragmentColor=vec4(light.brightness*color,light.globalAlpha);}`;
 
 export const TEXTURED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -423,7 +428,7 @@ texCoord=inTexCoord;}`;
 
 export const WIRE_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;}transforms;
 layout(location=0)in vec3 inPosition;
@@ -464,7 +469,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const WIRE_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
-/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
+layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;}transforms;
 layout(location=0)in vec3 inPosition;
