@@ -44,6 +44,7 @@ body {
 .splash-img {
   width: 600px;
   border-collapse: collapse;
+  border: 6px groove darkgray;
 }
 
 // Cause window.print() to include entire document.

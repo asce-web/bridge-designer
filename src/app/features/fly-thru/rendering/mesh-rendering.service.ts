@@ -90,7 +90,7 @@ const GL_INT_TYPES: number[] = [
   WebGL2RenderingContext.SHORT,
   WebGL2RenderingContext.UNSIGNED_SHORT,
   WebGL2RenderingContext.INT,
-  WebGL2RenderingContext.UNSIGNED_INT
+  WebGL2RenderingContext.UNSIGNED_INT,
 ];
 
 /** Container for the WebGL details of rendering meshes: one-time preparation and per-frame drawing. */
@@ -279,7 +279,7 @@ export class MeshRenderingService {
     };
   }
 
-  public renderTexturedMesh(mesh: Mesh): void {
+  public renderTexturedMesh(mesh: Mesh, clampToEdge?: boolean): void {
     const gl = this.glService.gl;
     const program = this.shaderService.getProgram(mesh.instanceCount ? 'textured_mesh_instances' : 'textured_mesh');
     gl.useProgram(program);
@@ -291,6 +291,9 @@ export class MeshRenderingService {
       gl.uniform1i(mesh.textureUniformLocation!, FACIA_TEXTURE_UNIT);
       gl.activeTexture(gl.TEXTURE0 + FACIA_TEXTURE_UNIT);
       gl.bindTexture(gl.TEXTURE_2D, mesh.texture!);
+      if (clampToEdge) {
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      }
     }
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.indexBuffer);
     if (mesh.instanceCount) {

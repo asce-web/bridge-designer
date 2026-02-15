@@ -13,6 +13,7 @@ import { GlService } from './gl.service';
 import { Geometry } from '../../../shared/classes/graphics';
 import { TRUCK_CAB_MESH_DATA } from '../models/truck-cab';
 import { BridgeService } from '../../../shared/services/bridge.service';
+import { TRUCK_SIGN_MESH_DATA } from '../models/truck-sign';
 
 /** Radius of tire from model. */
 const TIRE_RADIUS = 0.5;
@@ -24,6 +25,7 @@ export class TruckRenderingService {
   private wheelMesh!: Mesh;
   private dualWheelMesh!: Mesh;
   private cabInteriorMesh!: Mesh;
+  private signMesh!: Mesh;
 
   constructor(
     private readonly bridgeService: BridgeService,
@@ -38,6 +40,7 @@ export class TruckRenderingService {
     this.wheelMesh = this.meshRenderingService.prepareColoredMesh(WHEEL_MESH_DATA);
     this.dualWheelMesh = this.meshRenderingService.prepareColoredMesh(DUAL_WHEEL_MESH_DATA);
     this.cabInteriorMesh = this.meshRenderingService.prepareColoredMesh(TRUCK_CAB_MESH_DATA);
+    this.signMesh = this.meshRenderingService.prepareTexturedMesh(TRUCK_SIGN_MESH_DATA, 'img/ascelogo.png');
   }
 
   public render(matrices: DisplayMatrices, cabOnly: boolean = false): void {
@@ -115,9 +118,10 @@ export class TruckRenderingService {
 
       this.uniformService.popModelMatrix();
 
-      // Body.
+      // Body with sign.
       this.uniformService.updateTransformsUniform(matrices);
       this.meshRenderingService.renderColoredMesh(this.bodyMesh);
+      this.meshRenderingService.renderTexturedMesh(this.signMesh, true);
     }
 
     this.uniformService.popModelMatrix();

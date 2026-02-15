@@ -7,6 +7,10 @@ import os
 import re
 import sys
 
+COPYRIGHT = """/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+"""
+
 
 class MaterialsLibrary:
     def __init__(self, mtl_file_name):
@@ -50,9 +54,8 @@ class MaterialsLibrary:
 
     def emit(self):
         with open(Path(self.file_name).with_suffix(".ts").name, "w") as out_file:
+            print(COPYRIGHT, file=out_file)
             print("export const MATERIAL_CONFIG = new Float32Array([", file=out_file)
-            print("  // Global alpha and padding", file=out_file)
-            print("  1.0, 0, 0, 0,", file=out_file)
             for name, material in self.materials.items():
                 kd = material["kd"]
                 ns = material["ns"]
@@ -135,6 +138,10 @@ class Processor:
         self.material_lib = None
         self.options = {}
 
+    def get_option(self, name):
+        """Get the named option value as a lower case string or empty string if none."""
+        return self.options.get(name, "").lower()
+    
     def get_material(self, name):
         return self.material_lib and self.material_lib.get(name)
 
@@ -165,8 +172,9 @@ class Processor:
                 r, q = q, p
         return triangles
 
-    def process(self, in_file, out_file, ignore_tex_coords=True):
+    def process(self, in_file, out_file):
         print(f"{in_file.name} -> {out_file.name}:")
+        print(COPYRIGHT, file=out_file)
         # Current material to paint faces.
         material = {}
         for line in in_file:
@@ -183,7 +191,8 @@ class Processor:
                 case "vn":
                     self.normals.append(tuple(float(x) for x in parts[1:]))
                 case "vt":
-                    if not ignore_tex_coords:
+                    # Tex coords are ignored by default.
+                    if self.get_option("texCoords") == "yes":
                         self.texcoords.append(tuple(float(x) for x in parts[1:]))
                 case "f":
                     face = []
@@ -191,7 +200,7 @@ class Processor:
                         quad = tuple(
                             int(i) if len(i) > 0 else None
                             for i in vertex_spec.split("/")
-                        ) + (bool(material) and material["index"],)
+                        ) + (material["index"] if bool(material) else None,)
                         face.append(quad)
                         quad_index = self.quad_index.get(quad)
                         if quad_index == None:
@@ -212,7 +221,7 @@ class Processor:
                 case "usemtl":
                     material = self.get_material(parts[1])
                 case "g":
-                    print(f"ignore: {line}", end='')
+                    print(f"ignore: {line}", end="")
                 case _:
                     print(f"unknown command: {line}", file=sys.stderr)
                     continue
@@ -232,14 +241,14 @@ class Processor:
                     f"    {p[0]:.3f}, {p[1]:.3f}, {p[2]:.3f}, // {index}", file=out_file
                 )
             print("  ]),", file=out_file)
-        if populated[1] and not ignore_tex_coords:
+        if populated[1] and self.get_option("texCoords") == "yes":
             print(f"  texCoords: new Float32Array([", file=out_file)
             for index, quad in enumerate(self.quad_index.keys()):
                 p = self.texcoords[quad[1]]
                 print(f"    {p[0]:.4f}, {p[1]:.4f}, // {index}", file=out_file)
             print("  ]),", file=out_file)
         if populated[2]:
-            if self.options.get("normals", "").lower() == "index":
+            if self.get_option("normals") == "index":
                 print(f"  normalRefs: new Uint16Array([", file=out_file)
                 for index, quad in enumerate(self.quad_index.keys()):
                     p = self.normals[quad[2]]
@@ -257,7 +266,7 @@ class Processor:
                         file=out_file,
                     )
                 print("  ]),", file=out_file)
-        if populated[3] and self.options.get("materialRefs", "").lower() != "no":
+        if populated[3] and self.get_option("materialRefs") != "no":
             print(
                 f"  materialRefs: new Uint16Array([",
                 file=out_file,

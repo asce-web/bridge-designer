@@ -1,4 +1,6 @@
 // This file is generated. Edit constants.ts instead.
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
 #define IN_POSITION_LOCATION 0
 #define IN_NORMAL_LOCATION 1
 #define IN_NORMAL_REF_LOCATION 1

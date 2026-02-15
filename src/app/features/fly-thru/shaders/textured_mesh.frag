@@ -9,6 +9,7 @@ layout(std140) uniform LightConfig {
   vec3 color;
   float ambientIntensity;
   float shadowWeight;
+  float globalAlpha;
 } light;
 
 uniform sampler2D meshTexture;
@@ -30,5 +31,5 @@ void main() {
   float diffuseIntensity = mix(light.ambientIntensity, 1.0f, shadow * max(0.0f, normalDotLight));
   vec3 materialColor = texture(meshTexture, texCoord).rgb;
   vec3 color = diffuseIntensity * materialColor * light.color;
-  fragmentColor = vec4(light.brightness * color, 1.0f);
+  fragmentColor = vec4(light.brightness * color, light.globalAlpha);
 }

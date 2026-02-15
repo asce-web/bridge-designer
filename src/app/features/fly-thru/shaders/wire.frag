@@ -7,6 +7,8 @@ layout(std140) uniform LightConfig {
   float brightness;
   vec3 color;
   float ambientIntensity;
+  float shadowWeight;
+  float globalAlpha;
 } light;
 
 in vec3 vertex;

@@ -36,7 +36,6 @@ const CANON_TO_TEX = mat4.fromValues(
 export class UniformService {
   /** Homogeneous light vector (w == 0). */
   private lightConfigBuffer!: WebGLBuffer;
-  private materialConfigBuffer!: WebGLBuffer;
   private skyboxTransformsBuffer!: WebGLBuffer;
   private timeBuffer!: WebGLBuffer;
   private transformsBuffer!: WebGLBuffer;
@@ -56,7 +55,8 @@ export class UniformService {
       0.9, 0.9, 1.0, // light color
       0.3, // ambient intensity
       1.0, // shadow multiplier
-      0, 0, 0, // padding
+      1.0, // global alpha
+      0, 0, // padding
   ]);
   // Last 3 of chunk aren't currently used.
   public readonly time = new Float32Array(4);
@@ -124,7 +124,7 @@ export class UniformService {
     );
     gl.bufferData(gl.UNIFORM_BUFFER, this.lightConfig.byteLength, gl.STATIC_DRAW);
 
-    this.materialConfigBuffer = this.setUpUniformBlock(
+    this.setUpUniformBlock(
       [facetMeshProgram, facetMeshInstancesProgram],
       'MaterialConfig',
       MATERIAL_CONFIG_UBO_BINDING_INDEX,
@@ -158,12 +158,12 @@ export class UniformService {
     --this.modelTransformStackPointer;
   }
 
-  /** Updates the value of global alpha. gl.BLEND must be enabled. Used e.g. by the colored mesh shader. */
+  /** Updates the value of global alpha. gl.BLEND must be enabled. */
   public updateGlobalAlpha(globalAlpha: number): void {
     const gl = this.glService.gl;
-    gl.bindBuffer(gl.UNIFORM_BUFFER, this.materialConfigBuffer);
-    MATERIAL_CONFIG[0] = globalAlpha;
-    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, MATERIAL_CONFIG, 0, 4);
+    gl.bindBuffer(gl.UNIFORM_BUFFER, this.lightConfigBuffer);
+    this.lightConfig[9] = globalAlpha;
+    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.lightConfig, 39, 4);
   }
 
   /** Updates the shader transforms uniform with current model matrix and given view and projection matrices. */

@@ -1,11 +1,7 @@
-/* Copyright (c) 2025-2026 Gene Ressler
-   SPDX-License-Identifier: GPL-3.0-or-later */
-
 // This file is generated. Edit .vert and .frag files instead.
 export const BUCKLED_MEMBER_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;
-layout(std140)uniform Transforms{
+precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -35,7 +31,8 @@ vec3 unitDirection;
 float brightness;
 vec3 color;
 float ambientIntensity;
-float shadowWeight;}light;
+float shadowWeight;
+float globalAlpha;}light;
 uniform sampler2DShadow depthMap;
 in vec3 vertex;
 in vec3 normal;
@@ -56,8 +53,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const COLORED_MESH_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;
-layout(std140)uniform Transforms{
+precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -85,11 +81,11 @@ vec3 unitDirection;
 float brightness;
 vec3 color;
 float ambientIntensity;
-float shadowWeight;}light;
+float shadowWeight;
+float globalAlpha;}light;
 struct MaterialSpec{
 vec4 spec;};
 layout(std140)uniform MaterialConfig{
-float globalAlpha;
 MaterialSpec specs[12];}materialConfig;
 uniform sampler2DShadow depthMap;
 in vec3 vertex;
@@ -107,12 +103,11 @@ float shadow=light.shadowWeight < 1.0f ? mix(light.shadowWeight,1.0f,textureProj
 float specularIntensity=pow(shadow*max(dot(unitReflection,unitEye),0.0f),materialSpec.spec.w);
 float diffuseIntensity=mix(light.ambientIntensity,1.0f,shadow*max(0.0f,normalDotLight));
 vec3 color=light.color*(specularIntensity+diffuseIntensity*materialSpec.spec.xyz);
-fragmentColor=vec4(light.brightness*color,materialConfig.globalAlpha);}`;
+fragmentColor=vec4(light.brightness*color,light.globalAlpha);}`;
 
 export const COLORED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;
-layout(std140)uniform Transforms{
+precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -134,7 +129,7 @@ materialRef=inMaterialRef;}`;
 
 export const DEPTH_TEXTURE_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/precision mediump float;
 layout(location=0)in vec2 inTexCoord;
 out vec2 texCoord;
 void main(){
@@ -164,7 +159,7 @@ void main(){
 
 export const INSTANCE_COLORED_MESH_VERTEX_SHADER = 
 `#version 300 es
-layout(std140)uniform Transforms{
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -193,7 +188,8 @@ vec3 unitDirection;
 float brightness;
 vec3 color;
 float ambientIntensity;
-float shadowWeight;}light;
+float shadowWeight;
+float globalAlpha;}light;
 uniform sampler2DShadow depthMap;
 in vec3 vertex;
 in vec3 normal;
@@ -214,7 +210,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const OVERLAY_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/precision mediump float;
 layout(location=0)in vec4 inPosition;
 layout(location=2)in float inAlpha;
 layout(location=3)in vec2 inTexCoord;
@@ -242,8 +238,7 @@ fragmentColor.a*=alpha;}`;
 
 export const RIVER_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;
-layout(std140)uniform Transforms{
+precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -270,7 +265,8 @@ vec3 unitDirection;
 float brightness;
 vec3 color;
 float ambientIntensity;
-float shadowWeight;}light;
+float shadowWeight;
+float globalAlpha;}light;
 layout(std140)uniform Time{
 float clock;}time;
 uniform sampler2D water;
@@ -295,8 +291,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const SKY_VERTEX_SHADER = 
 `#version 300 es
-precision mediump float;
-layout(std140)uniform SkyboxTransforms{
+precision mediump float;/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform SkyboxTransforms{
 mat4 viewRotationProjection;}transforms;
 layout(location=0)in vec3 inPosition;
 out vec3 texCoord;
@@ -316,7 +311,7 @@ fragmentColor=texture(skybox,texCoord);}`;
 
 export const TERRAIN_VERTEX_SHADER = 
 `#version 300 es
-layout(std140)uniform Transforms{
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -341,7 +336,8 @@ vec3 unitDirection;
 float brightness;
 vec3 color;
 float ambientIntensity;
-float shadowWeight;}light;
+float shadowWeight;
+float globalAlpha;}light;
 uniform sampler2DShadow depthMap;
 in vec3 normal;
 in vec4 depthMapLookup;
@@ -362,7 +358,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const TEXTURED_MESH_VERTEX_SHADER = 
 `#version 300 es
-layout(std140)uniform Transforms{
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -388,7 +384,8 @@ vec3 unitDirection;
 float brightness;
 vec3 color;
 float ambientIntensity;
-float shadowWeight;}light;
+float shadowWeight;
+float globalAlpha;}light;
 uniform sampler2D meshTexture;
 uniform sampler2DShadow depthMap;
 in vec3 normal;
@@ -402,11 +399,11 @@ float shadow=light.shadowWeight < 1.0f ? mix(light.shadowWeight,1.0f,textureProj
 float diffuseIntensity=mix(light.ambientIntensity,1.0f,shadow*max(0.0f,normalDotLight));
 vec3 materialColor=texture(meshTexture,texCoord).rgb;
 vec3 color=diffuseIntensity*materialColor*light.color;
-fragmentColor=vec4(light.brightness*color,1.0f);}`;
+fragmentColor=vec4(light.brightness*color,light.globalAlpha);}`;
 
 export const TEXTURED_MESH_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
-layout(std140)uniform Transforms{
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;
 mat4 depthMapLookup;}transforms;
@@ -426,7 +423,7 @@ texCoord=inTexCoord;}`;
 
 export const WIRE_VERTEX_SHADER = 
 `#version 300 es
-layout(std140)uniform Transforms{
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;}transforms;
 layout(location=0)in vec3 inPosition;
@@ -446,7 +443,9 @@ layout(std140)uniform LightConfig{
 vec3 unitDirection;
 float brightness;
 vec3 color;
-float ambientIntensity;}light;
+float ambientIntensity;
+float shadowWeight;
+float globalAlpha;}light;
 in vec3 vertex;
 in vec3 direction;
 out vec4 fragmentColor;
@@ -465,7 +464,7 @@ fragmentColor=vec4(light.brightness*color,1.0f);}`;
 
 export const WIRE_INSTANCES_VERTEX_SHADER = 
 `#version 300 es
-layout(std140)uniform Transforms{
+/*Copyright(c)2025-2026 Gene Ressler SPDX-License-Identifier: GPL-3.0-or-later*/layout(std140)uniform Transforms{
 mat4 modelView;
 mat4 modelViewProjection;}transforms;
 layout(location=0)in vec3 inPosition;

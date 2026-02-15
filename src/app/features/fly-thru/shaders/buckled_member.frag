@@ -9,6 +9,7 @@ layout(std140) uniform LightConfig {
   vec3 color;
   float ambientIntensity;
   float shadowWeight;
+  float globalAlpha;
 } light;
 
 uniform sampler2DShadow depthMap;

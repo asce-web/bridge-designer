@@ -210,14 +210,14 @@ def draw_preview(normalScale=1, positionLabelZThreshold=0.7):
                     fill="blue",
                     arrow=tk.LAST,
                 )
-        # axes
-        org = as2d(mulVec(m, (0, 0, 0, 1)))
-        xAxis = as2d(mulVec(m, (1, 0, 0, 1)))
-        yAxis = as2d(mulVec(m, (0, 1, 0, 1)))
-        zAxis = as2d(mulVec(m, (0, 0, 1, 1)))
-        for tag, p in [("x", xAxis), ("y", yAxis), ("z", zAxis)]:
-            canvas.create_line((org, p), fill="red")
-            canvas.create_text(p, text=tag, fill="red")
+    # axes
+    org = as2d(mulVec(m, (0, 0, 0, 1)))
+    xAxis = as2d(mulVec(m, (1, 0, 0, 1)))
+    yAxis = as2d(mulVec(m, (0, 1, 0, 1)))
+    zAxis = as2d(mulVec(m, (0, 0, 1, 1)))
+    for tag, p in [("x", xAxis), ("y", yAxis), ("z", zAxis)]:
+        canvas.create_line((org, p), fill="red")
+        canvas.create_text(p, text=tag, fill="red")
 
 
 def animate():

@@ -9,6 +9,7 @@ layout(std140) uniform LightConfig {
   vec3 color;
   float ambientIntensity;
   float shadowWeight;
+  float globalAlpha;
 } light;
 
 // Pack struct manually into vec4s to work around known hardware bugs.
@@ -19,7 +20,6 @@ struct MaterialSpec {
 };
 
 layout(std140) uniform MaterialConfig {
-  float globalAlpha;
   MaterialSpec specs[12];
 } materialConfig;
 
@@ -36,7 +36,7 @@ void main() {
 
   #define ARG_materialColor materialSpec.COLOR
   #define ARG_materialShininess materialSpec.SHININESS
-  #define ARG_materialAlpha materialConfig.globalAlpha
+  #define ARG_materialAlpha light.globalAlpha
 
   // build_include "lighting.h"
 }
