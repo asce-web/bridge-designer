@@ -78,6 +78,8 @@ export class AppComponent implements AfterViewInit {
   @ViewChild('memberTable') memberTable!: MemberTableComponent;
   @ViewChild('missingFeatureDisablerDialog') missingFeatureDisablerDialog!: MissingFeatureDisablerDialogComponent;
 
+  private requestedHelpTopic: string | null = null;
+
   constructor(
     private readonly bridgeService: BridgeService,
     private readonly eventBrokerService: EventBrokerService,
@@ -129,6 +131,14 @@ export class AppComponent implements AfterViewInit {
     this.handleUrlParameters();
   }
 
+  /** Shows optional help topic recorded during startup now that the dialog has loaded. */
+  handleHelpDialogLoad() {
+    if (this.requestedHelpTopic !== null) {
+      const data = { topic: this.requestedHelpTopic || 'hlp_how_to' };
+      this.eventBrokerService.helpRequest.next({ origin: EventOrigin.APP, data });
+    }
+  }
+
   /** Takes the welcome step of the startup tip+welcome sequence. */
   handleTipDialogClose(kind: TipDialogKind) {
     if (kind === 'startup') {
@@ -149,12 +159,10 @@ export class AppComponent implements AfterViewInit {
       params.delete(reset);
     }
 
-    // Show a help topic after all else is ready.
+    // Maybe record a help topic to show after deferred load of dialog.
     const help = 'help';
-    const helpTopic = params.get(help);
-    if (helpTopic !== null) {
-      const data = { topic: helpTopic || 'hlp_how_to' };
-      this.eventBrokerService.helpRequest.next({ origin: EventOrigin.APP, data });
+    this.requestedHelpTopic = params.get(help);
+    if (this.requestedHelpTopic !== null) {
       params.delete(help);
     }
 

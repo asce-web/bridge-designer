@@ -1,7 +1,7 @@
 /* Copyright (c) 2025-2026 Gene Ressler
    SPDX-License-Identifier: GPL-3.0-or-later */
 
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { jqxSplitterModule } from 'jqwidgets-ng/jqxsplitter';
 import { jqxTabsModule, jqxTabsComponent } from 'jqwidgets-ng/jqxtabs';
 import { jqxTreeComponent, jqxTreeModule } from 'jqwidgets-ng/jqxtree';
@@ -41,6 +41,8 @@ const enum Tools {
   styleUrl: './help-dialog.component.scss',
 })
 export class HelpDialogComponent implements AfterViewInit {
+  @Output('onLoad') onLoadEmitter = new EventEmitter<void>();
+
   @ViewChild('dialog') dialog!: jqxWindowComponent;
   @ViewChild('helpSearch') helpSearch!: HelpSearchComponent;
   @ViewChild('helpTopic') helpTopic!: HelpTopicComponent;
@@ -109,5 +111,7 @@ export class HelpDialogComponent implements AfterViewInit {
       }
     });
     this.enableAndDisableButtons();
+    // Tell parent deferred load is complete.
+    this.onLoadEmitter.emit();
   }
 }
