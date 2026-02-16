@@ -1,0 +1,120 @@
+/* Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later */
+
+html,
+body {
+  background-color: white;
+  color: black;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 300;
+  margin: 0 0 0 0;
+}
+
+body div {
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+a:link {
+  color: #005dab;
+  text-decoration: none;
+}
+
+.plain-link:hover,
+.plain-link:focus {
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  text-decoration: underline dotted;
+}
+
+a:visited {
+  color: #005dab;
+}
+
+li div {
+  margin-top: 1ex;
+  margin-left: 0;
+  margin-right: 16px;
+}
+
+h1 {
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.para {
+  margin-top: 1ex;
+}
+
+.list-para {
+  margin-left: 0;
+  margin-top: 1ex;
+}
+
+.bold {
+  font-weight: 400;
+}
+
+.banner {
+  margin: 0 0 0 0;
+}
+
+.banner-graphic {
+  width: 100%;
+  margin: 0 0 0 0;
+}
+
+.title {
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: #005dab;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1;
+  margin: 0;
+}
+
+.title div {
+  margin: 0;
+}
+
+.title img {
+  margin-right: 20px;
+}
+
+.title-bd-text {
+  line-height: 0.85;
+}
+
+.title-ce-text {
+  line-height: 1.4;
+  font-size: 1.5rem;
+}
+
+li {
+  margin-top: 1ex;
+}

@@ -118,10 +118,10 @@ export class TruckRenderingService {
 
       this.uniformService.popModelMatrix();
 
-      // Body with sign.
+      // Body with sign. Sign first because it occludes the truck body sides.
       this.uniformService.updateTransformsUniform(matrices);
-      this.meshRenderingService.renderColoredMesh(this.bodyMesh);
       this.meshRenderingService.renderTexturedMesh(this.signMesh, true);
+      this.meshRenderingService.renderColoredMesh(this.bodyMesh);
     }
 
     this.uniformService.popModelMatrix();
