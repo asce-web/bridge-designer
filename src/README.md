@@ -100,7 +100,7 @@ features were not worth the cost of re-inventing the wheel:
 ## Migration notes
 
 - Adjust src/app/index.html base href to app URI path.
-- Adjust the "back to" link in public/browserinfo/index.html to point to the landing page.
+- Adjust the "back to" link in public/browserinfo/index.html to point to the app.
 
 ## Build notes
 
