@@ -163,7 +163,13 @@ export class UniformService {
     const gl = this.glService.gl;
     gl.bindBuffer(gl.UNIFORM_BUFFER, this.lightConfigBuffer);
     this.lightConfig[9] = globalAlpha;
-    gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.lightConfig, 39, 4);
+    gl.bufferSubData(
+      gl.UNIFORM_BUFFER,
+      36, // destination bytes
+      this.lightConfig,
+      9, // source floats
+      1, // float count
+    );
   }
 
   /** Updates the shader transforms uniform with current model matrix and given view and projection matrices. */
