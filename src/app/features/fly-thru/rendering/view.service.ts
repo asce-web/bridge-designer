@@ -23,7 +23,7 @@ export const enum ViewMode {
 
 /** Height of driver's eye above road surface. */
 const DRIVER_EYE_HEIGHT = 2.4;
-/** Distance from front axel (reference point) forward to driver's eye. */
+/** Distance from front axle (reference point) forward to driver's eye. */
 const DRIVER_EYE_LEAD = 0.6;
 /** Max radians of look up-down angle. */
 const MAX_TILT = 0.5 * Math.PI * 0.75;
@@ -33,8 +33,6 @@ const ORBIT_POINT_COUNT = 128;
 const ORBIT_SPEED = 5;
 /** How quickly orbit coord is incorporated as eye position. */
 const EYE_ORBIT_BLEND_PER_SEC = 0.25;
-/** Number of truck passes over the bridge before triggering orbit.  */
-const PRE_ORBIT_TRUCK_PASSES = 3;
 /** Pixel to world linear travel rate ratio. */
 const UI_RATE_LINEAR = 10.0 / 100.0;
 /** Pixel to world rotation rate ratio. */
@@ -51,7 +49,7 @@ export class ViewService {
   private readonly centerDriver = vec3.create();
   /** Fixed center point of orbit view. */
   private readonly centerOrbit = vec3.create();
-  /** Reset view center point same distance from eye as `centerOrbit` for interpolation. */
+  /** Reset view center point for orbit interpolation. */
   private readonly centerOrbitStart = vec3.create();
   /** Rotation matrix up/down of the driver's head. */
   private readonly driverRotation = mat4.create();
@@ -71,31 +69,40 @@ export class ViewService {
   private readonly up = vec3.fromValues(0, 1, 0);
   /** Whether eye point boundaries are being enforced. True only for debugging. */
   private isIgnoringBoundaries: boolean = false;
-  /** Whether we're panning or, when false, walking. */
+  /** Whether we're panning or, when false, walking forward. */
   private isMovingLaterally: boolean = false;
   /** Whether orbiting is still possible. Disabled by user navigation input. */
   private isOrbitAllowed: boolean = true;
-  /** A container for bridge-specific orbit geometry. */
+  /** Container for bridge-specific orbit geometry. */
   private orbit: Orbit | undefined;
-  /** The arc length parameter for the current orbit point. */
+  /** Arc length parameter for the current orbit point. */
   private sOrbit: number = 0;
-  /**
-   * Number of times truck has passed over bridge in simulation. Set to
-   * more than PRE_ORBIT_TRUCK_PASSES to disable orbits.
-   */
+  /** Number of times truck has passed over bridge in simulation. */
   private truckPassCount: number = 0;
+  /** Elevation angle of driver's head. */
   private phiDriverHead: number = 0;
+  /** Elevation angle of walking eye. */
   private phiEye: number = 0;
+  /** Rate at which walking elevation angle is changing. */
   private phiEyeRate: number = 0;
+  /** Whether the settings are visible. */
   private showControls: boolean = false;
+  /** Parameter in [0..1] for blending start and orbit eye positions. */
   private tBlend: number = 0;
+  /** Horizontal rotation angle of the driver's head. */
   private thetaDriverHead: number = 0;
+  /** Horizontal rotation of the walking view. */
   private thetaEye: number = 0;
+  /** Rate at which the walking horizontal rotation is changing. */
   private thetaEyeRate: number = 0;
+  /** Walking speed horizontally in direction given by theta. */
   private xzEyeVelocity: number = 0;
+  /** Walking speed vertically in direction given by phi. */
   private yEyeVelocity: number = 0;
+  /** Timer for starting orbit after bridge failure. */
   private orbitTimeout: any;
 
+  /** Mode of the view. Intended as readonly. */
   public mode: ViewMode = ViewMode.WALKING;
 
   constructor(
@@ -107,13 +114,14 @@ export class ViewService {
     eventBrokerService.animationControlsToggle.subscribe(info => {
       this.showControls = info.data;
     });
-    // Start the eye's orbit around the bridge if
+    // Start the eye's orbit around the bridge either after
+    // 2 passes of truck or a few seconds after failure.
     eventBrokerService.simulationPhaseChange.subscribe(info => {
       switch (info.data) {
         case SimulationPhase.FADING_IN:
           this.truckPassCount++;
-          // Orbit starting with the truck's third pass.
-          if (this.truckPassCount === PRE_ORBIT_TRUCK_PASSES) {
+          // Orbit starting after 2 passes.
+          if (this.truckPassCount > 2) {
             this.startOrbit();
           }
           break;
@@ -181,7 +189,7 @@ export class ViewService {
     };
   }
 
-  /** Set all view limits except for minimum y, which depends on terrain at the current eye location. */
+  /** Sets all view limits except for minimum y, which depends on terrain at the current eye location. */
   public initializeForBridge(): void {
     const conditions = this.bridgeService.designConditions;
     this.eyeMin[0] = -110.0;
@@ -275,7 +283,7 @@ export class ViewService {
     )
   }
 
-  /** Give a reasonable view of the whole current bridge. */
+  /** Gives a reasonable view of the whole current bridge. */
   private resetView(): void {
     this.mode = ViewMode.WALKING;
     this.setFullBridgeView(this.eye, this.center);
@@ -287,10 +295,7 @@ export class ViewService {
     this.phiEyeRate = 0;
   }
 
-  /**
-   * Sets eye and center points heuristically to a pleasant view of the whole bridge.
-   * If both args are the same buffer, you'll get the center.
-   */
+  /** Sets eye and center points heuristically to a pleasant view of the whole bridge. */
   private setFullBridgeView(eye: vec3, center: vec3): void {
     const extent = this.extentOfInterest;
     const xCenter = extent.x0 + 0.5 * extent.width;
@@ -305,7 +310,7 @@ export class ViewService {
     vec3.set(center, xCenter, extent.y0 + 0.5 * extent.height, 0);
   }
 
-  /** The x-y extent of the bridge with heuristic adjustments to show all we want. */
+  /** The x-y extent of the bridge with heuristic adjustments to show what we want. */
   private get extentOfInterest(): Rectangle2D {
     const extent = this.bridgeService.getWorldExtent();
     // Don't let the view cut off the top of the truck.
@@ -327,10 +332,7 @@ export class ViewService {
     this.mode = ViewMode.WALKING;
   }
 
-  /** 
-   * Changes to orbit mode and start the interpolation 
-   * from default view to the rotating orbit point.
-   */
+  /** Changes to orbit mode and starts the interpolation from default view to orbit point. */
   private startOrbit(): void {
     // Do nothing if orbit has already been cancelled.
     if (!this.isOrbitAllowed) {
@@ -350,7 +352,7 @@ export class ViewService {
   }
 }
 
-/** An orbital path in 3d. An eye traversing the path has interesting views of the bridge. */
+/** An orbital path in 3d. Eye traversing this path has interesting views of the bridge. */
 class Orbit {
   /** Orbit points with start duplicated at end. */
   private points = new Float64Array(3 * (1 + ORBIT_POINT_COUNT));
@@ -382,10 +384,7 @@ class Orbit {
     }
   }
 
-  /**
-   * Sets the interpolated point at given arc length along the path,
-   * which is normalized to orbit length and returned.
-   */
+  /** Sets the interpolated point at given arc length along the path, and returns arc length normalized. */
   getForArcLength(r: vec3, s: number): number {
     const arcLength = this.arcLengths[ORBIT_POINT_COUNT];
     if (arcLength === 0) {
