@@ -97,6 +97,11 @@ features were not worth the cost of re-inventing the wheel:
   the development team.
 - [**Orama (open source version)**](https://docs.orama.com/open-source): Full text search for Bridge Designer help.
 
+## Migration notes
+
+- Adjust src/app/index.html base href to app URI path.
+- Adjust the "back to" link in public/browserinfo/index.html to point to the landing page.
+
 ## Build notes
 
 - `ng build` # builds production app

@@ -10,7 +10,7 @@ import { areBrowserFeaturesMissing } from './app/features/browser/browser-checks
 jqx.credits = '71208878-FCD1-4EC7-9249-BA0F153A5DE8';
 
 if (areBrowserFeaturesMissing()) {
-   window.location.replace('/browserinfo');
+   window.location.replace('browserinfo/');
 } else {
    bootstrapApplication(AppComponent, appConfig).catch((err: any) => console.error(err));
 }
