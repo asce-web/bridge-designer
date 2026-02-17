@@ -111,6 +111,8 @@ export class ViewService {
     private readonly simulationStateService: SimulationStateService,
     private readonly terrainService: TerrainModelService,
   ) {
+    // Track whether the user has selected controls visible or not so the
+    // overlay button knows which way to toggle.
     eventBrokerService.animationControlsToggle.subscribe(info => {
       this.showControls = info.data;
     });
@@ -119,9 +121,8 @@ export class ViewService {
     eventBrokerService.simulationPhaseChange.subscribe(info => {
       switch (info.data) {
         case SimulationPhase.FADING_IN:
-          this.truckPassCount++;
-          // Orbit starting after 2 passes.
-          if (this.truckPassCount > 2) {
+          // Orbit starting after 2 passes, 
+          if (this.truckPassCount++ === 2) {
             this.startOrbit();
           }
           break;
@@ -130,6 +131,7 @@ export class ViewService {
           break;
       }
     });
+    // Honor the convention that animation controls cancel orbits.
     eventBrokerService.simulationReplayRequest.subscribe(() => {
       this.cancelOrbits();
     });
