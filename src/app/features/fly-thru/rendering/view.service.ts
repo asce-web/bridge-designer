@@ -13,6 +13,7 @@ import { EventBrokerService, EventOrigin } from '../../../shared/services/event-
 import { UNIT_LIGHT_DIRECTION } from './constants';
 import { SiteConstants } from '../../../shared/classes/site-constants';
 import { Rectangle2D } from '../../../shared/classes/graphics';
+import { KeyboardService } from '../pane/keyboard.service';
 
 /** Algorithms for determining eye and center positions. */
 export const enum ViewMode {
@@ -67,8 +68,6 @@ export class ViewService {
   private readonly eyeOrbitStart = vec3.create();
   /** Constant up vector for all views. */
   private readonly up = vec3.fromValues(0, 1, 0);
-  /** Whether eye point boundaries are being enforced. True only for debugging. */
-  private isIgnoringBoundaries: boolean = false;
   /** Whether we're panning or, when false, walking forward. */
   private isMovingLaterally: boolean = false;
   /** Whether orbiting is still possible. Disabled by user navigation input. */
@@ -108,6 +107,7 @@ export class ViewService {
   constructor(
     private readonly bridgeService: BridgeService,
     private readonly eventBrokerService: EventBrokerService,
+    private readonly keyboardService: KeyboardService,
     private readonly simulationStateService: SimulationStateService,
     private readonly terrainService: TerrainModelService,
   ) {
@@ -121,7 +121,7 @@ export class ViewService {
     eventBrokerService.simulationPhaseChange.subscribe(info => {
       switch (info.data) {
         case SimulationPhase.FADING_IN:
-          // Orbit starting after 2 passes, 
+          // Orbit starting after 2 passes,
           if (this.truckPassCount++ === 2) {
             this.startOrbit();
           }
@@ -283,6 +283,11 @@ export class ViewService {
       -ex * id,  -ey * ez * id, ez, 0,
       0       ,  0            ,  0, 1,
     )
+  }
+
+  /** Whether eye point boundaries are being enforced. True only for debugging. */
+  private get isIgnoringBoundaries(): boolean {
+    return this.keyboardService.debugState.isIgnoringViewBoundaries;
   }
 
   /** Gives a reasonable view of the whole current bridge. */

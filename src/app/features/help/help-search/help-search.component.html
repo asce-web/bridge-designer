@@ -12,6 +12,7 @@
         maxlength="100"
         placeholder="Examples: 'member' 'title:truss'"
         (input)="handleSearchTermInputInput()"
+        (keydown)="handleSearchTermInputKeyDown($event)"
     /></label>
   </div>
   <div class="search-results">

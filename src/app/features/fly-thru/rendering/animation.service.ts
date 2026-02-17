@@ -82,7 +82,7 @@ export class AnimationService {
       if (!this.frameTickMillis) {
         this.frameTickMillis = nowMillis;
       } else if (nowMillis - this.frameTickMillis > 1000) {
-        if (this.keyboardService.debugState.display) {
+        if (this.keyboardService.debugState.isDisplayingDebugInfo) {
           const renderPercent = Math.round(this.totalRenderMillis * 0.1); // T / 1000 * 100
           this.eventBrokerService.displayDebugTextRequest.next({
             origin: EventOrigin.SERVICE,

@@ -36,6 +36,7 @@ export class HelpSearchComponent {
     this.searchTermInput.nativeElement.value = '';
   }
   
+  /** Handles the input event of the search term input control. */
   handleSearchTermInputInput(): void {
     const searchTerm = this.searchTermInput.nativeElement.value;
     if (searchTerm.length <= 1) {
@@ -48,6 +49,11 @@ export class HelpSearchComponent {
           : result.hits.map(hit => ({ topicId: hit.id, title: hit.document.title }));
     }
     this.changeDetector.detectChanges();
+  }
+
+  /** Handles input keys, preventing propagation to any ancestor handler. */
+  handleSearchTermInputKeyDown(event: KeyboardEvent): void {
+    event.stopPropagation();
   }
 
   handleSearchResultsSelect(event: any) {
