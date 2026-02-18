@@ -34,7 +34,7 @@ export class UndoManagerService {
     editCommand.do();
     this.done.pushLeft(editCommand);
     while (this.done.length > UndoManagerService.MAX_DONE_COUNT) {
-      this.done.popRight(); // In practice, only executes once.
+      this.done.popRight(); // In practice, executes only once.
     }
     this.undone.clear();
     this.emitCommandCompletion('do', editCommand.effectsMask);

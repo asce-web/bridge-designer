@@ -5,7 +5,19 @@ import { Injectable } from '@angular/core';
 import { EventBrokerService, EventOrigin, EventInfo } from './event-broker.service';
 import { CrossSection, InventoryService, Material, Shape, StockId } from './inventory.service';
 
-/** Injectable mirror of the state of the toolbar and member edit material selectors. */
+/**
+ * Injectable mirror of the state of the toolbar and member edit material selectors.
+ * Manages message flow for cooperation of multiple selectors. There are three subjects:
+ *
+ * - `loadInventorySelectorRequest`: External request to load a new selection into the control.
+ *   May cause both other events.
+ * - `inventorySelectionChangeRequest`: Internal request that user interaction has changed the
+ *   selection, allowing other instances to update themselves. May cause next event.
+ * - `inventorySelectionChange`: External notification that a change has occurred. Sent after all
+ *    controls are already synced. Care is taken to avoid sending redundant instances.
+ *
+ * The hierarchy avoids event cycles.
+ */
 @Injectable({ providedIn: 'root' })
 export class InventorySelectionService {
   private _material: Material | undefined;
@@ -32,7 +44,6 @@ export class InventorySelectionService {
     };
     eventBrokerService.inventorySelectionChangeRequest.subscribe(info => {
       if (updateState(info)) {
-        // The completion event should cause updates to selected members.
         eventBrokerService.inventorySelectionChange.next({
           origin: EventOrigin.SERVICE,
           data: {

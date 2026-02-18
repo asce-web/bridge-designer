@@ -3,86 +3,72 @@
 
 # Iterations
 
-An iteration from the user's point of view is a non-empty series of design changes followed by a test. The BD captures
-the bridge at the end of each iteration. At this point, the iteration is considered frozen. The captured bridge is
-immutable.
+An iteration from the user's point of view is a non-empty series of design changes followed by either a test or a jump
+to some previous iteration. Iterations are numbered consecutively as they're created. The BD captures the number, the
+bridge, and related information (see below) at the end of each iteration. The captured bridge is immutable.
 
-The UI allows the user to jump among iterations. For each jump, the captured bridge is restored, and design continues as
-a fresh iteration. To be precise, the fresh iteration begins at the next user action that changes the bridge.
-
-A significant detail is that when a user jumps to a different iteration before performing a test in the current one, the
-iteration is considered complete and frozen just as though a test had been performed. Such an iteration is considered
-"no test."
+The UI allows the user to jump among iterations. For each jump, the captured bridge and its iteration number are
+restored. A fresh iteration begins at the next change to the bridge.
 
 ## The iteration in progress
 
-For reference, the BD maintains a sequence number for each iteration. The number of the _iteration in progress_, i.e.
-the design visible at the moment in the drafting panel, is always displayed to the user. To define the term "in
-progress," there are two possibilities:
+The number of the _iteration in progress_, i.e. the design visible at the moment in the drafting panel, is always
+displayed to the user. The in-progress iteration is either open or closed. It is closed if and only if the bridge has
+just been tested with no further edits afterward. Otherwise it is open.
 
-- The in-progress bridge design hasn't yet been tested. This is an "open iteration."
-- A test has been performed, but the design hasn't yet been changed. This is a "closed iteration."
-
-Testing a bridge automatically causes capture of the drafting panel design along with the in-progress iteration number.
-
-Changing a tested design and then performing some edit operation automatically creates a new, open, in-progress
-iteration with the next available number. The user sees the displayed in-progress iteration number advance by one. This
-is the only mechanism for creating new iterations. As a consequence, multiple tests of an unchanging design (reasonable
-to repeatedly view the truck animation) are all part of the same iteration.
+Performing some edit operation on a closed iteration automatically creates a new, open, in-progress iteration with the
+next available number. The user sees the displayed in-progress iteration number advance. This is the only mechanism for
+creating new iterations. Multiple tests of an unchanging design (e.g. to repeatedly view the truck animation) are all
+part of the same iteration.
 
 ## Iteration objects
 
-In the implementation, an iteration is an object including the bridge model, the status resulting from the corresponding
-test, and its cost. The bridge model may be a frozen deep copy (for closed iterations) or a shallow reference to the
-bridge currently in the drafting panel (open in-progress iteration). From these, a full description can be drawn:
+In the implementation, an iteration is an object including the bridge model, its test status (which might be "not
+tested"), and for UI display only, its cost. The bridge model is an immutable deep copy for closed iterations. For an
+open one, which is necessarily also in-progress, it's a shallow reference to the bridge in the drafting panel. A full
+list of fields:
 
 - Iteration number.
-- Test status: Pass, fails load, fails slenderness, unstable. "None" is the pseudo-state for untested iterations.
-  - Note the status of the iteration in progress comes directly from analysis validity service.
+- Test status: Pass, fails load, fails slenderness, unstable, or "none" for iterations that resulted from jumping to a
+  new iteration before the in-progress one was tested.
+  - The status of the iteration in progress comes directly from analysis validity service.
 - Bridge cost.
 - Project ID.
 - Child iterations. (See below.)
 
-Since the Project ID can be modified at any time, the user can effectively use it to label iterations as desired.
+Since the Project ID can be modified at any time, the user can effectively use it to label captured iterations.
 
 ## Iteration jumping
 
-At any time, the user can ask the BD for a dialog with a list of past iterations including the one in progress. A
-preview pane shows a sketch of the currently selected one. The user can choose to jump their design to the selected
-iteration. This jump can be backward or forward in the iteration sequence. There are three possibilities:
+At any time, the user can ask the BD for a dialog with a list of iterations including the one in progress. A preview
+pane shows a sketch of the currently selected one. The user can choose to jump their design to the selected iteration.
+This jump can be backward or forward in the iteration sequence. There are three possibilities:
 
-- User chooses the in-progress iteration and...
-  - ...it's open. This is a no-op. The user continues the design and test cycle as though the dialog hadn't been
-    invoked.
-  - ...it's closed. Also a no-op. The iteration remains closed until the user makes a further change.
+- User chooses the in-progress iteration. Whether open or closed, this is a no-op. Logically, we could omit the current
+  iteration from the list, but this might be confusing for users.
 - User chooses an earlier iteration.
 
 What happens in the second case?
 
-- First we need to deal with the in-progress iteration:
-  - If it was open, it is captured and closed without a test. Its status is "no test."
-  - If it was closed, no further work is required. Its bridge model was already captured as tested.
+- First, deal with the in-progress iteration. Two possibilities:
+  - It was open, it is captured and closed. Its test status is "none".
+  - It was closed, no further work is required. Its bridge model was already captured when tested.
 - Next, the captured bridge of the chosen iteration is restored to the drafting panel.
 - The displayed iteration number becomes the one taken from the restored bridge model.
 - The undo manager's command buffer is cleared.
-- If the bridge's status was pass or fail, the bridge is re-analyzed automatically. "Working" bridges - unstable or
-  abandoned - are not.
-- Regardless of whether the newly restored bridge was analyzed, it's treated as the end of a closed iteration. Any
-  change creates a fresh iteration and increments the displayed number. Testing the bridge as restored does not.
+- The current BD test status becomes "none." I.e. whatever test was current becomes out-of-date.
+- The newly loaded iteration is considered in-progress and - because it was tested when captured - closed.
 
-Notes:
-
-- This logic is sufficient to maintain immutability of closed iterations.
-- Closing no test iterations seems less confusing for users than causing them to be continued after a jump and return
-  even though the undo state is gone. (Maintaining undo state would be complex and memory-intense.)
+An alternative way to treat newly loaded iterations that were closed with a jump before testing would be to continue
+them as open. I.e. such captured iterations are mutable. This idea was discarded as too surprising for users.
 
 ## Parent-child relation of iterations
 
 Every iteration has a natural child relationship with its predecessor. After a jump, the jumped-to iteration becomes the
-parent of the next iteration created. Since an iteration can be jumped-to any number of times, parent-child pairs
-naturally form an n-ary tree.
+prospective parent. Since an iteration can be jumped-to any number of times, parent-child pairs naturally form an n-ary
+tree.
 
-The UI widget offers two views of available iterations:
+Consequently, the UI widget offers two views of iterations:
 
 - List in iteration number order.
 - Treegrid showing parent-child relationships. Each run of parent and successively numbered descendants is shown as a

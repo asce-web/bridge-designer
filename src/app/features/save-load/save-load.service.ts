@@ -123,16 +123,18 @@ export class FileSystemSaveLoadService implements SaveLoadService {
   }
 
   public async loadBridgeFile(): Promise<void> {
-    const text = await this.doLoad();
+    const { name, text } = await this.doLoad();
     const saveSet = SaveSet.createNew();
     this.persistenceService.parseSaveSetText(text, saveSet);
     this.eventBrokerService.loadBridgeRequest.next({
       origin: EventOrigin.SERVICE,
       data: saveSet,
     });
+    // After load  because that clears save mark service.
+    this.saveMarkService.markDesignSaved(name);
   }
 
-  private async doLoad(): Promise<string> {
+  private async doLoad(): Promise<{ name: string; text: string }> {
     const options = {
       id: PICKER_ID,
       startIn: PICKER_DIR,
@@ -141,8 +143,7 @@ export class FileSystemSaveLoadService implements SaveLoadService {
     try {
       const [fileHandle]: FileSystemFileHandle[] = await (window as any).showOpenFilePicker(options);
       const file = await fileHandle.getFile();
-      this.saveMarkService.markDesignSaved(file.name);
-      return file.text();
+      return file.text().then(text => ({ name: file.name, text }));
     } catch (error) {
       throw new ToastError(this.isUserCancel(error) ? 'noError' : 'fileReadError');
     }

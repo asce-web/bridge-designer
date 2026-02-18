@@ -9,6 +9,10 @@ import { WidgetHelper } from '../../classes/widget-helper';
 import { SessionStateService } from '../../../features/session-state/session-state.service';
 import { UiStateService } from '../../../features/controls/management/ui-state.service';
 
+/**
+ * Component allowing the user to select a material+shape+size triple. More than one allowed, so all
+ * interaction is via broadcast messages. `InventorySelectionService` is the manager.
+ */
 @Component({
   selector: 'inventory-selector',
   imports: [jqxDropDownListModule],
