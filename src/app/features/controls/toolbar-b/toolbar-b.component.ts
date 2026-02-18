@@ -60,7 +60,7 @@ export class ToolbarBComponent implements AfterViewInit {
         WidgetHelper.initToolbarImgButton('Downsize selected members', 'img/sizedown.png', tool, true);
         break;
       case Tools.MEMBER_NUMBERS:
-        WidgetHelper.initToolbarImgButton('Show/hide member numbers', 'img/numbers.png', tool);
+        WidgetHelper.initToolbarImgToggleButton('Show/hide member numbers', 'img/numbers.png', tool);
         break;
       case Tools.GUIDES:
         WidgetHelper.initToolbarImgToggleButton('Show/hide drawing guides', 'img/guides.png', tool);
