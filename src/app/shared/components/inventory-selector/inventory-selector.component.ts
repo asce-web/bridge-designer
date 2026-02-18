@@ -40,7 +40,7 @@ export class InventorySelectorComponent implements AfterViewInit {
   }
 
   get sizeSelectorWidth(): number {
-    return this.vertical ? 206 : 106;
+    return this.vertical ? 206 : 116;
   }
 
   handleMaterialSelectorOnChange(event: any): void {
