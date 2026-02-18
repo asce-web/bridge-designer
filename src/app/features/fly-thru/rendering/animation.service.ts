@@ -21,15 +21,23 @@ export const enum AnimationState {
  * A state machine: STOPPED -> RUN--->PAUSE. Attempts to make other transitions are ignored.
  *                     ^        |       |
  *                     '--------'<------'
+ * Provides for "now" real world time vs. simulation clock time, which stops in the PAUSE state.
  */
 @Injectable({ providedIn: 'root' })
 export class AnimationService {
-  private clockBaseMillis: number | undefined;
-  private lastNowMillis: number | undefined;
-  private lastClockMillis: number | undefined;
+  /** State of the animation state machine. */
   private _state: AnimationState = AnimationState.STOPPED;
-  private frameTickMillis: number | undefined;
+  /** Base "now" value for converting to simulation clock time. */
+  private clockBaseMillis: number | undefined;
+  /** Running count of frames in the current second of "now" time. */
   private frameCount: number = 0;
+  /** Base "now" value for converting to elapsed time since frame started. */
+  private frameBaseMillis: number | undefined;
+  /** Previous frame's clock value, which the visible frame is based on. */
+  private lastClockMillis: number | undefined;
+  /** Previous frame's "now" value. */
+  private lastNowMillis: number | undefined;
+  /** Total total time in the current "now" second spent in rendering code. */
   private totalRenderMillis: number = 0;
 
   constructor(
@@ -65,35 +73,38 @@ export class AnimationService {
       if (this.lastClockMillis === undefined || this.lastNowMillis === undefined) {
         this.lastClockMillis = this.lastNowMillis = nowMillis;
       }
-      // First frame and reset after unpause.
+      // Adjust clock base on first frame and after unpause.
       if (this.clockBaseMillis === undefined) {
         this.clockBaseMillis = nowMillis - this.lastClockMillis;
       }
       const clockMillis =
         this._state === AnimationState.PAUSED ? this.lastClockMillis : nowMillis - this.clockBaseMillis;
+      // Remember "now" before rendering, render, then add elapsed time to total.
       const frameStartMillis = performance.now();
       this.renderService.renderFrame(nowMillis, nowMillis - this.lastNowMillis, clockMillis);
       this.totalRenderMillis += performance.now() - frameStartMillis;
+      // Save clock and now for next frame.
       this.lastClockMillis = clockMillis;
       this.lastNowMillis = nowMillis;
 
       // Track fps and fraction of time rendering to GPU.
       ++this.frameCount;
-      if (!this.frameTickMillis) {
-        this.frameTickMillis = nowMillis;
-      } else if (nowMillis - this.frameTickMillis > 1000) {
+      if (!this.frameBaseMillis) {
+        this.frameBaseMillis = nowMillis;
+      } else if (nowMillis - this.frameBaseMillis > 1000) {
         if (this.keyboardService.debugState.isDisplayingDebugInfo) {
-          const renderPercent = Math.round(this.totalRenderMillis * 0.1); // T / 1000 * 100
+          // Since we're tallying once a second, 10 millis is 1 percent.
+          const renderPercent = Math.round(this.totalRenderMillis * 0.1);
           this.eventBrokerService.displayDebugTextRequest.next({
             origin: EventOrigin.SERVICE,
             data: `${this.frameCount} fps, ${renderPercent}% render`,
           });
         }
-        this.frameTickMillis = nowMillis;
+        this.frameBaseMillis = nowMillis;
         this.frameCount = 0;
         this.totalRenderMillis = 0;
       }
-      
+
       // Schedule next loop iteration.
       requestAnimationFrame(render);
     };
