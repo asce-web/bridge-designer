@@ -58,7 +58,7 @@ class DesignIteration {
 
   /** Whether this iteration is based on its parent. False if there is no parent. */
   get baseIndicator(): string {
-    return this.index === 0 ? '⊚' : this.parentIndex === this.baseIndex ? '⇖' : '&nbsp;⇑';
+    return this.index === 0 ? '—' : this.parentIndex !== this.baseIndex ? '⇑' : '⇖';
   }
 
   // UI tree widget item data
