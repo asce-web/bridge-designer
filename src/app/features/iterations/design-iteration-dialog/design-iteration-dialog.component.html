@@ -5,7 +5,7 @@
   #dialog
   [isModal]="true"
   [autoOpen]="false"
-  [width]="694"
+  [width]="794"
   [height]="752"
   [position]="'center'"
   (onOpen)="handleDialogOpen()"
@@ -27,7 +27,7 @@
       <jqxTabs
         #tabs
         style="margin-left: 8px"
-        [width]="514"
+        [width]="614"
         [height]="360"
         [position]="'top'"
         [animationType]="'none'"
@@ -42,7 +42,7 @@
           <jqxTreeGrid
             #tree
             style="margin: 8px"
-            [width]="494"
+            [width]="594"
             [height]="308"
             [columns]="treeColumns"
             [columnsHeight]="30"
@@ -57,12 +57,12 @@
           <jqxGrid
             #grid
             style="margin: 8px"
-            [width]="494"
+            [width]="594"
             [height]="308"
             [columns]="gridColumns"
             [columnsheight]="30"
             [columnsresize]="true"
-            [rowsheight]="27"
+            [rowsheight]="22"
             [selectionmode]="'singleRow'"
             [source]="dataAdapter"
             (onRowDoubleClick)="handleRowDoubleClick()"
@@ -75,7 +75,7 @@
       <canvas
         #preview
         class="preview"
-        width="514"
+        width="614"
         height="298"
       >
       </canvas>
@@ -89,9 +89,13 @@
               class="tip-icon"
               src="img/tipicon.png"
             />
-            You can select two ways of viewing design iterations. The <b>List view</b> tab presents them in them in the
-            order created. The <b>Tree view</b> shows how each iteration depends on previous ones. Pick the one that
-            makes most sense to you!
+            The <b>tree view</b> tab shows how each iteration is based on previous ones. The <b>list view</b> shows them
+            in the order they were created. Both can be handy.
+          </p>
+          <p>
+            In the tree view, the arrow for each iteration points toward the one it's based on: that's either ⇖ for the
+            one to the left and above or ⇑ for directly above. Click the dropdown buttons to collapse sections of the
+            tree.
           </p>
           <p>
             In either view, you can use the up and down arrow keys to scroll through the design iterations while viewing

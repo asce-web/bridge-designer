@@ -12,13 +12,16 @@ import { BridgeModel } from '../../shared/classes/bridge.model';
 import { SessionStateService } from '../session-state/session-state.service';
 
 /** A POTO representation of iterations for jqxTreegrid and jqxListbox. */
-export class DesignIteration {
+class DesignIteration {
   readonly expanded: boolean = true;
 
   // Defaults are only to create the root node.
   constructor(
-    public readonly index: number,
-    public readonly parentIndex: number | undefined,
+    readonly index: number,
+    /** Index of UI parent iteration, if any. */
+    readonly parentIndex: number | undefined,
+    /** Index of iteration this one was derived from. -1 if none or unavailable. */
+    readonly baseIndex: number,
     private _bridge: BridgeModel,
     private _cost: number,
     private _draftingPanelState: DraftingPanelState,
@@ -53,6 +56,11 @@ export class DesignIteration {
     return this._status ?? AnalysisStatus.NONE;
   }
 
+  /** Whether this iteration is based on its parent. False if there is no parent. */
+  get baseIndicator(): string {
+    return this.index === 0 ? '⊚' : this.parentIndex === this.baseIndex ? '⇖' : '&nbsp;⇑';
+  }
+
   // UI tree widget item data
 
   get icon(): string {
@@ -68,7 +76,7 @@ export class DesignIteration {
     this._cost = cost;
   }
 
-  closeOrUpdateClosedIteration(cost: number, status: AnalysisStatus) {
+  closeIteration(cost: number, status: AnalysisStatus) {
     if (!this._status) {
       this._bridge = BridgeModel.createClone(this._bridge);
       this._draftingPanelState = DraftingPanelState.createClone(this._draftingPanelState);
@@ -112,7 +120,7 @@ export class DesignIterationService {
       }
     });
     eventBrokerService.analysisCompletion.subscribe(info => {
-      this.inProgress.closeOrUpdateClosedIteration(bridgeCostService.allCosts, info.data);
+      this.inProgress.closeIteration(bridgeCostService.allCosts, info.data);
     });
     eventBrokerService.editCommandCompletion.subscribe(() => {
       if (!this.inProgress.isOpen) {
@@ -144,7 +152,7 @@ export class DesignIterationService {
     }
     const inProgress = this.inProgress;
     if (inProgress.isOpen) {
-      inProgress.closeOrUpdateClosedIteration(this.bridgeCostService.allCosts, AnalysisStatus.NONE);
+      inProgress.closeIteration(this.bridgeCostService.allCosts, AnalysisStatus.NONE);
     }
     this._inProgressIndex = index;
     // Refrain from starting a new column if we're at the last iteration for its parent.
@@ -192,6 +200,7 @@ export class DesignIterationService {
     const newIteration = new DesignIteration(
       newIterationIndex,
       this.inProgressParentIndex,
+      this._inProgressIndex,
       bridge,
       -1,
       draftingPanelState,
@@ -229,6 +238,7 @@ export class DesignIterationService {
       iterations: this.iterations.map(iteration => ({
         index: iteration.index,
         parentIndex: iteration.parentIndex,
+        baseIndex: iteration.baseIndex,
         bridge: this.persistenceService.getSaveSetAsText(
           SaveSet.create(iteration.bridge, iteration.draftingPanelState),
         ),
@@ -249,6 +259,7 @@ export class DesignIterationService {
         new DesignIteration(
           iteration.index,
           iteration.parentIndex,
+          iteration.baseIndex,
           saveSet.bridge,
           iteration.cost,
           saveSet.draftingPanelState,
@@ -265,6 +276,7 @@ export class DesignIterationService {
 type IterationState = {
   index: number;
   parentIndex: number | undefined;
+  baseIndex: number;
   bridge: string;
   cost: number;
   status: AnalysisStatus | undefined;

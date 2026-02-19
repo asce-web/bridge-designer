@@ -53,6 +53,7 @@ export class DesignIterationDialogComponent implements AfterViewInit {
     { name: 'cost', type: 'number' },
     { name: 'expanded', type: 'boolean' },
     { name: 'index', type: 'number' },
+    { name: 'baseIndicator', type: 'string' },
     { name: 'iterationNumber', type: 'number' },
     { name: 'parentIndex', type: 'number' },
     { name: 'projectId', type: 'string' },
@@ -60,11 +61,18 @@ export class DesignIterationDialogComponent implements AfterViewInit {
   ];
   // prettier-ignore
   private static readonly COLUMNS_TEMPLATE: jqwidgets.GridColumn[] = [
+      {
+        text: 'Based on...',
+        datafield: 'baseIndicator',
+        align: 'left',
+        width: 123,
+      },
       { 
         text: 'Status',
         datafield: 'status',
-        align: 'left',
-        width: 80,
+        align: 'center',
+        cellsalign: 'center',
+        width: 60,
       }, {
         text: 'Iteration',
         datafield: 'iterationNumber',
@@ -87,35 +95,21 @@ export class DesignIterationDialogComponent implements AfterViewInit {
       }
   ];
 
-  /** Constructs standard columns with small renderer customizations. */
-  private static makeColumns(spanStyle: string): jqwidgets.GridColumn[] {
+  readonly treeColumns = (() => {
     // Shallow copy.
     const columns = DesignIterationDialogComponent.COLUMNS_TEMPLATE.slice();
-    // Replace the first item with a record having a cells renderer.
-    columns[0] = {
-      cellsrenderer: (
-        _row?: number | undefined,
-        _columnfield?: string | undefined,
-        value?: any,
-        _defaulthtml?: string | undefined,
-        _columnproperties?: any,
-        _rowdata?: any,
-      ): string => {
-        const { src, title } = AnalysisService.getStatusIcon(value, true);
-        // Image size mandatory for correct scroll height calculation.
-        return `<span style="display:inline-block;${spanStyle}"><img src="${src}" title="${title}" style="width:16px;height:16px;"></span>`;
-      },
-      ...columns[0],
-    };
+    columns[0] = { ...columns[0], cellsrenderer: baseIndicatorCellRenderer };
+    columns[1] = { ...columns[1], cellsrenderer: statusIconCellRenderer };
     return columns;
-  }
+  })();
 
-  readonly treeColumns = DesignIterationDialogComponent.makeColumns('margin-top:4px;');
-  readonly gridColumns = DesignIterationDialogComponent.makeColumns('margin-top:4px;margin-left:22px;');
+  readonly gridColumns = (() => {
+    // Shallow copy.
+    const columns = DesignIterationDialogComponent.COLUMNS_TEMPLATE.slice(1);
+    columns[0] = { ...columns[0], width: 183, cellsrenderer: statusIconCellRenderer };
+    return columns;
+  })();
 
-  // TODO: The tree grid widget alone can't depict the case where a parent has more than one run of
-  // contiguous descendants. We could do this with a special icon or leading graphic character for
-  // the first child of every run. Or add a column of icons evoking tree branches.
   readonly source: any = {
     localdata: [],
     datatype: 'array',
@@ -233,4 +227,14 @@ export class DesignIterationDialogComponent implements AfterViewInit {
     this.tree.elementRef.nativeElement.addEventListener('keydown', keyListener);
     this.grid.elementRef.nativeElement.addEventListener('keydown', keyListener);
   }
+}
+
+function baseIndicatorCellRenderer(_row?: number | undefined, _columnField?: string | undefined, value?: any): string {
+  return `<span style="display:inline-block;font-size:16px">${value}</span>`;
+}
+
+function statusIconCellRenderer(_row?: number | undefined, _columnfield?: string | undefined, value?: any): string {
+  const { src, title } = AnalysisService.getStatusIcon(value, true);
+  // Image size mandatory for correct scroll height calculation.
+  return `<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;"><img src="${src}" title="${title}" style="width:16px;height:16px;"></div>`;
 }
