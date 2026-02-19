@@ -8,8 +8,8 @@ X0 = -5.999
 X1 = -0.799
 Y0 = 1.124
 Y1 = 3.274
-Z0 = -1.306
-Z1 = 1.302
+Z0 = -1.310
+Z1 = 1.306
 # The logo texture is centered in the png with padding so CLAMP_TO_EDGE works.
 # WebGL does not support CLAMP_TO_BORDER.
 TEX_MARGIN_X = 0
