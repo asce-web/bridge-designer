@@ -75,7 +75,7 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
       data: {
         bridge: this.bridgeService.bridge,
         draftingPanelState: this.bridgeService.draftingPanelState,
-        clearSaveMark: true,
+        invalidateSavedMark: true,
       },
     });
   }

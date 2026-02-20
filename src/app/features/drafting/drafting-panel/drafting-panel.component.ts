@@ -89,7 +89,7 @@ export class DraftingPanelComponent implements AfterViewInit {
   }
 
   /** Renders the panel, optionally with draggable elements missing, e.g. because they're being dragged. */
-  render(draggable?: Draggable | undefined): void {
+  private render(draggable?: Draggable | undefined): void {
     this.designRenderingService.render(this.ctx);
     if (!(draggable instanceof Labels)) {
       this.labelsService.render(this.ctx);
@@ -99,7 +99,12 @@ export class DraftingPanelComponent implements AfterViewInit {
     }
   }
 
-  loadBridge(data: LoadBridgeRequestData): void {
+  /**
+   * Loads a bridge as current, optionally invalidates the save mark. This means the new bridge
+   * is not backed by whatever file may have been backing the previous one. E.g. loading a new or sample
+   * bridge should invalidate, but loading a previous iteration should not.
+   */
+  private loadBridge(data: LoadBridgeRequestData): void {
     const bridge = data.bridge;
     this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.DRAFTING_PANEL, data: undefined });
     const bridgeGridDensity = DesignGridService.getDensityOfWorldPoints(bridge.joints);
@@ -108,12 +113,12 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.handleResize();
     this.changeDetector.detectChanges(); // Updates title block.
     this.eventBrokerService.loadBridgeCompletion.next({ origin: EventOrigin.DRAFTING_PANEL, data: bridge });
-    if (data.clearSaveMark) {
-      this.saveMarkService.clearSaveMark();
+    if (data.invalidateSavedMark) {
+      this.saveMarkService.invalidateSavedMark();
     }
   }
 
-  loadSketch(sketch: BridgeSketchModel) {
+  private loadSketch(sketch: BridgeSketchModel) {
     const sketchDensity = DesignGridService.getDensityOfWorldPoints(sketch.joints);
     if (sketchDensity > this.designGridService.grid.density) {
       this.selectGridDensity(sketchDensity);
@@ -232,9 +237,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.deleteSelectionRequest.subscribe(() => this.handleDeleteSelectionRequest());
     this.eventBrokerService.draftingPanelInvalidation.subscribe(() => this.render());
     this.eventBrokerService.gridDensitySelection.subscribe(info => this.handleSelectGridDensity(info.data));
-    this.eventBrokerService.loadBridgeRequest.subscribe(info =>
-      this.loadBridge(info.data),
-    );
+    this.eventBrokerService.loadBridgeRequest.subscribe(info => this.loadBridge(info.data));
     this.eventBrokerService.attachSketchRequest.subscribe(info => this.loadSketch(info.data));
     this.eventBrokerService.selectedElementsChange.subscribe(() => this.render());
     this.eventBrokerService.titleBlockToggle.subscribe(info => {

@@ -45,7 +45,7 @@ export class SaveMarkService {
     this.setDocumentTitle(fileName);
   }
 
-  public clearSaveMark(): void {
+  public invalidateSavedMark(): void {
     this.savedMark = UndoManagerService.NO_EDIT_COMMAND;
     this._fileName = undefined;
     document.title = this.defaultTitle;

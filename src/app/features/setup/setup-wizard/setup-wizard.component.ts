@@ -286,7 +286,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
       data: {
         bridge: this.bridgeService.bridge,
         draftingPanelState: this.bridgeService.draftingPanelState,
-        clearSaveMark: true,
+        invalidateSavedMark: true,
       },
     });
     this.eventBrokerService.attachSketchRequest.next({
