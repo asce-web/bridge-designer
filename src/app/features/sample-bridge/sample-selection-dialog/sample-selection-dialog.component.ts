@@ -47,10 +47,10 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
   @ViewChild('preview') preview!: ElementRef<HTMLCanvasElement>;
 
   constructor(
+    private readonly bridgeService: BridgeService,
+    private readonly designRenderingService: DesignRenderingService,
     private readonly eventBrokerService: EventBrokerService,
     private readonly sampleService: SampleService,
-    private readonly designRenderingService: DesignRenderingService,
-    private readonly bridgeService: BridgeService,
     private readonly viewportTransform: ViewportTransform2D,
   ) {}
 
@@ -75,6 +75,7 @@ export class SampleSelectionDialogComponent implements AfterViewInit {
       data: {
         bridge: this.bridgeService.bridge,
         draftingPanelState: this.bridgeService.draftingPanelState,
+        clearSaveMark: true,
       },
     });
   }

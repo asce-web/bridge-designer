@@ -55,7 +55,7 @@
         </jqxRadioButton>
         <jqxRadioButton
           [width]="232"
-          (onChange)="localContestYesRadioChangeHandler($event)"
+          (onChange)="handleLocalContestYesRadioChange($event)"
           style="margin-top: 8px"
         >
           Yes!
@@ -63,7 +63,7 @@
         <div class="vertical-gap">
           <local-contest-code-input
             #localContestCodeInput
-            (onChange)="localContestInputChangeHandler($event)"
+            (onChange)="handleLocalContestInputChange($event)"
           ></local-contest-code-input>
         </div>
       </fieldset>
@@ -76,7 +76,7 @@
           [width]="200"
           [source]="deckElevations"
           [selectedIndex]="0"
-          (onSelect)="deckElevationSelectHandler($event)"
+          (onSelect)="handleDeckElevationSelect($event)"
         ></jqxDropDownList>
       </fieldset>
       <fieldset class="grouping fill-row">
@@ -95,7 +95,7 @@
             [groupName]="'support'"
             [width]="200"
             style="margin-top: 8px"
-            (onChange)="archAbutmentRadioChangeHandler($event)"
+            (onChange)="handleArchAbutmentRadioChange($event)"
           >
             Arch abutments
           </jqxRadioButton>
@@ -125,7 +125,7 @@
             [groupName]="'pier'"
             [width]="200"
             style="margin-top: 8px"
-            (onChange)="isPierRadioChangeHandler($event)"
+            (onChange)="handleIsPierRadioChange($event)"
           >
             Pier (two spans)
           </jqxRadioButton>
@@ -224,7 +224,7 @@
           [width]="232"
           [height]="398"
           [selectedIndex]="0"
-          (onSelect)="templateListSelectHandler($event)"
+          (onSelect)="handleTemplateListSelect($event)"
         ></jqxListBox>
       </fieldset>
     </div>
@@ -451,8 +451,8 @@
           [width]="'100%'"
           [expanded]="false"
           [disabled]="true"
-          (onExpanding)="siteCostExpandingHandler()"
-          (onCollapsed)="siteCostCollapsedHandler()"
+          (onExpanding)="handleSiteCostExpanding()"
+          (onCollapsed)="handleSiteCostCollapsed()"
         >
           <div>
             <div class="cost-summary-line">
@@ -536,7 +536,7 @@
     <div class="wizard-controls">
       <jqxButton
         #helpButton
-        (onClick)="helpButtonOnClickHandler()"
+        (onClick)="handleHelpButtonOnClick()"
         [width]="buttonWidth"
         style="margin-right: 8px"
         >Help...</jqxButton
@@ -550,7 +550,7 @@
       >
       <jqxButton
         #backButton
-        (onClick)="backButtonOnClickHandler()"
+        (onClick)="handleBackButtonClick()"
         [width]="buttonWidth"
         [disabled]="true"
         style="margin-right: 4px"
@@ -558,14 +558,14 @@
       >
       <jqxButton
         #nextButton
-        (onClick)="nextButtonOnClickHandler()"
+        (onClick)="handleNextButtonClick()"
         [width]="buttonWidth"
         style="margin-right: 8px"
         >Next&nbsp;&gt;&gt;</jqxButton
       >
       <jqxButton
         #finishButton
-        (onClick)="finishButtonOnClickHandler()"
+        (onClick)="handleFinishButtonClick()"
         [width]="buttonWidth"
         style="margin-right: 2px"
         >Finish</jqxButton

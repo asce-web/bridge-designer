@@ -9,14 +9,13 @@ import {
   ElementRef,
   ViewChild,
 } from '@angular/core';
-import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { EditCommand } from '../../../shared/classes/editing';
 import { Geometry, Graphics, Point2D } from '../../../shared/classes/graphics';
 import { Joint } from '../../../shared/classes/joint.model';
 import { Member } from '../../../shared/classes/member.model';
 import { BridgeService } from '../../../shared/services/bridge.service';
 import { DesignRenderingService } from '../../../shared/services/design-rendering.service';
-import { EventBrokerService, EventOrigin } from '../../../shared/services/event-broker.service';
+import { EventBrokerService, EventOrigin, LoadBridgeRequestData } from '../../../shared/services/event-broker.service';
 import { FormsModule } from '@angular/forms';
 import { ViewportTransform2D } from '../../../shared/services/viewport-transform.service';
 import { AddJointCommand } from '../../controls/edit-command/add-joint.command';
@@ -33,12 +32,12 @@ import { BridgeSketchModel } from '../../../shared/classes/bridge-sketch.model';
 import { GuideKnob, GuidesService } from '../shared/guides.service';
 import { Labels, LabelsService } from '../shared/labels.service';
 import { Draggable } from '../shared/hot-element-drag.service';
-import { DraftingPanelState } from '../../../shared/services/persistence.service';
 import { Utility } from '../../../shared/classes/utility';
 import { ToastComponent } from '../../toast/toast/toast.component';
 import { ToastError } from '../../toast/toast/toast-error';
 import { DesignConditions } from '../../../shared/services/design-conditions.service';
 import { ElementSelectorService } from '../shared/element-selector.service';
+import { SaveMarkService } from '../../save-load/save-mark.service';
 
 @Component({
   selector: 'drafting-panel',
@@ -64,6 +63,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     private readonly eventBrokerService: EventBrokerService,
     private readonly guideService: GuidesService,
     private readonly labelsService: LabelsService,
+    private readonly saveMarkService: SaveMarkService,
     private readonly selectedElementsService: SelectedElementsService,
     private readonly undoManagerService: UndoManagerService,
     private readonly viewportTransform: ViewportTransform2D,
@@ -99,14 +99,18 @@ export class DraftingPanelComponent implements AfterViewInit {
     }
   }
 
-  loadBridge(bridge: BridgeModel, draftingPanelState: DraftingPanelState): void {
+  loadBridge(data: LoadBridgeRequestData): void {
+    const bridge = data.bridge;
     this.eventBrokerService.selectNoneRequest.next({ origin: EventOrigin.DRAFTING_PANEL, data: undefined });
     const bridgeGridDensity = DesignGridService.getDensityOfWorldPoints(bridge.joints);
     this.selectGridDensity(bridgeGridDensity);
-    this.bridgeService.setBridge(bridge, draftingPanelState);
+    this.bridgeService.setBridge(bridge, data.draftingPanelState);
     this.handleResize();
     this.changeDetector.detectChanges(); // Updates title block.
     this.eventBrokerService.loadBridgeCompletion.next({ origin: EventOrigin.DRAFTING_PANEL, data: bridge });
+    if (data.clearSaveMark) {
+      this.saveMarkService.clearSaveMark();
+    }
   }
 
   loadSketch(sketch: BridgeSketchModel) {
@@ -229,7 +233,7 @@ export class DraftingPanelComponent implements AfterViewInit {
     this.eventBrokerService.draftingPanelInvalidation.subscribe(() => this.render());
     this.eventBrokerService.gridDensitySelection.subscribe(info => this.handleSelectGridDensity(info.data));
     this.eventBrokerService.loadBridgeRequest.subscribe(info =>
-      this.loadBridge(info.data.bridge, info.data.draftingPanelState),
+      this.loadBridge(info.data),
     );
     this.eventBrokerService.attachSketchRequest.subscribe(info => this.loadSketch(info.data));
     this.eventBrokerService.selectedElementsChange.subscribe(() => this.render());

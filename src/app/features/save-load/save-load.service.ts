@@ -130,7 +130,6 @@ export class FileSystemSaveLoadService implements SaveLoadService {
       origin: EventOrigin.SERVICE,
       data: saveSet,
     });
-    // After load  because that clears save mark service.
     this.saveMarkService.markDesignSaved(name);
   }
 

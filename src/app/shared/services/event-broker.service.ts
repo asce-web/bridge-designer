@@ -59,6 +59,7 @@ export type LoadBridgeFileRequestData = (() => void) | undefined;
 export type LoadBridgeRequestData = {
   bridge: BridgeModel;
   draftingPanelState: DraftingPanelState;
+  clearSaveMark?: boolean;
 };
 export type InventorySelectionChangeData = {
   material?: Material;

@@ -245,7 +245,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     return this.designConditions.siteCosts!;
   }
 
-  archAbutmentRadioChangeHandler(event: any): void {
+  handleArchAbutmentRadioChange(event: any): void {
     if (event.args.checked) {
       this.archHeightList.disabled = false;
       this.noPierButton.check();
@@ -263,11 +263,11 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.setDesignConditionsFromWidgets();
   }
 
-  backButtonOnClickHandler(): void {
+  handleBackButtonClick(): void {
     this.goToCard(this.cardService.card.backCardIndex);
   }
 
-  deckElevationSelectHandler(event: any): void {
+  handleDeckElevationSelect(event: any): void {
     const index = event.args.index;
     this.archHeightList.startIndex = this.pierHeightList.startIndex = index;
     // Handle deck height where no arch is possible.
@@ -280,10 +280,14 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.setDesignConditionsFromWidgets();
   }
 
-  finishButtonOnClickHandler(): void {
+  handleFinishButtonClick(): void {
     this.eventBrokerService.loadBridgeRequest.next({
       origin: EventOrigin.SETUP_DIALOG,
-      data: { bridge: this.bridgeService.bridge, draftingPanelState: this.bridgeService.draftingPanelState },
+      data: {
+        bridge: this.bridgeService.bridge,
+        draftingPanelState: this.bridgeService.draftingPanelState,
+        clearSaveMark: true,
+      },
     });
     this.eventBrokerService.attachSketchRequest.next({
       origin: EventOrigin.SETUP_DIALOG,
@@ -292,11 +296,11 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.dialog.close();
   }
 
-  helpButtonOnClickHandler(): void {
+  handleHelpButtonOnClick(): void {
     this.eventBrokerService.helpRequest.next({ origin: EventOrigin.SETUP_DIALOG, data: { topic: 'hlp_how_to' } });
   }
 
-  isPierRadioChangeHandler(event: any): void {
+  handleIsPierRadioChange(event: any): void {
     if (event.args.checked) {
       this.pierHeightList.disabled = false;
       if (this.oneAnchorageButton.checked()) {
@@ -310,11 +314,11 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.setDesignConditionsFromWidgets();
   }
 
-  localContestInputChangeHandler(_state: LocalContestCodeInputState) {
+  handleLocalContestInputChange(_state: LocalContestCodeInputState) {
     this.cardService.card.enableControls(); // Next button.
   }
 
-  localContestYesRadioChangeHandler(event: any) {
+  handleLocalContestYesRadioChange(event: any) {
     if (event.args.checked) {
       this.localContestCodeInput.disabled = false;
       this.localContestCodeInput.focus();
@@ -324,7 +328,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.cardService.card.enableControls(); // Next button
   }
 
-  nextButtonOnClickHandler(): void {
+  handleNextButtonClick(): void {
     // If user has entered valid local contest code, set associated design conditions.
     const card = this.cardService.card;
     const conditions = this.localContestCodeInput.designConditions;
@@ -335,15 +339,15 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.goToCard(card.nextCardIndex);
   }
 
-  siteCostExpandingHandler(): void {
+  handleSiteCostExpanding(): void {
     this.dialogHeight += SetupWizardComponent.SITE_COST_DROPDOWN_HEIGHT;
   }
 
-  siteCostCollapsedHandler(): void {
+  handleSiteCostCollapsed(): void {
     this.dialogHeight -= SetupWizardComponent.SITE_COST_DROPDOWN_HEIGHT;
   }
 
-  templateListSelectHandler(event: any) {
+  handleTemplateListSelect(event: any) {
     this.bridgeService.sketch = this.templateList.source()[event.args.index];
     this.cardService.card.renderElevationCartoon();
   }
@@ -390,7 +394,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     }
     this.templateList.displayMember('name');
     this.templateList.source(templateList);
-    // Preset same-named template even if site conditions changed. Smart or surprising? 
+    // Preset same-named template even if site conditions changed. Smart or surprising?
     const rootSketchName = this.rootBridgeService.instance.sketch.name;
     const rootSketchIndex = templateList.findIndex(sketch => sketch.name === rootSketchName);
     this.templateList.selectedIndex(rootSketchIndex < 0 ? 0 : rootSketchIndex);

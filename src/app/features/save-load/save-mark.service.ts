@@ -2,7 +2,6 @@
    SPDX-License-Identifier: GPL-3.0-or-later */
 
 import { Injectable } from '@angular/core';
-import { EventBrokerService } from '../../shared/services/event-broker.service';
 import { UndoManagerService, UndoStateToken } from '../drafting/shared/undo-manager.service';
 import { SessionStateService } from '../session-state/session-state.service';
 import { UndoManagerSessionStateService } from '../drafting/shared/undo-manager-session-state.service';
@@ -13,18 +12,15 @@ export class SaveMarkService {
   private savedMark: UndoStateToken = UndoManagerService.NO_EDIT_COMMAND;
   private _fileName: string | undefined;
   private readonly undoManagerService;
+  private readonly defaultTitle;
 
   constructor(
-    eventBrokerService: EventBrokerService,
     sessionStateService: SessionStateService,
     // Injected to ensure undo manager is already rehydrated.
     undoManagerSessionStateService: UndoManagerSessionStateService,
   ) {
     this.undoManagerService = undoManagerSessionStateService.undoManagerService;
-    eventBrokerService.loadBridgeCompletion.subscribe(() => {
-      this.savedMark = UndoManagerService.NO_EDIT_COMMAND;
-      this._fileName = undefined;
-    });
+    this.defaultTitle = document.title;
     sessionStateService.register(
       'savemark.service',
       () => this.dehydrate(),
@@ -47,6 +43,12 @@ export class SaveMarkService {
     this.savedMark = this.undoManagerService.stateToken;
     this._fileName = fileName;
     this.setDocumentTitle(fileName);
+  }
+
+  public clearSaveMark(): void {
+    this.savedMark = UndoManagerService.NO_EDIT_COMMAND;
+    this._fileName = undefined;
+    document.title = this.defaultTitle;
   }
 
   private setDocumentTitle(fileName: string) {

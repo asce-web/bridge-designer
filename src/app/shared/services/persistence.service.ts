@@ -9,6 +9,7 @@ import { Member } from '../classes/member.model';
 import { DesignConditions, DesignConditionsService } from './design-conditions.service';
 import { InventoryService } from './inventory.service';
 import { Utility } from '../classes/utility';
+import { ToastError } from '../../features/toast/toast/toast-error';
 
 const DELIMITER = '|';
 const JOINT_COORD_LENGTH = 3;
@@ -74,7 +75,7 @@ export class SaveSet {
   public static createNew(
     designConditions: DesignConditions = DesignConditionsService.PLACEHOLDER_CONDITIONS,
   ): SaveSet {
-    return new SaveSet(new BridgeModel(designConditions),  DraftingPanelState.createNew());
+    return new SaveSet(new BridgeModel(designConditions), DraftingPanelState.createNew());
   }
 
   /** Returns a new save set that refers directly to given bridge and drafting panel state. */
@@ -84,10 +85,7 @@ export class SaveSet {
 
   /** Returns a new save set containing deep copies of given bridge and drafting panel state. */
   public static deepCopy(bridge: BridgeModel, draftingPanelState: DraftingPanelState): SaveSet {
-    return new SaveSet(
-      BridgeModel.createClone(bridge),
-      DraftingPanelState.createClone(draftingPanelState),
-    );
+    return new SaveSet(BridgeModel.createClone(bridge), DraftingPanelState.createClone(draftingPanelState));
   }
 
   clear(): void {
@@ -102,7 +100,7 @@ export class DraftingPanelState {
   public static createNew() {
     return new DraftingPanelState();
   }
-  
+
   public static createClone(existing: DraftingPanelState): DraftingPanelState {
     return new DraftingPanelState(existing.yLabels);
   }
@@ -126,9 +124,10 @@ class SaveSetParser {
   parse(saveSet: SaveSet): void {
     try {
       this.parseOrThrow(saveSet);
-    } catch (error) {
+    } catch (error: any) {
       saveSet.clear();
-      throw error;
+      console.error('Parse error:', error.message);
+      throw new ToastError('parseError');
     }
   }
 
