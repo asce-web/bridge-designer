@@ -29,7 +29,8 @@ export class InventorySelectorComponent implements AfterViewInit {
   @ViewChild('sizeSelector') sizeSelector!: jqxDropDownListComponent;
 
   readonly height = 28;
-  readonly materialSelectorWidth = 206;
+  // Windows has the widest effective font.
+  readonly materialSelectorWidth = 220;
   readonly initialSizeIndex = 22; // 200x200
 
   constructor(
@@ -40,11 +41,11 @@ export class InventorySelectorComponent implements AfterViewInit {
   ) {}
 
   get crossSectionSelectorWidth(): number {
-    return this.vertical ? 206 : 106;
+    return this.vertical ? this.materialSelectorWidth : 106;
   }
 
   get sizeSelectorWidth(): number {
-    return this.vertical ? 206 : 116;
+    return this.vertical ? this.materialSelectorWidth : 116;
   }
 
   handleMaterialSelectorOnChange(event: any): void {
