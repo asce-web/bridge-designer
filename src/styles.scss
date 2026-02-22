@@ -27,6 +27,11 @@ body {
   padding-bottom: 0;
 }
 
+.jqx-notification-container {
+  // Ensure toasts aren't hidden.
+  z-index: 99999;
+}
+
 .loading-div {
   height: 100vh;
   overflow: hidden;

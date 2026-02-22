@@ -46,23 +46,34 @@ export class WorkflowManagementService {
 
     // Analysis completion.
     eventBrokerService.analysisCompletion.subscribe(info => {
-      const status = info.data;
-      let isValidForAnimation = false;
-      if (status === AnalysisStatus.UNSTABLE) {
-        eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
-      } else if (status === AnalysisStatus.FAILS_SLENDERNESS) {
-        eventBrokerService.slendernessFailDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
-      } else {
-        isValidForAnimation = true;
-      }
-      const isValidForReport = isAnalysisValidForReport(status);
-      uiStateService.disable(eventBrokerService.analysisReportRequest, !isValidForReport);
-      uiStateService.disable(eventBrokerService.memberDetailsReportRequest, !isValidForReport);
-      if (isValidForAnimation && showAnimation) {
-        eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'animation' });
-      } else {
-        // Toggle the design mode back to the drafting panel with no change to UI mode.
-        setTimeout(() => eventBrokerService.designModeSelection.next({ origin: EventOrigin.SERVICE, data: 0 }));
+      let status = info.data;
+      // Allow one retry after auto-fix.
+      for (let isFirstTry = true; ; isFirstTry = false) {
+        let isStatusValidForAnimation = false;
+        if (status === AnalysisStatus.UNSTABLE) {
+          if (isFirstTry && autoFix) {
+            // Apply auto-fix and re-analyze, then retry for new status.
+            bridgeAutoFixService.autoFix();
+            analysisService.analyzeQuietly({ populateBridgeMembers: true });
+            status = analysisService.status;
+            continue; // retry
+          }
+          eventBrokerService.unstableBridgeDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
+        } else if (status === AnalysisStatus.FAILS_SLENDERNESS) {
+          eventBrokerService.slendernessFailDialogOpenRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
+        } else {
+          isStatusValidForAnimation = true;
+        }
+        const isValidForReport = isAnalysisValidForReport(status);
+        uiStateService.disable(eventBrokerService.analysisReportRequest, !isValidForReport);
+        uiStateService.disable(eventBrokerService.memberDetailsReportRequest, !isValidForReport);
+        if (isStatusValidForAnimation && showAnimation) {
+          eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'animation' });
+        } else {
+          // Toggle the design mode back to the drafting panel with no change to UI mode.
+          setTimeout(() => eventBrokerService.designModeSelection.next({ origin: EventOrigin.SERVICE, data: 0 }));
+        }
+        break; // all done; don't retry
       }
     });
 
@@ -94,9 +105,6 @@ export class WorkflowManagementService {
           eventBrokerService.draftingPanelInvalidation.next({ origin: EventOrigin.SERVICE, data: 'graphic' });
           break;
         case 1: // test
-          if (autoFix) {
-            bridgeAutoFixService.autoFix();
-          }
           // Analysis completion chains to animation or back to drafting panel.
           analysisService.analyzeAndNotify({ populateBridgeMembers: true });
           break;
