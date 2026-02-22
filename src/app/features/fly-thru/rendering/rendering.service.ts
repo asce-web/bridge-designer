@@ -239,8 +239,9 @@ export class RenderingService {
     // The renderers can make no assumption about what's in the transforms uniform.
     this.uniformService.updateTransformsUniform(this.matrices);
     if (!this.flyThruSettingsService.settings.noTerrain) {
-      this.meshRenderingService.renderTerrainMesh(this.terrainMesh);
+      // For coarse depth buffers, render road first so less-than depth test keeps them on equal.
       this.meshRenderingService.renderColoredMesh(this.roadwayMesh);
+      this.meshRenderingService.renderTerrainMesh(this.terrainMesh);
       this.utilityLineRenderingService.render(this.matrices);
       this.riverRenderingService.render(this.matrices);
     }

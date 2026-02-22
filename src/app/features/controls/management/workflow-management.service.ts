@@ -64,9 +64,9 @@ export class WorkflowManagementService {
         } else {
           isStatusValidForAnimation = true;
         }
-        const isValidForReport = isAnalysisValidForReport(status);
-        uiStateService.disable(eventBrokerService.analysisReportRequest, !isValidForReport);
-        uiStateService.disable(eventBrokerService.memberDetailsReportRequest, !isValidForReport);
+        const isStatusValidForReport = isAnalysisValidForReport(status);
+        uiStateService.disable(eventBrokerService.analysisReportRequest, !isStatusValidForReport);
+        uiStateService.disable(eventBrokerService.memberDetailsReportRequest, !isStatusValidForReport);
         if (isStatusValidForAnimation && showAnimation) {
           eventBrokerService.uiModeRequest.next({ origin: EventOrigin.SERVICE, data: 'animation' });
         } else {

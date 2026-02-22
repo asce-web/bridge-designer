@@ -69,15 +69,16 @@ export class BridgeRenderingService {
     // Send updated values to the GPU.
     const mesh = this.mesh;
     this.meshRenderingService.updateInstanceModelTransforms(mesh.membersMesh);
+    // For coarse depth buffers, render gussets first so less-than depth test keeps them on equal.
+    for (const gussetMesh of mesh.gussetMeshes) {
+      this.meshRenderingService.updateInstanceModelTransforms(gussetMesh);
+    }
     if (this.glService.isRenderingDisplay) {
       this.meshRenderingService.updateInstanceColors(mesh.membersMesh);
       this.meshRenderingService.updateInstanceModelTransforms(mesh.stiffeningWires);
     }
     this.meshRenderingService.updateInstanceModelTransforms(mesh.deckBeamsMesh);
     this.meshRenderingService.updateInstanceModelTransforms(mesh.deckSlabsMesh);
-    for (const gussetMesh of mesh.gussetMeshes) {
-      this.meshRenderingService.updateInstanceModelTransforms(gussetMesh);
-    }
     this.meshRenderingService.updateInstanceModelTransforms(mesh.pinsMesh);
     if (mesh.buckledMembersMesh) {
       this.meshRenderingService.updateInstanceModelTransforms(mesh.buckledMembersMesh.mesh);
