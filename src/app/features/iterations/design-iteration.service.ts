@@ -253,8 +253,7 @@ export class DesignIterationService {
 
   rehydrate(state: State): void {
     state.iterations.forEach(iteration => {
-      const saveSet = SaveSet.createNew();
-      this.persistenceService.parseSaveSetText(iteration.bridge, saveSet);
+      const saveSet = this.persistenceService.parseSaveSetText(iteration.bridge);
       this.iterations.push(
         new DesignIteration(
           iteration.index,

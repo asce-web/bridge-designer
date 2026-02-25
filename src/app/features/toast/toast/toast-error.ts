@@ -4,6 +4,7 @@
 /** Kinds of toast error. Must match id's in toast.component.html (except for 'noError'). */
 export type ToastKind =
   | 'autofixInfo'
+  | 'bridgeVersionError'
   | 'copyFailedError'
   | 'copySuccess'
   | 'duplicateJointError'

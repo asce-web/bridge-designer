@@ -10,6 +10,14 @@
   Hey! Auto-corrections were applied. Undo if you like.
 </jqxNotification>
 <jqxNotification
+  id="bridgeVersionError"
+  [template]="'error'"
+  [position]="'bottom-left'"
+  [autoCloseDelay]="autoCloseDelay"
+>
+  Oops... The bridge's version is incorrect.
+</jqxNotification>
+<jqxNotification
   id="copyFailedError"
   [template]="'error'"
   [position]="'bottom-left'"
@@ -25,7 +33,6 @@
 >
   Yay! Copied to clipboard.
 </jqxNotification>
-
 <jqxNotification
   id="duplicateJointError"
   [template]="'error'"

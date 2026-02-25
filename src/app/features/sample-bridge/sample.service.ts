@@ -5,12 +5,13 @@ import { Injectable } from '@angular/core';
 import { PersistenceService, SaveSet } from '../../shared/services/persistence.service';
 
 export type BridgeSample = {
-  scenario: string,
-  name: string,
-  description: string,
-  saveSet: string,
+  scenario: string;
+  name: string;
+  description: string;
+  saveSet: string;
 };
 
+// prettier-ignore
 export const SAMPLE_BRIDGES: Array<BridgeSample> = [
   {
     scenario: '01A',
@@ -76,12 +77,9 @@ export const SAMPLE_BRIDGES: Array<BridgeSample> = [
 
 @Injectable({ providedIn: 'root' })
 export class SampleService {
+  constructor(private readonly persistenceService: PersistenceService) {}
 
-  constructor(private readonly persistenceService: PersistenceService) { }
-
-  getSampleBridge(index: number): SaveSet {
-    const saveSet = SaveSet.createNew();
-    this.persistenceService.parseSaveSetText(SAMPLE_BRIDGES[index].saveSet, saveSet);
-    return saveSet;
+  public getSampleBridge(index: number): SaveSet {
+    return this.persistenceService.parseSaveSetText(SAMPLE_BRIDGES[index].saveSet);
   }
 }

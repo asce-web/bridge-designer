@@ -6,10 +6,11 @@ import { DesignGridService, DesignGrid } from './design-grid.service';
 import { BridgeModel } from '../classes/bridge.model';
 import { Joint } from '../classes/joint.model';
 import { Member } from '../classes/member.model';
-import { DesignConditions, DesignConditionsService } from './design-conditions.service';
+import { DesignConditionsService } from './design-conditions.service';
 import { InventoryService } from './inventory.service';
 import { Utility } from '../classes/utility';
 import { ToastError } from '../../features/toast/toast/toast-error';
+import { ContestParametersService } from './contest-parameters.service';
 
 const DELIMITER = '|';
 const JOINT_COORD_LENGTH = 3;
@@ -25,6 +26,7 @@ const YEAR_LENGTH = 4;
 @Injectable({ providedIn: 'root' })
 export class PersistenceService {
   constructor(
+    private readonly contestParametersService: ContestParametersService,
     private readonly designConditionsService: DesignConditionsService,
     private readonly inventoryService: InventoryService,
   ) {}
@@ -54,14 +56,26 @@ export class PersistenceService {
     return chunks.join('');
   }
 
-  /** Parse the input string, mutating the save set to match. */
-  public parseSaveSetText(text: string, saveSet: SaveSet): void {
-    return new SaveSetParser(
+  /** Parse the trusted input string, mutating the save set to match. */
+  public parseSaveSetText(text: string): SaveSet {
+    const saveSet = SaveSet.createNew();
+    const parser = new SaveSetParser(
       text,
       this.designConditionsService,
       DesignGridService.FINEST_GRID,
       this.inventoryService,
-    ).parse(saveSet);
+    );
+    parser.parse(saveSet);
+    return saveSet;
+  }
+
+  /** Validate saves sets parsed from untrusted text. */
+  public validateSaveSet(saveSet: SaveSet): void {
+    const version = saveSet.bridge.version;
+    const expectedVersion = this.contestParametersService.parameters.bridgeVersion;
+    if (version !== expectedVersion) {
+      throw new ToastError('bridgeVersionError');
+    }
   }
 }
 
@@ -72,10 +86,9 @@ export class SaveSet {
     public readonly draftingPanelState: DraftingPanelState,
   ) {}
 
-  public static createNew(
-    designConditions: DesignConditions = DesignConditionsService.PLACEHOLDER_CONDITIONS,
-  ): SaveSet {
-    return new SaveSet(new BridgeModel(designConditions), DraftingPanelState.createNew());
+  /** Create a blank save set to be filled in by the caller. */
+  public static createNew(): SaveSet {
+    return new SaveSet(BridgeModel.createNew(), DraftingPanelState.createNew());
   }
 
   /** Returns a new save set that refers directly to given bridge and drafting panel state. */
@@ -131,11 +144,9 @@ class SaveSetParser {
     }
   }
 
-  private parseOrThrow(saveSet: SaveSet) {
+  private parseOrThrow(saveSet: SaveSet): void {
     saveSet.bridge.joints.length = saveSet.bridge.members.length = 0; // We're replacing everything.
-    if (this.scanNumber(false, YEAR_LENGTH, 'bridge designer version') !== saveSet.bridge.version) {
-      throw new Error('bridge design file version is not ' + saveSet.bridge.version);
-    }
+    saveSet.bridge.version = this.scanNumber(false, YEAR_LENGTH, 'bridge designer version');
     const scenarioCode = this.scanNumber(false, SCENARIO_CODE_LENGTH, 'scenario code');
     saveSet.bridge.designConditions = this.designConditionsService.getConditionsForCodeLong(scenarioCode);
     const jointCount = this.scanNumber(false, JOINT_COUNT_LENGTH, 'number of joints');

@@ -3,7 +3,7 @@
 
 import { Injectable } from '@angular/core';
 import { BridgeService } from '../../shared/services/bridge.service';
-import { PersistenceService, SaveSet } from '../../shared/services/persistence.service';
+import { PersistenceService } from '../../shared/services/persistence.service';
 import { EventBrokerService, EventOrigin } from '../../shared/services/event-broker.service';
 import { ToastError } from '../toast/toast/toast-error';
 import { SaveMarkService } from './save-mark.service';
@@ -79,8 +79,8 @@ export class LegacySaveLoadService implements SaveLoadService {
       };
       reader.onload = () => {
         const text = reader.result as string;
-        const saveSet = SaveSet.createNew();
-        this.persistenceService.parseSaveSetText(text, saveSet);
+        const saveSet = this.persistenceService.parseSaveSetText(text);
+        this.persistenceService.validateSaveSet(saveSet);
         this.eventBrokerService.loadBridgeRequest.next({
           origin: EventOrigin.SERVICE,
           data: saveSet,
@@ -124,8 +124,8 @@ export class FileSystemSaveLoadService implements SaveLoadService {
 
   public async loadBridgeFile(): Promise<void> {
     const { name, text } = await this.doLoad();
-    const saveSet = SaveSet.createNew();
-    this.persistenceService.parseSaveSetText(text, saveSet);
+    const saveSet = this.persistenceService.parseSaveSetText(text);
+    this.persistenceService.validateSaveSet(saveSet);
     this.eventBrokerService.loadBridgeRequest.next({
       origin: EventOrigin.SERVICE,
       data: saveSet,

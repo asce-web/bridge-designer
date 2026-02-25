@@ -29,7 +29,6 @@ import {
 import { CartoonSiteRenderingService } from '../../../shared/services/cartoon-site-rendering.service';
 import { Graphics } from '../../../shared/classes/graphics';
 import { HeightListComponent } from '../height-list/height-list.component';
-import { BridgeModel } from '../../../shared/classes/bridge.model';
 import { CardService, ControlMask, DeckCartoonSrc, LegendItemName, SetupWizardCardView } from './card-service';
 import {
   LocalContestCodeInputComponent,
@@ -150,7 +149,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
   }
 
   set designConditions(value: DesignConditions) {
-    this.bridgeService.setBridge(new BridgeModel(value), DraftingPanelState.createNew());
+    this.bridgeService.setBridge(this.bridgeService.createBridge(value), DraftingPanelState.createNew());
   }
 
   /** Sets up widgets directly associated with bridge service design conditions. */

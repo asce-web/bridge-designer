@@ -12,7 +12,7 @@ describe('BridgeModel', () => {
 
   describe('createClone', () => {
     it('should create a clone of the bridge model', () => {
-      const originalBridge = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS);
+      const originalBridge = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS, 2024);
       originalBridge.projectName = 'Original Bridge';
       originalBridge.projectId = '123';
       originalBridge.designedBy = 'Engineer';

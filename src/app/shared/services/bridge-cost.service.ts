@@ -11,8 +11,8 @@ import { Member } from '../classes/member.model';
 /** Container for logic that tabulates bridge cost information. */
 @Injectable({ providedIn: 'root' })
 export class BridgeCostService {
-  private static readonly CONNECTION_FEE = 400.0;
-  private static readonly PRODUCT_FEE = 1000.0;
+  private static readonly CONNECTION_FEE = 400;
+  private static readonly PRODUCT_FEE = 1000;
 
   constructor(private readonly bridgeService: BridgeService) {}
 

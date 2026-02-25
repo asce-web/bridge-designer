@@ -15,6 +15,7 @@ import { DraftingPanelState, PersistenceService, SaveSet } from './persistence.s
 import { SessionStateService } from '../../features/session-state/session-state.service';
 import { BridgeSketchService } from './bridge-sketch.service';
 import { BitVector } from '../core/bitvector';
+import { ContestParametersService } from './contest-parameters.service';
 
 /**
  * Injectable accessor of the bridge service in the root injector. Useful in components that
@@ -34,22 +35,31 @@ export class BridgeServiceSessionStateKey {
 /** Injectable, mutable container for a bridge model, related site and drafting information, and queries on these. */
 @Injectable({ providedIn: 'root' })
 export class BridgeService {
-  private _bridge: BridgeModel = new BridgeModel(DesignConditionsService.PLACEHOLDER_CONDITIONS);
-  private _sketch: BridgeSketchModel = BridgeSketchModel.ABSENT;
-  private _siteInfo: SiteModel = new SiteModel(this.bridge.designConditions);
-  private _draftingPanelState: DraftingPanelState = DraftingPanelState.createNew();
+  private _bridge: BridgeModel;
+  private _sketch: BridgeSketchModel;
+  private _siteInfo: SiteModel;
+  private _draftingPanelState: DraftingPanelState;
 
   constructor(
+    private readonly bridgeSketchService: BridgeSketchService,
+    private readonly contestParametersService: ContestParametersService,
     private readonly persistenceService: PersistenceService,
     sessionStateKey: BridgeServiceSessionStateKey,
-    private readonly bridgeSketchService: BridgeSketchService,
     sessionStateService: SessionStateService,
   ) {
+    this._bridge = this.createBridge(DesignConditionsService.PLACEHOLDER_CONDITIONS);
+    this._sketch = BridgeSketchModel.ABSENT;
+    this._siteInfo = new SiteModel(this.bridge.designConditions);
+    this._draftingPanelState = DraftingPanelState.createNew();
     sessionStateService.register(
       sessionStateKey.key,
       () => this.dehydrate(),
       state => this.rehydrate(state),
     );
+  }
+
+  public createBridge(designConditions: DesignConditions): BridgeModel {
+    return new BridgeModel(designConditions, this.contestParametersService.parameters.bridgeVersion);
   }
 
   public get bridge(): BridgeModel {
@@ -258,7 +268,7 @@ export class BridgeService {
 
   /** Returns all members grouped by material, section, size in a canonical order. Inner member lists in index order. */
   public partitionMembersByStock(): Member[][] {
-    const membersByStockId: {[key: string]: Member[]} = {};
+    const membersByStockId: { [key: string]: Member[] } = {};
     for (const member of this.bridge.members) {
       const key = member.stockId.key;
       membersByStockId[key] ||= [];
@@ -268,7 +278,7 @@ export class BridgeService {
     for (const pair of entries) {
       pair[1].sort((a, b) => a.index - b.index);
     }
-    return  entries.sort((a, b) => a[0].localeCompare(b[0], 'en-US')).map(pair => pair[1]);
+    return entries.sort((a, b) => a[0].localeCompare(b[0], 'en-US')).map(pair => pair[1]);
   }
 
   /** Returns whether a member with given end points would intersect the high pier, if the conditions have one. */
@@ -373,8 +383,7 @@ export class BridgeService {
   }
 
   private rehydrate(savedState: State) {
-    const saveSet = SaveSet.createNew();
-    this.persistenceService.parseSaveSetText(savedState.saveSetText, saveSet);
+    const saveSet = this.persistenceService.parseSaveSetText(savedState.saveSetText);
     this.setBridge(saveSet.bridge, saveSet.draftingPanelState);
     this.sketch = this.bridgeSketchService.getSketch(this.designConditions, savedState.sketchName);
   }
