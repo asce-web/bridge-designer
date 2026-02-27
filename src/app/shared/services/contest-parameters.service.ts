@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 
-/** Parameters that can be altered for contests. */
-type Parameters = {
+/** Parameters that can be altered for contests. Update validator if adding new types. */
+export type ContestParameters = {
+  /** Parameters version number to support future changes. */
+  version: number;
+  /** Whether the parameters are patched wrt the default. */
+  isPatched: boolean;
   anchorageCost: number;
   bridgeVersion: number;
   carbonSteelCostPerKg: [number, number]; // [bar, tube]
@@ -18,6 +22,31 @@ type Parameters = {
   standardAxleLoads: [number, number]; // [front, rear]
 };
 
+/**
+ * Contest parameters used when none are explicitly specified.
+ * THESE CAN'T BE CHANGED without affecting old bridge files
+ * lacking stored parameters. I.e. if we do change them,
+ * the old files must be rejected by the parser.
+ */
+export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
+  version: 1,
+  isPatched: false,
+  anchorageCost: 6000,
+  bridgeVersion: 2024, //
+  carbonSteelCostPerKg: [4.3, 6.3],
+  connectionFee: 400,
+  deckCostPerPanelHiStrength: 5100,
+  deckCostPerPanelMedStrength: 4700,
+  encryptionKey: '',
+  excavationCostRate: 1,
+  heavyAxleLoads: [137, 137], //
+  lowAlloySteelCostPerKg: [5.6, 7.0],
+  productFee: 1000,
+  quenchedAndTemperedSteelCostPerKg: [6.0, 7.7],
+  standardAbutmentBaseCost: 6000,
+  standardAxleLoads: [71, 181], //
+} as const;
+
 @Injectable({ providedIn: 'root' })
 export class WindowLocation {
   public readonly value: Location = window.location;
@@ -25,69 +54,85 @@ export class WindowLocation {
 
 @Injectable({ providedIn: 'root' })
 export class ContestParametersService {
-  public readonly parameters: Parameters;
+  public readonly parameters: ContestParameters;
 
   // Define this direction to detect duplicate aliases at compile time.
   /** Map from search string short aliases to parameter attribute names. */
   private readonly fieldsByAlias: { [key: string]: string } = {
     a: 'anchorageCost',
-    v: 'bridgeVersion',
-    sc: 'carbonSteelCostPerKg',
+    bv: 'bridgeVersion',
+    ah: 'heavyAxleLoads',
+    as: 'standardAxleLoads',
+    b: 'standardAbutmentBaseCost',
     c: 'connectionFee',
     dh: 'deckCostPerPanelHiStrength',
     dm: 'deckCostPerPanelMedStrength',
+    i: 'isPatched',
     k: 'encryptionKey',
-    x: 'excavationCostRate',
-    ah: 'heavyAxleLoads',
-    sa: 'lowAlloySteelCostPerKg',
     p: 'productFee',
+    sa: 'lowAlloySteelCostPerKg',
+    sc: 'carbonSteelCostPerKg',
     sq: 'quenchedAndTemperedSteelCostPerKg',
-    b: 'standardAbutmentBaseCost',
-    as: 'standardAxleLoads',
+    v: 'version',
+    x: 'excavationCostRate',
   } as const;
 
-  /** Map from parameter attribute names to search string short aliases. */  
+  /** Map from parameter attribute names to search string short aliases. */
   private readonly aliasesByField = Object.fromEntries(Object.entries(this.fieldsByAlias).map(([k, v]) => [v, k]));
 
   constructor(windowLocation: WindowLocation) {
     // Set parameter defaults.
-    this.parameters = {
-      anchorageCost: 6000,
-      bridgeVersion: 2024,
-      carbonSteelCostPerKg: [4.3, 6.3],
-      connectionFee: 400,
-      deckCostPerPanelHiStrength: 5100,
-      deckCostPerPanelMedStrength: 4700,
-      encryptionKey: '',
-      excavationCostRate: 1,
-      heavyAxleLoads: [137, 137],
-      lowAlloySteelCostPerKg: [5.6, 7.0],
-      productFee: 1000,
-      quenchedAndTemperedSteelCostPerKg: [6.0, 7.7],
-      standardAbutmentBaseCost: 6000,
-      standardAxleLoads: [71, 181],
-    };
-    // Patch with contents of JSON in search parameter "p".
-    const patch = new URLSearchParams(windowLocation.value.search).get('p');
-    if (patch) {
+    this.parameters = { ...DEFAULT_CONTEST_PARAMETERS };
+    // Patch with contents of JSON in search parameter "p" if present.
+    const patchJson = new URLSearchParams(windowLocation.value.search).get('p');
+    if (patchJson !== null) {
       try {
-        const aliasedEntries = Object.entries(JSON.parse(patch));
-        const deAliasedEntries = aliasedEntries.map(([alias, value]) => [this.fieldsByAlias[alias], value]);
+        const aliasedEntries = Object.entries(JSON.parse(patchJson));
+        const deAlias = ([alias, value]: [string, any]): [string, any] => [this.fieldsByAlias[alias], value];
+        const deAliasedEntries = aliasedEntries.map(deAlias);
+        this.validatePatchEntries(deAliasedEntries);
         Object.assign(this.parameters, Object.fromEntries(deAliasedEntries));
+        this.parameters.isPatched = true;
       } catch (err) {
-        console.error('bad contest parameter patch was not applied', patch);
+        console.error('contest parameter patch not applied', err, patchJson);
       }
-      console.log('effective contest parameters', this.toSearchString(true));
+      console.log('effective contest parameters', JSON.stringify(this.parameters));
     }
   }
 
-  /**
-   * Returns a search string representing the parameters that's either complete and URI-encoded
-   * or just the raw JSON if `skipEncoding` is true.
-   */
-  public toSearchString(skipEncoding?: boolean): string {
-    const aliasedEntries = Object.entries(this.parameters).map(([field, value]) => [this.aliasesByField[field], value]);
-    const rawJson = JSON.stringify(Object.fromEntries(aliasedEntries));
-    return skipEncoding ? rawJson : `?p=${encodeURIComponent(rawJson)}`;
+  /** Returns a search string for given parameters, defaulting to the service's. Value is not URI escaped. */
+  public toSearchString(parameters: ContestParameters = this.parameters): string {
+    const aliasedEntries = Object.entries(parameters).map(([field, value]) => [this.aliasesByField[field], value]);
+    return JSON.stringify(Object.fromEntries(aliasedEntries));
+  }
+
+  /** Converts a search string to contest parameters. Unchecked: any valid JSON will produce a result. */
+  public fromSearchString(s: string): ContestParameters {
+    const aliasedEntries = Object.entries(JSON.parse(s));
+    const deAliasedEntries = aliasedEntries.map(([alias, value]) => [this.fieldsByAlias[alias], value]);
+    return Object.fromEntries(deAliasedEntries);
+  }
+
+  /** A lightweight validator of patch objects. Compares types against default parameters. */
+  private validatePatchEntries(entries: [string, any][]): void {
+    for (const [key, objValue] of entries) {
+      const parametersValue = (DEFAULT_CONTEST_PARAMETERS as any)[key];
+      if (parametersValue === undefined) {
+        throw `unknown key ${key}`;
+      }
+      if (typeof objValue != typeof parametersValue) {
+        throw `type mismatch ${objValue} vs ${parametersValue}`;
+      } else if (Array.isArray(parametersValue)) {
+        if (!Array.isArray(objValue)) {
+          throw `not an array ${objValue}`;
+        }
+        if (objValue.length !== parametersValue.length) {
+          throw `length mismatch ${objValue} vs ${parametersValue}`;
+        }
+        if (objValue.some((objElement, i) => typeof objElement !== typeof parametersValue[i])) {
+          throw `element mismatch ${objValue} vs ${parametersValue}`;
+        }
+      }
+    }
   }
 }

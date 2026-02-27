@@ -39,10 +39,6 @@ export abstract class CrossSection {
 
   public abstract createShapes(): Shape[];
 
-  public getNSizes(): number {
-    return CrossSection.WIDTHS.length;
-  }
-
   public toString(): string {
     return this.shortName;
   }
@@ -185,10 +181,6 @@ export class InventoryService {
 
   public getShapes(sectionIndex: number): Shape[] {
     return Inventory.SHAPES[sectionIndex];
-  }
-
-  public getShapeCount(sectionIndex: number): number {
-    return Inventory.SHAPES[sectionIndex].length;
   }
 
   /** Returns shape for given indices or undefined if either is out of bounds. */

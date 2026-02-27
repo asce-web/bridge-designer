@@ -49,7 +49,7 @@ export class LegacySaveLoadService implements SaveLoadService {
         throw new ToastError('noError');
       }
     }
-    const text = this.bridgeService.saveSetText;
+    const text = this.persistenceService.encryptSaveSetAsText(this.bridgeService.saveSetText);
     const blob = new Blob([text], { type: 'text/plain' });
     const anchorElement = window.document.createElement('a');
     const url = window.URL.createObjectURL(blob);
@@ -112,7 +112,7 @@ export class FileSystemSaveLoadService implements SaveLoadService {
         this.currentFileHandle = await this.getSaveFile(this.saveMarkService.savedFileName ?? DEFAULT_SAVE_FILE_NAME);
       }
       const stream = await this.currentFileHandle.createWritable();
-      const text = this.bridgeService.saveSetText;
+      const text = this.persistenceService.encryptSaveSetAsText(this.bridgeService.saveSetText);
       await stream.write(text);
       await stream.close();
       this.saveMarkService.markDesignSaved(this.currentFileHandle.name);

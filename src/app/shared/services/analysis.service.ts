@@ -9,6 +9,7 @@ import { BitVector } from '../core/bitvector';
 import { BridgeService } from './bridge.service';
 import { EventBrokerService, EventOrigin } from './event-broker.service';
 import { vec2 } from 'gl-matrix';
+import { ContestParametersService } from './contest-parameters.service';
 
 export type ForceStrengthRatios = { compression: number; tension: number };
 
@@ -30,6 +31,7 @@ export const enum AnalysisStatus {
 export class AnalysisService {
   constructor(
     private readonly bridgeService: BridgeService,
+    private readonly contestParametersService: ContestParametersService,
     private readonly eventBrokerService: EventBrokerService,
   ) {}
 
@@ -207,7 +209,9 @@ export class AnalysisService {
       }
     }
     // Standard (light) truck.
-    const [frontAxleLoad, rearAxleLoad] = conditions.loadType === LoadType.STANDARD_TRUCK ? [71, 181] : [137, 137];
+    const parameters = this.contestParametersService.parameters;
+    const [frontAxleLoad, rearAxleLoad] =
+      conditions.loadType === LoadType.STANDARD_TRUCK ? parameters.standardAxleLoads : parameters.heavyAxleLoads;
     for (let ilc = 1; ilc < loadCaseCount; ilc++) {
       const iFront = 2 * ilc + 1;
       const iRear = iFront - 2;

@@ -4,7 +4,6 @@
 import { Injectable } from '@angular/core';
 import { mat4, vec3 } from 'gl-matrix';
 import { ConvexHullService } from '../../../shared/services/convex-hull.service';
-import { Utility } from '../../../shared/classes/utility';
 import { Geometry, Point2D, Point2DInterface, Vector2D, Vector2DInterface } from '../../../shared/classes/graphics';
 import { TerrainModelService } from '../models/terrain-model.service';
 
@@ -26,13 +25,13 @@ export class ProjectionService {
   private readonly tmpMatrix = mat4.create();
   private readonly tmpVector = new Vector2D();
   private readonly invView = mat4.create();
-  private readonly trapezoid = Utility.createArray(() => new Point2D(), 4);
+  private readonly trapezoid = Array.from({ length: 4 }, () => new Point2D());
   private readonly unitL = new Vector2D();
   private readonly unitR = new Vector2D();
   // Extra element below is required null sentinel.
   private readonly frustumHull = new Array<Point2DInterface>(7);
   private readonly focusHull = new Array<Point2DInterface>(7);
-  private readonly focusProjected = Utility.createArray(() => new Point2D(), 6);
+  private readonly focusProjected = Array.from({ length: 6 }, () => new Point2D());
   private readonly axisDirection = new Vector2D();
   private readonly pointQ = new Point2D();
 
@@ -278,10 +277,9 @@ export class ProjectionService {
 /** A view pyramid with TSM features. May be either for the viewer's eye or the light. */
 class Pyramid {
   /** The user-specified perspective view volume in canonical view space, i.e. looking down -z axis. */
-  private readonly vCanon = Utility.createArray(vec3.create, 10);
+  private readonly vCanon = Array.from({length: 10}, vec3.create);
   /** Transformed view volume in light view space. Orthogonal because the light is parallel. */
-  private readonly vActual = Utility.createArray(() => new Point2D(), 10);
-
+  private readonly vActual = Array.from({length: 10}, () => new Point2D()); 
 
   public set(left: number, right: number, bottom: number, top: number, near: number, far: number): void {
     const zn = -near;
@@ -310,15 +308,9 @@ class Pyramid {
     for (let i = 0; i < this.vCanon.length; i++) {
       // Hand code 2d parallel mm for a bit of speed.
       this.vActual[i].x =
-        xForm[0] * this.vCanon[i][0] +
-        xForm[4] * this.vCanon[i][1] +
-        xForm[8] * this.vCanon[i][2] +
-        xForm[12];
+        xForm[0] * this.vCanon[i][0] + xForm[4] * this.vCanon[i][1] + xForm[8] * this.vCanon[i][2] + xForm[12];
       this.vActual[i].y =
-        xForm[1] * this.vCanon[i][0] +
-        xForm[5] * this.vCanon[i][1] +
-        xForm[9] * this.vCanon[i][2] +
-        xForm[13];
+        xForm[1] * this.vCanon[i][0] + xForm[5] * this.vCanon[i][1] + xForm[9] * this.vCanon[i][2] + xForm[13];
       // Perspective division for point light source would go here.
       convexHullService.addPoint(this.vActual[i]);
     }

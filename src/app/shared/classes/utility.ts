@@ -159,15 +159,6 @@ export class Utility {
     return tgt;
   }
 
-  /** Creates an array of given size of elements from given element creation function. */
-  public static createArray<T>(createElement: () => T, size: number): Array<T> {
-    const a = new Array<T>(size);
-    for (let i = 0; i < size; ++i) {
-      a[i] = createElement();
-    }
-    return a;
-  }
-
   public static getStandardDate(date: Date = new Date(Date.now())): string {
     return `${date.getDate()} ${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
   }
@@ -206,5 +197,20 @@ export class Utility {
     for (const key of keys) {
       localStorage.removeItem(key);
     }
+  }
+
+  /** Checks two objects for deep equality. */
+  public static deepEquals(a: any, b: any): boolean {
+    if (a === b) return true;
+    if (Array.isArray(a) && Array.isArray(b)) {
+      return a.length === b.length && a.every((aValue, i) => this.deepEquals(aValue, b[i]));
+    }
+    if (a !== null && b !== null && typeof a === 'object' && typeof b === 'object') {
+      const aKeys = Object.keys(a);
+      const bKeys = Object.keys(b);
+      // May do unneeded comparisons when key sets are unequal. So be it.
+      return aKeys.length === bKeys.length && aKeys.every(key => key in b && this.deepEquals(a[key], b[key]));
+    }
+    return false;
   }
 }

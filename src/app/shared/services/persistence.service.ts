@@ -10,7 +10,8 @@ import { DesignConditionsService } from './design-conditions.service';
 import { InventoryService } from './inventory.service';
 import { Utility } from '../classes/utility';
 import { ToastError } from '../../features/toast/toast/toast-error';
-import { ContestParametersService } from './contest-parameters.service';
+import { ContestParameters, ContestParametersService, DEFAULT_CONTEST_PARAMETERS } from './contest-parameters.service';
+import { encryptRc4 as enDecryptRc4 } from '../core/rs4';
 
 const DELIMITER = '|';
 const JOINT_COORD_LENGTH = 3;
@@ -53,37 +54,62 @@ export class PersistenceService {
     chunks.push(saveSet.bridge.projectId, DELIMITER);
     chunks.push(saveSet.bridge.iterationNumber.toString(), DELIMITER);
     chunks.push(saveSet.draftingPanelState.yLabels.toFixed(3), DELIMITER);
+    chunks.push(this.contestParametersService.toSearchString());
     return chunks.join('');
+  }
+
+  /** Encrypts a save set string if there's a key in contest parameters. */
+  public encryptSaveSetAsText(text: string): string {
+    const key = this.contestParametersService.parameters.encryptionKey;
+    return key ? '@' + enDecryptRc4(key, text) : text; // First char must not be digit or dot for parser.
   }
 
   /** Parse the trusted input string, mutating the save set to match. */
   public parseSaveSetText(text: string): SaveSet {
     const saveSet = SaveSet.createNew();
     const parser = new SaveSetParser(
-      text,
+      this.maybeDecrypt(text),
       this.designConditionsService,
       DesignGridService.FINEST_GRID,
       this.inventoryService,
+      this.contestParametersService,
     );
     parser.parse(saveSet);
     return saveSet;
   }
 
-  /** Validate saves sets parsed from untrusted text. */
+  /** Validate save set exactly matches contest parameters. */
   public validateSaveSet(saveSet: SaveSet): void {
-    const version = saveSet.bridge.version;
-    const expectedVersion = this.contestParametersService.parameters.bridgeVersion;
-    if (version !== expectedVersion) {
+    if (
+      !Utility.deepEquals(saveSet.contestParameters, this.contestParametersService.parameters) ||
+      saveSet.bridge.version != this.contestParametersService.parameters.bridgeVersion
+    ) {
       throw new ToastError('bridgeVersionError');
     }
   }
+
+  private maybeDecrypt(text: string): string {
+    // Plain text starts with a number. Otherwise it's encrypted.
+    if (/^[.0-9]/.test(text)) {
+      return text;
+    }
+    const encryptionKey = this.contestParametersService.parameters.encryptionKey;
+    if (!encryptionKey) {
+      throw new ToastError('parseError');
+    }
+    return enDecryptRc4(encryptionKey, text, 1); // Skip non-numeric encryption cue.
+  }
 }
 
-/** A tuple of mutable objects persisted and read back together. */
+/**
+ * A tuple of mutable objects persisted and read back together. Contest
+ * parameters are populated only in bridges parsed from strings.
+ */
 export class SaveSet {
   private constructor(
     public readonly bridge: BridgeModel,
     public readonly draftingPanelState: DraftingPanelState,
+    public contestParameters?: ContestParameters,
   ) {}
 
   /** Create a blank save set to be filled in by the caller. */
@@ -131,6 +157,7 @@ class SaveSetParser {
     private readonly designConditionsService: DesignConditionsService,
     private readonly grid: Readonly<DesignGrid>,
     private readonly inventoryService: InventoryService,
+    private readonly contestParametersService: ContestParametersService,
   ) {}
 
   /** Parse the input text, mutating the save set to match. If the parse fails, the save set is clear. */
@@ -139,7 +166,7 @@ class SaveSetParser {
       this.parseOrThrow(saveSet);
     } catch (error: any) {
       saveSet.clear();
-      console.error('Parse error:', error.message);
+      console.error('Parse error:', error);
       throw new ToastError('parseError');
     }
   }
@@ -158,7 +185,7 @@ class SaveSetParser {
       if (i < saveSet.bridge.designConditions.prescribedJoints.length) {
         joint = saveSet.bridge.designConditions.prescribedJoints[i];
         if (x != this.grid.xformWorldToGrid(joint.x) || y != this.grid.xformWorldToGrid(joint.y)) {
-          throw new Error(`bad prescribed joint ${n}`);
+          throw `bad prescribed joint ${n}`;
         }
       } else {
         joint = new Joint(i, this.grid.xformGridToWorld(x), this.grid.xformGridToWorld(y), false);
@@ -186,11 +213,10 @@ class SaveSetParser {
     saveSet.bridge.projectId = this.scanToDelimiter('project ID');
     saveSet.bridge.iterationNumber = parseInt(this.scanToDelimiter('iteration'));
     saveSet.draftingPanelState.yLabels = parseFloat(this.scanToDelimiter('label position'));
-  }
-
-  static extractRatioFromText(text: string): number | undefined {
-    const value = parseInt(text);
-    return isNaN(value) ? undefined : value;
+    const tail = this.scanTail();
+    saveSet.contestParameters = /\S/.test(tail)
+      ? this.contestParametersService.fromSearchString(tail)
+      : DEFAULT_CONTEST_PARAMETERS;
   }
 
   scanToDelimiter(what: string): string {
@@ -203,6 +229,12 @@ class SaveSetParser {
       this.readPtr++;
     }
     return this.text.slice(start, this.readPtr++);
+  }
+
+  scanTail(): string {
+    const start = this.readPtr;
+    this.readPtr = this.text.length;
+    return this.text.slice(start);
   }
 
   scanNumber(allowSign: boolean, width: number, what: string): number {

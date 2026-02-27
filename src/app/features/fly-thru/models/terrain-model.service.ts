@@ -231,25 +231,26 @@ export class TerrainModelService {
     let randomCount = 0;
     const random = () => (randomCount++ === 0 ? 0 : 2 * this.random0to1() - 1);
     // Create square array or use existing one.
-    const y = typeof arg === 'number' ? Utility.createArray(() => new Float32Array(arg), arg) : arg;
+    const y = typeof arg === 'number' ?  Array.from({length: arg}, () => new Float32Array(arg)) : arg;
     const size = y.length;
     const iMax = size - 1;
     y[0][0] = y[iMax][0] = y[iMax][iMax] = y[0][iMax] = 0;
     const variation = 18;
-    let dy = variation;
-    // Perturb successively halved subgrids. Example: Initially we have a 1x1 and we perturb
-    // the center (in the square phase) and edge midpoints (in the diamond phase).
-    const smoothness = 1.8;
+    // Perturb successively halved sub-grids. Example: Initial 16x16. Perturb the center post [7,7]
+    // in the square phase and edge midpoints [0,7], [7,0], [15,7], [7,15] in the diamond. Do the
+    // same for 4 8x8 squares, 16 4x4s, 64 2x2s, for each decaying the perturbation by a factor.
+    let perturbation = variation;
+    const decay = 0.56;
     let halfStride = iMax >>> 1;
-    for (let stride = iMax; stride > 1; stride = halfStride, halfStride >>>= 1, dy /= smoothness) {
+    for (let stride = iMax; stride > 1; stride = halfStride, halfStride >>>= 1, perturbation *= decay) {
       // Square phase.
       for (let i = 0; i < iMax; i += stride) {
         for (let j = 0; j < iMax; j += stride) {
           const avg = 0.25 * (y[i][j] + y[i + stride][j] + y[i][j + stride] + y[i + stride][j + stride]);
-          y[i + halfStride][j + halfStride] = avg + random() * dy;
+          y[i + halfStride][j + halfStride] = avg + random() * perturbation;
         }
       }
-      // Diamond phase. More cases here because diamonds are partial at terrain edges.
+      // Diamond phase. More cases because diamonds are partial at terrain edges.
       for (let i = 0; i < size; i += stride) {
         for (let j = halfStride; j < size; j += stride) {
           let e = y[i][j - halfStride] + y[i][j + halfStride];
@@ -264,7 +265,7 @@ export class TerrainModelService {
             e += y[iSouth][j];
             n++;
           }
-          y[i][j] = e / n + random() * dy;
+          y[i][j] = e / n + random() * perturbation;
         }
       }
       for (let i = halfStride; i < size; i += stride) {
@@ -281,7 +282,7 @@ export class TerrainModelService {
             e += y[i][jEast];
             n++;
           }
-          y[i][j] = e / n + random() * dy;
+          y[i][j] = e / n + random() * perturbation;
         }
       }
     }

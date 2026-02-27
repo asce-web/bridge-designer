@@ -56,10 +56,10 @@ export class DesignMemberRenderingService {
     private readonly viewportTransform: ViewportTransform2D,
     eventBrokerService: EventBrokerService,
   ) {
-    const shapeCount = inventoryService.getShapeCount(0);
+    // Assumes all sections rendered with same-width graphics, using section 0 as representative.
+    const shapeCount = inventoryService.getShapes(0).length;
     this.lineWidths = new Array(shapeCount);
     for (let i = 0; i < shapeCount; ++i) {
-      // Using section 0 depends on widths being same for all. Else tables would need to be 2d.
       const outerWidth = DesignMemberRenderingService.getShapeStrokeWidth(inventoryService.getShape(0, i));
       // Make sure of some outer color for thin tubes.
       let innerWidth = 0.6 * outerWidth;

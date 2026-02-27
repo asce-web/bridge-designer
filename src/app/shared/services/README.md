@@ -50,3 +50,15 @@ include the joint's members.
 
 Gussets are computed only once for the fly-thru model even though this doesn't look great for joints with big
 exaggerated displacements in the fly-thru view. Recomputing them at frame rates to fix this would be a performance risk.
+
+## Persistence
+
+`PersistenceService` handles saving and loading bridge files. A `SaveSet` represents everything stored in a file.
+Currently, this is a bridge model, some UI state, and a set of contest parameters. The last is optional because
+old bridge files don't have them. Absence implies using BD defaults.
+
+Contest parameters are only read _into_ the save set from the file. The field is ignored when bridges are saved.
+Saved parameters are taken directly from `ContestParametersService`.
+
+The intended use of parameters read from files is to reject mismatches with parameters in `ContestParametersService`,
+which are established very early during startup. Other uses are risky. Checking is the caller's responsibility.
