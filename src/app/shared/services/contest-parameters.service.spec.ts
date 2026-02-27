@@ -52,7 +52,7 @@ describe('ContestParametersService', () => {
     setUpService();
     const aliased = JSON.stringify({ a: 1234, v: 9, k: 'foo' });
     const params = service.fromSearchString(aliased);
-    expect(params.anchorageCost).toBe(1234);
+    expect(params.anchorageCostPer).toBe(1234);
     expect(params.version).toBe(9);
     expect(params.encryptionKey).toBe('foo');
   });
@@ -60,7 +60,7 @@ describe('ContestParametersService', () => {
   it('applies a patch from the URL and marks parameters patched', () => {
     const patch = JSON.stringify({ a: 7000, bv: 2025 });
     setUpService(`?p=${encodeURIComponent(patch)}`);
-    expect(service.parameters.anchorageCost).toBe(7000);
+    expect(service.parameters.anchorageCostPer).toBe(7000);
     expect(service.parameters.bridgeVersion).toBe(2025);
     expect(service.parameters.connectionFee).toBe(400); // unchanged
     expect(service.parameters.isPatched).toBeTrue();
@@ -74,7 +74,7 @@ describe('ContestParametersService', () => {
       jasmine.anything(),
       'not json'
     );
-    expect(service.parameters.anchorageCost).toBe(6000);
+    expect(service.parameters.anchorageCostPer).toBe(6000);
     expect(service.parameters.isPatched).toBeFalse();
   });
 
@@ -87,7 +87,7 @@ describe('ContestParametersService', () => {
       jasmine.anything(),
       patch
     );
-    expect(service.parameters.anchorageCost).toBe(6000);
+    expect(service.parameters.anchorageCostPer).toBe(6000);
     expect(service.parameters.isPatched).toBeFalse();
   });
 
@@ -106,7 +106,7 @@ describe('ContestParametersService', () => {
 
   it('round‑trips modified parameters through toSearchString', () => {
     setUpService();
-    service.parameters.anchorageCost = 8000;
+    service.parameters.anchorageCostPer = 8000;
     service.parameters.bridgeVersion = 2026;
     const search = service.toSearchString();
     const parsed = JSON.parse(search);

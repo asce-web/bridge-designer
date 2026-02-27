@@ -15,12 +15,16 @@
       [formControl]="localContestCodeInput"
     />
   </label>
-  <div
-    *ngIf="localContestCodeInput.invalid && (localContestCodeInput.dirty || localContestCodeInput.touched)"
-    class="feedback"
-  >
-    <div *ngIf="localContestCodeInput.hasError('error')" class="error">Oops... That wasn't right.</div>
-    <div *ngIf="localContestCodeInput.hasError('prefix')" class="okay-so-far">Looking good so far...</div>
-  </div>
-  <div *ngIf="localContestCodeInput.value?.length !== 0 && localContestCodeInput.valid" class="feedback done">Looks fine, but double check!</div>
+  @if (localContestCodeInput.invalid && (localContestCodeInput.dirty || localContestCodeInput.touched)) {
+    <div class="feedback">
+      @if (localContestCodeInput.hasError('error')) {
+        <div class="error">Oops... That wasn't right.</div>
+      } @else if (localContestCodeInput.hasError('prefix')) {
+        <div class="okay-so-far">Looking good so far...</div>
+      }
+    </div>
+  }
+  @if (localContestCodeInput.value?.length !== 0 && localContestCodeInput.valid) {
+    <div class="feedback done">Looks fine, but double check!</div>
+  }
 </div>

@@ -6,7 +6,8 @@ export type ContestParameters = {
   version: number;
   /** Whether the parameters are patched wrt the default. */
   isPatched: boolean;
-  anchorageCost: number;
+  anchorageCostPer: number;
+  archIncrementalCostPerDeckPanel: number;
   bridgeVersion: number;
   carbonSteelCostPerKg: [number, number]; // [bar, tube]
   connectionFee: number;
@@ -16,9 +17,12 @@ export type ContestParameters = {
   excavationCostRate: number;
   heavyAxleLoads: [number, number]; // [front, rear]
   lowAlloySteelCostPerKg: [number, number]; // [bar, tube]
+  pierBaseCost: number;
+  pierCostPerDeckPanel: number;
   productFee: number;
   quenchedAndTemperedSteelCostPerKg: [number, number]; // [bar, tube]
   standardAbutmentBaseCost: number;
+  standardAbutmentCostPerDeckPanel: number;
   standardAxleLoads: [number, number]; // [front, rear]
 };
 
@@ -31,7 +35,8 @@ export type ContestParameters = {
 export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
   version: 1,
   isPatched: false,
-  anchorageCost: 6000,
+  anchorageCostPer: 6000,
+  archIncrementalCostPerDeckPanel: 3300,
   bridgeVersion: 2024, //
   carbonSteelCostPerKg: [4.3, 6.3],
   connectionFee: 400,
@@ -41,9 +46,12 @@ export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
   excavationCostRate: 1,
   heavyAxleLoads: [137, 137], //
   lowAlloySteelCostPerKg: [5.6, 7.0],
+  pierBaseCost: 0,
+  pierCostPerDeckPanel: 4500,
   productFee: 1000,
   quenchedAndTemperedSteelCostPerKg: [6.0, 7.7],
   standardAbutmentBaseCost: 6000,
+  standardAbutmentCostPerDeckPanel: 500,
   standardAxleLoads: [71, 181], //
 } as const;
 
@@ -56,28 +64,35 @@ export class WindowLocation {
 export class ContestParametersService {
   public readonly parameters: ContestParameters;
 
-  // Define this direction to detect duplicate aliases at compile time.
-  /** Map from search string short aliases to parameter attribute names. */
-  private readonly fieldsByAlias: { [key: string]: string } = {
-    a: 'anchorageCost',
-    bv: 'bridgeVersion',
-    ah: 'heavyAxleLoads',
-    as: 'standardAxleLoads',
-    b: 'standardAbutmentBaseCost',
+  /** Map from search string aliases to parameter attribute names. */
+  private readonly fieldsByAlias: { [key: string]: keyof ContestParameters } = (obj => {
+    // Apparently can't check completeness at compile time, so do it here.
+    if (new Set(Object.values(obj)).size !== Object.keys(DEFAULT_CONTEST_PARAMETERS).length) throw 'missing alias';
+    return obj;
+  })({
+    a: 'anchorageCostPer',
+    ab: 'standardAbutmentBaseCost',
+    ap: 'standardAbutmentCostPerDeckPanel',
     c: 'connectionFee',
     dh: 'deckCostPerPanelHiStrength',
     dm: 'deckCostPerPanelMedStrength',
+    f: 'productFee',
     i: 'isPatched',
     k: 'encryptionKey',
-    p: 'productFee',
+    p: 'pierCostPerDeckPanel',
+    pb: 'pierBaseCost',
+    r: 'archIncrementalCostPerDeckPanel',
     sa: 'lowAlloySteelCostPerKg',
     sc: 'carbonSteelCostPerKg',
     sq: 'quenchedAndTemperedSteelCostPerKg',
     v: 'version',
+    vb: 'bridgeVersion',
     x: 'excavationCostRate',
-  } as const;
+    xh: 'heavyAxleLoads',
+    xs: 'standardAxleLoads',
+  } as const);
 
-  /** Map from parameter attribute names to search string short aliases. */
+  /** Map from parameter attribute names to search string short aliases. Keys checked at run time. */
   private readonly aliasesByField = Object.fromEntries(Object.entries(this.fieldsByAlias).map(([k, v]) => [v, k]));
 
   constructor(windowLocation: WindowLocation) {

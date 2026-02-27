@@ -68,7 +68,7 @@ export class HelpPopupTopicComponent {
     if (!this.popup) {
       this.renderPopup = true;
       // TODO: Better way to accomplish this?
-      // First evaluates the ngIf body to bind all templates. Second renders one of them.
+      // First evaluates the @if body to bind all templates. Second renders one of them.
       this.changeDetector.detectChanges();
       this.changeDetector.detectChanges();
     }

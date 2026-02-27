@@ -5,7 +5,7 @@
 
 ## Master TODO
 
-- None for now.
+- Hot key-triggered dialog for contests with secret scenarios.
 
 ## To fix
 

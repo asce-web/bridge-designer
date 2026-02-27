@@ -5,16 +5,18 @@
   #link
   class="popup-topic-link"
   (pointerdown)="togglePopup($event)"
-  ><ng-content/></span>
+  ><ng-content
+/></span>
 <div class="popup-container">
-  <div
-    #popup
-    class="popup"
-    *ngIf="renderPopup"
-  >
-    <help-topic
-      [containerType]="'popup-content'"
-      [visibleTopicId]="name"
-    ></help-topic>
-  </div>
+  @if (renderPopup) {
+    <div
+      #popup
+      class="popup"
+    >
+      <help-topic
+        [containerType]="'popup-content'"
+        [visibleTopicId]="name"
+      ></help-topic>
+    </div>
+  }
 </div>

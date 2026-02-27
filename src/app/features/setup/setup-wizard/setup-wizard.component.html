@@ -457,16 +457,20 @@
           <div>
             <div class="cost-summary-line">
               <div class="deck-cost">
-                <ng-container *ngIf="siteCostExpander.disabled(); else siteCostEnabled">{{
-                  toDollars(0)
-                }}</ng-container>
-                <ng-template #siteCostEnabled>{{ toDollars(siteCosts.totalFixedCost) }}</ng-template>
+                @if (siteCostExpander.disabled()) {
+                  {{ toDollars(0) }}
+                } @else {
+                  {{ toDollars(siteCosts.totalFixedCost) }}
+                }
               </div>
               <div class="deck-cost-comment">(Includes cost of deck, excavation, and supports; not steel)</div>
               <div class="site-condition">
                 Site condition:
-                <ng-container *ngIf="siteCostExpander.disabled(); else siteConditionEnabled">-----</ng-container>
-                <ng-template #siteConditionEnabled>{{ siteCosts.siteCondition }}</ng-template>
+                @if (siteCostExpander.disabled()) {
+                  -----
+                } @else {
+                  {{ siteCosts.siteCondition }}
+                }
               </div>
             </div>
           </div>
@@ -502,9 +506,11 @@
               <tr>
                 <td>Pier cost</td>
                 <td>
-                  <div *ngIf="siteCosts.isPier; then hasPier; else noPier"></div>
-                  <ng-template #hasPier>(1 each {{ siteCosts.pierHeight }} meter pier)</ng-template>
-                  <ng-template #noPier>No pier</ng-template>
+                  @if (siteCosts.isPier) {
+                    (1 each {{ siteCosts.pierHeight }} meter pier)
+                  } @else {
+                    No pier
+                  }
                 </td>
                 <td>=</td>
                 <td>{{ toDollars(siteCosts.pierCost) }}</td>
@@ -512,12 +518,18 @@
               <tr>
                 <td>Anchorage cost</td>
                 <td>
-                  <div *ngIf="siteCosts.anchorageCount > 0; then hasAnchorages; else noAnchorages"></div>
-                  <ng-template #hasAnchorages
-                    >({{ siteCosts.anchorageCount }} anchorages) × ({{ toDollars(siteCosts.anchorageCostRate) }} per
-                    anchorage)</ng-template
-                  >
-                  <ng-template #noAnchorages>No anchorage</ng-template>
+                  @switch (siteCosts.anchorageCount) {
+                    @case (0) {
+                      No anchorage
+                    }
+                    @case (1) {
+                      (1 anchorage) @ {{ toDollars(siteCosts.anchorageCost) }}
+                    }
+                    @default {
+                      ({{ siteCosts.anchorageCount }} anchorages) × ({{ toDollars(siteCosts.anchorageCost) }} per
+                      anchorage)
+                    }
+                  }
                 </td>
                 <td>=</td>
                 <td>{{ toDollars(siteCosts.anchorageCost) }}</td>
