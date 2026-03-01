@@ -27,7 +27,7 @@ describe('ContestParametersService', () => {
     setUpService();
     expect(service.parameters).toEqual(
       jasmine.objectContaining({
-        anchorageCost: 6000,
+        anchorageCostPer: 6000,
         bridgeVersion: 2024,
         carbonSteelCostPerKg: [4.3, 6.3],
         connectionFee: 400,
@@ -43,7 +43,7 @@ describe('ContestParametersService', () => {
     const json = service.toSearchString();
     const parsed = JSON.parse(json);
     expect(parsed.a).toBe(6000); // anchorageCost
-    expect(parsed.bv).toBe(2024); // bridgeVersion
+    expect(parsed.vb).toBe(2024); // bridgeVersion
     expect(parsed.sc).toEqual([4.3, 6.3]); // carbonSteelCostPerKg
     expect(Object.keys(parsed)).toContain('k'); // encryptionKey alias present
   });
@@ -58,7 +58,7 @@ describe('ContestParametersService', () => {
   });
 
   it('applies a patch from the URL and marks parameters patched', () => {
-    const patch = JSON.stringify({ a: 7000, bv: 2025 });
+    const patch = JSON.stringify({ a: 7000, vb: 2025 });
     setUpService(`?p=${encodeURIComponent(patch)}`);
     expect(service.parameters.anchorageCostPer).toBe(7000);
     expect(service.parameters.bridgeVersion).toBe(2025);
@@ -92,7 +92,7 @@ describe('ContestParametersService', () => {
   });
 
   it('supports patching array parameters', () => {
-    const patch = JSON.stringify({ ah: [150, 150], as: [80, 190] });
+    const patch = JSON.stringify({ xh: [150, 150], xs: [80, 190] });
     setUpService(`?p=${encodeURIComponent(patch)}`);
     expect(service.parameters.heavyAxleLoads).toEqual([150, 150]);
     expect(service.parameters.standardAxleLoads).toEqual([80, 190]);
@@ -111,6 +111,6 @@ describe('ContestParametersService', () => {
     const search = service.toSearchString();
     const parsed = JSON.parse(search);
     expect(parsed.a).toBe(8000);
-    expect(parsed.bv).toBe(2026);
+    expect(parsed.vb).toBe(2026);
   });
 });

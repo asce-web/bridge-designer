@@ -5,18 +5,22 @@ import { Injectable } from '@angular/core';
 import { EventBrokerService, EventOrigin } from '../../shared/services/event-broker.service';
 import { VERSION } from '../../shared/classes/version';
 import { Utility } from '../../shared/classes/utility';
-
-const LOCAL_STORAGE_PREFIX = 'bridge-designer';
+import { ContestParametersService } from '../../shared/services/contest-parameters.service';
+import { rc4Hash } from '../../shared/core/rc4';
 
 @Injectable({ providedIn: 'root' })
 export class SessionStateService {
   /** Local storage key that advances for every build via `npm run build`. */
-  private static readonly LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_PREFIX}.v${VERSION.buildNumber}`;
   private static readonly SESSION_KEY = 'session.service';
   private stateAccumulator: { [key: string]: Object } | undefined;
   private isEnabled: boolean = true;
+  private readonly localStoragePrefix;
+  private readonly localStorageKey;
 
-  constructor(private readonly eventBrokerService: EventBrokerService) {
+  constructor(
+    contestParametersService: ContestParametersService,
+    private readonly eventBrokerService: EventBrokerService,
+  ) {
     // Allow user to reset local storage with URL query string "?reset".
     // Here to ensure no possible session reads are already complete.
     // Too early for Angular active route, so use window object.
@@ -25,9 +29,14 @@ export class SessionStateService {
     if (params.get('reset') !== null) {
       localStorage.clear();
     }
-    eventBrokerService.sessionStateEnableToggle.subscribe(info => {
-      this.isEnabled = info.data !== false;
-    });
+
+    // Vary local storage key with build number and contest parameters.
+    this.localStoragePrefix = 'bridge-designer';
+    if (contestParametersService.parameters.isPatched) {
+      this.localStoragePrefix += '.' + rc4Hash('Not a password', contestParametersService.toSearchString());
+    }
+    this.localStorageKey = this.localStoragePrefix + '.v' + VERSION.buildNumber;
+
     this.register(
       SessionStateService.SESSION_KEY,
       () => this.dehydrate(),
@@ -46,10 +55,10 @@ export class SessionStateService {
       this.eventBrokerService.sessionStateSaveRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
     }
     this.eventBrokerService.sessionStateSaveEssentialRequest.next({ origin: EventOrigin.SERVICE, data: undefined });
-    Utility.clearLocalStorageByPrefix(LOCAL_STORAGE_PREFIX);
-    localStorage.setItem(SessionStateService.LOCAL_STORAGE_KEY, JSON.stringify(this.stateAccumulator));
+    Utility.clearLocalStorageByPrefix(this.localStoragePrefix);
+    localStorage.setItem(this.localStorageKey, JSON.stringify(this.stateAccumulator));
     // Add token to session storage for new physical session sensing.
-    sessionStorage.setItem(SessionStateService.LOCAL_STORAGE_KEY, Date.now().toString());
+    sessionStorage.setItem(this.localStorageKey, Date.now().toString());
     this.stateAccumulator = undefined;
   }
 
@@ -59,7 +68,7 @@ export class SessionStateService {
    */
   public get isCurrentStateReloaded(): boolean {
     this.loadAccumulatorFromStorage();
-    return !!(this.stateAccumulator && sessionStorage.getItem(SessionStateService.LOCAL_STORAGE_KEY));
+    return !!(this.stateAccumulator && sessionStorage.getItem(this.localStorageKey));
   }
 
   /** Returns whether non-essential saved state has been restored. */
@@ -122,7 +131,7 @@ export class SessionStateService {
     if (this.stateAccumulator) {
       return;
     }
-    const json = localStorage.getItem(SessionStateService.LOCAL_STORAGE_KEY);
+    const json = localStorage.getItem(this.localStorageKey);
     if (!json) {
       return;
     }

@@ -11,7 +11,7 @@ import { InventoryService } from './inventory.service';
 import { Utility } from '../classes/utility';
 import { ToastError } from '../../features/toast/toast/toast-error';
 import { ContestParameters, ContestParametersService, DEFAULT_CONTEST_PARAMETERS } from './contest-parameters.service';
-import { encryptRc4 as enDecryptRc4 } from '../core/rs4';
+import { encryptRc4 as enDecryptRc4 } from '../core/rc4';
 
 const DELIMITER = '|';
 const JOINT_COORD_LENGTH = 3;
