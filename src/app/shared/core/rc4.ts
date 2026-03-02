@@ -7,7 +7,7 @@ export function encryptRc4(key: string, data: string, start: number = 0): string
   return String.fromCharCode(...encryptRc4Raw(key, data, start));
 }
 
-/** A hacky hash to 16-bytes as hex string based on rc4. Not secure. */
+/** Returns a hacky hash to 16-bytes as hex string based on rc4. Not secure. */
 export function rc4Hash(seed: string, data: string): string {
   const rc4 = encryptRc4Raw(seed, seed + data, 0);
   const hash = new Uint8Array(16);

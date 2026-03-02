@@ -37,14 +37,14 @@ export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
   isPatched: false,
   anchorageCostPer: 6000,
   archIncrementalCostPerDeckPanel: 3300,
-  bridgeVersion: 2024, //
+  bridgeVersion: 2024,
   carbonSteelCostPerKg: [4.3, 6.3],
   connectionFee: 400,
   deckCostPerPanelHiStrength: 5100,
   deckCostPerPanelMedStrength: 4700,
   encryptionKey: '',
   excavationCostRate: 1,
-  heavyAxleLoads: [137, 137], //
+  heavyAxleLoads: [137, 137],
   lowAlloySteelCostPerKg: [5.6, 7.0],
   pierBaseCost: 0,
   pierCostPerDeckPanel: 4500,
@@ -52,7 +52,7 @@ export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
   quenchedAndTemperedSteelCostPerKg: [6.0, 7.7],
   standardAbutmentBaseCost: 6000,
   standardAbutmentCostPerDeckPanel: 500,
-  standardAxleLoads: [71, 181], //
+  standardAxleLoads: [71, 181],
 } as const;
 
 @Injectable({ providedIn: 'root' })
@@ -64,12 +64,14 @@ export class WindowLocation {
 export class ContestParametersService {
   public readonly parameters: ContestParameters;
 
-  /** Map from search string aliases to parameter attribute names. */
+  /** Map from search string aliases to parameter attribute names. Aliases with underscore not settable. */
   private readonly fieldsByAlias: { [key: string]: keyof ContestParameters } = (obj => {
     // Apparently can't check completeness at compile time, so do it here.
     if (new Set(Object.values(obj)).size !== Object.keys(DEFAULT_CONTEST_PARAMETERS).length) throw 'missing alias';
     return obj;
   })({
+    _i: 'isPatched',
+    _v: 'version',
     a: 'anchorageCostPer',
     ab: 'standardAbutmentBaseCost',
     ap: 'standardAbutmentCostPerDeckPanel',
@@ -77,7 +79,6 @@ export class ContestParametersService {
     dh: 'deckCostPerPanelHiStrength',
     dm: 'deckCostPerPanelMedStrength',
     f: 'productFee',
-    i: 'isPatched',
     k: 'encryptionKey',
     p: 'pierCostPerDeckPanel',
     pb: 'pierBaseCost',
@@ -85,7 +86,6 @@ export class ContestParametersService {
     sa: 'lowAlloySteelCostPerKg',
     sc: 'carbonSteelCostPerKg',
     sq: 'quenchedAndTemperedSteelCostPerKg',
-    v: 'version',
     vb: 'bridgeVersion',
     x: 'excavationCostRate',
     xh: 'heavyAxleLoads',
@@ -102,7 +102,7 @@ export class ContestParametersService {
     const patchJson = new URLSearchParams(windowLocation.value.search).get('p');
     if (patchJson !== null) {
       try {
-        const aliasedEntries = Object.entries(JSON.parse(patchJson));
+        const aliasedEntries = Object.entries(JSON.parse(patchJson)).filter(([alias]) => !alias.startsWith('_'));
         const deAlias = ([alias, value]: [string, any]): [string, any] => [this.fieldsByAlias[alias], value];
         const deAliasedEntries = aliasedEntries.map(deAlias);
         this.validatePatchEntries(deAliasedEntries);

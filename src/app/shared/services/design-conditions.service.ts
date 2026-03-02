@@ -571,54 +571,6 @@ export class DesignConditions {
     }
     return this.fromKeyCodeLong(codeLong, contestParameters);
   }
-
-  public toString(): string {
-    return (
-      '{' +
-      this.tag +
-      ',' +
-      this.codeLong +
-      ',isHiPier: ' +
-      this.isHiPier +
-      ',leftCableIndex: ' +
-      this.leftAnchorageJointIndex +
-      ',rightCableIndex: ' +
-      this.rightAnchorageJointIndex +
-      ',pierJointIndex: ' +
-      this.pierPanelIndex +
-      ',underClearance: ' +
-      this.underClearance +
-      ',overClearance: ' +
-      this.overClearance +
-      ',nPanels: ' +
-      this.panelCount +
-      ',loadType: ' +
-      this.loadType +
-      ',deckType: ' +
-      this.deckType +
-      ',deckElevation: ' +
-      this.deckElevation +
-      ',archHeight: ' +
-      this.archHeight +
-      ',pierHeight: ' +
-      this.pierHeight +
-      ',nAnchorages: ' +
-      this.anchorageCount +
-      ',excavationVolume: ' +
-      this.excavationVolume +
-      ',abutmentCost: ' +
-      this.abutmentCost +
-      ',pierCost: ' +
-      this.pierCost +
-      ',deckCostRate: ' +
-      this.deckCostRate +
-      ',totalFixedCost: ' +
-      this.totalFixedCost +
-      ',setupKey: ' +
-      this.setupKey +
-      '}'
-    );
-  }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -634,6 +586,7 @@ export class DesignConditionsService {
 
   constructor(private readonly contestParametersService: ContestParametersService) {
     this.standardConditions = (
+      //#region data for standard conditions
       [
         ['01A', 1110824000],
         ['01B', 2110824000],
