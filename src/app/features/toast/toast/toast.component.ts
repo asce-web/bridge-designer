@@ -4,7 +4,7 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, QueryList, ViewChildren } from '@angular/core';
 import { ToastKind } from './toast-error';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
-import { ToastNotificationComponent } from '../toast-notification.component/toast-notification.component';
+import { ToastNotificationComponent } from '../toast-notification/toast-notification.component';
 
 @Component({
   selector: 'toast',
