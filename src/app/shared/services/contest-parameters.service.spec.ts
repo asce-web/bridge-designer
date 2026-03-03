@@ -50,20 +50,18 @@ describe('ContestParametersService', () => {
 
   it('fromSearchString restores a parameter object', () => {
     setUpService();
-    const aliased = JSON.stringify({ a: 1234, v: 9, k: 'foo' });
+    const aliased = JSON.stringify({ a: 1234, _v: 9, k: 'foo' });
     const params = service.fromSearchString(aliased);
     expect(params.anchorageCostPer).toBe(1234);
     expect(params.version).toBe(9);
     expect(params.encryptionKey).toBe('foo');
   });
 
-  it('applies a patch from the URL and marks parameters patched', () => {
-    const patch = JSON.stringify({ a: 7000, vb: 2025 });
+  it('ignores patches to internal-only fields', () => {
+    const patch = JSON.stringify({ _v: 9999, _i: false });
     setUpService(`?p=${encodeURIComponent(patch)}`);
-    expect(service.parameters.anchorageCostPer).toBe(7000);
-    expect(service.parameters.bridgeVersion).toBe(2025);
-    expect(service.parameters.connectionFee).toBe(400); // unchanged
-    expect(service.parameters.isPatched).toBeTrue();
+    expect(service.parameters.version).toBe(1);
+    expect(service.parameters.isPatched).toBe(true);
   });
 
   it('logs an error and leaves defaults when the patch JSON is invalid', () => {

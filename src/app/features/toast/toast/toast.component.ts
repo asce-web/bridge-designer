@@ -2,27 +2,24 @@
    SPDX-License-Identifier: GPL-3.0-or-later */
 
 import { AfterViewInit, ChangeDetectionStrategy, Component, QueryList, ViewChildren } from '@angular/core';
-import { jqxNotificationComponent, jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { ToastKind } from './toast-error';
 import { EventBrokerService } from '../../../shared/services/event-broker.service';
-import { Utility } from '../../../shared/classes/utility';
+import { ToastNotificationComponent } from '../toast-notification.component/toast-notification.component';
 
 @Component({
-    selector: 'toast',
-    imports: [jqxNotificationModule],
-    templateUrl: './toast.component.html',
-    styleUrl: './toast.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'toast',
+  imports: [ToastNotificationComponent],
+  templateUrl: './toast.component.html',
+  styleUrl: './toast.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ToastComponent implements AfterViewInit {
-  @ViewChildren(jqxNotificationComponent) notifications!: QueryList<jqxNotificationComponent>;
-
-  readonly autoCloseDelay = 6000; // ms
+  @ViewChildren(ToastNotificationComponent) notifications!: QueryList<ToastNotificationComponent>;
 
   constructor(private readonly eventBrokerService: EventBrokerService) {}
 
   public show(kind: ToastKind): void {
-    Utility.assertNotUndefined(this.notifications.find(item => item.elementRef.nativeElement.id === kind), kind).open();
+    this.notifications.find(notification => notification.kind === kind)?.open();
   }
 
   ngAfterViewInit(): void {

@@ -524,7 +524,7 @@ export class DesignConditions {
     return CodeError.NONE;
   }
 
-  public get setupKey(): string {
+  get setupKey(): string {
     return DesignConditions.getSetupKey(
       this.deckElevation,
       this.archHeight,
@@ -547,17 +547,17 @@ export class DesignConditions {
     return `${deckElevation}|${archHeight}|${pierHeight}|${anchorageCount}|${loadType}|${deckType}`;
   }
 
-  // Static factory intended to be called only by the service.
+  /** Factory for design conditions intended to be called only by the service. */
   static fromTaggedCodeLong(tag: string, codeLong: number, contestParameters: ContestParameters): DesignConditions {
     return new DesignConditions(tag, codeLong, contestParameters);
   }
 
-  // Static factory intended to be called only by the service.
+  /** Factory for design conditions intended to be called only by the service. */
   static fromKeyCodeLong(codeLong: number, contestParameters: ContestParameters): DesignConditions {
     return new DesignConditions(FROM_KEY_CODE_TAG, codeLong, contestParameters);
   }
 
-  // Static factory intended to be called only by the service.
+  /** Factory for design conditions intended to be called only by the service. */
   static fromKeyCode(keyCode: string, contestParameters: ContestParameters): DesignConditions | CodeError {
     let codeLong: number = 0;
     try {
@@ -1017,17 +1017,9 @@ export class DesignConditionsService {
     return this.standardConditionsFromTag.get(tag);
   }
 
-  /** Fetches conditions using key code e.g. for contests with secret scenarios. */
+  /** Fetches conditions using key code e.g. for contests with secret scenarios. For ad hoc conditions. */
   public getConditionsForKeyCode(keyCode: string): DesignConditions | CodeError {
     return DesignConditions.fromKeyCode(keyCode, this.contestParametersService.parameters);
-  }
-
-  /**
-   * Returns valid but not intended for use design conditions. E.g. for un-initialized bridge models.
-   * Always returns the same object, so if (foo === service.placeholderConditions) ... is useful.
-   */
-  public get placeholderConditions(): DesignConditions {
-    return DesignConditionsService.PLACEHOLDER_CONDITIONS;
   }
 
   public isTagPrefix(s: string): boolean {

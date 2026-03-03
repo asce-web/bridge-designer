@@ -1,147 +1,57 @@
 <!-- Copyright (c) 2025-2026 Gene Ressler
      SPDX-License-Identifier: GPL-3.0-or-later -->
 
-<jqxNotification
-  id="autofixInfo"
-  [template]="'info'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+<toast-notification [kind]="'autofixInfo'">
   Hey! Auto-corrections were applied. Undo if you like.
-</jqxNotification>
-<jqxNotification
-  id="bridgeVersionError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'bridgeVersionError'">
   Oops... The bridge's version is incorrect.
-</jqxNotification>
-<jqxNotification
-  id="copyFailedError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'copyFailedError'">
   Oops... Couldn't copy to clipboard.
-</jqxNotification>
-<jqxNotification
-  id="copySuccess"
-  [template]="'success'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'copySuccess'">
   Yay! Copied to clipboard.
-</jqxNotification>
-<jqxNotification
-  id="duplicateJointError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'duplicateJointError'">
   Oops... Can't have two joints in the same place.
-</jqxNotification>
-<jqxNotification
-  id="duplicateMemberError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'duplicateMemberError'">
   Oops... Can't have two members with the same joints.
-</jqxNotification>
-<jqxNotification
-  id="fileReadError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'fileReadError'">
   Oops... Couldn't read that file.
-</jqxNotification>
-<jqxNotification
-  id="fileSaveSuccess"
-  [template]="'success'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'fileSaveSuccess'">
   Yay! Your design has been saved.
-</jqxNotification>
-<jqxNotification
-  id="fileWriteError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'fileWriteError'">
   Oops... Couldn't save that file.
-</jqxNotification>
-<jqxNotification
-  id="highPierError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'highPierError'">
   Oops... Member can't pass through high pier.
-</jqxNotification>
-<jqxNotification
-  id="moveJointError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'moveJointError'">
   Oops... Can't move a joint onto another joint.
-</jqxNotification>
-<jqxNotification
-  id="needWebGl2Error"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'needWebGl2Error'">
   Oops... This browser is missing Web GL2, needed for load test animations.
-</jqxNotification>
-<jqxNotification
-  id="manifoldBuildFailedError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'manifoldBuildFailedError'">
   Sorry... This bridge is too complicated print.
-</jqxNotification>
-<jqxNotification
-  id="noMembersToAddError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'noMembersToAddError'">
   Oops... No members to add!
-</jqxNotification>
-<jqxNotification
-  id="parseError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'parseError'">
   Oops... That's not a good bridge file.
-</jqxNotification>
-<jqxNotification
-  id="shaderError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'shaderError'">
   Oops... There's a problem with your graphics card.
-</jqxNotification>
-<jqxNotification
-  id="tooManyJointsError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'tooManyJointsError'">
   Oops... That makes too many joints.
-</jqxNotification>
-<jqxNotification
-  id="tooManyMembersError"
-  [template]="'error'"
-  [position]="'bottom-left'"
-  [autoCloseDelay]="autoCloseDelay"
->
+</toast-notification>
+<toast-notification [kind]="'tooManyMembersError'">
   Oops... That makes too many members.
-</jqxNotification>
+</toast-notification>
