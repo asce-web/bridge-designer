@@ -265,7 +265,7 @@ export class CardService {
 
   /** Returns whether card with given index has been visited by the user. Index 0 always is. */
   public hasCardBeenVisited(index: number): boolean {
-    return ((1 << index) | this.visitedMask) !== 0;
+    return ((1 << index) & this.visitedMask) !== 0;
   }
 
   /** Renders the elements of the current card and syncs the controls. */

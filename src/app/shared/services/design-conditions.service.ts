@@ -62,11 +62,14 @@ export type SiteCostsModel = {
   totalFixedCost: number;
 };
 
-/** Abutment costs used for non-standard (key code) conditions only. */
+/** Standard abutment costs used for non-standard (key code) conditions. */
 const ABUTMENT_COSTS = [7000, 7000, 7500, 7500, 8000, 8000, 8500];
+/** Arch abutment costs used for standard conditions. */
 const ARCH_ABUTMENT_COSTS = [200, 11300, 20800, 30300, 39000, 49700];
+/** Volume of earth to be moved as function of deck height. */
 const EXCAVATION_VOLUMES = [106500, 90000, 71500, 54100, 38100, 19400, 0];
-const PIER_COSTS = [0, 2800, 5600, 8400, 10200, 12500, 14800];
+/** Cost of pier construction due to height used for standard conditions. */
+const PIER_HEIGHT_COSTS = [0, 2800, 5600, 8400, 10200, 12500, 14800];
 
 const FROM_KEY_CODE_TAG = '99Z';
 const MIN_OVERHEAD = 8;
@@ -334,7 +337,7 @@ export class DesignConditions {
   }
 
   private static getPierHeightCost(pierHeight: number) {
-    return PIER_COSTS[Math.floor(pierHeight / 4)];
+    return PIER_HEIGHT_COSTS[Math.floor(pierHeight / 4)];
   }
 
   public get deckThickness(): number {
@@ -585,8 +588,8 @@ export class DesignConditionsService {
   private readonly standardConditionsFromTag: Map<string, DesignConditions>;
 
   constructor(private readonly contestParametersService: ContestParametersService) {
-    this.standardConditions = (
-      //#region data for standard conditions
+    this.standardConditions = //#region data for standard conditions
+    (
       [
         ['01A', 1110824000],
         ['01B', 2110824000],
