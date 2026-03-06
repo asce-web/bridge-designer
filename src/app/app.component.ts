@@ -30,10 +30,11 @@ import { WorkflowManagementService } from './features/controls/management/workfl
 import { DrawingsService } from './features/drawings/drawings.service';
 import { Printing3dService } from './features/printing-3d/printing-3d.service';
 import { Print3dDialogComponent } from './features/printing-3d/print-3d-dialog/print-3d-dialog.component';
-import { MissingFeatureDisablerDialogComponent } from './features/browser/missing-feature-disabler-dialog/missing-feature-disabler-dialog.componet';
+import { MissingFeatureDisablerDialogComponent } from './features/browser/missing-feature-disabler-dialog/missing-feature-disabler-dialog.component';
 import { AllowFreshStartDialogComponent } from './features/session-state/allow-fresh-start-dialog/allow-fresh-start-dialog.component';
 import { BridgeService } from './shared/services/bridge.service';
 import { DesignConditionsService } from './shared/services/design-conditions.service';
+import { ContestWelcomeDialogComponent } from './features/contest/contest-welcome-dialog/contest-welcome-dialog.component';
 
 // ¯\_(ツ)_/¯
 
@@ -41,6 +42,7 @@ import { DesignConditionsService } from './shared/services/design-conditions.ser
   selector: 'app-root',
   imports: [
     AboutDialogComponent,
+    ContestWelcomeDialogComponent,
     CostReportDialogComponent,
     DesignIterationDialogComponent,
     DesignSaverLoaderComponent,
@@ -73,6 +75,7 @@ import { DesignConditionsService } from './shared/services/design-conditions.ser
 export class AppComponent implements AfterViewInit {
   @ViewChild('allowFreshStartDialog') allowFreshStartDialog!: AllowFreshStartDialogComponent;
   @ViewChild('bottomRuler') bottomRuler!: RulerComponent;
+  @ViewChild('contestWelcomeDialog') contestWelcomeDialog!: ContestWelcomeDialogComponent;
   @ViewChild('draftingAreaCover') draftingAreaCover!: ElementRef<HTMLDivElement>;
   @ViewChild('leftRuler') leftRuler!: RulerComponent;
   @ViewChild('memberTable') memberTable!: MemberTableComponent;
@@ -113,13 +116,14 @@ export class AppComponent implements AfterViewInit {
     this.eventBrokerService.uiModeRequest.subscribe(info => this.showDraftingPanelCover(info.data === 'initial'));
     // Let everyone know if session management is enabled. E.g. the menu checked status.
     this.sessionStateService.restoreSessionManagementEnabled();
-    // Manage the welcome sequence if there is one. Send a completion event if we're rehydrating.
-    // Not an obvious place to handle this, but it's simplest.
+    // Manage the welcome sequence if there is one. Separate paths for cases where we've rehydrated and not.
     if (this.sessionStateService.hasRestoredState) {
+      // Let everyone know the app is fully rehydrated. Not a great place for this, but simplest.
       this.sessionStateService.notifyRestoreComplete();
-      // Quietly disable stuff for missing browser features. The user was informed earlier (more or less).
+      // Quietly disable stuff for missing browser features. The user has seen disableAndInformUser() dialog, so understands.
       this.missingFeatureDisablerDialog.disableFeatures();
-      if (!this.sessionStateService.isCurrentStateReloaded) {
+      // If the user closed the tab between de- and rehydration, offer to continue or start fresh.
+      if (!this.sessionStateService.isCurrentStateDueToTabRefresh) {
         // The dialog resets the app via redirect to ?reset or chains to a tip.
         this.allowFreshStartDialog.open();
       }
@@ -128,6 +132,8 @@ export class AppComponent implements AfterViewInit {
       // The dialog chains to a tip request.
       this.missingFeatureDisablerDialog.disableAndInformUser();
     }
+    // Show a contest welcome splash if parameters are set. This hides other startup dialogs temporarily.
+    this.contestWelcomeDialog.showIfContest();
     this.handleUrlParameters();
   }
 

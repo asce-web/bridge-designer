@@ -116,7 +116,7 @@ export class BridgeService {
     return undefined;
   }
 
-  /**  */
+  /** Returns members attached to the given joint. */
   public findMembersWithJoint(joint: Joint): Member[] {
     return this.bridge.members.filter(member => member.hasJoint(joint));
   }

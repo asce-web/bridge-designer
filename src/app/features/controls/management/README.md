@@ -7,7 +7,22 @@ tracking that doesn't have another obvious owner.
 You might expect the startup flow to be handled here: browser capability check, welcome dialog, tip dialog, initial
 drafting panel state-setting. It's not. Rather, that's considered to be owned by the app component.
 
-## Type safety of UiStateService
+## UI State service
+
+Implements the feature where multiple jqxWidget controls have the same function, hence all should
+
+- invoke the same handler
+- have identical disable/enable behavior
+- TODO: have common tool tip text
+
+Java Swing provided all this for the previous version. `UiStateService` working with `EventBrokerService duplicate it,
+but with a very different pattern. They also support "UI mode" disablement. The modes are e.g. initial (no visible
+bridge), design, and animation. For each widget, we need to override normal enablement with disable. E.g. we want most
+but not all widgets disabled while in "initial" mode. This was provided by a separate class in Java.
+
+The implementation uses `EventBroker` `Subject`s as keys to group respective widgets.
+
+### Type safety
 
 RxJs `Subject`s have type `Subject<EventInfo<T>>` where `T` is the event payload type. Consequently, event senders and
 handlers are type safe for payloads. Internally, `UiStateService` throws away type information because it needs to

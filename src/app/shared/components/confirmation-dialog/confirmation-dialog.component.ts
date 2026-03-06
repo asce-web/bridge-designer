@@ -6,6 +6,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  numberAttribute,
   OnChanges,
   Output,
   SecurityContext,
@@ -21,7 +22,16 @@ import { Utility } from '../../classes/utility';
 import { EventBrokerService, EventOrigin } from '../../services/event-broker.service';
 import { SessionStateService } from '../../../features/session-state/session-state.service';
 
-export type ButtonTag = 'ok' | 'yes' | 'no' | 'cancel' | 'help';
+/** Possible buttons in recommended order. */
+const BUTTON_INFO = {
+  help: 'Help...',
+  ok: 'OK',
+  yes: 'Yes',
+  no: 'No',
+  cancel: 'Cancel',
+  close: 'Close',
+} as const;
+export type ButtonTag = keyof typeof BUTTON_INFO;
 
 @Component({
   selector: 'confirmation-dialog',
@@ -30,19 +40,23 @@ export type ButtonTag = 'ok' | 'yes' | 'no' | 'cancel' | 'help';
   styleUrl: './confirmation-dialog.component.scss',
 })
 export class ConfirmationDialogComponent implements AfterViewInit, OnChanges {
-  @Input() buttons: ButtonTag[] = ['ok', 'yes', 'no', 'cancel', 'help'];
-  @Input() buttonWidth = 64;
+  /** Buttons to be rendered. Order of tags is honored. See `BUTTON_INFO`. */
+  @Input() buttons: ButtonTag[] = ['close'];
+  @Input({ transform: numberAttribute}) buttonWidth = 64;
   @Input() contentHtml: string = '';
   @Input() headerHtml: string = '';
+  @Input({ transform: numberAttribute}) height = 200; 
   @Input() helpTopic: string = 'hlp_how_to';
   @Input() rememberKey: string = '';
-  sanitizedContentHtml!: SafeHtml;
-  sanitizedHeaderHtml!: SafeHtml;
+  @Input({ transform: numberAttribute}) width = 400;
+  @Input({ transform: numberAttribute}) timeout: number = 0;
   @Output() readonly onButtonClick = new EventEmitter<ButtonTag>();
-
   @ViewChild('rememberCheckbox') rememberCheckbox!: jqxCheckBoxComponent;
   @ViewChild('dialog') dialog!: jqxWindowComponent;
 
+  sanitizedContentHtml!: SafeHtml;
+  sanitizedHeaderHtml!: SafeHtml;
+  readonly buttonInfo = BUTTON_INFO;
   private rememberedButtonTag: ButtonTag | undefined;
 
   constructor(
@@ -57,6 +71,9 @@ export class ConfirmationDialogComponent implements AfterViewInit, OnChanges {
       this.onButtonClick.emit(this.rememberedButtonTag);
     } else {
       this.dialog.open();
+      if (this.timeout > 0) {
+        setTimeout(() => this.dialog.close(), this.timeout);
+      }
     }
   }
 

@@ -5,8 +5,8 @@
   #dialog
   [isModal]="true"
   [autoOpen]="false"
-  [width]="400"
-  [height]="200"
+  [width]="width"
+  [height]="height"
 >
   <div
     #header
@@ -27,53 +27,15 @@
     <div class="buttons">
       @if (rememberKey) {
         <div class="left-button">
-          <jqxCheckBox #rememberCheckbox>
-            Remember and don't ask again
-          </jqxCheckBox>
+          <jqxCheckBox #rememberCheckbox> Remember and don't ask again </jqxCheckBox>
         </div>
       }
-      @if (buttons.includes('help')) {
+      @for (button of buttons; track button) {
         <div>
           <jqxButton
             [width]="buttonWidth"
-            (onClick)="handleButtonClick('help')"
-            >Help...</jqxButton
-          >
-        </div>
-      }
-      @if (buttons.includes('ok')) {
-        <div>
-          <jqxButton
-            [width]="buttonWidth"
-            (onClick)="handleButtonClick('ok')"
-            >OK</jqxButton
-          >
-        </div>
-      }
-      @if (buttons.includes('yes')) {
-        <div>
-          <jqxButton
-            [width]="buttonWidth"
-            (onClick)="handleButtonClick('yes')"
-            >Yes</jqxButton
-          >
-        </div>
-      }
-      @if (buttons.includes('no')) {
-        <div>
-          <jqxButton
-            [width]="buttonWidth"
-            (onClick)="handleButtonClick('no')"
-            >No</jqxButton
-          >
-        </div>
-      }
-      @if (buttons.includes('cancel')) {
-        <div>
-          <jqxButton
-            [width]="buttonWidth"
-            (onClick)="handleButtonClick('cancel')"
-            >Cancel</jqxButton
+            (onClick)="handleButtonClick(button)"
+            >{{ buttonInfo[button] }}</jqxButton
           >
         </div>
       }

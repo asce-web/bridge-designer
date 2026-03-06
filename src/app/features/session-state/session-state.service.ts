@@ -63,10 +63,10 @@ export class SessionStateService {
   }
 
   /**
-   * Returns a best guess as to whether state in local storage resulted from a simple browser reload
-   * rather than closing a previous tab. If no state is present, returns false.
+   * Returns a best guess as to whether state currently in local storage resulted from a simple refresh
+   * of current tab rather than a tab close and re-open. If no state is present, returns false.
    */
-  public get isCurrentStateReloaded(): boolean {
+  public get isCurrentStateDueToTabRefresh(): boolean {
     this.loadAccumulatorFromStorage();
     return !!(this.stateAccumulator && sessionStorage.getItem(this.localStorageKey));
   }

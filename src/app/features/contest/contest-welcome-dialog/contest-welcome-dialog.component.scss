@@ -1,0 +1,40 @@
+:host {
+  display: block;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: space-around;
+}
+
+.welcome {
+  text-align: center;
+  font-size: 28px;
+  padding-top: 12px;
+}
+
+.contest-name {
+  color: #005DAB;
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  font-style: italic;
+  white-space: pre-wrap;
+  padding-top: 40px;
+}
+
+.subtitle {
+  color: #005DAB;
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.explain {
+  text-align: center;
+  font-size: 18px;
+  padding-top: 40px;
+}

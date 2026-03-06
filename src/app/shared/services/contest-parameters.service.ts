@@ -11,6 +11,7 @@ export type ContestParameters = {
   bridgeVersion: number;
   carbonSteelCostPerKg: [number, number]; // [bar, tube]
   connectionFee: number;
+  contestName: string;
   deckCostPerPanelHiStrength: number;
   deckCostPerPanelMedStrength: number;
   encryptionKey: string; // empty string means unencrypted
@@ -40,6 +41,7 @@ export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
   bridgeVersion: 2024,
   carbonSteelCostPerKg: [4.3, 6.3],
   connectionFee: 400,
+  contestName: '',
   deckCostPerPanelHiStrength: 5100,
   deckCostPerPanelMedStrength: 4700,
   encryptionKey: '',
@@ -82,6 +84,7 @@ export class ContestParametersService {
     k: 'encryptionKey',
     p: 'pierCostPerDeckPanel',
     pb: 'pierBaseCost',
+    n: 'contestName',
     r: 'archIncrementalCostPerDeckPanel',
     sa: 'lowAlloySteelCostPerKg',
     sc: 'carbonSteelCostPerKg',

@@ -1,0 +1,26 @@
+<!-- Copyright (c) 2025-2026 Gene Ressler
+   SPDX-License-Identifier: GPL-3.0-or-later -->
+
+<confirmation-dialog
+  #dialog
+  [headerHtml]="'Contest welcome'"
+  [buttons]="['close']"
+  [timeout]="6000"
+  [width]="800"
+  [height]="380"
+>
+  <div class="container">
+    <div class="welcome">Welcome and good luck with...</div>
+    <div class="contest-name">
+      <div>
+        @if (contestParametersService.parameters.contestName) {
+          {{ contestParametersService.parameters.contestName }}
+        } @else {
+          Your local
+        }
+      </div>
+    </div>
+    <div class="subtitle">Bridge Design Contest</div>
+    <div class="explain">This is a special ASCE Bridge Designer version just for contest use.</div>
+  </div>
+</confirmation-dialog>
