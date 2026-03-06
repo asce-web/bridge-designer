@@ -7,14 +7,15 @@ import { BridgeCostModel, MaterialSectionWeight, SizeMaterialSectionCount } from
 import { TreeMap } from '../core/tree-map';
 import { DesignConditionsService } from './design-conditions.service';
 import { Member } from '../classes/member.model';
+import { ContestParametersService } from './contest-parameters.service';
 
 /** Container for logic that tabulates bridge cost information. */
 @Injectable({ providedIn: 'root' })
 export class BridgeCostService {
-  private static readonly CONNECTION_FEE = 400;
-  private static readonly PRODUCT_FEE = 1000;
-
-  constructor(private readonly bridgeService: BridgeService) {}
+  constructor(
+    private readonly bridgeService: BridgeService,
+    private readonly contestParametersService: ContestParametersService,
+  ) {}
 
   /** Returns member cost including instances in both trusses. */
   public static getMemberTotalCost(member: Member): number {
@@ -25,7 +26,7 @@ export class BridgeCostService {
   public static getMemberCostPerM(member: Member): number {
     return getMemberWeightKgPerM(member) * member.material.getCostPerKg(member.shape.section);
   }
-  
+
   public get bridgeCostModel(): BridgeCostModel {
     const bridge = this.bridgeService.bridge;
     const weightByMaterialAndSection = new TreeMap<string, MaterialSectionWeight>(
@@ -40,7 +41,6 @@ export class BridgeCostService {
       const newWeightTableRow = new MaterialSectionWeight(member.material, member.shape.section);
       const weightTableRow = weightByMaterialAndSection.insert(newWeightTableRow) || newWeightTableRow;
       weightTableRow.memberKg += member.lengthM * getMemberWeightKgPerM(member);
-
       const newCountTableRow = new SizeMaterialSectionCount(member.material, member.shape);
       const countTableRow = countBySizeMaterialAndSection.insert(newCountTableRow) || newCountTableRow;
       countTableRow.count++;
@@ -49,18 +49,18 @@ export class BridgeCostService {
       weightByMaterialAndSection,
       countBySizeMaterialAndSection,
       bridge.joints.length,
-      BridgeCostService.CONNECTION_FEE,
-      BridgeCostService.PRODUCT_FEE,
+      this.contestParametersService.parameters.connectionFee,
+      this.contestParametersService.parameters.productFee,
     );
   }
 
   public get allCosts(): number {
-    return this.bridgeService.designConditions !== DesignConditionsService.PLACEHOLDER_CONDITIONS
-      ? this.bridgeCostModel.totalCost + this.bridgeService.bridge.designConditions.siteCosts.totalFixedCost
-      : 0;
+    return this.bridgeService.designConditions === DesignConditionsService.PLACEHOLDER_CONDITIONS
+      ? 0
+      : this.bridgeCostModel.totalCost + this.bridgeService.bridge.designConditions.siteCosts.totalFixedCost;
   }
 }
 
 function getMemberWeightKgPerM(member: Member): number {
-  return member.shape.area * member.material.density
+  return member.shape.area * member.material.density;
 }
