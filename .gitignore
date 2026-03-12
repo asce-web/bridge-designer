@@ -1,7 +1,9 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
 # Compiled output
-**/dist
+/dist
+/src/tools/dist/*
+!/src/tools/dist/main.cjs
 /tmp
 /out-tsc
 /bazel-out
