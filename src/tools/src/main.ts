@@ -2,12 +2,14 @@
 
 /**
  * bdc - Node command line utility for inspecting Bridge Designer files.
+ * 
  * Node v24+ highly recommended.
  * 
  * Simplest usage (bash):
  * - `cd tools`
- * - `npm run build`
- * - `alias bdc $(pwd)/dist/main.cjs`  # add full path alias to .bashrc if needed
+ * - `npm install` # Get's dependencies, but assumes you have Node.
+ * - `npm run build`  # Generates dist/main.cjs with node shebang.
+ * - `alias bdc $(pwd)/dist/main.cjs`  # Alias `bdc`. Do this in .bashrc if desired.
  * - `bdc` # prints help
  */
 import 'reflect-metadata';
