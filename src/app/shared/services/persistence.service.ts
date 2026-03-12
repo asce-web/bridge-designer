@@ -88,7 +88,8 @@ export class PersistenceService {
     }
   }
 
-  private maybeDecrypt(text: string): string {
+  /** Decrypt save set text if necessary. Uses key in `ContestParametersService`. */
+  public maybeDecrypt(text: string): string {
     // Plain text starts with a number. Otherwise it's encrypted.
     if (/^[.0-9]/.test(text)) {
       return text;

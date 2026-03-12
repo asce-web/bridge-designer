@@ -58,8 +58,14 @@ export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
 } as const;
 
 @Injectable({ providedIn: 'root' })
-export class WindowLocation {
-  public readonly value: Location = window.location;
+export class SearchStringProvider {
+  /** Whether merge results will be logged. */
+  public readonly verbose = true;
+  
+  /** Search string value to be used for contest parameters merged with default. */
+  public get value(): string | null {
+    return new URLSearchParams(window.location.search).get('p');
+  }
 }
 
 @Injectable({ providedIn: 'root' })
@@ -98,11 +104,11 @@ export class ContestParametersService {
   /** Map from parameter attribute names to search string short aliases. Keys checked at run time. */
   private readonly aliasesByField = Object.fromEntries(Object.entries(this.fieldsByAlias).map(([k, v]) => [v, k]));
 
-  constructor(windowLocation: WindowLocation) {
+  constructor(searchStringProvider: SearchStringProvider) {
     // Set parameter defaults.
     this.parameters = { ...DEFAULT_CONTEST_PARAMETERS };
     // Patch with contents of JSON in search parameter "p" if present.
-    const patchJson = new URLSearchParams(windowLocation.value.search).get('p');
+    const patchJson = searchStringProvider.value;
     if (patchJson !== null) {
       try {
         const aliasedEntries = Object.entries(JSON.parse(patchJson)).filter(([alias]) => !alias.startsWith('_'));
@@ -114,7 +120,9 @@ export class ContestParametersService {
       } catch (err) {
         console.error('contest parameter patch not applied', err, patchJson);
       }
-      console.log('effective contest parameters', JSON.stringify(this.parameters));
+      if (searchStringProvider.verbose) {
+        console.log('effective contest parameters', JSON.stringify(this.parameters, undefined, 2));
+      }
     }
   }
 

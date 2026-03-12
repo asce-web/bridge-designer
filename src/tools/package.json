@@ -1,0 +1,42 @@
+{
+  "name": "tools",
+  "version": "1.0.0",
+  "description": "Bridge Designer CLI tool",
+  "main": "dist/main.js",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "build": "node esbuild.config.mjs",
+    "postbuild": "chmod 755 dist/main.cjs",
+    "start": "node dist/main.js"
+  },
+  "bin": {
+    "bdc": "./dist/app/tools/src/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gene-ressler/bridge-designer.git"
+  },
+  "keywords": [
+    "bridgeDesigner",
+    "cli"
+  ],
+  "author": "Gene Ressler",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/gene-ressler/bridge-designer/issues"
+  },
+  "homepage": "https://github.com/gene-ressler/bridge-designer#readme",
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "@types/ws": "^8.18.1",
+    "esbuild": "^0.27.3",
+    "esbuild-plugin-tsc": "^0.5.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@effect/cli": "^0.73.2",
+    "@effect/platform-node": "^0.104.1",
+    "injection-js": "^2.6.1"
+  }
+}
