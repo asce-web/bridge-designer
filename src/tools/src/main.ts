@@ -29,7 +29,6 @@ import { SessionStateService } from '../../app/features/session-state/session-st
 import { AnalysisService, AnalysisStatus } from '../../app/shared/services/analysis.service';
 import { readFileSync } from 'fs';
 import { Member } from '../../app/shared/classes/member.model';
-import { withAlias } from '@effect/cli/Options';
 
 /** Table of string for analysis status values. */
 const ANALYSIS_STATUS_STRING_BY_STATUS = new Map<AnalysisStatus, string>([
@@ -92,10 +91,15 @@ class Subcommands {
   ): Effect.Effect<void> {
     const saveSetText = readFileSync(fileName, 'utf8');
     const saveSet = this.persistenceService.parseSaveSetText(saveSetText);
+    try {
+      this.persistenceService.validateSaveSet(saveSet);
+    } catch {
+      return Console.log(label + 'invalid');
+    }
     this.bridgeService.setBridge(saveSet.bridge, saveSet.draftingPanelState);
     this.analysisService.analyzeQuietly({ populateBridgeMembers: true });
     const status = ANALYSIS_STATUS_STRING_BY_STATUS.get(this.analysisService.status);
-    let result = Console.log(status);
+    let result = Console.log(label + status);
     if (withConditions) {
       const conditions = this.bridgeService.bridge.designConditions;
       result = Effect.andThen(result, Console.log(conditions.codeLong.toString(), conditions.tag));
@@ -133,6 +137,7 @@ function main(): void {
   const filenames = Args.file({ name: 'filename', exists: 'yes' }).pipe(Args.repeated);
   const list = Command.make('list', { filenames }, ({ filenames }) => {
     return bdc.pipe(
+      Command.withDescription('List bridge file with no validation.'),
       Effect.andThen(({ contestParamsOption, contestParamsFile }) => {
         const fallback = Option.orElse(() => Option.map(contestParamsFile, ([, content]) => content));
         const contestParams = Option.getOrNull(contestParamsOption.pipe(fallback));
@@ -147,11 +152,11 @@ function main(): void {
 
   // Analyze subcommand.
   const withConditions = Options.boolean('conditions').pipe(
-    withAlias('d'),
+    Options.withAlias('d'),
     Options.withDescription('Include design conditions.'),
   );
   const withTotalCost = Options.boolean('cost').pipe(
-    withAlias('c'),
+    Options.withAlias('c'),
     Options.withDescription('Include total site and bridge cost.'),
   );
   const withMembers = Options.boolean('members').pipe(
@@ -163,6 +168,7 @@ function main(): void {
     { filenames, withConditions, withTotalCost, withMembers },
     ({ filenames, ...options }) => {
       return bdc.pipe(
+        Command.withDescription('Validate then analyze each bridge file.'),
         Effect.andThen(({ contestParamsOption, contestParamsFile }) => {
           const fallback = Option.orElse(() => Option.map(contestParamsFile, ([, content]) => content));
           const contestParams = Option.getOrNull(contestParamsOption.pipe(fallback));
