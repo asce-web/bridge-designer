@@ -63,9 +63,7 @@ function buildMemberSynopsis(member: Member): MemberSynopsis {
   };
 }
 
-const MEMBER_ANALYSIS_FIELDS: (keyof Member)[] = [] as const;
-type MemberAnalysisFields = (typeof MEMBER_ANALYSIS_FIELDS)[number];
-
+/** Container for BD injection dependencies and the subcommands they drive. */
 @Injectable()
 class Subcommands {
   constructor(
@@ -118,7 +116,7 @@ function main(): void {
   const bdc = Command.make('bdc', { contestParamsOption, contestParamsFile });
 
   // List subcommand.
-  const filenames = Args.text({ name: 'filename' }).pipe(Args.repeated);
+  const filenames = Args.file({ name: 'filename', exists: 'yes' }).pipe(Args.repeated);
   const list = Command.make('list', { filenames }, ({ filenames }) => {
     return bdc.pipe(
       Effect.andThen(({ contestParamsOption, contestParamsFile }) => {

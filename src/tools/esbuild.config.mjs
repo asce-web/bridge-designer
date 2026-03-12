@@ -7,9 +7,9 @@ esbuild.build({
   outfile: 'dist/main.cjs',
   bundle: true,
   platform: 'node',
-  
+
   // Compress and obfuscate
-  // minify: true, 
+  minify: true, 
 
   // Required for decorator processing. 
   plugins: [esbuildPluginTsc()],
