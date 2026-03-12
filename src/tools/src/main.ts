@@ -23,7 +23,7 @@ import { DesignConditionsService } from '../../app/shared/services/design-condit
 import { EventBrokerService } from '../../app/shared/services/event-broker.service';
 import { InventoryService } from '../../app/shared/services/inventory.service';
 import { BridgeCostService } from '../../app/shared/services/bridge-cost.service';
-import { PersistenceService } from '../../app/shared/services/persistence.service';
+import { PersistenceService, SaveSet } from '../../app/shared/services/persistence.service';
 import { BridgeSketchService } from '../../app/shared/services/bridge-sketch.service';
 import { SessionStateService } from '../../app/features/session-state/session-state.service';
 import { AnalysisService, AnalysisStatus } from '../../app/shared/services/analysis.service';
@@ -90,10 +90,8 @@ class Subcommands {
     { withConditions, withTotalCost, withMembers }: AnalyzeOptions,
   ): Effect.Effect<void> {
     const saveSetText = readFileSync(fileName, 'utf8');
-    const saveSet = this.persistenceService.parseSaveSetText(saveSetText);
-    try {
-      this.persistenceService.validateSaveSet(saveSet);
-    } catch {
+    const saveSet = this.parseValidSaveSet(saveSetText);
+    if (!saveSet) {
       return Console.log(label + 'invalid');
     }
     this.bridgeService.setBridge(saveSet.bridge, saveSet.draftingPanelState);
@@ -114,6 +112,18 @@ class Subcommands {
       result = Effect.andThen(result, Console.log(memberData));
     }
     return result;
+  }
+
+  private parseValidSaveSet(text: string): SaveSet | undefined {
+    try {
+      // Parsing fails for syntax including decryption w/ bad key.
+      const saveSet = this.persistenceService.parseSaveSetText(text);
+      // Validation fails when current contest parameters don't match input.
+      this.persistenceService.validateSaveSet(saveSet);
+      return saveSet;
+    } catch {
+      return undefined;
+    }
   }
 }
 
