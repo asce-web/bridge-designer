@@ -2,9 +2,9 @@
 
 /**
  * bdc - Node command line utility for inspecting Bridge Designer files.
- * 
+ *
  * Node v24+ highly recommended.
- * 
+ *
  * Simplest usage (bash):
  * - `cd tools`
  * - `npm install` # Get's dependencies, but assumes you have Node.
@@ -63,6 +63,12 @@ function buildMemberSynopsis(member: Member): MemberSynopsis {
   };
 }
 
+type AnalyzeOptions = {
+  withConditions: boolean;
+  withTotalCost: boolean;
+  withMembers: boolean;
+};
+
 /** Container for BD injection dependencies and the subcommands they drive. */
 @Injectable()
 class Subcommands {
@@ -79,14 +85,22 @@ class Subcommands {
     return Console.log(label + saveSetText);
   }
 
-  analyzeBridge(fileName: string, label: string, withCost: boolean, withMembers: boolean): Effect.Effect<void> {
+  analyzeBridge(
+    fileName: string,
+    label: string,
+    { withConditions, withTotalCost, withMembers }: AnalyzeOptions,
+  ): Effect.Effect<void> {
     const saveSetText = readFileSync(fileName, 'utf8');
     const saveSet = this.persistenceService.parseSaveSetText(saveSetText);
     this.bridgeService.setBridge(saveSet.bridge, saveSet.draftingPanelState);
     this.analysisService.analyzeQuietly({ populateBridgeMembers: true });
     const status = ANALYSIS_STATUS_STRING_BY_STATUS.get(this.analysisService.status);
     let result = Console.log(status);
-    if (withCost) {
+    if (withConditions) {
+      const conditions = this.bridgeService.bridge.designConditions;
+      result = Effect.andThen(result, Console.log(conditions.codeLong.toString(), conditions.tag));
+    }
+    if (withTotalCost) {
       const fixedCost = this.bridgeService.designConditions.siteCosts.totalFixedCost;
       const bridgeCost = this.bridgeCostService.bridgeCostModel.totalCost;
       result = Effect.andThen(result, Console.log((fixedCost + bridgeCost).toFixed(2)));
@@ -132,24 +146,35 @@ function main(): void {
   });
 
   // Analyze subcommand.
-  const cost = Options.boolean('cost').pipe(withAlias('c'), Options.withDescription('Include total cost.'));
-  const members = Options.boolean('members').pipe(
+  const withConditions = Options.boolean('conditions').pipe(
+    withAlias('d'),
+    Options.withDescription('Include design conditions.'),
+  );
+  const withTotalCost = Options.boolean('cost').pipe(
+    withAlias('c'),
+    Options.withDescription('Include total site and bridge cost.'),
+  );
+  const withMembers = Options.boolean('members').pipe(
     Options.withAlias('m'),
     Options.withDescription('Include member synopses.'),
   );
-  const analyze = Command.make('analyze', { filenames, cost, members }, ({ filenames, cost, members }) => {
-    return bdc.pipe(
-      Effect.andThen(({ contestParamsOption, contestParamsFile }) => {
-        const fallback = Option.orElse(() => Option.map(contestParamsFile, ([, content]) => content));
-        const contestParams = Option.getOrNull(contestParamsOption.pipe(fallback));
-        const subcommands: Subcommands = createInjector(contestParams).resolveAndInstantiate(Subcommands);
-        return Effect.forEach(filenames, filename => {
-          const label = filenames.length === 1 ? '' : filename + ':\n';
-          return subcommands.analyzeBridge(filename, label, cost, members);
-        });
-      }),
-    );
-  });
+  const analyze = Command.make(
+    'analyze',
+    { filenames, withConditions, withTotalCost, withMembers },
+    ({ filenames, ...options }) => {
+      return bdc.pipe(
+        Effect.andThen(({ contestParamsOption, contestParamsFile }) => {
+          const fallback = Option.orElse(() => Option.map(contestParamsFile, ([, content]) => content));
+          const contestParams = Option.getOrNull(contestParamsOption.pipe(fallback));
+          const subcommands: Subcommands = createInjector(contestParams).resolveAndInstantiate(Subcommands);
+          return Effect.forEach(filenames, filename => {
+            const label = filenames.length === 1 ? '' : filename + ':\n';
+            return subcommands.analyzeBridge(filename, label, options);
+          });
+        }),
+      );
+    },
+  );
 
   const command = bdc.pipe(Command.withSubcommands([list, analyze]));
   const cli = Command.run(command, {
