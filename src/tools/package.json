@@ -2,16 +2,16 @@
   "name": "tools",
   "version": "1.0.0",
   "description": "Bridge Designer CLI tool",
-  "main": "dist/main.js",
+  "main": "dist/main.cjs",
   "type": "module",
   "scripts": {
     "check": "tsc --noEmit",
     "build": "node esbuild.config.mjs",
     "postbuild": "chmod 755 dist/main.cjs",
-    "start": "node dist/main.js"
+    "start": "node dist/main.cjs"
   },
   "bin": {
-    "bdc": "./dist/app/tools/src/main.js"
+    "bdc": "./dist/app/tools/src/main.cjs"
   },
   "repository": {
     "type": "git",
