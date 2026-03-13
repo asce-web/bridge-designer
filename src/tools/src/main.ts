@@ -5,12 +5,23 @@
  *
  * Node v24+ highly recommended.
  *
- * Simplest usage (bash):
- * - `cd tools`
+ * Simplest build and use:
+ * - `cd src/tools`
  * - `npm install` # Get's dependencies, but assumes you have Node.
  * - `npm run build`  # Generates dist/main.cjs with node shebang.
  * - `alias bdc $(pwd)/dist/main.cjs`  # Alias `bdc`. Do this in .bashrc if desired.
- * - `bdc` # prints help
+ * - `bdc --help analyze --help` # gives most complete analyze help
+ * - `bdc --help list --help` # gives most complete list help
+ * 
+ * Example usage:
+ * 
+ *   `bdc -p '{"k":"encryption_key"}' analyze -c -d MyBridge.bdc`
+ *   `bdc --contest-params='{"k":"encryption_key"}' analyze --cost --conditions MyBridge.bdc`
+ * 
+ * Output is 3 lines: status, conditions code and tag, cost:
+ * passes
+ * 1082008050 62A
+ * 395085.38
  */
 import 'reflect-metadata';
 import { Args, Command, Options } from '@effect/cli';
