@@ -38,6 +38,7 @@ import { BridgeSketchService } from '../../../shared/services/bridge-sketch.serv
 import { CartoonSketchRenderingService } from '../../../shared/services/cartoon-sketch-rendering.service';
 import { CartoonJointRenderingService } from '../../../shared/services/cartoon-joint-rendering.service';
 import { DraftingPanelState } from '../../../shared/services/persistence.service';
+import { ContestBridgeService } from '../../../shared/services/contest-bridge.service';
 
 /**
  * The card-based setup wizard.
@@ -135,6 +136,7 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     private readonly bridgeSketchService: BridgeSketchService,
     private readonly cardService: CardService,
     private readonly cartoonRenderingService: CartoonRenderingService,
+    private readonly contestBridgeService: ContestBridgeService,
     private readonly designConditionsService: DesignConditionsService,
     private readonly eventBrokerService: EventBrokerService,
     private readonly rootBridgeService: RootBridgeService,
@@ -361,7 +363,8 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
   /** Opens the dialog, setting up widgets with given design conditions. */
   private open(conditions: DesignConditions) {
     if (conditions === DesignConditionsService.PLACEHOLDER_CONDITIONS) {
-      conditions = this.designConditionsService.getConditionsForCodeLong(conditions.codeLong);
+      // Look up in the wizard's own design conditions service.
+      conditions = this.designConditionsService.getConditionsForCodeLong(conditions.codeLong)!;
     }
     this.designConditions = conditions;
     this.setWidgetsFromDesignConditions();
@@ -409,14 +412,25 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     this.legendItemsByName.get(item)!.style.display = isVisible ? '' : 'none';
   }
 
-  private maybeSaveThenStartNewDesign(): void {
-    // Let the bridge file loader offer the user to save a dirty edit before opening.
-    this.eventBrokerService.loadBridgeFileRequest.next({
-      origin: EventOrigin.SETUP_DIALOG,
-      data: () => {
-        this.open(this.rootBridgeService.instance.designConditions);
-      },
-    });
+  private maybeSaveThenStartSetupDesign(): void {
+    const contestBridge = this.contestBridgeService.contestBridge;
+    // Build continuation of file save.
+    const data = contestBridge
+      ? () => {
+          this.eventBrokerService.loadBridgeRequest.next({
+            origin: EventOrigin.SETUP_DIALOG,
+            data: {
+              bridge: contestBridge,
+              draftingPanelState: DraftingPanelState.createNew(),
+              invalidateSavedMark: true,
+            },
+          });
+        }
+      : () => {
+          this.open(this.rootBridgeService.instance.designConditions);
+        };
+    // Let the bridge file loader offer the user to save a dirty edit before new design creation.
+    this.eventBrokerService.loadBridgeFileRequest.next({ origin: EventOrigin.SETUP_DIALOG, data });
   }
 
   ngAfterViewInit(): void {
@@ -437,6 +451,6 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
     const h = this.elevationCanvas.nativeElement.height;
     this.viewportTransform.setViewport(0, h - 1, w - 1, 1 - h);
     this.cardService.card.renderElevationCartoon();
-    this.eventBrokerService.newDesignRequest.subscribe(() => this.maybeSaveThenStartNewDesign());
+    this.eventBrokerService.newDesignRequest.subscribe(() => this.maybeSaveThenStartSetupDesign());
   }
 }

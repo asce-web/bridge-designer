@@ -50,6 +50,7 @@ const ANALYSIS_STATUS_STRING_BY_STATUS = new Map<AnalysisStatus, string>([
   [AnalysisStatus.PASSES, 'passes'],
 ]);
 
+/** Synopsis of the things the user wants to know about members. */
 type MemberSynopsis = {
   number: number;
   maxTension: number;
@@ -60,7 +61,7 @@ type MemberSynopsis = {
   tensionStatus: string;
 };
 
-/** Build a synopsis of a given member's analysis. */
+/** Builds a synopsis of a given member's analysis. */
 function buildMemberSynopsis(member: Member): MemberSynopsis {
   return {
     number: member.number,
@@ -73,6 +74,30 @@ function buildMemberSynopsis(member: Member): MemberSynopsis {
   };
 }
 
+/**
+ * Builds an injector of BD entities we need. Most provided values are dummies
+ * for dependencies that aren't actually used. Changes to bridge designer service
+ * constructors can break this. Compile with --minify removed from scripts: build
+ * entry in package.json for useful error messages.
+ */
+function buildInjector(contestParamsOption: string | null): ReflectiveInjector {
+  return ReflectiveInjector.resolveAndCreate([
+    AnalysisService,
+    BridgeCostService,
+    BridgeService,
+    { provide: BridgeServiceSessionStateKey, useValue: {} },
+    { provide: BridgeSketchService, useValue: {} },
+    ContestParametersService,
+    DesignConditionsService,
+    EventBrokerService,
+    InventoryService,
+    PersistenceService,
+    { provide: SearchStringProvider, useValue: { value: contestParamsOption, verbose: false } },
+    { provide: SessionStateService, useValue: { register: () => undefined } },
+  ]);
+}
+
+/** Options of the `analyze` subcommand. */
 type AnalyzeOptions = {
   withConditions: boolean;
   withTotalCost: boolean;
@@ -89,12 +114,14 @@ class Subcommands {
     private readonly persistenceService: PersistenceService,
   ) {}
 
+  /** Lists bridge file contents with minimal checking. */
   listBridge(fileName: string, label: string): Effect.Effect<void> {
     const fileContent = readFileSync(fileName, 'utf8');
     const saveSetText = this.persistenceService.maybeDecrypt(fileContent);
     return Console.log(label + saveSetText);
   }
 
+  /** Reads bridge file, builds a model, analyzes it, and emits a report to stdout. */
   analyzeBridge(
     fileName: string,
     label: string,
@@ -125,6 +152,7 @@ class Subcommands {
     return result;
   }
 
+  /** Parses the given save set and validates it, throwing if bad. */
   private parseValidSaveSet(text: string): SaveSet | undefined {
     try {
       // Parsing fails for syntax including decryption w/ bad key.
@@ -138,6 +166,7 @@ class Subcommands {
   }
 }
 
+/** Builds and runs Effect-based CLI command. */
 function main(): void {
   // Top level command just accumulates contest parameters.
   const contestParamsOption = Options.text('contest-params').pipe(
@@ -162,7 +191,7 @@ function main(): void {
       Effect.andThen(({ contestParamsOption, contestParamsFile }) => {
         const fallback = Option.orElse(() => Option.map(contestParamsFile, ([, content]) => content));
         const contestParams = Option.getOrNull(contestParamsOption.pipe(fallback));
-        const subcommands: Subcommands = createInjector(contestParams).resolveAndInstantiate(Subcommands);
+        const subcommands: Subcommands = buildInjector(contestParams).resolveAndInstantiate(Subcommands);
         return Effect.forEach(filenames, filename => {
           const label = filenames.length === 1 ? '' : filename + ':\n';
           return subcommands.listBridge(filename, label);
@@ -193,7 +222,7 @@ function main(): void {
         Effect.andThen(({ contestParamsOption, contestParamsFile }) => {
           const fallback = Option.orElse(() => Option.map(contestParamsFile, ([, content]) => content));
           const contestParams = Option.getOrNull(contestParamsOption.pipe(fallback));
-          const subcommands: Subcommands = createInjector(contestParams).resolveAndInstantiate(Subcommands);
+          const subcommands: Subcommands = buildInjector(contestParams).resolveAndInstantiate(Subcommands);
           return Effect.forEach(filenames, filename => {
             const label = filenames.length === 1 ? '' : filename + ':\n';
             return subcommands.analyzeBridge(filename, label, options);
@@ -209,34 +238,12 @@ function main(): void {
     version: 'v1.0.0',
   });
 
+  /// Run the command, trapping and emitting errors.
   Effect.suspend(() => cli(process.argv)).pipe(
     Effect.provide(NodeContext.layer),
     Effect.tapError(Console.error),
     NodeRuntime.runMain,
   );
-}
-
-/**
- * Builds an injector of BD entities we need. Most provided values are dummies
- * for dependencies that aren't actually used. Changes to bridge designer service
- * constructors can break this. Compile with --minify removed from scripts: build
- * entry in package.json for useful error messages.
- */
-function createInjector(contestParamsOption: string | null): ReflectiveInjector {
-  return ReflectiveInjector.resolveAndCreate([
-    AnalysisService,
-    BridgeCostService,
-    BridgeService,
-    { provide: BridgeServiceSessionStateKey, useValue: {} },
-    { provide: BridgeSketchService, useValue: {} },
-    ContestParametersService,
-    DesignConditionsService,
-    EventBrokerService,
-    InventoryService,
-    PersistenceService,
-    { provide: SearchStringProvider, useValue: { value: contestParamsOption, verbose: false } },
-    { provide: SessionStateService, useValue: { register: () => undefined } },
-  ]);
 }
 
 if (require.main === module) {

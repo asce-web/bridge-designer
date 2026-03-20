@@ -133,7 +133,7 @@ export class AppComponent implements AfterViewInit {
       this.missingFeatureDisablerDialog.disableAndInformUser();
     }
     // Show a contest welcome splash if parameters are set. This hides other startup dialogs temporarily.
-    this.contestWelcomeDialog.showIfContest();
+    this.contestWelcomeDialog.splashIfContest();
     this.handleUrlParameters();
   }
 

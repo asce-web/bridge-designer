@@ -15,7 +15,7 @@ export class ContestWelcomeDialogComponent {
 
   constructor(public readonly contestParametersService: ContestParametersService) {}
 
-  public showIfContest() {
+  public splashIfContest() {
     if (this.contestParametersService.parameters.isPatched) {
       this.dialog.open();
     }

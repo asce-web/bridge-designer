@@ -14,6 +14,8 @@ export type ContestParameters = {
   contestName: string;
   deckCostPerPanelHiStrength: number;
   deckCostPerPanelMedStrength: number;
+  designConditionsCode: number;
+  designConditionsTag: string;
   encryptionKey: string; // empty string means unencrypted
   excavationCostRate: number;
   heavyAxleLoads: [number, number]; // [front, rear]
@@ -44,6 +46,8 @@ export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
   contestName: '',
   deckCostPerPanelHiStrength: 5100,
   deckCostPerPanelMedStrength: 4700,
+  designConditionsCode: 0,
+  designConditionsTag: '',
   encryptionKey: '',
   excavationCostRate: 1,
   heavyAxleLoads: [137, 137],
@@ -61,13 +65,17 @@ export const DEFAULT_CONTEST_PARAMETERS: ContestParameters = {
 export class SearchStringProvider {
   /** Whether merge results will be logged. */
   public readonly verbose = true;
-  
+
   /** Search string value to be used for contest parameters merged with default. */
   public get value(): string | null {
     return new URLSearchParams(window.location.search).get('p');
   }
 }
 
+/**
+ * Container for contest parameters set from URL search string. Caveat: This is a low-level, 
+ * cross-cutting service. Adding injections of higher-level services is likely to cause circularities.
+ */
 @Injectable({ providedIn: 'root' })
 export class ContestParametersService {
   public readonly parameters: ContestParameters;
@@ -84,8 +92,10 @@ export class ContestParametersService {
     ab: 'standardAbutmentBaseCost',
     ap: 'standardAbutmentCostPerDeckPanel',
     c: 'connectionFee',
+    dc: 'designConditionsCode',
     dh: 'deckCostPerPanelHiStrength',
     dm: 'deckCostPerPanelMedStrength',
+    dt: 'designConditionsTag',
     f: 'productFee',
     k: 'encryptionKey',
     p: 'pierCostPerDeckPanel',
@@ -139,14 +149,19 @@ export class ContestParametersService {
     return Object.fromEntries(deAliasedEntries);
   }
 
-  /** A lightweight validator of patch objects. Compares types against default parameters. */
+  /**
+   * A lightweight validator of patch objects. Compares types against default parameters. Note we can't validate
+   * design conditions specs here because `DesignConditionsService` necessarily injects this. See `ContestBridgeService.
+   */
   private validatePatchEntries(entries: [string, any][]): void {
     for (const [key, objValue] of entries) {
+      // Verify key exists.
       const parametersValue = (DEFAULT_CONTEST_PARAMETERS as any)[key];
       if (parametersValue === undefined) {
         throw `unknown key ${key}`;
       }
-      if (typeof objValue != typeof parametersValue) {
+      // Verify value and corresponding default parameter have same type.
+      if (typeof objValue !== typeof parametersValue) {
         throw `type mismatch ${objValue} vs ${parametersValue}`;
       } else if (Array.isArray(parametersValue)) {
         if (!Array.isArray(objValue)) {

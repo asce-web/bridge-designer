@@ -176,7 +176,11 @@ class SaveSetParser {
     saveSet.bridge.joints.length = saveSet.bridge.members.length = 0; // We're replacing everything.
     saveSet.bridge.version = this.scanNumber(false, YEAR_LENGTH, 'bridge designer version');
     const scenarioCode = this.scanNumber(false, SCENARIO_CODE_LENGTH, 'scenario code');
-    saveSet.bridge.designConditions = this.designConditionsService.getConditionsForCodeLong(scenarioCode);
+    const conditions =  this.designConditionsService.getConditionsForCodeLong(scenarioCode);
+    if (conditions === undefined) {
+      throw 'scenario code';
+    }
+    saveSet.bridge.designConditions = conditions;
     const jointCount = this.scanNumber(false, JOINT_COUNT_LENGTH, 'number of joints');
     const memberCount = this.scanNumber(false, MEMBER_COUNT_LENGTH, 'number of members');
     let joint: Joint | undefined;
@@ -186,7 +190,7 @@ class SaveSetParser {
       if (i < saveSet.bridge.designConditions.prescribedJoints.length) {
         joint = saveSet.bridge.designConditions.prescribedJoints[i];
         if (x != this.grid.xformWorldToGrid(joint.x) || y != this.grid.xformWorldToGrid(joint.y)) {
-          throw `bad prescribed joint ${n}`;
+          throw `prescribed joint ${n}`;
         }
       } else {
         joint = new Joint(i, this.grid.xformGridToWorld(x), this.grid.xformGridToWorld(y), false);
