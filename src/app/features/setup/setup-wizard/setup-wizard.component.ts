@@ -414,9 +414,8 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
 
   private maybeSaveThenStartSetupDesign(): void {
     const contestBridge = this.contestBridgeService.contestBridge;
-    // Build continuation of file save.
-    const data = contestBridge
-      ? () => {
+    const continuation = contestBridge
+      ? () =>
           this.eventBrokerService.loadBridgeRequest.next({
             origin: EventOrigin.SETUP_DIALOG,
             data: {
@@ -424,13 +423,10 @@ export class SetupWizardComponent implements AfterViewInit, SetupWizardCardView 
               draftingPanelState: DraftingPanelState.createNew(),
               invalidateSavedMark: true,
             },
-          });
-        }
-      : () => {
-          this.open(this.rootBridgeService.instance.designConditions);
-        };
+          })
+      : () => this.open(this.rootBridgeService.instance.designConditions);
     // Let the bridge file loader offer the user to save a dirty edit before new design creation.
-    this.eventBrokerService.loadBridgeFileRequest.next({ origin: EventOrigin.SETUP_DIALOG, data });
+    this.eventBrokerService.loadBridgeFileRequest.next({ origin: EventOrigin.SETUP_DIALOG, data: continuation });
   }
 
   ngAfterViewInit(): void {

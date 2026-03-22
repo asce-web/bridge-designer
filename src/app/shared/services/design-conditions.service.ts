@@ -322,6 +322,11 @@ export class DesignConditions {
     };
   }
 
+  /** Returns whether construction was successful. */
+  get isValid(): boolean {
+    return this.code.length > 0;
+  }
+
   /** Internal only. Use DesignConditionsService.PLACEHOLDER_CONDITIONS. */
   static get _placeholderConditions(): DesignConditions {
     return new DesignConditions('00X', 1110824000, DEFAULT_CONTEST_PARAMETERS);
@@ -998,7 +1003,7 @@ export class DesignConditionsService {
       return tagConditions;
     }
     const codeConditions = DesignConditions.fromKeyCodeLong(code, this.contestParametersService.parameters);
-    return codeConditions.code.length === 0 ? undefined : codeConditions;
+    return codeConditions.isValid ? codeConditions : undefined;
   }
 
   /** Fetches conditions with given standard tag. Returns undefined if none. */

@@ -4,7 +4,7 @@ import { ContestParametersService } from './contest-parameters.service';
 import { BridgeModel } from '../classes/bridge.model';
 import { BridgeService } from './bridge.service';
 
-/** Single design conditions contest bridge creation and management. */
+/** Creation and management for single design conditions contest bridges. */
 @Injectable({ providedIn: 'root' })
 export class ContestBridgeService {
   constructor(

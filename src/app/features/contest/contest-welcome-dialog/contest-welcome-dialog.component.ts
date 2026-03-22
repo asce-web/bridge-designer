@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { ContestParametersService } from '../../../shared/services/contest-parameters.service';
+import { SessionStateService } from '../../session-state/session-state.service';
 
 @Component({
   selector: 'contest-welcome-dialog',
@@ -10,13 +11,15 @@ import { ContestParametersService } from '../../../shared/services/contest-param
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContestWelcomeDialogComponent {
+  @ViewChild('dialog') dialog!: ConfirmationDialogComponent;
 
- @ViewChild('dialog') dialog!: ConfirmationDialogComponent;
-
-  constructor(public readonly contestParametersService: ContestParametersService) {}
+  constructor(
+    public readonly contestParametersService: ContestParametersService,
+    public readonly sessionStateService: SessionStateService,
+  ) {}
 
   public splashIfContest() {
-    if (this.contestParametersService.parameters.isPatched) {
+    if (this.contestParametersService.parameters.isPatched && !this.sessionStateService.isCurrentStateDueToTabRefresh) {
       this.dialog.open();
     }
   }
