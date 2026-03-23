@@ -156,11 +156,11 @@ export class AppComponent implements AfterViewInit {
   private handleUrlParameters(): void {
     const url = new URL(window.location.href);
     const params = new URLSearchParams(window.location.search);
-    const reset = 'reset';
 
     // Allow user to reset local storage with URL query string "?reset".
+    const reset = 'reset';
     if (params.get(reset) !== null) {
-      // Probably already cleared. See SessionStateService.
+      // Here for completeness. Normally already done. See SessionStateService.
       localStorage.clear();
       params.delete(reset);
     }
