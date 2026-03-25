@@ -1,6 +1,6 @@
 # App-level functionality
 
-The app component is both a container the logic for a few important functions.
+The app component is both a container and the logic for a few important functions.
 
 ## Dialogs
 
@@ -23,7 +23,9 @@ This is a fairly complicated flow that begins at app level, but continues throug
 document it here. At heart it is a state machine, but the state is implicit and spread out. Transitions are by UI
 events. I wish there were an easier-to-grok way of implementing this, but don't see one.
 
-A complicating factor is that part of the flow takes place before Angular is bootstrapped.
+A complicating factor is that part of the flow takes place before Angular is bootstrapped. 
+
+The logic might be clearer if depicted as a flow chart, but here it is in all its GOTO glory.
 
 ```
 <startup>: Entry at app/index.html
@@ -31,11 +33,11 @@ A complicating factor is that part of the flow takes place before Angular is boo
   Browser check
   // browser-checks.ts
   IF browser features are missing THEN
-    Check session storage for previously saved features
-    IF previous features match current THEN
-      GOTO <continue startup>
+    Check session storage for previously saved browser features
+    IF previous browser features match current THEN
+      GOTO <continue startup> // Bypass warning; it's already been given
     END IF
-    Show confirmation warning dialog including missing feature
+    Show confirmation warning dialog including missing features
     IF user wants help THEN
       // main.ts
       Redirect to missing features page
@@ -49,35 +51,35 @@ A complicating factor is that part of the flow takes place before Angular is boo
     END IF
   END IF
 <continue startup>: Features are okay or resolved
-Bootstrap angular
-// ui-state.service.ts
-UI state service constructor runs before all others in bootstrap sequence with saved state:
-IF URL search parameters include "reset" THEN
-  Clear session storage
-END IF
-Other constructors throughout app restore services and components from session state, if any.
-// app.component.ts
-IF session state was restored THEN
-  // missing-feature-disabler-dialog.component
-  Disable Bridge Designer features based on missing browser features, if any
+  Bootstrap angular
+  // ui-state.service.ts
+  UI state service constructor runs before all others in bootstrap sequence having saved state:
+  IF URL search parameters include "reset" THEN
+    Clear session storage
+  END IF
+  Other constructors throughout app restore services and components from session state, if any.
   // app.component.ts
-  IF session state was NOT from same tab context THEN
-    Show dialog allowing restart without saved session state
-    // allow-fresh-start-dialog.component.ts
-    IF user desires restart THEN
-      Add "reset" to URL search parameters
-      GOTO <startup> // via redirect
-    END IF    
+  IF session state was restored THEN
+    // missing-feature-disabler-dialog.component
+    Disable Bridge Designer features based on missing browser features, if any
+    // app.component.ts
+    IF session state was NOT from same tab context THEN
+      Show dialog allowing restart without saved session state
+      // allow-fresh-start-dialog.component.ts
+      IF user desires restart THEN
+        Add "reset" to URL search parameters
+        GOTO <startup> // via redirect
+      END IF    
+    END IF
+  ELSE
+    // missing-feature-disabler-dialog.component
+    IF missing browser features require disabling Bridge Designer features THEN
+      Show dialog warning user about what's disabled.
+    END IF
+    Disable Bridge Designer features based on missing browser features, if any.
   END IF
-ELSE
-  // missing-feature-disabler-dialog.component
-  IF missing browser features require disabling Bridge Designer features THEN
-    Show dialog warning user about what's disabled.
+  // contest-welcome-dialog.component.ts
+  IF contest parameters are set THEN
+    Splash a welcome dialog for a few seconds or until user dismisses.
   END IF
-  Disable Bridge Designer features based on missing browser features, if any.
-END IF
-// contest-welcome-dialog.component.ts
-IF contest parameters are set THEN
-  Splash a welcome dialog for a few seconds or until user dismisses.
-END IF
 ```
