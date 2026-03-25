@@ -75,7 +75,8 @@ export class HelpTopicComponent implements AfterViewInit, OnChanges {
 
     // Establish the base URL. Firefox needs a full path.
     const base = printDoc.createElement('base');
-    base.href = document.location.origin;
+    const location = document.location;
+    base.href = location.origin + location.pathname;
     printDoc.head.appendChild(base);
 
     // Copy all the style sheets.
