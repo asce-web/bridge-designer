@@ -18,7 +18,7 @@ import { TRUSS_PIN_MESH_DATA } from './truss-pin';
 import { MEMBER_MESH_DATA } from './member';
 import { FlyThruSettingsService } from '../rendering/fly-thru-settings.service';
 
-// TODO: We could probably do with something lighter weight than full gussets.
+// PERF: We could probably do with something lighter weight than full gussets.
 export type BridgeMeshData = {
   memberMeshData: MeshData;
   deckBeamMeshData: MeshData;

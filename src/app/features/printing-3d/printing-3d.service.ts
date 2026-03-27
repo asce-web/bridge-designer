@@ -214,8 +214,6 @@ export class Printing3dService {
     this.downloadObjFileText(crossMembersText, baseFileName, 'cross-members');
   }
 
-  // TODO: Could make these more descriptive. E.g. add counts.
-
   public get abutmentsFileContents(): string {
     const rtn = ['abutments'];
     if (this.print3dModelService.isPier) {

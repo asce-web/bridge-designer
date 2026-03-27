@@ -83,7 +83,7 @@ export class RenderingService {
     this.setDefaultView();
     // Reset the state machine. Required before bridge renderer can be prepared.
     this.simulationStateService.start();
-    // TODO: Some of these can be done only on design conditions changes to save some GC.
+    // PERF: Some of these can be done only on design conditions changes to save some GC.
     // Build terrain that matches the work site configuration.
     this.terrainModelService.initializeForBridge();
     // Clear old meshes if any. Then build new ones.

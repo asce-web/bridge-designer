@@ -47,7 +47,7 @@ The animation scene consists of the following:
   - Regular grid, auto-generated.
 - River
   - Flat surface with animated texture map depicting flowing water.
-  - TODO: Maybe add surface waves.
+  - TODO: Surface waves would improve appearance a lot.
 - Electrical transmission line.
   - Tower.
   - Wires.

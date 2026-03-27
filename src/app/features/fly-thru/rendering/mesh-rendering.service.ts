@@ -285,8 +285,6 @@ export class MeshRenderingService {
     gl.useProgram(program);
     this.depthBufferService.bindDepthTexture(program);
     gl.bindVertexArray(mesh.vertexArray);
-    // TODO: Experiment with doing this once, not once per frame. Possible because we have fewer textures than units?
-    // Then no texture location would be needed in the mesh data.
     if (this.glService.isRenderingDisplay) {
       gl.uniform1i(mesh.textureUniformLocation!, FACIA_TEXTURE_UNIT);
       gl.activeTexture(gl.TEXTURE0 + FACIA_TEXTURE_UNIT);
@@ -314,7 +312,6 @@ export class MeshRenderingService {
     gl.bindVertexArray(meshOrWire.vertexArray);
     gl.bindBuffer(gl.ARRAY_BUFFER, meshOrWire.instanceModelTransformBuffer!);
     // Replace all data even if there's a limit because subdata updates are said to hinder GPU parallelism.
-    // TODO: Experiment to see if this is true or makes any difference.
     gl.bufferData(gl.ARRAY_BUFFER, meshOrWire.instanceModelTransforms, usage, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
@@ -328,7 +325,6 @@ export class MeshRenderingService {
     const gl = this.glService.gl;
     gl.bindVertexArray(mesh.vertexArray);
     gl.bindBuffer(gl.ARRAY_BUFFER, mesh.instanceColorBuffer!);
-    // See comment in updateInstanceModelTransforms. Same TODO.
     gl.bufferData(gl.ARRAY_BUFFER, mesh.instanceColors, usage, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.bindVertexArray(null);
@@ -387,7 +383,6 @@ export class MeshRenderingService {
     const program = this.shaderService.getProgram('river');
     gl.useProgram(program);
     this.depthBufferService.bindDepthTexture(program);
-    // TODO: Experiment with doing this once, not once per frame. Possible because we have fewer textures than units?
     gl.uniform1i(mesh.textureUniformLocation!, WATER_TEXTURE_UNIT);
     gl.activeTexture(gl.TEXTURE0 + WATER_TEXTURE_UNIT);
     gl.bindTexture(gl.TEXTURE_2D, mesh.texture!);

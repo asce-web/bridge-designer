@@ -43,7 +43,6 @@ export interface SetupWizardCardView {
   deckCartoonSrc: DeckCartoonSrc;
 
   /** Current design conditions the cards represent. */
-  // TODO: Consider injecting in CardService instead.
   get designConditions(): DesignConditions;
 
   /** Enables or disables various navigation and view controls. See enum ControlMask. */

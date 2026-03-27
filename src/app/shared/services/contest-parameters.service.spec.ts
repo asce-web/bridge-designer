@@ -2,23 +2,18 @@
    SPDX-License-Identifier: GPL-3.0-or-later */
 
 import { TestBed } from '@angular/core/testing';
-import {
-  ContestParametersService,
-  WindowLocation,
-} from './contest-parameters.service';
+import { ContestParametersService, SearchStringProvider } from './contest-parameters.service';
 
 describe('ContestParametersService', () => {
   let service: ContestParametersService;
 
   function setUpService(search: string = '') {
-    const windowLocationSpy = jasmine.createSpyObj('WindowLocation', [], {
-      value: { search },
+    const windowLocationSpy = jasmine.createSpyObj('SearchStringProvider', [], {
+      verbose: true,
+      value: search,
     });
     TestBed.configureTestingModule({
-      providers: [
-        ContestParametersService,
-        { provide: WindowLocation, useValue: windowLocationSpy },
-      ],
+      providers: [ContestParametersService, { provide: SearchStringProvider, useValue: windowLocationSpy }],
     });
     service = TestBed.inject(ContestParametersService);
   }
@@ -32,7 +27,7 @@ describe('ContestParametersService', () => {
         carbonSteelCostPerKg: [4.3, 6.3],
         connectionFee: 400,
         encryptionKey: '',
-      })
+      }),
     );
     expect(service.parameters.isPatched).toBeFalse();
     expect(service.parameters.version).toBe(1);
@@ -58,20 +53,15 @@ describe('ContestParametersService', () => {
   });
 
   it('ignores patches to internal-only fields', () => {
-    const patch = JSON.stringify({ _v: 9999, _i: false });
-    setUpService(`?p=${encodeURIComponent(patch)}`);
+    setUpService(JSON.stringify({ _v: 9999, _i: false }));
     expect(service.parameters.version).toBe(1);
     expect(service.parameters.isPatched).toBe(true);
   });
 
   it('logs an error and leaves defaults when the patch JSON is invalid', () => {
     spyOn(console, 'error');
-    setUpService('?p=not%20json');
-    expect(console.error).toHaveBeenCalledWith(
-      'contest parameter patch not applied',
-      jasmine.anything(),
-      'not json'
-    );
+    setUpService('not json');
+    expect(console.error).toHaveBeenCalledWith('contest parameter patch not applied', jasmine.anything(), 'not json');
     expect(service.parameters.anchorageCostPer).toBe(6000);
     expect(service.parameters.isPatched).toBeFalse();
   });
@@ -79,26 +69,20 @@ describe('ContestParametersService', () => {
   it('rejects a patch with the wrong type without modifying defaults', () => {
     spyOn(console, 'error');
     const patch = JSON.stringify({ a: 'oops' });
-    setUpService(`?p=${encodeURIComponent(patch)}`);
-    expect(console.error).toHaveBeenCalledWith(
-      'contest parameter patch not applied',
-      jasmine.anything(),
-      patch
-    );
+    setUpService(patch);
+    expect(console.error).toHaveBeenCalledWith('contest parameter patch not applied', jasmine.anything(), patch);
     expect(service.parameters.anchorageCostPer).toBe(6000);
     expect(service.parameters.isPatched).toBeFalse();
   });
 
   it('supports patching array parameters', () => {
-    const patch = JSON.stringify({ xh: [150, 150], xs: [80, 190] });
-    setUpService(`?p=${encodeURIComponent(patch)}`);
+    setUpService(JSON.stringify({ xh: [150, 150], xs: [80, 190] }));
     expect(service.parameters.heavyAxleLoads).toEqual([150, 150]);
     expect(service.parameters.standardAxleLoads).toEqual([80, 190]);
   });
 
   it('supports patching string parameters', () => {
-    const patch = JSON.stringify({ k: 'secretKey123' });
-    setUpService(`?p=${encodeURIComponent(patch)}`);
+    setUpService(JSON.stringify({ k: 'secretKey123' }));
     expect(service.parameters.encryptionKey).toBe('secretKey123');
   });
 

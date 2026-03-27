@@ -27,6 +27,6 @@ void main() {
   float specularIntensity = pow(max(dot(unitReflection, unitEye), 0.0f), WIRE_SHININESS);
   float diffuseIntensity = mix(light.ambientIntensity, 1.0f, max(0.0f, normalDotLight));
   vec3 color = light.color * (specularIntensity + diffuseIntensity * WIRE_COLOR);
-  // TODO: Could add shadows on wires.
+  // NOTE: Shadows on wires don't add much, so omitted.
   fragmentColor = vec4(light.brightness * color, 1.0f);
 }

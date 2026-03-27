@@ -11,7 +11,7 @@ import { Directive, Input, TemplateRef } from '@angular/core';
  * Then this.name will contain 'foo' and this.templateRef will point to the template.
  */
 @Directive({
-  // TODO: Change this to topic-id for consistency.
+  // Naming this topic-id would be more consistent.
   selector: '[topic-name]',
   standalone: true,
 })

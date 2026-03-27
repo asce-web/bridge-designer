@@ -58,7 +58,7 @@ export class UndoRedoDropdownComponent implements AfterViewInit {
     if (!this.commandBuffer) {
       throw new Error('Dropdown not initialized.');
     }
-    // TODO: Try to provide a scrollbar for unlimited selections.
+    // TODO: Could provide a scrollbar for unlimited selections.
     this.commandBuffer.copyTo(this.commandList, 10);
     this.commandList.push(UndoRedoDropdownComponent.CANCEL_ITEM);
     this.listBox.source(this.commandList);

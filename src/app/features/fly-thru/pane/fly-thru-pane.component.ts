@@ -33,7 +33,7 @@ export class FlyThruPaneComponent implements AfterViewInit {
   @ViewChild('wrapper') wrapper!: ElementRef<HTMLDivElement>;
   @ViewChild('flyThruCanvas') flyThruCanvas!: ElementRef<HTMLCanvasElement>;
 
-  // TODO: On retina and other displays w/ devicePixelRatio > 1, how does this look?
+  // NOTE: This doesn't exploit "retina" displays with >1 physical pixel per css pixel.
   width: number = screen.availWidth;
   height: number = screen.availHeight;
 

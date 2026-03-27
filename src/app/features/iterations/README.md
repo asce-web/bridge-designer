@@ -76,9 +76,7 @@ Consequently, the UI widget offers two views of iterations:
   successive numbered.
   - It's an unfortunate detail that the treegrid view hides some information. If the same iteration is jumped-to
     multiple times, each followed by a sequence of new iterations, these sequences are effectively concatenated into a
-    single list in the treegrid view. TODO: It may be possible to give visual cues - via an extra column of icons or
-    similar - where the sub-lists are separated. This would make the view capable of showing the full multi-tree
-    structure.
+    single list in the treegrid view. 
 
 For the user, it's expected that the list view is superior for going back a small number of iterations, while the
 treegrid makes it easier to navigate among major decision points.

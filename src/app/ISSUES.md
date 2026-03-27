@@ -5,7 +5,6 @@
 
 ## Master TODO
 
-- Hot key-triggered dialog for contests with secret scenarios.
 - Reorganize directories. Current Angular best practice says don't use directories with names like "components" or
   "services," which we have. (When we started, making these distinctions obvious was a good thing.)
 

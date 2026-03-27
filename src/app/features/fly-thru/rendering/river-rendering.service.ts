@@ -29,7 +29,7 @@ export class RiverRenderingService {
   public render(matrices: DisplayMatrices): void {
     let m: mat4 = this.uniformService.pushModelMatrix();
     // Account for origin x at left joint and y at bridge deck level.
-    // TODO: Could listen for bridge loads and compute these only then.
+    // PERF: Could listen for bridge loads and compute these only then.
     const x0 = 0.5 * this.bridgeService.designConditions.spanLength;
     const y0 =
       TerrainModelService.WATER_LEVEL + SiteConstants.GAP_DEPTH - this.bridgeService.designConditions.deckElevation;

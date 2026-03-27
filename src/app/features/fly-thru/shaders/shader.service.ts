@@ -33,7 +33,7 @@ type CompileMissing = {
  * with empty fragment shader for the shadow buffer. A spec with name `foo` and a `depthVertexShaderName`
  * produces programs with lookup keys `foo`  and `foo_depth`.
  */
-// TODO: For performance, specialized depth shaders could skip color attribute setup.
+// PERF: For performance, specialized depth shaders could skip color attribute setup.
 const PROGRAM_SPECS: ProgramSpec[] = [
   {
     name: 'buckling_member',

@@ -88,5 +88,5 @@ The logic of several command and the member splitter assumes that "do" is called
 I.e. bridge, selection, and other state may be captured during construction that can't change before the command is
 executed.
 
-TODO: For future-proofing, make the initial "do" operation part of static factory `createAndDo()` methods in each
+TODO: For less error-proneness, make the initial "do" operation part of static factory `createAndDo()` methods in each
 command.

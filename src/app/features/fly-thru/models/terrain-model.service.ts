@@ -423,7 +423,6 @@ export class TerrainModelService {
     const tCut = Math.abs(z);
     // A bit lower than road elevation so actual road can't be hidden.
     const yRoad = this.roadCenterLine[j].elevation - TerrainModelService.EPS_PAINT;
-    // TODO: Replace deck width with actual abutment width.
     // The y of a cut bank. Zero at road level, one grid distance from roadway edge and rising thereafter.
     const yRise = (tCut - SiteConstants.DECK_HALF_WIDTH - metersPerGrid) * TerrainModelService.ROAD_CUT_SLOPE;
 
@@ -442,7 +441,7 @@ export class TerrainModelService {
       }
     }
     // Depress the terrain around the anchorages so they don't appear to be buried.
-    // TODO: These don't look good. The anchorage is still buried, and the slopes expose the road edge.
+    // NOTE: These don't look great. The anchorage is still buried, and the slopes expose the road edge.
     const yAnchorDepression = (x: number, z: number, xAnchor: number, zAnchor: number): number => {
       const mPerGrid = TerrainModelService.METERS_PER_GRID;
       const dyBottom = SiteConstants.ABUTMENT_STEP_HEIGHT - 0.1;
@@ -624,11 +623,4 @@ export class TerrainModelService {
     const halfSpanLength = 0.5 * this.bridgeService.designConditions.spanLength;
     return (j - halfGridCount) * metersPerGrid + halfSpanLength;
   }
-
-  /* TODO: Remove if unused.
-  private gridRowToWorldZ(i: number) {
-    const halfGridCount = TerrainModelService.HALF_GRID_COUNT;
-    const metersPerGrid = TerrainModelService.METERS_PER_GRID;
-    return (i - halfGridCount) * metersPerGrid;
-  }*/
 }

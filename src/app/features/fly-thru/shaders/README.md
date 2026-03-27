@@ -35,7 +35,7 @@ Vertex/fragment shader pairs are linked into programs by `linkPrograms()` based 
 The public method `buildPrograms()` performs the compile and link steps and caches the results, after which a call to
 `getProgram(name)` will work. Otherwise an error is thrown.
 
-TODO: This could all be done lazily to save graphic card resources if the animation is never run.
+NOTE: This could all be done lazily to save graphic card resources if the animation is never run.
 
 ## Checklist for adding a new shader (or deleting one by undoing these steps).
 
