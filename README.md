@@ -15,6 +15,7 @@ For more information about the app, see the [beta test home](https://gene-ressle
 Many of these are actually design notes that preceded implementation. They've been updated _post hoc_.
 
 - [Source top level](https://github.com/gene-ressler/bridge-designer/tree/main/src#readme)
+  - [App container and logic]((https://github.com/gene-ressler/bridge-designer/tree/main/src/app#readme)
   - General features and shared functions
     - [User workflow management](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/features/controls/management#readme)
     - [Browser capability introspection](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/features/browser#readme)
