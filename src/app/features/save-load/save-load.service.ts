@@ -141,6 +141,7 @@ export class FileSystemSaveLoadService implements SaveLoadService {
       types: PICKER_TYPES,
     };
     try {
+      // This handle is read-only, so not usable as the current file handle, which must be writable.
       const [fileHandle]: FileSystemFileHandle[] = await (window as any).showOpenFilePicker(options);
       const file = await fileHandle.getFile();
       return file.text().then(text => ({ name: file.name, text }));
