@@ -123,6 +123,7 @@ export class FileSystemSaveLoadService implements SaveLoadService {
   }
 
   public async loadBridgeFile(): Promise<void> {
+    this.currentFileHandle = undefined;
     const { name, text } = await this.doLoad();
     const saveSet = this.persistenceService.parseSaveSetText(text);
     this.persistenceService.validateSaveSet(saveSet);
