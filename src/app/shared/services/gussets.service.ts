@@ -10,7 +10,7 @@ import { Member } from '../classes/member.model';
 import { SiteConstants } from '../classes/site-constants';
 
 /**
- * Geometry of one member adjacent to a given gusset. The coordinate origin as at the
+ * Geometry of one member adjacent to a given gusset. The coordinate origin is at the
  * gusset joint. Three critical points on the member axis and two vectors.
  * If w/2 = halfWidth, then it looks lke this:
  *   -----^---------------------------------------------------------------------------
@@ -78,11 +78,7 @@ export class GussetsService {
     private readonly convexHullService: ConvexHullService,
   ) {}
 
-  /**
-   * Builds one gusset per joint in the current bridge.
-   *
-   * @param minMemberSizeMm optional forced minimum member size (e.g. for 3d printing)
-   */
+  /** Builds one gusset per joint in the current bridge with optional forced minimum member size. */
   public createGussets(minMemberSizeMm: number = 0): Gusset[] {
     // Make one gusset per joint.
     const gussets: Gusset[] = this.bridgeService.bridge.joints.map(joint => {
