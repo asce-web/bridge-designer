@@ -87,14 +87,14 @@ export class SimulationStateService {
   /**
    * Advances the simulation state based on current clock value and sends a notification if phase has changed. State machine:
    * ```text
-   *                                                ------------------<--time expiry------------------------------<---
+   *                                                 -----------------<--time expiry------------------------------<---
    *                                               /                                                                   \
    *                                              v                                                                    /
    *  --start--> DEAD_LOADING --time expiry--> FADING_IN --time expiry--> TRAVERSING ----end reached---> FADING_OUT --
    *              ^     \                          /                        /  \                                 /
    *              |      -->-test fail------------/------------------------/----o-->-test fail--> COLLAPSING    /
    *               \                             /                        /                        /           /
-   *                -----<--start---------------o--------<--start--------o-------<--start---------o--<--start--
+   *                 ----<--start---------------o--------<--start--------o-------<--start---------o--<--start-
    * ```
    */
   public advance(clockMillis: number): void {
@@ -191,7 +191,7 @@ export class SimulationStateService {
     }
   }
 
-  private advanceLoad(clockMillis: number) {
+  private advanceLoad(clockMillis: number): void {
     // Advance absolutely the first time, then relatively so user speed changes look smooth.
     const t =
       this.lastLoadAdvanceMillis === undefined
@@ -202,7 +202,7 @@ export class SimulationStateService {
     this.traversingInterpolator.setParameter(t).getLoadPosition(this.wayPoint, this.rotation);
   }
 
-  private notifyPhaseChange() {
+  private notifyPhaseChange(): void {
     this.eventBrokerService.simulationPhaseChange.next({ origin: EventOrigin.SERVICE, data: this.phase });
   }
 }

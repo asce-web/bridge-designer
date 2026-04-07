@@ -199,11 +199,12 @@ export class UniformService {
     gl.bufferSubData(gl.UNIFORM_BUFFER, 0, this.lightConfig.buffer);
   }
 
+  /** Updates sky box transform uniform block contents. */
   public updateSkyboxTransformsUniform(viewMatrix: mat4, projectionMatrix: mat4) {
     // Use the transform buffer to hold the view rotation initially.
     const viewRotation = this.skyboxTransformsFloats;
     mat4.copy(viewRotation, viewMatrix);
-    // Zero out the translation component and left-multiply the projection.
+    // Zero out the translation component so eye point doesn't affect sky. Left-multiply the projection.
     viewRotation[12] = viewRotation[13] = viewRotation[14] = 0;
     mat4.multiply(this.skyboxTransformsFloats, projectionMatrix, viewRotation);
 
