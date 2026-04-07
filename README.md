@@ -23,6 +23,7 @@ Many of these are actually design notes that preceded implementation. They've be
     - [Edit commands for undo/redo](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/features/controls/edit-command#readme)
     - [Shared services](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/shared/services#readme)
   - User features
+    - [Drafting cursor actions](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/features/drafting/cursor-overlay#readme)
     - [Iterations](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/features/iterations#readme)
     - [Fly-thru test animation](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/features/fly-thru#readme)
       - [Rendering](https://github.com/gene-ressler/bridge-designer/tree/main/src/app/features/fly-thru/rendering#readme)
