@@ -3,8 +3,10 @@
 
 #!/bin/bash
 
+branch=$(git branch --show-current)
+
 # Ensure the worktree is in a known good state.
-if [[ -n "$(git status --porcelain)" || "$old_branch" != "main" ]]; then
+if [[ -n "$(git status --porcelain)" || "$branch" != "main" ]]; then
   echo "Worktree must be clean. Branch must be main."
   exit 1
 fi
